@@ -1,20 +1,17 @@
 <template>
     <div class="main-content">
-        <side-bar></side-bar>
-
-        <div>
-            Main Content here
-        </div>
+        <app-sidebar :is-logged-in="true"></app-sidebar>
+        <router-view></router-view>
     </div>
 </template>
 
 <script>
-import SideBar from './../components/TheSideBar.vue';
+import AppSidebar from './../components/TheSidebar.vue';
 
 export default {
-  name: 'MainContent',
+  name: 'AppBody',
   components: {
-    SideBar
+    AppSidebar
   }
 };
 </script>

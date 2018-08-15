@@ -1,21 +1,28 @@
 <template>
     <div class="sidebar">
         <h3>Your Music</h3>
-        <ul>
-            <li>
-                <router-link to="/">Home</router-link>
-            </li>
-            <li>
-                <router-link to="about">About</router-link>
-            </li>
-            <li>Playlists</li>
-        </ul>
+        <sidebar-authenticated v-if="isLoggedIn"></sidebar-authenticated>
+        <sidebar-unauthenticated v-else></sidebar-unauthenticated>
     </div>
 </template>
 
 <script>
+import SidebarAuthenticated from './TheSidebarAuthenticated.vue';
+import SidebarUnauthenticated from './TheSidebarUnauthenticated.vue';
+
 export default {
-  name: 'AppSidebar'
+  name: 'AppSidebar',
+  props: {
+    isLoggedIn: {
+      type: Boolean,
+      required: true,
+      default: false
+    }
+  },
+  components: {
+    SidebarAuthenticated,
+    SidebarUnauthenticated
+  }
 };
 </script>
 

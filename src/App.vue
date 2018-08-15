@@ -1,33 +1,19 @@
 <template>
   <div id="app">
-    <maeve-header></maeve-header>
-    <div class="container">
-      <div id="nav">
-        <ul>
-          <li>
-            <router-link to="/">Home</router-link>
-          </li>
-
-          <li>
-            <router-link to="/about">About</router-link>
-          </li>
-        </ul>
-      </div>
-
-      <router-view/>
-    </div>
+    <app-header></app-header>
+    <app-body></app-body>
   </div>
 </template>
 
 <script>
-import MaeveHeader from './components/TheHeader.vue';
-import MainContent from './views/MainContent.vue';
+import AppHeader from './components/TheHeader.vue';
+import AppBody from './views/AppBody.vue';
 
 export default {
   name: 'App',
   components: {
-    MaeveHeader,
-    MainContent
+    AppHeader,
+    AppBody
   }
 };
 </script>

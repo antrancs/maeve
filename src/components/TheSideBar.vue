@@ -2,8 +2,12 @@
     <div class="sidebar">
         <h3>Your Music</h3>
         <ul>
-            <li>Home</li>
-            <li>Albums</li>
+            <li>
+                <router-link to="/">Home</router-link>
+            </li>
+            <li>
+                <router-link to="about">About</router-link>
+            </li>
             <li>Playlists</li>
         </ul>
     </div>
@@ -11,7 +15,7 @@
 
 <script>
 export default {
-  name: 'SideBar'
+  name: 'AppSidebar'
 };
 </script>
 
@@ -20,5 +24,3 @@ export default {
   width: 200px;
 }
 </style>
-
-

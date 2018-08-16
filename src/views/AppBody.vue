@@ -1,6 +1,6 @@
 <template>
     <div class="main-content">
-        <app-sidebar :is-logged-in="true"></app-sidebar>
+        <app-sidebar :is-logged-in="false"></app-sidebar>
         <router-view></router-view>
     </div>
 </template>

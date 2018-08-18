@@ -12,6 +12,7 @@
   "dependencies": {
     "lodash": "^4.17.10",
     "vue": "^2.5.17",
+    "vue-awesome": "^3.1.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },

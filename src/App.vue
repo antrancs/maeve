@@ -2,6 +2,7 @@
   <div id="app">
     <app-header></app-header>
     <app-body></app-body>
+    <player-bar></player-bar>
   </div>
 </template>
 
@@ -10,12 +11,14 @@ import Vue from 'vue';
 
 import AppHeader from './components/TheHeader.vue';
 import AppBody from './views/AppBody.vue';
+import PlayerBar from './components/PlayerBar.vue';
 
 export default {
   name: 'App',
   components: {
     AppHeader,
-    AppBody
+    AppBody,
+    PlayerBar
   },
   created() {
     document.addEventListener('musickitloaded', () => {

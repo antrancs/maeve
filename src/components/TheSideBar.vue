@@ -28,6 +28,6 @@ export default {
 
 <style lang="scss" scoped>
 .sidebar {
-  width: 220px;
+  flex: 0 0 200px;
 }
 </style>

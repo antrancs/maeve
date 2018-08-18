@@ -8104,6 +8104,10 @@ vm-browserify@0.0.4:
   dependencies:
     indexof "0.0.1"
 
+vue-awesome@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/vue-awesome/-/vue-awesome-3.1.0.tgz#b1b457f36940423e22ffa8c490e156d7dd89d87a"
+
 vue-eslint-parser@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/vue-eslint-parser/-/vue-eslint-parser-2.0.3.tgz#c268c96c6d94cfe3d938a5f7593959b0ca3360d1"

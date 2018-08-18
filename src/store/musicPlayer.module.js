@@ -1,15 +1,12 @@
-import { PLAY_SONG } from './actions.type';
-import { SET_CURRENTLY_PLAYING_SONG } from './mutations.type';
+import { PLAY_SONG, TOGGLE_MUSIC } from './actions.type';
+import { SET_CURRENTLY_PLAYING_SONG, SET_IS_PLAYING } from './mutations.type';
 
 const initialState = {
-  currentPlaying: {}
+  currentPlaying: null,
+  isPlaying: false
 };
 
-const getters = {
-  currentPlaying(state) {
-    return state.currentPlaying;
-  }
-};
+const getters = {};
 
 const actions = {
   [PLAY_SONG](context, songId) {
@@ -21,8 +18,19 @@ const actions = {
       })
       .then(queue => {
         context.commit(SET_CURRENTLY_PLAYING_SONG, { song: queue.items[0] });
+        context.commit(SET_IS_PLAYING, { isPlaying: true });
         music.play();
       });
+  },
+  [TOGGLE_MUSIC]({ commit, state }) {
+    const music = window.MusicKit.getInstance();
+
+    if (state.isPlaying) {
+      music.pause();
+    } else {
+      music.play();
+    }
+    commit(SET_IS_PLAYING, { isPlaying: !state.isPlaying });
   }
 };
 
@@ -30,6 +38,9 @@ const actions = {
 const mutations = {
   [SET_CURRENTLY_PLAYING_SONG](state, payload) {
     state.currentPlaying = payload.song;
+  },
+  [SET_IS_PLAYING](state, payload) {
+    state.isPlaying = payload.isPlaying;
   }
 };
 

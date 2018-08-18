@@ -45,7 +45,7 @@ export default {
       // 0: "1368156572" "1368156573"  "1368156576" "1368156577" "1368156579" "1368156580"
       // "1368157211" "1368157215" "1368157216" "1368157223"
       // "1368157234" "1368157238" "1368157724"
-      this.playSong('1368157234');
+      this.playSong('1368156572');
       // console.log(this.collection);
       // this.$music.addEventListener('playbackProgressDidChange', event => {
       //   if (event.progress === 1) {

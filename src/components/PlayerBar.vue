@@ -1,5 +1,5 @@
 <template>
-  <div class="player-bar-wrapper">
+  <div v-if="currentPlaying" class="player-bar-wrapper">
     <div class="player-bar">
       <div class="player-bar--left">
         <div>A song by Cardi B</div>
@@ -10,7 +10,13 @@
         <div class="player-bar--controls">
           <icon name="redo" class="player-bar--icon"></icon>
           <icon name="backward" class="player-bar--icon"></icon>
-          <icon name="play" class="player-bar--icon player-bar--icon__large"></icon>
+          <span @click="toggleCurrentPlaying">
+            <icon
+              :name="songStatusIcon"
+              class="player-bar--icon player-bar--icon__large"
+            >
+            </icon>
+          </span>
           <icon name="forward" class="player-bar--icon"></icon>
           <icon name="random" class="player-bar--icon"></icon>
         </div>
@@ -32,17 +38,37 @@
 import 'vue-awesome/icons/backward';
 import 'vue-awesome/icons/forward';
 import 'vue-awesome/icons/list';
-import 'vue-awesome/icons/play';
+import 'vue-awesome/icons/pause-circle';
+import 'vue-awesome/icons/play-circle';
 import 'vue-awesome/icons/random';
 import 'vue-awesome/icons/redo';
 import 'vue-awesome/icons/volume-up';
 import Icon from 'vue-awesome/components/Icon.vue';
+import { mapState, mapActions } from 'vuex';
+
+import { TOGGLE_MUSIC } from '@/store/actions.type';
 
 export default {
   name: 'PlayerBar',
 
   components: {
     Icon
+  },
+
+  computed: {
+    songStatusIcon() {
+      return this.isPlaying ? 'pause-circle' : 'play-circle';
+    },
+    ...mapState({
+      isPlaying: state => state.musicPlayer.isPlaying,
+      currentPlaying: state => state.musicPlayer.currentPlaying
+    })
+  },
+
+  methods: {
+    ...mapActions({
+      toggleCurrentPlaying: TOGGLE_MUSIC
+    })
   }
 };
 </script>

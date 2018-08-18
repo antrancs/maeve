@@ -5,21 +5,39 @@
     >
         <img
           class="media-item--artwork "
-          src="https://is4-ssl.mzstatic.com/image/thumb/Music128/v4/e3/22/79/e3227975-b276-9df2-71ff-22b564bf84a9/075679873682.jpg/500x500bb.jpeg"
+          :src="artworkUrl"
           alt=""
         >
-        <p>Perception</p>
-        <p>Album • 2017</p>
+        <p class="media-info-title">{{collection.name}}</p>
+        <p>{{collection.artistName || collection.curatorName}}</p>
     </div>
 </template>
 
 <script>
 export default {
   name: 'SongCollectionItem',
+
   props: {
     collection: {
       type: Object,
       required: false
+    }
+  },
+
+  computed: {
+    /**
+     * Return a resized artwork for the collection.
+     * TO-DO: Make this one a utility function that takes in a desired width & height
+     * @returns {String}: Resized artwork URL
+     */
+    artworkUrl() {
+      const { url } = this.collection.artwork;
+      const replace = {
+        '{w}': 500,
+        '{h}': 500
+      };
+
+      return url.replace(/{w}|{h}/gi, matched => replace[matched]);
     }
   },
 
@@ -62,7 +80,11 @@ export default {
 }
 
 .media-item--artwork {
-  width: 200px;
-  height: 200px;
+  max-width: 200px;
+  max-height: 200px;
+}
+
+.media-item {
+  flex: 1;
 }
 </style>

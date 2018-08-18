@@ -37,5 +37,6 @@ export default {
 .media-list {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-start;
 }
 </style>

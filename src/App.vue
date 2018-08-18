@@ -37,12 +37,17 @@ export default {
 </script>
 
 <style lang="scss">
-#app {
-  color: #2c3e50;
+* {
+  box-sizing: border-box;
 }
 
 .container {
   display: flex;
+}
+
+.media-info-title {
+  font-weight: bold;
+  overflow: hidden;
 }
 
 #nav {

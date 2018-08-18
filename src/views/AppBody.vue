@@ -21,6 +21,7 @@ export default {
 .app-body {
   display: flex;
 }
+
 .app-body--main-content {
   width: 100%;
 }

@@ -68,6 +68,8 @@ export default {
           return;
         }
 
+        console.log(result);
+
         this.albums = this.extractSearchData(result, MediaType.albums, [
           'artistName',
           'artwork',

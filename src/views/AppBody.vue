@@ -1,7 +1,7 @@
 <template>
-    <div class="main-content">
-        <app-sidebar :is-logged-in="false"></app-sidebar>
-        <router-view></router-view>
+    <div class="app-body">
+        <app-sidebar :is-logged-in="true"></app-sidebar>
+        <router-view class="app-body--main-content"></router-view>
     </div>
 </template>
 
@@ -10,6 +10,7 @@ import AppSidebar from './../components/TheSidebar.vue';
 
 export default {
   name: 'AppBody',
+
   components: {
     AppSidebar
   }
@@ -17,7 +18,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.main-content {
+.app-body {
   display: flex;
+}
+.app-body--main-content {
+  width: 100%;
 }
 </style>

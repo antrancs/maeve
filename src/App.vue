@@ -11,7 +11,7 @@ import Vue from 'vue';
 
 import AppHeader from './components/TheHeader.vue';
 import AppBody from './views/AppBody.vue';
-import PlayerBar from './components/PlayerBar.vue';
+import PlayerBar from './components/ThePlayerBar.vue';
 
 export default {
   name: 'App',

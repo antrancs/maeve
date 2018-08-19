@@ -21,8 +21,12 @@
           <icon name="random" class="player-bar--icon"></icon>
         </div>
 
-        <div class="player-bar--progress-bar">
-          My progress bar
+        <div>
+          <progress class="player-bar--progress-bar"
+            max="100" :value="playbackProgress * 100"
+          >
+            {{playbackProgress * 100}}
+          </progress>
         </div>
       </div>
 
@@ -61,7 +65,8 @@ export default {
     },
     ...mapState({
       isPlaying: state => state.musicPlayer.isPlaying,
-      currentPlaying: state => state.musicPlayer.currentPlaying
+      currentPlaying: state => state.musicPlayer.currentPlaying,
+      playbackProgress: state => state.musicPlayer.playbackProgress
     })
   },
 
@@ -75,6 +80,7 @@ export default {
 
 <style lang="scss" scoped>
 .player-bar-wrapper {
+  background-color: #282828;
   bottom: 0;
   height: 72px;
   position: fixed;
@@ -83,6 +89,7 @@ export default {
 
 .player-bar {
   display: flex;
+  height: 100%;
   flex: 1;
 }
 
@@ -96,6 +103,7 @@ export default {
 
 .player-bar--center {
   display: flex;
+  justify-content: center;
   flex: 1;
   flex-direction: column;
 }
@@ -107,10 +115,11 @@ export default {
 }
 
 .player-bar--progress-bar {
-  background-color: blue;
+  width: 100%;
 }
 
 .player-bar--icon {
+  color: white;
   cursor: pointer;
   margin-left: 16px;
   max-width: 100%;

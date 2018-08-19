@@ -9,7 +9,10 @@
       <div class="player-bar--center">
         <div class="player-bar--controls">
           <icon name="redo" class="player-bar--icon"></icon>
-          <icon name="backward" class="player-bar--icon"></icon>
+          <span @click="handleBackwardClicked">
+            <icon name="backward" class="player-bar--icon"></icon>
+          </span>
+
           <span @click="toggleCurrentPlaying">
             <icon
               :name="songStatusIcon"
@@ -17,7 +20,12 @@
             >
             </icon>
           </span>
-          <icon name="forward" class="player-bar--icon"></icon>
+
+          <span @click="handleForwardClicked">
+            <icon name="forward" class="player-bar--icon">
+            </icon>
+          </span>
+
           <icon name="random" class="player-bar--icon"></icon>
         </div>
 
@@ -50,7 +58,12 @@ import 'vue-awesome/icons/volume-up';
 import Icon from 'vue-awesome/components/Icon.vue';
 import { mapState, mapActions, mapMutations } from 'vuex';
 
-import { TOGGLE_MUSIC } from '@/store/actions.type';
+import {
+  PAUSE_MUSIC,
+  PLAY_NEXT,
+  PLAY_PREVIOUS,
+  TOGGLE_MUSIC
+} from '@/store/actions.type';
 import { SET_IS_PLAYING } from '@/store/mutations.type';
 
 export default {
@@ -81,12 +94,25 @@ export default {
   },
 
   methods: {
-    ...mapMutations({
-      setIsPlaying: SET_IS_PLAYING
-    }),
+    handleForwardClicked() {
+      this.pauseMusic();
+      this.playNext();
+    },
+
+    handleBackwardClicked() {
+      this.pauseMusic();
+      this.playPrevious();
+    },
+
     ...mapActions({
       toggleCurrentPlaying: TOGGLE_MUSIC,
-      playNext: 'playNext'
+      pauseMusic: PAUSE_MUSIC,
+      playNext: PLAY_NEXT,
+      playPrevious: PLAY_PREVIOUS
+    }),
+
+    ...mapMutations({
+      setIsPlaying: SET_IS_PLAYING
     })
   }
 };

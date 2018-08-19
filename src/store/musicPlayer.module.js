@@ -1,4 +1,12 @@
-import { PLAY_SONG, PLAY_COLLECTION, TOGGLE_MUSIC } from './actions.type';
+import {
+  PAUSE_MUSIC,
+  PLAY_COLLECTION,
+  PLAY_NEXT,
+  PLAY_PREVIOUS,
+  PLAY_SONG,
+  RESUME_MUSIC,
+  TOGGLE_MUSIC
+} from './actions.type';
 import {
   ADD_MULTI_SONGS_TO_QUEUE,
   SET_CURRENTLY_PLAYING_SONG,
@@ -24,7 +32,7 @@ const actions = {
     const music = window.MusicKit.getInstance();
     music.removeEventListener('playbackProgressDidChange');
     music.addEventListener('playbackProgressDidChange', evt => {
-      console.log(evt.progress);
+      // console.log(evt.progress);
       context.commit(SET_PLAYBACK_PROGESS, { playbackProgress: evt.progress });
     });
 
@@ -43,9 +51,11 @@ const actions = {
         context.commit(SET_IS_PLAYING, { isPlaying: true });
       });
   },
-  playNext({ commit, dispatch, state }) {
+
+  [PLAY_NEXT]({ commit, dispatch, state }) {
     const nextSongIndex = state.currentPlayingIndex + 1;
-    if (nextSongIndex === state.songQueue.length - 1) {
+
+    if (nextSongIndex >= state.songQueue.length - 1) {
       return;
     }
 
@@ -53,6 +63,17 @@ const actions = {
     commit(SET_CURRENT_PLAYING_INDEX, { index: nextSongIndex });
     dispatch(PLAY_SONG, { songId: nextSong });
   },
+
+  [PLAY_PREVIOUS]({ commit, dispatch, state }) {
+    const prevSongIndex = state.currentPlayingIndex - 1;
+    if (prevSongIndex < 0) {
+      return;
+    }
+    const prevSong = state.songQueue[prevSongIndex];
+    commit(SET_CURRENT_PLAYING_INDEX, { index: prevSongIndex });
+    dispatch(PLAY_SONG, { songId: prevSong });
+  },
+
   [PLAY_COLLECTION](context, { collectionId, collectionType, atIndex }) {
     const music = window.MusicKit.getInstance();
 
@@ -70,15 +91,31 @@ const actions = {
         console.log(err);
       });
   },
-  [TOGGLE_MUSIC]({ commit, state }) {
-    const music = window.MusicKit.getInstance();
 
+  [TOGGLE_MUSIC]({ dispatch, state }) {
     if (state.isPlaying) {
-      music.pause();
+      dispatch(PAUSE_MUSIC);
     } else {
-      music.play();
+      dispatch(RESUME_MUSIC);
     }
-    commit(SET_IS_PLAYING, { isPlaying: !state.isPlaying });
+  },
+
+  [PAUSE_MUSIC]({ commit }) {
+    const music = window.MusicKit.getInstance();
+    music.pause();
+    commit(SET_IS_PLAYING, { isPlaying: false });
+  },
+
+  [RESUME_MUSIC]({ commit }) {
+    const music = window.MusicKit.getInstance();
+    music
+      .play()
+      .then(() => {
+        commit(SET_IS_PLAYING, { isPlaying: true });
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 };
 
@@ -87,24 +124,29 @@ const mutations = {
   [SET_CURRENTLY_PLAYING_SONG](state, payload) {
     state.currentPlaying = payload.song;
   },
+
   [SET_IS_PLAYING](state, payload) {
     state.isPlaying = payload.isPlaying;
   },
+
   [SET_PLAYBACK_PROGESS](state, { playbackProgress }) {
     if (Number.isNaN(playbackProgress)) {
       throw new Error(`playbackProgress is not a number: ${playbackProgress}`);
     }
     state.playbackProgress = playbackProgress;
   },
+
   [ADD_MULTI_SONGS_TO_QUEUE](state, { songs }) {
     if (!Array.isArray(songs)) {
       throw new Error('Must supply an array', songs);
     }
     state.songQueue.push(...songs);
   },
+
   [SET_SONG_QUEUE](state, { songs }) {
     state.songQueue = songs;
   },
+
   [SET_CURRENT_PLAYING_INDEX](state, { index }) {
     state.currentPlayingIndex = index;
   }

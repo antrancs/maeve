@@ -68,8 +68,6 @@ export default {
           return;
         }
 
-        console.log(result);
-
         this.albums = this.extractSearchData(result, MediaType.albums, [
           'artistName',
           'artwork',
@@ -100,7 +98,8 @@ export default {
           'artwork',
           'description',
           'curatorName',
-          'name'
+          'name',
+          'playParams'
         ]);
       });
   },

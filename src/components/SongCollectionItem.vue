@@ -41,15 +41,10 @@ export default {
   methods: {
     play() {
       const { id, kind } = this.collection.playParams;
-      console.log({ kind });
-      // 0: "1368156572" "1368156573"  "1368156576" "1368156577" "1368156579" "1368156580"
-      // "1368157211" "1368157215" "1368157216" "1368157223"
-      // "1368157234" "1368157238" "1368157724"
-      // this.playSong({songId: '1400124395'});
 
       this.playCollection({
         collectionId: id,
-        collectionType: 'album',
+        collectionType: kind,
         atIndex: 0
       });
     },

@@ -2,8 +2,8 @@
   <div v-if="currentPlaying" class="player-bar-wrapper">
     <div class="player-bar">
       <div class="player-bar--left">
-        <div>A song by Cardi B</div>
-        <div>Cardi B</div>
+        <div class="player-bar--artist-name">{{currentPlaying.attributes.name}}</div>
+        <div class="player-bar--song-name">{{currentPlaying.attributes.artistName}}</div>
       </div>
 
       <div class="player-bar--center">
@@ -135,6 +135,15 @@ export default {
 
 .player-bar--left {
   flex: 0 0 200px;
+}
+
+.player-bar--artist-name {
+  color: white;
+  font-weight: bold;
+}
+
+.player-bar--song-name {
+  color: white;
 }
 
 .player-bar--right {

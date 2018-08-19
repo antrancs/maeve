@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="app-wrapper">
     <app-header></app-header>
     <app-body></app-body>
     <player-bar></player-bar>
@@ -43,6 +43,18 @@ export default {
 * {
   box-sizing: border-box;
 }
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+.app-wrapper {
+  height: 100%;
+}
 
 .container {
   display: flex;
@@ -51,16 +63,5 @@ export default {
 .media-info-title {
   font-weight: bold;
   overflow: hidden;
-}
-
-#nav {
-  width: 200px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
 }
 </style>

@@ -9,7 +9,7 @@
 <script>
 import { mapActions } from 'vuex';
 
-import { PLAY_SONG } from '@/store/actions.type';
+import { PLAY_COLLECTION } from '@/store/actions.type';
 
 export default {
   name: 'SongCollectionItem',
@@ -40,37 +40,21 @@ export default {
 
   methods: {
     play() {
-      // const { id, kind } = this.collection.playParams;
-
+      const { id, kind } = this.collection.playParams;
+      console.log({ kind });
       // 0: "1368156572" "1368156573"  "1368156576" "1368156577" "1368156579" "1368156580"
       // "1368157211" "1368157215" "1368157216" "1368157223"
       // "1368157234" "1368157238" "1368157724"
-      this.playSong('1368156572');
-      // console.log(this.collection);
-      // this.$music.addEventListener('playbackProgressDidChange', event => {
-      //   if (event.progress === 1) {
-      //     this.$music
-      //       .setQueue({
-      //         song: '1368157234'
-      //       })
-      //       .then(queue => {
-      //         this.$music.play();
-      //       });
-      //   }
-      //   //console.log('didchange', event);
-      // });
+      // this.playSong({songId: '1400124395'});
 
-      // this.$music
-      //   .setQueue({
-      //     song: '1368157234'
-      //   })
-      //   .then(queue => {
-      //     console.log(queue.items[0]);
-      //     this.$music.play();
-      //   });
+      this.playCollection({
+        collectionId: id,
+        collectionType: 'album',
+        atIndex: 0
+      });
     },
     ...mapActions({
-      playSong: PLAY_SONG
+      playCollection: PLAY_COLLECTION
     })
   }
 };

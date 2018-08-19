@@ -48,9 +48,10 @@ import 'vue-awesome/icons/random';
 import 'vue-awesome/icons/redo';
 import 'vue-awesome/icons/volume-up';
 import Icon from 'vue-awesome/components/Icon.vue';
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapMutations } from 'vuex';
 
 import { TOGGLE_MUSIC } from '@/store/actions.type';
+import { SET_IS_PLAYING } from '@/store/mutations.type';
 
 export default {
   name: 'PlayerBar',
@@ -70,9 +71,22 @@ export default {
     })
   },
 
+  watch: {
+    playbackProgress() {
+      if (this.playbackProgress === 1) {
+        this.setIsPlaying(false);
+        this.playNext();
+      }
+    }
+  },
+
   methods: {
+    ...mapMutations({
+      setIsPlaying: SET_IS_PLAYING
+    }),
     ...mapActions({
-      toggleCurrentPlaying: TOGGLE_MUSIC
+      toggleCurrentPlaying: TOGGLE_MUSIC,
+      playNext: 'playNext'
     })
   }
 };

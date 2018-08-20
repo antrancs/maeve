@@ -1,6 +1,8 @@
 <template>
-  <div class="media-item" @click="play">
-    <img class="media-item--artwork" :src="artworkUrl" alt="">
+  <div class="media-item">
+    <router-link :to="{ name: 'album', params: { id: 1234 }}">
+      <img class="media-item--artwork" :src="artworkUrl" alt="">
+    </router-link>
     <p class="media-info-title">{{collection.name}}</p>
     <p>{{collection.artistName || collection.curatorName}}</p>
   </div>
@@ -10,6 +12,7 @@
 import { mapActions } from 'vuex';
 
 import { PLAY_COLLECTION } from '@/store/actions.type';
+import { getArtworkUrl } from '@/utils/utils';
 
 export default {
   name: 'SongCollectionItem',
@@ -22,19 +25,8 @@ export default {
   },
 
   computed: {
-    /**
-     * Return a resized artwork for the collection.
-     * TO-DO: Make this one a utility function that takes in a desired width & height
-     * @returns {String}: Resized artwork URL
-     */
     artworkUrl() {
-      const { url } = this.collection.artwork;
-      const replace = {
-        '{w}': 500,
-        '{h}': 500
-      };
-
-      return url.replace(/{w}|{h}/gi, matched => replace[matched]);
+      return getArtworkUrl(this.collection.artwork.url, 500, 500);
     }
   },
 
@@ -56,10 +48,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.media-item:hover {
-  cursor: pointer;
-}
-
 .media-item--artwork {
   max-width: 200px;
   max-height: 200px;

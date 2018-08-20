@@ -26,6 +26,11 @@ export default new Router({
       path: '/search',
       name: 'search',
       component: () => import('./views/SearchResults.vue')
+    },
+    {
+      path: '/albums/:id',
+      name: 'album',
+      component: () => import('./views/AlbumDetail.vue')
     }
   ]
 });

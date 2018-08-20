@@ -3,18 +3,21 @@
         <sidebar-authenticated v-if="isLoggedIn"></sidebar-authenticated>
         <sidebar-unauthenticated v-else></sidebar-unauthenticated>
 
-       <!--  <img
-          class="side-bar--song-artwork "
-          src="https://is4-ssl.mzstatic.com/image/thumb/Music128/v4/e3/22/79/e3227975-b276-9df2-71ff-22b564bf84a9/075679873682.jpg/500x500bb.jpeg" alt=""> -->
+        <img
+          class="side-bar--song-artwork"
+          :src="currentPlayingArtwork" alt="">
     </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 import SidebarAuthenticated from './TheSidebarAuthenticated.vue';
 import SidebarUnauthenticated from './TheSidebarUnauthenticated.vue';
 
 export default {
   name: 'AppSidebar',
+
   props: {
     isLoggedIn: {
       type: Boolean,
@@ -22,9 +25,14 @@ export default {
       default: false
     }
   },
+
   components: {
     SidebarAuthenticated,
     SidebarUnauthenticated
+  },
+
+  computed: {
+    ...mapGetters(['currentPlayingArtwork'])
   }
 };
 </script>

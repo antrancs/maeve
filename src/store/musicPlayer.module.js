@@ -1,3 +1,4 @@
+import { getArtworkUrl } from '@/utils/utils';
 import {
   PAUSE_MUSIC,
   PLAY_COLLECTION,
@@ -24,7 +25,13 @@ const initialState = {
   songQueue: []
 };
 
-const getters = {};
+const getters = {
+  currentPlayingArtwork(state) {
+    return state.currentPlaying
+      ? getArtworkUrl(state.currentPlaying.attributes.artwork.url, 500, 500)
+      : '';
+  }
+};
 
 const actions = {
   [PLAY_SONG](context, { songId }) {

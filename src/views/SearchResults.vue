@@ -3,7 +3,7 @@
         <h2>Search Results</h2>
         <div>
           <h3>Artists</h3>
-          <song-collection-list></song-collection-list>
+          <artist-list :artists="artists"></artist-list>
         </div>
 
         <div>
@@ -25,6 +25,7 @@
 
 <script>
 import SongCollectionList from '@/components/SongCollectionList.vue';
+import ArtistList from '@/components/ArtistList.vue';
 import { extractSearchData } from '@/utils/utils';
 
 const MediaType = {
@@ -38,7 +39,8 @@ export default {
   name: 'SearchResults',
 
   components: {
-    SongCollectionList
+    SongCollectionList,
+    ArtistList
   },
 
   data() {

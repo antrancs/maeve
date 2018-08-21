@@ -10,6 +10,8 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "axios": "^0.18.0",
+    "cheerio": "^1.0.0-rc.2",
     "lodash": "^4.17.10",
     "vue": "^2.5.17",
     "vue-awesome": "^3.1.0",

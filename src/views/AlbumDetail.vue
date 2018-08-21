@@ -55,7 +55,6 @@ export default {
         'trackCount'
       ]);
 
-      console.log(result.relationships);
       this.tracks = extractSearchData(result.relationships, 'tracks', [
         'artistName',
         'artwork',

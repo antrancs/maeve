@@ -1,4 +1,6 @@
 import { pick } from 'lodash';
+import { load } from 'cheerio';
+import { get } from 'axios';
 
 const getArtworkUrl = (originalUrl, width, height) => {
   const replace = {
@@ -38,4 +40,23 @@ const extractSearchData = (result, field, wantedAttributes = []) => {
   });
 };
 
-export { getArtworkUrl, extractSearchData };
+const extractArtworkUrl = html => {
+  const $ = load(html);
+  const artwork = $('meta[property="og:image:secure_url"]').attr('content');
+  return artwork;
+};
+
+const formatArtworkUrl = (artworkUrl = '') =>
+  `${artworkUrl.substring(0, artworkUrl.lastIndexOf('/') + 1)}400x400bb.jpg`;
+
+/**
+ * A workaround to get the artwork for an artist as Apple Music API doesn't support it yet
+ * @param {String} itunesUrl - iTunes URL for an artist
+ *  @returns {Promise}
+ */
+const getArtistArtwork = itunesUrl =>
+  get(itunesUrl)
+    .then(result => extractArtworkUrl(result.data))
+    .then(formatArtworkUrl);
+
+export { getArtworkUrl, extractSearchData, getArtistArtwork };

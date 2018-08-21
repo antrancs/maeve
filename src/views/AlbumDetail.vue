@@ -2,32 +2,84 @@
   <div>
     <div class="album-detail-header">
         <div class="content">
-            <h2>Perception</h2>
+          <h2>{{ album.name }}</h2>
+          <h3>{{ album.artistName }}</h3>
         </div>
         <picture class="album-detail-header--banner">
-            <source
-              media="(max-width: 540px)"
-              srcset="https://is1-ssl.mzstatic.com/image/thumb/Music69/v4/44/c6/9d/44c69d97-bde4-492f-e766-1de73580eaf0/UMG_cvrart_00851365006516_01_RGB72_1800x1800_16UMGIM03373.jpg/540x540bb.jpeg">
+          <source
+            media="(max-width: 540px)"
+            :srcset="getArtworkUrl(album.artwork, 540, 540)">
 
-            <source
-              media="(max-width: 817px)"
-              srcset="https://is1-ssl.mzstatic.com/image/thumb/Music69/v4/44/c6/9d/44c69d97-bde4-492f-e766-1de73580eaf0/UMG_cvrart_00851365006516_01_RGB72_1800x1800_16UMGIM03373.jpg/817x817bb.jpeg">
+          <source
+            media="(max-width: 817px)"
+            :srcset="getArtworkUrl(album.artwork, 817, 817)">
 
-            <source
-              media="(max-width: 1105px)"
-              srcset="https://is1-ssl.mzstatic.com/image/thumb/Music69/v4/44/c6/9d/44c69d97-bde4-492f-e766-1de73580eaf0/UMG_cvrart_00851365006516_01_RGB72_1800x1800_16UMGIM03373.jpg/1105x1105bb.jpeg">
+          <source
+            media="(max-width: 1105px)"
+            :srcset="getArtworkUrl(album.artwork, 1105, 1105)">
 
-            <img
-              class="image"
-              src="https://is1-ssl.mzstatic.com/image/thumb/Music69/v4/44/c6/9d/44c69d97-bde4-492f-e766-1de73580eaf0/UMG_cvrart_00851365006516_01_RGB72_1800x1800_16UMGIM03373.jpg/1200x1200bb.jpeg"/>
+          <img
+            class="image"
+            :src="getArtworkUrl(album.artwork, 400, 400)"/>
         </picture>
     </div>
+
+    <song-list :songs="tracks"></song-list>
   </div>
 </template>
 
 <script>
+import { pick } from 'lodash';
+
+import SongList from '@/components/SongList.vue';
+import { extractSearchData, getArtworkUrl } from '@/utils/utils';
+
 export default {
-  name: 'AlbumDetail'
+  name: 'AlbumDetail',
+
+  components: {
+    SongList
+  },
+
+  created() {
+    const albumId = this.$route.params.id;
+    this.$music.api.album(albumId, { include: 'tracks' }).then(result => {
+      this.album = pick(result.attributes, [
+        'artistName',
+        'artwork',
+        'contentRating',
+        'editorialNotes.standard',
+        'name',
+        'playParams',
+        'releaseDate',
+        'trackCount'
+      ]);
+
+      console.log(result.relationships);
+      this.tracks = extractSearchData(result.relationships, 'tracks', [
+        'artistName',
+        'artwork',
+        'contentRating',
+        'durationInMillis',
+        'name',
+        'releaseDate',
+        'trackNumber'
+      ]);
+    });
+  },
+
+  data() {
+    return {
+      album: {},
+      tracks: []
+    };
+  },
+
+  methods: {
+    getArtworkUrl(artwork, width, height) {
+      return artwork ? getArtworkUrl(artwork.url, width, height) : '';
+    }
+  }
 };
 </script>
 

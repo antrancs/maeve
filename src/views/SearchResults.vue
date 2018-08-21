@@ -24,9 +24,8 @@
 </template>
 
 <script>
-import { pick } from 'lodash';
-
-import SongCollectionList from './../components/SongCollectionList.vue';
+import SongCollectionList from '@/components/SongCollectionList.vue';
+import { extractSearchData } from '@/utils/utils';
 
 const MediaType = {
   artists: 'artists',
@@ -68,7 +67,9 @@ export default {
           return;
         }
 
-        this.albums = this.extractSearchData(result, MediaType.albums, [
+        console.log(result);
+
+        this.albums = extractSearchData(result, MediaType.albums, [
           'artistName',
           'artwork',
           'contentRating',
@@ -79,7 +80,7 @@ export default {
           'trackCount'
         ]);
 
-        this.songs = this.extractSearchData(result, MediaType.songs, [
+        this.songs = extractSearchData(result, MediaType.songs, [
           'albumName',
           'artistName',
           'artwork',
@@ -89,12 +90,12 @@ export default {
           'releaseDate'
         ]);
 
-        this.artists = this.extractSearchData(result, MediaType.artists, [
+        this.artists = extractSearchData(result, MediaType.artists, [
           'name',
           'url'
         ]);
 
-        this.playlists = this.extractSearchData(result, MediaType.playlists, [
+        this.playlists = extractSearchData(result, MediaType.playlists, [
           'artwork',
           'description',
           'curatorName',
@@ -104,36 +105,7 @@ export default {
       });
   },
 
-  methods: {
-    /**
-     * Extract the data of the desired content (artists/songs/albums/playlists)
-     * from the result object
-     * @param {Object} result - The result object returned from MusicKit search API
-     * @param {MediaType} field - 1 one the 4 media types
-     * @param {Array<String>} wantedAttributes - Properties you want to extract.
-     *     Default empty (return ALL properties)
-     *  @returns {Array<Object>} - Array of media items (songs/albums/artists/playlists)
-     */
-    extractSearchData(result, field, wantedAttributes = []) {
-      if (!result[field] || !result[field].data) {
-        return [];
-      }
-
-      const items = result[field].data || [];
-      return items.map(({ id, attributes, type }) => {
-        const properties =
-          wantedAttributes.length === 0
-            ? attributes
-            : pick(attributes, wantedAttributes);
-
-        return {
-          id,
-          type,
-          ...properties
-        };
-      });
-    }
-  }
+  methods: {}
 };
 </script>
 

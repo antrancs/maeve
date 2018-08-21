@@ -13,7 +13,7 @@ export default {
       const searchText = evt.target.value;
 
       if (searchText && searchText.trim().length > 0) {
-        this.$router.replace({ path: 'search', query: { q: searchText } });
+        this.$router.replace({ name: 'search', query: { q: searchText } });
       }
     }
   }

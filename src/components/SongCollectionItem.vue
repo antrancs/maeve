@@ -1,6 +1,6 @@
 <template>
   <div class="media-item">
-    <router-link :to="{ name: 'album', params: { id: 1234 }}">
+    <router-link :to="{ name: 'album', params: { id: collection.id }}">
       <img class="media-item--artwork" :src="artworkUrl" alt="">
     </router-link>
     <p class="media-info-title">{{collection.name}}</p>

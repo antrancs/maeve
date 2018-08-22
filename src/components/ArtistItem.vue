@@ -1,6 +1,9 @@
 <template>
   <div>
-    <img :src="artistArtwork" alt="" class="artist-item--artwork">
+    <router-link :to="{ name: 'artist', params: { id: artist.id }}">
+      <img :src="artistArtwork" alt="" class="artist-item--artwork">
+    </router-link>
+
     <h3>{{artist.name}}</h3>
   </div>
 </template>
@@ -25,10 +28,6 @@ export default {
 
   created() {
     this.getArtistArtwork();
-
-    // this.$music.api.artist(this.artist.id).then(artistResult => {
-    //   console.log('artistResult', artistResult);
-    // });
   },
 
   methods: {

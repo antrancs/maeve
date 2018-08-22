@@ -31,6 +31,11 @@ export default new Router({
       path: '/albums/:id',
       name: 'album',
       component: () => import('./views/AlbumDetail.vue')
+    },
+    {
+      path: '/artist/:id',
+      name: 'artist',
+      component: () => import('./views/ArtistDetail.vue')
     }
   ]
 });

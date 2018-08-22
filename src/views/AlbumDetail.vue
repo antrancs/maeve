@@ -29,10 +29,9 @@
 </template>
 
 <script>
-import { pick } from 'lodash';
-
 import SongList from '@/components/SongList.vue';
-import { extractSearchData, getArtworkUrl } from '@/utils/utils';
+import { getArtworkUrl } from '@/utils/utils';
+import musicApiService from '@/services/musicApi.service';
 
 export default {
   name: 'AlbumDetail',
@@ -43,27 +42,9 @@ export default {
 
   created() {
     const albumId = this.$route.params.id;
-    this.$music.api.album(albumId, { include: 'tracks' }).then(result => {
-      this.album = pick(result.attributes, [
-        'artistName',
-        'artwork',
-        'contentRating',
-        'editorialNotes.standard',
-        'name',
-        'playParams',
-        'releaseDate',
-        'trackCount'
-      ]);
-
-      this.tracks = extractSearchData(result.relationships, 'tracks', [
-        'artistName',
-        'artwork',
-        'contentRating',
-        'durationInMillis',
-        'name',
-        'releaseDate',
-        'trackNumber'
-      ]);
+    musicApiService.getAlbum(albumId).then(({ album, tracks }) => {
+      this.album = album;
+      this.tracks = tracks;
     });
   },
 

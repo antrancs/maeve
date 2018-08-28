@@ -20,13 +20,14 @@ export default {
 <style lang="scss" scoped>
 .app-body {
   display: flex;
-  height: calc(100% - 50px - 72px);
+  height: calc(100% - 50px);
 }
 
 .app-body--main-content {
   height: 100%;
   overflow-y: auto;
   padding-left: 16px;
+  padding-bottom: 72px;
   width: 100%;
 }
 </style>

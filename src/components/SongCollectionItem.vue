@@ -1,14 +1,23 @@
 <template>
   <div class="media-item">
-    <router-link :to="{ name: 'album', params: { id: collection.id }}">
-      <img class="media-item--artwork" :src="artworkUrl" alt="">
-    </router-link>
-    <p @click="play" class="media-info-title">{{collection.name}}</p>
+    <div class="media-item__artwork">
+      <router-link :to="{ name: 'album', params: { id: collection.id }}">
+        <img class="media-item__artwork" :src="artworkUrl" alt="">
+      </router-link>
+
+      <div class="artwork-overlay">
+        <icon class="artwork-overlay__icon" name="play-circle"></icon>
+      </div>
+    </div>
+
+    <p @click="play" class="media-item__info-title">{{collection.name}}</p>
     <p>{{collection.artistName || collection.curatorName}}</p>
   </div>
 </template>
 
 <script>
+import 'vue-awesome/icons/play-circle';
+import Icon from 'vue-awesome/components/Icon.vue';
 import { mapActions } from 'vuex';
 
 import { PLAY_COLLECTION } from '@/store/actions.type';
@@ -16,6 +25,10 @@ import { getArtworkUrl } from '@/utils/utils';
 
 export default {
   name: 'SongCollectionItem',
+
+  components: {
+    Icon
+  },
 
   props: {
     collection: {
@@ -48,12 +61,55 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.media-item--artwork {
-  max-width: 200px;
-  max-height: 200px;
+.media-item__artwork {
+  max-width: 250px;
+  width: 100%;
+  position: relative;
+
+  &:hover {
+    .artwork-overlay {
+      opacity: 1;
+    }
+  }
 }
 
-.media-item {
-  flex: 1;
+.artwork-overlay {
+  align-items: center;
+  background: rgba(0, 0, 0, 0.2);
+  bottom: 0;
+  color: white;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.artwork-overlay__icon {
+  height: 50px;
+  width: auto;
+}
+
+@media (min-width: 480px) {
+  .media-item {
+    flex: 0 0 47%;
+    margin-left: 2%;
+  }
+}
+
+@media (min-width: 768px) {
+  .media-item {
+    flex: 0 0 30.6666667%;
+    margin-left: 2%;
+  }
+}
+
+@media (min-width: 992px) {
+  .media-item {
+    flex: 0 0 22.5%;
+    margin-left: 2%;
+  }
 }
 </style>

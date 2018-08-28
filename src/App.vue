@@ -42,7 +42,7 @@ body {
   display: flex;
 }
 
-.media-info-title {
+.media-item__info-title {
   font-weight: bold;
   overflow: hidden;
 }

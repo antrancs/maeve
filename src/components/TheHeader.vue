@@ -1,7 +1,7 @@
 <template>
     <div class="header">
         <h1>Maeve</h1>
-        <input type="text" class="header--searchbar" @change="handleSearchTextChanged">
+        <input type="text" class="search-bar" @change="handleSearchTextChanged">
     </div>
 </template>
 
@@ -26,7 +26,7 @@ export default {
   height: 50px;
 }
 
-.header--searchbar {
+.search-bar {
   width: 300px;
 }
 </style>

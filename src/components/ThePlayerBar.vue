@@ -1,36 +1,36 @@
 <template>
   <div v-if="currentPlaying" class="player-bar-wrapper">
     <div class="player-bar">
-      <div class="player-bar--left">
-        <div class="player-bar--artist-name">{{currentPlaying.attributes.name}}</div>
-        <div class="player-bar--song-name">{{currentPlaying.attributes.artistName}}</div>
+      <div class="player-bar__left">
+        <div class="player-bar__artist-name ">{{currentPlaying.attributes.name}}</div>
+        <div class="player-bar__song-name">{{currentPlaying.attributes.artistName}}</div>
       </div>
 
-      <div class="player-bar--center">
-        <div class="player-bar--controls">
-          <icon name="redo" class="player-bar--icon"></icon>
+      <div class="player-bar__center ">
+        <div class="player-bar__controls">
+          <icon name="redo" class="player-bar__icon"></icon>
           <span @click="handleBackwardClicked">
-            <icon name="backward" class="player-bar--icon"></icon>
+            <icon name="backward" class="player-bar__icon"></icon>
           </span>
 
           <span @click="toggleCurrentPlaying">
             <icon
               :name="songStatusIcon"
-              class="player-bar--icon player-bar--icon__large"
+              class="player-bar__icon player-bar__icon--large"
             >
             </icon>
           </span>
 
           <span @click="handleForwardClicked">
-            <icon name="forward" class="player-bar--icon">
+            <icon name="forward" class="player-bar__icon">
             </icon>
           </span>
 
-          <icon name="random" class="player-bar--icon"></icon>
+          <icon name="random" class="player-bar__icon"></icon>
         </div>
 
         <div>
-          <progress class="player-bar--progress-bar"
+          <progress class="player-bar__progress-bar"
             max="100" :value="playbackProgress * 100"
           >
             {{playbackProgress * 100}}
@@ -38,9 +38,9 @@
         </div>
       </div>
 
-      <div class="player-bar--right">
-        <icon name="volume-up" class="player-bar--icon"></icon>
-        <icon name="list" class="player-bar--icon"></icon>
+      <div class="player-bar__right">
+        <icon name="volume-up" class="player-bar__icon"></icon>
+        <icon name="list" class="player-bar__icon"></icon>
       </div>
     </div>
   </div>
@@ -133,41 +133,41 @@ export default {
   flex: 1;
 }
 
-.player-bar--left {
+.player-bar__left {
   flex: 0 0 200px;
 }
 
-.player-bar--artist-name {
+.player-bar__artist-name {
   color: white;
   font-weight: bold;
 }
 
-.player-bar--song-name {
+.player-bar__song-name {
   color: white;
 }
 
-.player-bar--right {
+.player-bar__right {
   flex: 0 0 200px;
 }
 
-.player-bar--center {
+.player-bar__center {
   display: flex;
   justify-content: center;
   flex: 1;
   flex-direction: column;
 }
 
-.player-bar--controls {
+.player-bar__controls {
   align-items: center;
   justify-content: center;
   display: flex;
 }
 
-.player-bar--progress-bar {
+.player-bar__progress-bar {
   width: 100%;
 }
 
-.player-bar--icon {
+.player-bar__icon {
   color: white;
   cursor: pointer;
   margin-left: 16px;
@@ -175,7 +175,7 @@ export default {
   max-height: 100%;
 }
 
-.player-bar--icon__large {
+.player-bar__icon--large {
   height: 25px;
   width: auto;
 }

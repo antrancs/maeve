@@ -5,7 +5,7 @@
           <h2>{{ album.name }}</h2>
           <h3>{{ album.artistName }}</h3>
         </div>
-        <picture class="album-detail-header--banner">
+        <picture class="album-detail-header__banner">
           <source
             media="(max-width: 540px)"
             :srcset="getArtworkUrl(album.artwork, 540, 540)">
@@ -77,7 +77,7 @@ export default {
   height: 100%;
 }
 
-.album-detail-header--banner {
+.album-detail-header__banner {
   position: absolute;
   top: 0;
   width: 100%;

@@ -1,7 +1,7 @@
 <template>
   <div>
     <router-link :to="{ name: 'artist', params: { id: artist.id }}">
-      <img :src="artistArtwork" alt="" class="artist-item--artwork">
+      <img :src="artistArtwork" alt="" class="artist-item__artwork">
     </router-link>
 
     <h3>{{artist.name}}</h3>
@@ -41,7 +41,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.artist-item--artwork {
+.artist-item__artwork {
   width: 200px;
   height: 200px;
 }

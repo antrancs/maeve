@@ -1,16 +1,21 @@
 <template>
   <div class="media-item">
-    <div class="media-item__artwork">
-      <router-link :to="{ name: 'album', params: { id: collection.id }}">
-        <img class="media-item__artwork" :src="artworkUrl" alt="">
-      </router-link>
-
-      <div class="artwork-overlay">
-        <icon class="artwork-overlay__icon" name="play-circle"></icon>
+    <router-link :to="{ name: 'album', params: { id: collection.id }}">
+      <div class="media-item__artwork">
+        <img class="artwork" :src="artworkUrl" alt="">
+        <div class="artwork-overlay">
+          <div @click.prevent="play">
+            <icon
+              class="artwork-overlay__icon"
+              name="play-circle"
+            >
+            </icon>
+          </div>
+        </div>
       </div>
-    </div>
+    </router-link>
 
-    <p @click="play" class="media-item__info-title">{{collection.name}}</p>
+    <p class="media-item__info-title">{{collection.name}}</p>
     <p>{{collection.artistName || collection.curatorName}}</p>
   </div>
 </template>
@@ -62,15 +67,22 @@ export default {
 
 <style lang="scss" scoped>
 .media-item__artwork {
-  max-width: 250px;
-  width: 100%;
+  align-items: flex-start;
+  display: flex;
   position: relative;
+  width: 100%;
 
   &:hover {
     .artwork-overlay {
       opacity: 1;
     }
   }
+}
+
+.artwork {
+  max-width: 250px;
+  width: 100%;
+  position: relative;
 }
 
 .artwork-overlay {
@@ -90,6 +102,10 @@ export default {
 .artwork-overlay__icon {
   height: 50px;
   width: auto;
+
+  &:hover {
+    height: 70px;
+  }
 }
 
 @media (min-width: 480px) {

@@ -4,7 +4,7 @@
         <sidebar-unauthenticated v-else></sidebar-unauthenticated>
 
         <img
-          class="side-bar--song-artwork"
+          class="side-bar__song-artwork"
           :src="currentPlayingArtwork" alt="">
     </div>
 </template>
@@ -42,7 +42,7 @@ export default {
   flex: 0 0 180px;
 }
 
-.side-bar--song-artwork {
+.side-bar__song-artwork {
   height: 180px;
   width: 180px;
   position: fixed;

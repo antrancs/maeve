@@ -27,7 +27,7 @@ export default {
   height: 100%;
   overflow-y: auto;
   padding-left: 16px;
-  padding-bottom: 72px;
+  padding-bottom: 102px;
   width: 100%;
 }
 </style>

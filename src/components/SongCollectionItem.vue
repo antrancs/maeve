@@ -80,7 +80,7 @@ export default {
 }
 
 .artwork {
-  max-width: 250px;
+  max-width: 260px;
   width: 100%;
   position: relative;
 }

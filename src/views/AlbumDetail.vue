@@ -4,6 +4,8 @@
         <div class="content">
           <h2>{{ album.name }}</h2>
           <h3>{{ album.artistName }}</h3>
+          <button @click="play">Play</button>
+          <button>Shuffle </button>
         </div>
         <picture class="album-detail-header__banner">
           <source
@@ -29,6 +31,9 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
+import { PLAY_COLLECTION } from '@/store/actions.type';
 import SongList from '@/components/SongList.vue';
 import { getArtworkUrl } from '@/utils/utils';
 import musicApiService from '@/services/musicApi.service';
@@ -58,7 +63,21 @@ export default {
   methods: {
     getArtworkUrl(artwork, width, height) {
       return artwork ? getArtworkUrl(artwork.url, width, height) : '';
-    }
+    },
+
+    play() {
+      const { id, kind } = this.album.playParams;
+
+      this.playCollection({
+        collectionId: id,
+        collectionType: kind,
+        atIndex: 0
+      });
+    },
+
+    ...mapActions({
+      playCollection: PLAY_COLLECTION
+    })
   }
 };
 </script>

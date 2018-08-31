@@ -55,7 +55,8 @@ const songFields = [
   'contentRating',
   'durationInMillis',
   'name',
-  'releaseDate'
+  'releaseDate',
+  'trackNumber'
 ];
 
 const playlistFields = [
@@ -131,7 +132,7 @@ const MusicApiService = {
       .album(albumId, { include: 'tracks' })
       .then(result => {
         const album = pick(result.attributes, albumFields);
-
+        console.log(result.relationships.tracks);
         const tracks = extractSearchData(
           result.relationships,
           'tracks',

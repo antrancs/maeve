@@ -46,4 +46,17 @@ body {
   font-weight: bold;
   overflow: hidden;
 }
+
+.icon {
+  color: white;
+  cursor: pointer;
+  margin-right: 16px;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.icon--large {
+  height: 25px;
+  width: auto;
+}
 </style>

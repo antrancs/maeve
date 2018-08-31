@@ -8,25 +8,25 @@
 
       <div class="player-bar__center ">
         <div class="player-bar__controls">
-          <icon name="redo" class="player-bar__icon"></icon>
+          <icon name="redo" class="icon"></icon>
           <span @click="handleBackwardClicked">
-            <icon name="backward" class="player-bar__icon"></icon>
+            <icon name="backward" class="icon"></icon>
           </span>
 
           <span @click="toggleCurrentPlaying">
             <icon
               :name="songStatusIcon"
-              class="player-bar__icon player-bar__icon--large"
+              class="icon icon--large"
             >
             </icon>
           </span>
 
           <span @click="handleForwardClicked">
-            <icon name="forward" class="player-bar__icon">
+            <icon name="forward" class="icon">
             </icon>
           </span>
 
-          <icon name="random" class="player-bar__icon"></icon>
+          <icon name="random" class="icon"></icon>
         </div>
 
         <div>
@@ -39,8 +39,8 @@
       </div>
 
       <div class="player-bar__right">
-        <icon name="volume-up" class="player-bar__icon"></icon>
-        <icon name="list" class="player-bar__icon"></icon>
+        <icon name="volume-up" class="icon"></icon>
+        <icon name="list" class="icon"></icon>
       </div>
     </div>
   </div>
@@ -165,18 +165,5 @@ export default {
 
 .player-bar__progress-bar {
   width: 100%;
-}
-
-.player-bar__icon {
-  color: white;
-  cursor: pointer;
-  margin-left: 16px;
-  max-width: 100%;
-  max-height: 100%;
-}
-
-.player-bar__icon--large {
-  height: 25px;
-  width: auto;
 }
 </style>

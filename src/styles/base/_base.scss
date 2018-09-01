@@ -1,0 +1,16 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+  height: 100%;
+}
+
+body {
+  background: $bg-color;
+  color: $primary-text-color;
+  font-size: $regular-font;
+  height: 100%;
+  overflow: hidden;
+}

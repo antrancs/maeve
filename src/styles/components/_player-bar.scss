@@ -1,0 +1,47 @@
+.player-bar-wrapper {
+  background-color: #282828;
+  bottom: 0;
+  height: $player-bar-height;
+  position: fixed;
+  width: 100%;
+}
+
+.player-bar {
+  display: flex;
+  height: 100%;
+  flex: 1;
+}
+
+.player-bar__left {
+  flex: 0 0 20rem;
+}
+
+.player-bar__artist-name {
+  color: white;
+  font-weight: bold;
+}
+
+.player-bar__song-name {
+  color: white;
+}
+
+.player-bar__right {
+  flex: 0 0 20rem;
+}
+
+.player-bar__center {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.player-bar__controls {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.player-bar__progress-bar {
+  width: 100%;
+}

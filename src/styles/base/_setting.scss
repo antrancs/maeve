@@ -1,0 +1,18 @@
+// Colors
+$primary-text-color: #fff;
+$secondary-text-color: #aaa;
+$primary-dark-color: rgb(35, 35, 35);
+$bg-color: $primary-dark-color;
+$black-color: #000;
+$black-color-0-5: lighten($black-color, 20);
+
+// Space
+$medium-size: 1.6rem;
+
+// Fonts
+$small-font: 1.4rem;
+$regular-font: 1.6rem;
+$large-font: 2.2rem;
+
+// Components' sizes
+$player-bar-height: 7.2rem;

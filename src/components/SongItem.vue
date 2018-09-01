@@ -61,52 +61,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.song-item {
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-  height: 56px;
-  border-bottom: 0.5px solid gray;
-
-  &:hover {
-    .option {
-      opacity: 1;
-    }
-    background-color: yellow;
-  }
-}
-
-.song-item__left {
-  display: flex;
-  flex-basis: 35%;
-}
-
-.song-item__middle {
-  display: flex;
-  flex-basis: 55%;
-
-  :nth-child(1) {
-    flex-basis: 45%;
-    margin-right: 5%;
-  }
-
-  :nth-child(2) {
-    flex-basis: 55%;
-  }
-}
-
-.song-item__right {
-  display: flex;
-  justify-content: flex-end;
-  flex-basis: 10%;
-}
-
-.song-item__track-number {
-  flex: 0 0 30px;
-  text-align: center;
-}
-
-.option {
-  opacity: 0;
-}
+@import '@/styles/components/_song-item.scss';
 </style>

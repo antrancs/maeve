@@ -22,17 +22,8 @@ export default {
 </script>
 
 <style lang="scss">
-* {
-  box-sizing: border-box;
-}
-html {
-  height: 100%;
-}
-
-body {
-  height: 100%;
-  overflow: hidden;
-}
+@import '~normalize.css/normalize';
+@import '@/styles/styles.scss';
 
 .app-wrapper {
   height: 100%;
@@ -45,18 +36,5 @@ body {
 .media-item__info-title {
   font-weight: bold;
   overflow: hidden;
-}
-
-.icon {
-  color: white;
-  cursor: pointer;
-  margin-right: 16px;
-  max-width: 100%;
-  max-height: 100%;
-}
-
-.icon--large {
-  height: 25px;
-  width: auto;
 }
 </style>

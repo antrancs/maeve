@@ -1,7 +1,7 @@
 <template>
-  <div class="media-item">
+  <div class="song-collection">
     <router-link :to="{ name: 'album', params: { id: collection.id }}">
-      <div class="media-item__artwork">
+      <div class="artwork-wrapper">
         <img class="artwork" :src="artworkUrl" alt="">
         <div class="artwork-overlay">
           <div @click.prevent="play">
@@ -66,66 +66,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.media-item__artwork {
-  align-items: flex-start;
-  display: flex;
-  position: relative;
-  width: 100%;
-
-  &:hover {
-    .artwork-overlay {
-      opacity: 1;
-    }
-  }
-}
-
-.artwork {
-  max-width: 260px;
-  width: 100%;
-  position: relative;
-}
-
-.artwork-overlay {
-  align-items: center;
-  background: rgba(0, 0, 0, 0.2);
-  bottom: 0;
-  color: white;
-  display: flex;
-  justify-content: center;
-  left: 0;
-  opacity: 0;
-  position: absolute;
-  top: 0;
-  width: 100%;
-}
-
-.artwork-overlay__icon {
-  height: 50px;
-  width: auto;
-
-  &:hover {
-    height: 70px;
-  }
-}
-
-@media (min-width: 480px) {
-  .media-item {
-    flex: 0 0 47%;
-    margin-left: 2%;
-  }
-}
-
-@media (min-width: 768px) {
-  .media-item {
-    flex: 0 0 30.6666667%;
-    margin-left: 2%;
-  }
-}
-
-@media (min-width: 992px) {
-  .media-item {
-    flex: 0 0 22.5%;
-    margin-left: 2%;
-  }
-}
+@import '@/styles/components/_song-collection.scss';
+@import '@/styles/components/_artwork.scss';
 </style>

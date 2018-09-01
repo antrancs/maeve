@@ -1,0 +1,48 @@
+.song-item {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  height: 5.6rem;
+  border-bottom: 0.5px solid gray;
+
+  &:hover {
+    .option {
+      opacity: 1;
+    }
+    background-color: $black-color-0-5;
+  }
+}
+
+.song-item__left {
+  display: flex;
+  flex-basis: 35%;
+}
+
+.song-item__middle {
+  display: flex;
+  flex-basis: 55%;
+
+  :nth-child(1) {
+    flex-basis: 45%;
+    margin-right: 5%;
+  }
+
+  :nth-child(2) {
+    flex-basis: 55%;
+  }
+}
+
+.song-item__right {
+  display: flex;
+  justify-content: flex-end;
+  flex-basis: 10%;
+}
+
+.song-item__track-number {
+  flex: 0 0 3rem;
+  text-align: center;
+}
+
+.option {
+  opacity: 0;
+}

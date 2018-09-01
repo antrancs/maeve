@@ -119,51 +119,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.player-bar-wrapper {
-  background-color: #282828;
-  bottom: 0;
-  height: 72px;
-  position: fixed;
-  width: 100%;
-}
-
-.player-bar {
-  display: flex;
-  height: 100%;
-  flex: 1;
-}
-
-.player-bar__left {
-  flex: 0 0 200px;
-}
-
-.player-bar__artist-name {
-  color: white;
-  font-weight: bold;
-}
-
-.player-bar__song-name {
-  color: white;
-}
-
-.player-bar__right {
-  flex: 0 0 200px;
-}
-
-.player-bar__center {
-  display: flex;
-  justify-content: center;
-  flex: 1;
-  flex-direction: column;
-}
-
-.player-bar__controls {
-  align-items: center;
-  justify-content: center;
-  display: flex;
-}
-
-.player-bar__progress-bar {
-  width: 100%;
-}
+@import '@/styles/components/_player-bar.scss';
 </style>

@@ -1,0 +1,3 @@
+@function get-max-line-height($number-of-lines) {
+  @return $line-height * $number-of-lines;
+}

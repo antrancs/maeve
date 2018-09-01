@@ -29,8 +29,13 @@ export default new Router({
     },
     {
       path: '/albums/:id',
-      name: 'album',
-      component: () => import('./views/AlbumDetail.vue')
+      component: () => import('./views/CollectionDetail.vue'),
+      props: true
+    },
+    {
+      path: '/playlists/:id',
+      component: () => import('./views/CollectionDetail.vue'),
+      props: true
     },
     {
       path: '/artist/:id',

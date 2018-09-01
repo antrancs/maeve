@@ -1,5 +1,6 @@
 .player-bar-wrapper {
-  background-color: #282828;
+  background-color: $player-bar-color;
+  border-top: 1px solid $black-color;
   bottom: 0;
   height: $player-bar-height;
   position: fixed;

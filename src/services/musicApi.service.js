@@ -8,6 +8,11 @@ const MediaType = {
   playlists: 'playlists'
 };
 
+const CollectionType = {
+  playlist: 'playlists',
+  album: 'albums'
+};
+
 /**
  * Extract the data of the desired content (artists/songs/albums/playlists)
  * from the result object
@@ -126,22 +131,36 @@ const MusicApiService = {
       }));
   },
 
-  getAlbum(albumId) {
-    return musicKit
-      .getApiInstance()
-      .album(albumId, { include: 'tracks' })
-      .then(result => {
-        const album = pick(result.attributes, albumFields);
-        console.log(result.relationships.tracks);
-        const tracks = extractSearchData(
-          result.relationships,
-          'tracks',
-          songFields
-        );
+  getCollection(collectionId, collectionType) {
+    let getCollectionPromise;
+    let collectionFields = [];
+    if (collectionType === CollectionType.album) {
+      getCollectionPromise = musicKit
+        .getApiInstance()
+        .album(collectionId, { include: 'tracks' });
 
-        return { album, tracks };
-      });
+      collectionFields = albumFields;
+    } else {
+      getCollectionPromise = musicKit
+        .getApiInstance()
+        .playlist(collectionId, { include: 'tracks' });
+
+      collectionFields = playlistFields;
+    }
+
+    return getCollectionPromise.then(result => {
+      const collection = pick(result.attributes, collectionFields);
+
+      const tracks = extractSearchData(
+        result.relationships,
+        'tracks',
+        songFields
+      );
+
+      return { collection, tracks };
+    });
   }
 };
 
+export { CollectionType };
 export default MusicApiService;

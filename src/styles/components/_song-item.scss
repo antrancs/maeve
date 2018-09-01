@@ -14,13 +14,16 @@
 }
 
 .song-item__left {
+  align-items: center;
   display: flex;
   flex-basis: 35%;
 }
 
 .song-item__middle {
+  align-items: center;
   display: flex;
   flex-basis: 55%;
+  justify-content: center;
 
   :nth-child(1) {
     flex-basis: 45%;

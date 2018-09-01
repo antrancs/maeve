@@ -1,13 +1,21 @@
 <template>
   <div class="song-item" @click="play">
     <div class="song-item__left">
-      <div class="song-item__track-number">{{ song.trackNumber }}</div>
+      <div class="song-item__track-number">
+        <div v-if="collectionType === 'albums'">{{ song.trackNumber }}</div>
+        <img v-else class="artwork" :src="artworkUrl" alt="">
+      </div>
       <div>{{ song.name }}</div>
     </div>
 
     <div class="song-item__middle">
-      <div>{{ song.artistName }}</div>
-      <div>{{ song.albumName }}</div>
+      <div class="text-height--one-line">{{ song.artistName }}</div>
+      <div
+        v-if="collectionType === 'playlists'"
+        class="text-height--one-line"
+      >
+        {{ song.albumName }}
+      </div>
     </div>
 
     <div class="song-item__right">
@@ -22,6 +30,7 @@
 <script>
 import 'vue-awesome/icons/ellipsis-v';
 import Icon from 'vue-awesome/components/Icon.vue';
+import { getArtworkUrl } from '@/utils/utils';
 
 export default {
   name: 'SongItem',
@@ -34,6 +43,15 @@ export default {
     song: {
       type: Object,
       required: true
+    },
+    collectionType: {
+      type: String
+    }
+  },
+
+  computed: {
+    artworkUrl() {
+      return getArtworkUrl(this.song.artwork.url, 50, 50);
     }
   },
 
@@ -62,4 +80,8 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/styles/components/_song-item.scss';
+
+.artwork {
+  max-width: 3rem;
+}
 </style>

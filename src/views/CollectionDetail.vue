@@ -1,32 +1,32 @@
 <template>
   <div>
-    <div class="album-detail-header">
+    <div class="collection-detail-header">
         <div class="content">
-          <h2>{{ album.name }}</h2>
-          <h3>{{ album.artistName }}</h3>
+          <h2>{{ collection.name }}</h2>
+          <h3>{{ collection.artistName || collection.curatorName }}</h3>
           <button @click="play">Play</button>
           <button>Shuffle </button>
         </div>
-        <picture class="album-detail-header__banner">
+        <picture class="collection-detail-header__banner">
           <source
             media="(max-width: 540px)"
-            :srcset="getArtworkUrl(album.artwork, 540, 540)">
+            :srcset="getArtworkUrl(collection.artwork, 540, 540)">
 
           <source
             media="(max-width: 817px)"
-            :srcset="getArtworkUrl(album.artwork, 817, 817)">
+            :srcset="getArtworkUrl(collection.artwork, 817, 817)">
 
           <source
             media="(max-width: 1105px)"
-            :srcset="getArtworkUrl(album.artwork, 1105, 1105)">
+            :srcset="getArtworkUrl(collection.artwork, 1105, 1105)">
 
           <img
             class="image"
-            :src="getArtworkUrl(album.artwork, 400, 400)"/>
+            :src="getArtworkUrl(collection.artwork, 400, 400)"/>
         </picture>
     </div>
 
-    <song-list :songs="tracks"></song-list>
+    <song-list :songs="tracks" :collection-type="collectionType"></song-list>
   </div>
 </template>
 
@@ -36,28 +36,38 @@ import { mapActions } from 'vuex';
 import { PLAY_COLLECTION } from '@/store/actions.type';
 import SongList from '@/components/SongList.vue';
 import { getArtworkUrl } from '@/utils/utils';
-import musicApiService from '@/services/musicApi.service';
+import musicApiService, { CollectionType } from '@/services/musicApi.service';
 
 export default {
-  name: 'AlbumDetail',
+  name: 'CollectionDetail',
 
   components: {
     SongList
   },
 
-  created() {
-    const albumId = this.$route.params.id;
-    musicApiService.getAlbum(albumId).then(({ album, tracks }) => {
-      this.album = album;
-      this.tracks = tracks;
-    });
-  },
-
   data() {
     return {
-      album: {},
+      collection: {},
       tracks: []
     };
+  },
+
+  computed: {
+    collectionType() {
+      return this.$route.path.startsWith('/albums')
+        ? CollectionType.album
+        : CollectionType.playlist;
+    }
+  },
+
+  created() {
+    const collectionId = this.$route.params.id;
+    musicApiService
+      .getCollection(collectionId, this.collectionType)
+      .then(({ collection, tracks }) => {
+        this.collection = collection;
+        this.tracks = tracks;
+      });
   },
 
   methods: {
@@ -66,7 +76,7 @@ export default {
     },
 
     play() {
-      const { id, kind } = this.album.playParams;
+      const { id, kind } = this.collection.playParams;
 
       this.playCollection({
         collectionId: id,
@@ -83,7 +93,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.album-detail-header {
+.collection-detail-header {
   height: 350px;
   position: relative;
 }
@@ -96,7 +106,7 @@ export default {
   height: 100%;
 }
 
-.album-detail-header__banner {
+.collection-detail-header__banner {
   position: absolute;
   top: 0;
   width: 100%;

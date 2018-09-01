@@ -1,0 +1,11 @@
+.text-height {
+  line-height: $line-height;
+  word-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.text-height--one-line {
+  @extend .text-height;
+  max-height: get-max-line-height(1);
+}

@@ -4,6 +4,7 @@
       :key="song.id"
       v-for="song in songs"
       :song="song"
+      :collection-type="collectionType"
     >
     </song-item>
   </div>
@@ -20,6 +21,10 @@ export default {
   },
 
   props: {
+    collectionType: {
+      type: String
+    },
+
     songs: {
       type: Array,
       required: true

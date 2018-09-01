@@ -1,6 +1,6 @@
 <template>
   <div class="song-collection">
-    <router-link :to="{ name: 'album', params: { id: collection.id }}">
+    <router-link :to="{ path: `${collection.type}/${collection.id}` }">
       <div class="artwork-wrapper">
         <img class="artwork" :src="artworkUrl" alt="">
         <div class="artwork-overlay">

@@ -2,9 +2,10 @@
 $primary-text-color: #fff;
 $secondary-text-color: #aaa;
 $primary-dark-color: rgb(35, 35, 35);
-$bg-color: $primary-dark-color;
+$bg-color: linear-gradient(rgb(85, 72, 68), rgb(8, 7, 7) 85%);
 $black-color: #000;
 $black-color-0-5: lighten($black-color, 20);
+$player-bar-color: #282828;
 
 // Space
 $medium-size: 1.6rem;
@@ -16,3 +17,4 @@ $large-font: 2.2rem;
 
 // Components' sizes
 $player-bar-height: 7.2rem;
+$line-height: 1.8rem;

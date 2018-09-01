@@ -43,8 +43,16 @@ const musicKit = {
     // this.instance = window.MusicKit.getInstance();
   },
 
+  getInstance() {
+    return this.instance;
+  },
+
   getApiInstance() {
     return this.instance.api;
+  },
+
+  getPlayerInstance() {
+    return this.instance.player;
   },
 
   initInstance() {

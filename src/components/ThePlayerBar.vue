@@ -75,6 +75,7 @@ export default {
 
   computed: {
     songStatusIcon() {
+      // console.log('isPlayingMusicKit', this.isPlayingMusicKit);
       return this.isPlaying ? 'pause-circle' : 'play-circle';
     },
     ...mapState({

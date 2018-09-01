@@ -1,3 +1,4 @@
+import musicPlayerService from '@/services/musicPlayer.service';
 import { getArtworkUrl } from '@/utils/utils';
 import {
   PAUSE_MUSIC,
@@ -35,26 +36,14 @@ const getters = {
 
 const actions = {
   [PLAY_SONG](context, { songId }) {
-    // Will move MusicKit to a common service
-    const music = window.MusicKit.getInstance();
-    music.removeEventListener('playbackProgressDidChange');
-    music.addEventListener('playbackProgressDidChange', evt => {
-      // console.log(evt.progress);
-      context.commit(SET_PLAYBACK_PROGESS, { playbackProgress: evt.progress });
-    });
-
-    music
-      .setQueue({
-        song: songId
+    musicPlayerService
+      .playSong(songId, evt => {
+        context.commit(SET_PLAYBACK_PROGESS, {
+          playbackProgress: evt.progress
+        });
       })
-      .then(queue => {
-        if (queue.items.length === 0) {
-          return Promise.resolve();
-        }
-        context.commit(SET_CURRENTLY_PLAYING_SONG, { song: queue.items[0] });
-        return music.play();
-      })
-      .then(() => {
+      .then(playedSong => {
+        context.commit(SET_CURRENTLY_PLAYING_SONG, { song: playedSong });
         context.commit(SET_IS_PLAYING, { isPlaying: true });
       });
   },
@@ -99,8 +88,8 @@ const actions = {
       });
   },
 
-  [TOGGLE_MUSIC]({ dispatch, state }) {
-    if (state.isPlaying) {
+  [TOGGLE_MUSIC]({ dispatch }) {
+    if (musicPlayerService.isPlaying) {
       dispatch(PAUSE_MUSIC);
     } else {
       dispatch(RESUME_MUSIC);
@@ -108,14 +97,12 @@ const actions = {
   },
 
   [PAUSE_MUSIC]({ commit }) {
-    const music = window.MusicKit.getInstance();
-    music.pause();
+    musicPlayerService.pause();
     commit(SET_IS_PLAYING, { isPlaying: false });
   },
 
   [RESUME_MUSIC]({ commit }) {
-    const music = window.MusicKit.getInstance();
-    music
+    musicPlayerService
       .play()
       .then(() => {
         commit(SET_IS_PLAYING, { isPlaying: true });

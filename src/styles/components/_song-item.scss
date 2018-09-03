@@ -43,7 +43,19 @@
 
 .song-item__track-number {
   flex: 0 0 3rem;
+  position: relative;
   text-align: center;
+}
+
+.track-number__overlay {
+  align-items: center;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
 }
 
 .option {

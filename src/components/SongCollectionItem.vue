@@ -50,12 +50,11 @@ export default {
 
   methods: {
     play() {
-      const { id, kind } = this.collection.playParams;
+      const { id } = this.collection.playParams;
 
       this.playCollection({
         collectionId: id,
-        collectionType: kind,
-        atIndex: 0
+        collectionType: this.collection.type
       });
     },
     ...mapActions({

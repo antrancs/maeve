@@ -1,4 +1,6 @@
 import musicKit from './musicKit';
+import SongQueue from './../utils/SongQueue';
+import musicApiService from './musicApi.service';
 
 const MusicPlayerService = {
   get isPlaying() {
@@ -20,7 +22,6 @@ const MusicPlayerService = {
     music.removeEventListener('playbackProgressDidChange');
     music.addEventListener('playbackProgressDidChange', playBackCallback);
 
-    let playedSong = {};
     return music
       .setQueue({
         song: songId
@@ -30,13 +31,40 @@ const MusicPlayerService = {
           return Promise.resolve();
         }
 
-        [playedSong] = queue.items;
+        const [firstItem] = queue.items;
+        this.currentlyPlayingSong = firstItem;
+
         return this.play();
-      })
-      .then(() => playedSong);
+      });
   },
 
-  playCollection() {}
+  playSongFromCollection(
+    songId,
+    collectionType,
+    collectionId,
+    playBackCallback
+  ) {
+    return musicApiService
+      .getCollection(collectionId, collectionType)
+      .then(({ tracks }) => {
+        if (tracks.length === 0) {
+          return Promise.resolve();
+        }
+
+        this.playbackQueue = new SongQueue(tracks);
+        return this.playSong(songId || tracks[0].id, playBackCallback);
+      });
+  },
+
+  playNext(playBackCallback) {
+    const nextSong = this.playbackQueue.getNext(this.currentlyPlayingSong.id);
+    if (!nextSong) {
+      return Promise.reject();
+    }
+    return this.playSong(nextSong.id, playBackCallback);
+  },
+
+  playPrevious() {}
 };
 
 export default MusicPlayerService;

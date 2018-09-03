@@ -12,7 +12,6 @@ import {
 import {
   ADD_MULTI_SONGS_TO_QUEUE,
   SET_CURRENTLY_PLAYING_SONG,
-  SET_CURRENT_PLAYING_INDEX,
   SET_IS_PLAYING,
   SET_PLAYBACK_PROGESS,
   SET_SONG_QUEUE
@@ -20,7 +19,6 @@ import {
 
 const initialState = {
   currentPlaying: null,
-  currentPlayingIndex: 0,
   isPlaying: false,
   playbackProgress: 0,
   songQueue: []
@@ -34,57 +32,45 @@ const getters = {
   }
 };
 
+const playbackCallback = (context, progress) => {
+  context.commit(SET_PLAYBACK_PROGESS, {
+    playbackProgress: progress
+  });
+};
+
 const actions = {
-  [PLAY_SONG](context, { songId }) {
+  [PLAY_NEXT](context) {
     musicPlayerService
-      .playSong(songId, evt => {
-        context.commit(SET_PLAYBACK_PROGESS, {
-          playbackProgress: evt.progress
+      .playNext(evt => playbackCallback(context, evt.progress))
+      .then(() => {
+        context.commit(SET_CURRENTLY_PLAYING_SONG, {
+          song: musicPlayerService.currentlyPlayingSong
         });
-      })
-      .then(playedSong => {
-        context.commit(SET_CURRENTLY_PLAYING_SONG, { song: playedSong });
         context.commit(SET_IS_PLAYING, { isPlaying: true });
       });
   },
 
-  [PLAY_NEXT]({ commit, dispatch, state }) {
-    const nextSongIndex = state.currentPlayingIndex + 1;
-
-    if (nextSongIndex >= state.songQueue.length - 1) {
-      return;
-    }
-
-    const nextSong = state.songQueue[nextSongIndex];
-    commit(SET_CURRENT_PLAYING_INDEX, { index: nextSongIndex });
-    dispatch(PLAY_SONG, { songId: nextSong });
-  },
-
-  [PLAY_PREVIOUS]({ commit, dispatch, state }) {
+  [PLAY_PREVIOUS]({ dispatch, state }) {
     const prevSongIndex = state.currentPlayingIndex - 1;
     if (prevSongIndex < 0) {
       return;
     }
     const prevSong = state.songQueue[prevSongIndex];
-    commit(SET_CURRENT_PLAYING_INDEX, { index: prevSongIndex });
     dispatch(PLAY_SONG, { songId: prevSong });
   },
 
-  [PLAY_COLLECTION](context, { collectionId, collectionType, atIndex }) {
-    const music = window.MusicKit.getInstance();
-
-    music
-      .setQueue({
-        [collectionType]: collectionId
-      })
-      .then(queue => {
-        const songIds = queue.items.map(({ id }) => id);
-        context.commit(SET_SONG_QUEUE, { songs: songIds });
-        context.commit(SET_CURRENT_PLAYING_INDEX, { index: atIndex });
-        context.dispatch(PLAY_SONG, { songId: songIds[atIndex] });
-      })
-      .catch(err => {
-        console.log(err);
+  [PLAY_COLLECTION](context, { songId, collectionId, collectionType }) {
+    musicPlayerService
+      .playSongFromCollection(songId, collectionType, collectionId, evt =>
+        playbackCallback(context, evt.progress))
+      .then(() => {
+        context.commit(SET_SONG_QUEUE, {
+          songs: musicPlayerService.playbackQueue
+        });
+        context.commit(SET_CURRENTLY_PLAYING_SONG, {
+          song: musicPlayerService.currentlyPlayingSong
+        });
+        context.commit(SET_IS_PLAYING, { isPlaying: true });
       });
   },
 
@@ -139,10 +125,6 @@ const mutations = {
 
   [SET_SONG_QUEUE](state, { songs }) {
     state.songQueue = songs;
-  },
-
-  [SET_CURRENT_PLAYING_INDEX](state, { index }) {
-    state.currentPlayingIndex = index;
   }
 };
 

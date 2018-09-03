@@ -26,7 +26,6 @@
 <script>
 import SongCollectionList from '@/components/SongCollectionList.vue';
 import ArtistList from '@/components/ArtistList.vue';
-import { extractSearchData } from '@/utils/utils';
 import musicApiService from '@/services/musicApi.service';
 
 export default {

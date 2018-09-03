@@ -9,7 +9,8 @@ module.exports = {
     'comma-dangle': 'off',
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'function-paren-newline': ['error', 'consistent']
+    'function-paren-newline': ['error', 'consistent'],
+    'object-curly-newline': ['error', { consistent: true }]
   },
   parserOptions: {
     parser: 'babel-eslint'

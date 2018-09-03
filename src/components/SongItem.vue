@@ -4,6 +4,9 @@
       <div class="song-item__track-number">
         <div v-if="collectionType === 'albums'">{{ song.trackNumber }}</div>
         <img v-else class="artwork" :src="artworkUrl" alt="">
+        <div class="track-number__overlay">
+          <icon class="icon" name="play"></icon>
+        </div>
       </div>
       <div>{{ song.name }}</div>
     </div>
@@ -29,6 +32,7 @@
 
 <script>
 import 'vue-awesome/icons/ellipsis-v';
+import 'vue-awesome/icons/play';
 import Icon from 'vue-awesome/components/Icon.vue';
 import { getArtworkUrl } from '@/utils/utils';
 

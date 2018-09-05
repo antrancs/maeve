@@ -30,35 +30,29 @@
   </div>
 </template>
 
-<script>
-import { mapActions } from 'vuex';
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Action } from 'vuex-class';
 
-import { PLAY_COLLECTION } from '@/store/actions.type';
 import SongList from '@/components/SongList.vue';
 import { getArtworkUrl } from '@/utils/utils';
 import musicApiService, { CollectionType } from '@/services/musicApi.service';
+import { PlayCollectionAction } from '@/store/types';
 
-export default {
-  name: 'CollectionDetail',
+@Component({
+  components: { SongList }
+})
+export default class CollectionDetail extends Vue {
+  collection: any = {};
+  tracks: any[] = [];
 
-  components: {
-    SongList
-  },
+  @Action playCollectionAtIndex!: PlayCollectionAction;
 
-  data() {
-    return {
-      collection: {},
-      tracks: []
-    };
-  },
-
-  computed: {
-    collectionType() {
-      return this.$route.path.startsWith('/albums')
-        ? CollectionType.album
-        : CollectionType.playlist;
-    }
-  },
+  get collectionType() {
+    return this.$route.path.startsWith('/albums')
+      ? CollectionType.album
+      : CollectionType.playlist;
+  }
 
   created() {
     const collectionId = this.$route.params.id;
@@ -68,28 +62,21 @@ export default {
         this.collection = collection;
         this.tracks = tracks;
       });
-  },
-
-  methods: {
-    getArtworkUrl(artwork, width, height) {
-      return artwork ? getArtworkUrl(artwork.url, width, height) : '';
-    },
-
-    play() {
-      const { id, kind } = this.collection.playParams;
-
-      this.playCollection({
-        collectionId: id,
-        collectionType: kind,
-        atIndex: 0
-      });
-    },
-
-    ...mapActions({
-      playCollection: PLAY_COLLECTION
-    })
   }
-};
+  getArtworkUrl(artwork: MusicKit.Artwork, width: number, height: number) {
+    return artwork ? getArtworkUrl(artwork.url, width, height) : '';
+  }
+
+  play() {
+    const { id, kind } = this.collection.playParams;
+
+    this.playCollectionAtIndex({
+      collectionId: id,
+      collectionType: kind,
+      index: 0
+    });
+  }
+}
 </script>
 
 <style lang="scss" scoped>

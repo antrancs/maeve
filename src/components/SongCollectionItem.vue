@@ -20,48 +20,37 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Action } from 'vuex-class';
 import 'vue-awesome/icons/play-circle';
 import Icon from 'vue-awesome/components/Icon.vue';
-import { mapActions } from 'vuex';
 
-import { PLAY_COLLECTION } from '@/store/actions.type';
 import { getArtworkUrl } from '@/utils/utils';
+import { PlayCollectionAtIndexPayload } from '@/store/types';
 
-export default {
-  name: 'SongCollectionItem',
+@Component({
+  components: { Icon }
+})
+export default class SongCollectionItem extends Vue {
+  @Prop() collection: any;
+  @Action
+  playCollectionAtIndex!: (payload: PlayCollectionAtIndexPayload) => void;
 
-  components: {
-    Icon
-  },
-
-  props: {
-    collection: {
-      type: Object,
-      required: false
-    }
-  },
-
-  computed: {
-    artworkUrl() {
-      return getArtworkUrl(this.collection.artwork.url, 500, 500);
-    }
-  },
-
-  methods: {
-    play() {
-      const { id } = this.collection.playParams;
-
-      this.playCollection({
-        collectionId: id,
-        collectionType: this.collection.type
-      });
-    },
-    ...mapActions({
-      playCollection: PLAY_COLLECTION
-    })
+  get artworkUrl() {
+    return getArtworkUrl(this.collection.artwork.url, 500, 500);
   }
-};
+
+  play() {
+    const { id, kind } = this.collection.playParams;
+
+    this.playCollectionAtIndex({
+      collectionId: id,
+      collectionType: kind,
+      index: 2
+    });
+  }
+}
 </script>
 
 <style lang="scss" scoped>

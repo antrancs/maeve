@@ -5,36 +5,27 @@
 
         <img
           class="side-bar__song-artwork"
-          :src="currentPlayingArtwork" alt="">
+          :src="currentTrackArtwork" alt="">
     </div>
 </template>
 
-<script>
-import { mapGetters } from 'vuex';
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Getter } from 'vuex-class';
 
 import SidebarAuthenticated from './TheSidebarAuthenticated.vue';
 import SidebarUnauthenticated from './TheSidebarUnauthenticated.vue';
 
-export default {
-  name: 'AppSidebar',
-
-  props: {
-    isLoggedIn: {
-      type: Boolean,
-      required: true,
-      default: false
-    }
-  },
-
+@Component({
   components: {
     SidebarAuthenticated,
     SidebarUnauthenticated
-  },
-
-  computed: {
-    ...mapGetters(['currentPlayingArtwork'])
   }
-};
+})
+export default class AppSidebar extends Vue {
+  @Prop() isLoggedIn!: boolean;
+  @Getter currentTrackArtwork!: string;
+}
 </script>
 
 <style lang="scss" scoped>

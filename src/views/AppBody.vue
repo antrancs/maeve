@@ -5,16 +5,15 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator';
+
 import AppSidebar from './../components/TheSidebar.vue';
 
-export default {
-  name: 'AppBody',
-
-  components: {
-    AppSidebar
-  }
-};
+@Component({
+  components: { AppSidebar }
+})
+export default class AppBody extends Vue {}
 </script>
 
 <style lang="scss" scoped>

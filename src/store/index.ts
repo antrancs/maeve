@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import musicPlayer from './musicPlayer.module';
+import musicPlayer from '@/store/musicPlayer.module';
 
 Vue.use(Vuex);
 

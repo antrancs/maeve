@@ -5,16 +5,16 @@
     </div>
 </template>
 
-<script>
-export default {
-  name: 'SidebarUnauthenticated',
-  methods: {
-    authorize() {
-      console.log('Authorize');
-      this.$music.authorize();
-    }
+<script lang="ts">
+import { Vue, Component } from 'vue-property-decorator';
+
+@Component({})
+export default class SidebarUnauthenticated extends Vue {
+  authorize() {
+    console.log('Authorize');
+    // this.$music.authorize();
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

@@ -1,33 +1,36 @@
 import { pick } from 'lodash';
-import musicKit from './musicKit';
+import musicKit from '@/services/musicKit';
 
-const MediaType = {
-  artists: 'artists',
-  albums: 'albums',
-  songs: 'songs',
-  playlists: 'playlists'
-};
+enum MediaType {
+  artist = 'artists',
+  album = 'albums',
+  song = 'songs',
+  playlist = 'playlists'
+}
 
-const CollectionType = {
-  playlist: 'playlists',
-  album: 'albums'
-};
+enum CollectionType {
+  playlist = 'playlists',
+  album = 'albums'
+}
 
 /**
  * Extract the data of the desired content (artists/songs/albums/playlists)
  * from the result object
  * @param {Object} result - The result object returned from MusicKit search API
  * @param {MediaType} field - 1 one the 4 media types
- * @param {Array<String>} wantedAttributes - Properties you want to extract.
+ * @param {Array<String>} wantedAtrributes - Properties you want to extract.
  *     Default empty (return ALL properties)
  *  @returns {Array<Object>} - Array of media items (songs/albums/artists/playlists)
  */
-const extractSearchData = (result, field, wantedAttributes = []) => {
-  if (!result[field] || !result[field].data) {
-    return [];
-  }
+const extractSearchData = (
+  resourceData: MusicKit.ResourceData,
+  wantedAttributes: string[] = []
+): any[] => {
+  // if (!result[field] || !result[field].data) {
+  //   return [];
+  // }
 
-  const items = result[field].data || [];
+  const items = resourceData.data || [];
   return items.map(({ id, attributes, type }) => {
     const properties =
       wantedAttributes.length === 0
@@ -73,7 +76,14 @@ const playlistFields = [
 ];
 
 const MusicApiService = {
-  search(searchString = '') {
+  search(
+    searchString = ''
+  ): Promise<{
+    albums: any[];
+    songs: any[];
+    artists: any[];
+    playlists: any[];
+  }> {
     if (!searchString) {
       return Promise.reject();
     }
@@ -86,22 +96,15 @@ const MusicApiService = {
       })
       .then(result => {
         if (Object.keys(result).length === 0) {
-          return {};
+          return { albums: [], playlists: [], artists: [], songs: [] };
         }
 
-        const albums = extractSearchData(result, MediaType.albums, albumFields);
-        const songs = extractSearchData(result, MediaType.songs, songFields);
+        const albums = extractSearchData(result.albums!, albumFields);
+        const songs = extractSearchData(result.songs!, songFields);
 
-        const artists = extractSearchData(result, MediaType.artists, [
-          'name',
-          'url'
-        ]);
+        const artists = extractSearchData(result.artists!, ['name', 'url']);
 
-        const playlists = extractSearchData(
-          result,
-          MediaType.playlists,
-          playlistFields
-        );
+        const playlists = extractSearchData(result.playlists!, playlistFields);
 
         return {
           albums,
@@ -112,28 +115,24 @@ const MusicApiService = {
       });
   },
 
-  getArtist(artistId) {
+  getArtist(artistId: string) {
     return musicKit
       .getApiInstance()
       .artist(artistId, { include: 'albums,playlists' })
-      .then(artistRes => ({
-        name: artistRes.attributes.name,
-        albums: extractSearchData(
-          artistRes.relationships,
-          MediaType.albums,
-          albumFields
-        ),
-        playlists: extractSearchData(
-          artistRes.relationships,
-          MediaType.playlists,
-          playlistFields
-        )
-      }));
+      .then(artistRes => {
+        // relationships should be there when specifing 'include' in the search parameter
+        const relationships = artistRes.relationships!;
+        return {
+          name: artistRes.attributes.name,
+          albums: extractSearchData(relationships.albums!, albumFields),
+          playlists: extractSearchData(relationships.playlists!, playlistFields)
+        };
+      });
   },
 
-  getCollection(collectionId, collectionType) {
+  getCollection(collectionId: string, collectionType: CollectionType) {
     let getCollectionPromise;
-    let collectionFields = [];
+    let collectionFields: string[] = [];
     if (collectionType === CollectionType.album) {
       getCollectionPromise = musicKit
         .getApiInstance()
@@ -150,12 +149,10 @@ const MusicApiService = {
 
     return getCollectionPromise.then(result => {
       const collection = pick(result.attributes, collectionFields);
-
-      const tracks = extractSearchData(
-        result.relationships,
-        'tracks',
-        songFields
-      );
+      let tracks: any[] = [];
+      if (result.relationships && result.relationships.tracks) {
+        tracks = extractSearchData(result.relationships.tracks, songFields);
+      }
 
       return { collection, tracks };
     });

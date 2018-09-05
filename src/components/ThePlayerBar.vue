@@ -1,9 +1,9 @@
 <template>
-  <div v-if="currentPlaying" class="player-bar-wrapper">
+  <div v-if="musicPlayer.currentPlaying" class="player-bar-wrapper">
     <div class="player-bar">
       <div class="player-bar__left">
-        <div class="player-bar__artist-name ">{{currentPlaying.attributes.name}}</div>
-        <div class="player-bar__song-name">{{currentPlaying.attributes.artistName}}</div>
+        <div class="player-bar__artist-name ">{{musicPlayer.currentPlaying.name}}</div>
+        <div class="player-bar__song-name">{{musicPlayer.currentPlaying.artistName}}</div>
       </div>
 
       <div class="player-bar__center ">
@@ -13,7 +13,7 @@
             <icon name="backward" class="icon"></icon>
           </span>
 
-          <span @click="toggleCurrentPlaying">
+          <span @click="toggleCurrentTrack">
             <icon
               :name="songStatusIcon"
               class="icon icon--large"
@@ -31,9 +31,9 @@
 
         <div>
           <progress class="player-bar__progress-bar"
-            max="100" :value="playbackProgress * 100"
+            max="100" :value="musicPlayer.playbackProgress * 100"
           >
-            {{playbackProgress * 100}}
+            {{musicPlayer.playbackProgress * 100}}
           </progress>
         </div>
       </div>
@@ -46,7 +46,10 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import { State, Action } from 'vuex-class';
+
 import 'vue-awesome/icons/backward';
 import 'vue-awesome/icons/forward';
 import 'vue-awesome/icons/list';
@@ -56,67 +59,31 @@ import 'vue-awesome/icons/random';
 import 'vue-awesome/icons/redo';
 import 'vue-awesome/icons/volume-up';
 import Icon from 'vue-awesome/components/Icon.vue';
-import { mapState, mapActions, mapMutations } from 'vuex';
 
-import {
-  PAUSE_MUSIC,
-  PLAY_NEXT,
-  PLAY_PREVIOUS,
-  TOGGLE_MUSIC
-} from '@/store/actions.type';
-import { SET_IS_PLAYING } from '@/store/mutations.type';
+import { MusicPlayerState } from '@/store/types';
 
-export default {
-  name: 'PlayerBar',
+@Component({
+  components: { Icon }
+})
+export default class PlayerBar extends Vue {
+  @State musicPlayer!: MusicPlayerState;
 
-  components: {
-    Icon
-  },
+  @Action playNext!: () => void;
+  @Action playPrevious!: () => void;
+  @Action toggleCurrentTrack!: () => void;
 
-  computed: {
-    songStatusIcon() {
-      // console.log('isPlayingMusicKit', this.isPlayingMusicKit);
-      return this.isPlaying ? 'pause-circle' : 'play-circle';
-    },
-    ...mapState({
-      isPlaying: state => state.musicPlayer.isPlaying,
-      currentPlaying: state => state.musicPlayer.currentPlaying,
-      playbackProgress: state => state.musicPlayer.playbackProgress
-    })
-  },
-
-  watch: {
-    playbackProgress() {
-      if (this.playbackProgress === 1) {
-        this.setIsPlaying(false);
-        this.playNext();
-      }
-    }
-  },
-
-  methods: {
-    handleForwardClicked() {
-      this.pauseMusic();
-      this.playNext();
-    },
-
-    handleBackwardClicked() {
-      this.pauseMusic();
-      this.playPrevious();
-    },
-
-    ...mapActions({
-      toggleCurrentPlaying: TOGGLE_MUSIC,
-      pauseMusic: PAUSE_MUSIC,
-      playNext: PLAY_NEXT,
-      playPrevious: PLAY_PREVIOUS
-    }),
-
-    ...mapMutations({
-      setIsPlaying: SET_IS_PLAYING
-    })
+  get songStatusIcon() {
+    return this.musicPlayer.isPlaying ? 'pause-circle' : 'play-circle';
   }
-};
+
+  handleForwardClicked() {
+    this.playNext();
+  }
+
+  handleBackwardClicked() {
+    this.playPrevious();
+  }
+}
 </script>
 
 <style lang="scss" scoped>

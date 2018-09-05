@@ -1,6 +1,12 @@
-const musicKit = {
+import { Store } from 'vuex';
+
+import { SET_PLAYBACK_PROGESS } from '@/store/mutations.type';
+
+class MusicKitService {
+  instance: MusicKit.MusicKitInstance | null = null;
+
   init() {
-    if (window.MusicKit) {
+    if (MusicKit) {
       this.initInstance();
       // try {
       //   // window.MusicKit.getInstance();
@@ -17,11 +23,11 @@ const musicKit = {
         this.configure();
       });
     }
-  },
+  }
 
   configure() {
     try {
-      window.MusicKit.configure({
+      MusicKit.configure({
         developerToken: process.env.VUE_APP_DEVELOPER_TOKEN,
         app: {
           name: 'Maeve',
@@ -41,23 +47,26 @@ const musicKit = {
     }
 
     // this.instance = window.MusicKit.getInstance();
-  },
+  }
 
-  getInstance() {
-    return this.instance;
-  },
+  getInstance(): MusicKit.MusicKitInstance {
+    if (!this.instance) {
+      this.initInstance();
+    }
+    return this.instance!;
+  }
 
-  getApiInstance() {
-    return this.instance.api;
-  },
+  getApiInstance(): MusicKit.API {
+    return this.getInstance().api;
+  }
 
-  getPlayerInstance() {
-    return this.instance.player;
-  },
+  getPlayerInstance(): MusicKit.Player {
+    return this.getInstance().player;
+  }
 
   initInstance() {
     try {
-      this.instance = window.MusicKit.getInstance();
+      this.instance = MusicKit.getInstance();
     } catch (error) {
       switch (error.message) {
         case 'No configured instance':
@@ -68,6 +77,28 @@ const musicKit = {
       }
     }
   }
-};
+}
 
-export default musicKit;
+export function connectMusicKitToStore(
+  musicKitInstance: MusicKit.MusicKitInstance,
+  store: Store<any>
+) {
+  unregisterEventsFromMusicKit(musicKitInstance);
+  musicKitInstance.addEventListener(
+    MusicKit.Events.playbackProgressDidChange,
+    event => {
+      store.commit(SET_PLAYBACK_PROGESS, event.progress);
+    }
+  );
+}
+
+export function unregisterEventsFromMusicKit(
+  musicKitInstance: MusicKit.MusicKitInstance
+) {
+  musicKitInstance.removeEventListener(
+    MusicKit.Events.playbackProgressDidChange
+  );
+}
+
+const musicKitService = new MusicKitService();
+export default musicKitService;

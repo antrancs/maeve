@@ -3,7 +3,7 @@ module.exports = {
   env: {
     node: true
   },
-  extends: ['plugin:vue/essential', '@vue/airbnb'],
+  extends: ['plugin:vue/essential', '@vue/airbnb', '@vue/typescript'],
   rules: {
     'arrow-parens': [2, 'as-needed'],
     'comma-dangle': 'off',
@@ -13,6 +13,6 @@ module.exports = {
     'object-curly-newline': ['error', { consistent: true }]
   },
   parserOptions: {
-    parser: 'babel-eslint'
+    parser: 'typescript-eslint-parser'
   }
 };

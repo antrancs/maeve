@@ -11,24 +11,19 @@
 </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator';
+
 import SongCollectionList from '@/components/SongCollectionList.vue';
 import musicApiService from '@/services/musicApi.service';
 
-export default {
-  name: 'ArtistDetail',
-
-  components: {
-    SongCollectionList
-  },
-
-  data() {
-    return {
-      info: {},
-      albums: [],
-      playlists: []
-    };
-  },
+@Component({
+  components: { SongCollectionList }
+})
+export default class ArtistDetail extends Vue {
+  info: object = {};
+  albums: any[] = [];
+  playlists: any[] = [];
 
   created() {
     const artistId = this.$route.params.id;
@@ -38,7 +33,7 @@ export default {
       this.playlists = playlists;
     });
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

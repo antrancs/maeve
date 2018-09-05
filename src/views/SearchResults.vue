@@ -23,27 +23,24 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator';
+
 import SongCollectionList from '@/components/SongCollectionList.vue';
 import ArtistList from '@/components/ArtistList.vue';
 import musicApiService from '@/services/musicApi.service';
 
-export default {
-  name: 'SearchResults',
-
+@Component({
   components: {
     SongCollectionList,
     ArtistList
-  },
-
-  data() {
-    return {
-      albums: [],
-      songs: [],
-      artists: [],
-      playlists: []
-    };
-  },
+  }
+})
+export default class SearchResults extends Vue {
+  albums: any[] = [];
+  songs: any[] = [];
+  artists: any[] = [];
+  playlists: any[] = [];
 
   created() {
     const queryString = this.$route.query.q;
@@ -55,9 +52,12 @@ export default {
         this.songs = songs;
         this.artists = artists;
         this.playlists = playlists;
+      })
+      .catch(err => {
+        console.log(err);
       });
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

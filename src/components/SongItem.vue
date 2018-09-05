@@ -30,43 +30,17 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator';
 import 'vue-awesome/icons/ellipsis-v';
 import 'vue-awesome/icons/play';
 import Icon from 'vue-awesome/components/Icon.vue';
 import { getArtworkUrl } from '@/utils/utils';
 
-export default {
-  name: 'SongItem',
-
-  components: {
-    Icon
-  },
-
-  props: {
-    song: {
-      type: Object,
-      required: true
-    },
-    collectionType: {
-      type: String
-    }
-  },
-
-  computed: {
-    artworkUrl() {
-      return getArtworkUrl(this.song.artwork.url, 50, 50);
-    }
-  },
-
-  methods: {
-    play() {
-      console.log('Playing song');
-    }
-  },
-
+@Component({
+  components: { Icon },
   filters: {
-    formatSongDuration(value) {
+    formatSongDuration(value: number) {
       if (!value) {
         return '0:00';
       }
@@ -79,7 +53,19 @@ export default {
       return seconds < 10 ? `${minutes}:0${seconds}` : `${minutes}:${seconds}`;
     }
   }
-};
+})
+export default class SongItem extends Vue {
+  @Prop() song!: any;
+  @Prop() collectionType!: string;
+
+  get artworkUrl() {
+    return getArtworkUrl(this.song.artwork.url, 50, 50);
+  }
+
+  play() {
+    console.log('Playing song');
+  }
+}
 </script>
 
 <style lang="scss" scoped>

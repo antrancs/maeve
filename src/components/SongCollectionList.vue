@@ -9,28 +9,20 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 /**
  * This component is used to display a collection of songs (playlist, album)
  */
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import SongCollectionItem from './SongCollectionItem.vue';
 
-export default {
-  name: 'SongCollectionList',
-  props: {
-    collections: {
-      type: Array,
-      required: false,
-      default() {
-        return [];
-      }
-    }
-  },
-  components: {
-    SongCollectionItem
-  }
-};
+@Component({
+  components: { SongCollectionItem }
+})
+export default class SongCollectionList extends Vue {
+  @Prop() collections!: any[];
+}
 </script>
 
 <style lang="scss" scoped>

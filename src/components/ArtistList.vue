@@ -8,21 +8,17 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator';
+
 import ArtistItem from './ArtistItem.vue';
 
-export default {
-  name: 'ArtistList',
-  components: {
-    ArtistItem
-  },
-  props: {
-    artists: {
-      type: Array,
-      required: false
-    }
-  }
-};
+@Component({
+  components: { ArtistItem }
+})
+export default class ArtistList extends Vue {
+  @Prop() artists!: any[];
+}
 </script>
 
 <style lang="scss" scoped>

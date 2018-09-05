@@ -5,19 +5,22 @@
     </div>
 </template>
 
-<script>
-export default {
-  name: 'AppHeader',
-  methods: {
-    handleSearchTextChanged(evt) {
-      const searchText = evt.target.value;
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
-      if (searchText && searchText.trim().length > 0) {
-        this.$router.replace({ name: 'search', query: { q: searchText } });
-      }
+@Component({})
+export default class AppHeader extends Vue {
+  @Prop() collectionType!: string;
+  @Prop() songs!: any[];
+
+  handleSearchTextChanged(evt: any) {
+    const searchText = evt.target.value;
+
+    if (searchText && searchText.trim().length > 0) {
+      this.$router.replace({ name: 'search', query: { q: searchText } });
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

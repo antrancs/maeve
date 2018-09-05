@@ -8,36 +8,25 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator';
 import { getArtistArtwork } from '@/utils/utils';
 
-export default {
-  name: 'ArtistItem',
-  props: {
-    artist: {
-      type: Object,
-      required: true
-    }
-  },
-
-  data() {
-    return {
-      artistArtwork: ''
-    };
-  },
+@Component({})
+export default class ArtistItem extends Vue {
+  @Prop() artist!: any;
+  artistArtwork: string = '';
 
   created() {
     this.getArtistArtwork();
-  },
-
-  methods: {
-    getArtistArtwork() {
-      getArtistArtwork(this.artist.url).then(artwork => {
-        this.artistArtwork = artwork;
-      });
-    }
   }
-};
+
+  getArtistArtwork() {
+    getArtistArtwork(this.artist.url).then(artwork => {
+      this.artistArtwork = artwork;
+    });
+  }
+}
 </script>
 
 <style lang="scss" scoped>

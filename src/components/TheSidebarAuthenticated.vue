@@ -12,10 +12,11 @@
     </div>
 </template>
 
-<script>
-export default {
-  name: 'SidebarAuthenticated'
-};
+<script lang="ts">
+import { Vue, Component } from 'vue-property-decorator';
+
+@Component({})
+export default class SidebarAuthenticated extends Vue {}
 </script>
 
 <style lang="scss" scoped>

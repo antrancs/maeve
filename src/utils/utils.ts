@@ -6,6 +6,10 @@ const getArtworkUrl = (
   width: number,
   height: number
 ): string => {
+  if (!originalUrl) {
+    return '';
+  }
+
   const replace: { [key: string]: number } = {
     '{w}': width,
     '{h}': height
@@ -34,6 +38,10 @@ const getArtistArtwork = (itunesUrl: string) =>
   axios
     .get(itunesUrl)
     .then(result => extractArtworkUrl(result.data))
-    .then(formatArtworkUrl);
+    .then(formatArtworkUrl)
+    .catch(err => {
+      console.log(err);
+      return '';
+    });
 
 export { getArtworkUrl, getArtistArtwork };

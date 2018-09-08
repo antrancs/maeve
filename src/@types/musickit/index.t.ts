@@ -158,166 +158,6 @@ declare namespace MusicKit {
   ) => void;
   type AnotherType = (event: { timer: string }) => void;
 
-  interface Player {
-    /**
-     * The current bit rate of the music player.
-     */
-    readonly bitrate: PlaybackBitrate;
-
-    /**
-     * The music player has EME loaded.
-     */
-    readonly canSupportDRM: boolean;
-
-    /**
-     * The current playback duration.
-     */
-    readonly currentPlaybackDuration: any;
-
-    /**
-     * The current playback progress.
-     */
-    readonly currentPlaybackProgress: number;
-
-    /**
-     * The current position of the playhead.
-     */
-    readonly currentPlaybackTime: any;
-
-    /**
-     * The current playback duration in hours and minutes.
-     */
-    readonly formattedCurrentPlaybackDuration: number;
-
-    /**
-     * A Boolean value indicating whether the player is currently playing.
-     */
-    readonly isPlaying: boolean;
-
-    /**
-     * The currently-playing media item, or the media item, within an queue, that you have designated to begin playback.
-     */
-    readonly nowPlayingItem: any;
-
-    /**
-     * The index of the now playing item in the current playback queue.
-     */
-    readonly nowPlayingItemIndex: number | undefined;
-
-    /**
-     *  The current playback rate for the player.
-     */
-    readonly playbackRate: number;
-
-    /**
-     * The current playback state of the music player.
-     */
-    readonly playbackState: PlaybackStates;
-
-    /**
-     * A Boolean value that indicates whether a playback target is available.
-     */
-    readonly playbackTargetAvailable: boolean;
-
-    /**
-     * The current playback queue of the music player.
-     */
-    readonly queue: Queue;
-
-    /**
-     * The current repeat mode of the music player.
-     */
-    readonly repeatMode: PlayerRepeatMode;
-
-    /**
-     * The current shuffle mode of the music player.
-     */
-    readonly shuffleMode: PlayerShuffleMode;
-
-    /**
-     * A number indicating the current volume of the music player.
-     */
-    readonly volume: number;
-
-    /**
-     * Adds an event listener as a callback for an event name.
-     * @param name The name of the event.
-     * @param callback The callback function to invoke when the event occurs.
-     */
-    addEventListener(name: string, callback: CallbackType): void;
-
-    /**
-     * Begins playing the media item at the specified index in the queue immediately.
-     * @param index The queue index to begin playing media.
-     */
-    changeToMediaAtIndex(index: number): Promise<void>;
-
-    /**
-     * Begins playing the media item in the queue immediately.
-     * @param descriptor A descriptor can be a MusicKit.MediaItem instance or a string identifier.
-     * @returns Returns the current media item position.
-     */
-    changeToMediaItem(descriptor: descriptor): Promise<number>;
-
-    /**
-     * Sets the volume to 0.
-     */
-    mute(): void;
-
-    /**
-     * Pauses playback of the current item.
-     */
-    pause(): void;
-
-    /**
-     * Initiates playback of the current item.
-     */
-    play(): Promise<void>;
-
-    /**
-     * Prepares a music player for playback.
-     * @param descriptor A descriptor can be a MusicKit.MediaItem instance or a string identifier.
-     */
-    prepareToPlay(descriptor: descriptor): Promise<void>;
-
-    /**
-     * removeEventListener
-     * @param name The name of the event.
-     * @param callback The callback function to remove.
-     */
-    removeEventListener(name: string, callback: CallbackType): void;
-
-    /**
-     * Sets the playback point to a specified time.
-     * @param time The time to set as the playback point.
-     */
-    seekToTime(time: number): Promise<void>;
-
-    /**
-     * Displays the playback target picker if a playback target is available.
-     */
-    showPlaybackTargetPicker(): void;
-
-    /**
-     * Starts playback of the next media item in the playback queue.
-     * If the player is not playing, this method designates the next media item as the next to be played.
-     * @returns The current media item position.
-     */
-    skipToNextItem(): Promise<number>;
-
-    /**
-     * Starts playback of the previous media item in the playback queue.
-     * If the player is not playing, this method designates the previous media item as the next to be played.
-     * @returns The current media item position.
-     */
-    skipToPreviousItem(): Promise<number>;
-
-    /**
-     * Stops the currently playing media item.
-     */
-    stop(): void;
-  }
-
   /**
    * This class represents the Apple Music API.
    */
@@ -360,7 +200,7 @@ declare namespace MusicKit {
      * @param parameters A query parameters object that is serialized and passed directly to the Apple Music API.
      * @returns An album resource.
      */
-    album(id: string, parameters: QueryParameters): Promise<MediaResource>;
+    album(id: string, parameters: QueryParameters): Promise<AlbumResource>;
 
     /**
      * Fetch one or more albums using their identifiers.
@@ -395,7 +235,7 @@ declare namespace MusicKit {
      * @param parameters A query parameters object that is serialized and passed directly to the Apple Music API.
      * @returns An artist resource.
      */
-    artist(id: string, parameters: QueryParameters): Promise<MediaResource>;
+    artist(id: string, parameters: QueryParameters): Promise<ArtistResource>;
 
     /**
      * Fetch an artist using its identifier.
@@ -403,7 +243,10 @@ declare namespace MusicKit {
      * @param parameters A query parameters object that is serialized and passed directly to the Apple Music API.
      * @returns A playlist resource.
      */
-    playlist(id: string, parameters: QueryParameters): Promise<MediaResource>;
+    playlist(
+      id: string,
+      parameters: QueryParameters
+    ): Promise<PlaylistResource>;
 
     /**
      * Search the catalog using a query.
@@ -573,7 +416,225 @@ declare namespace MusicKit {
     startPosition?: number;
   }
 
+  enum ResourceType {
+    album = 'albums',
+    song = 'songs',
+    artist = 'artists',
+    playlist = 'playlists'
+  }
+
+  interface Resource {
+    id: string;
+    href: string;
+    relationships?: ResourceRelationship;
+  }
+
+  interface PlaylistResourceAttribute {
+    artwork: Artwork;
+    curatorName: string;
+    description: CollectionDescription;
+    lastModifiedDate: string;
+    name: string;
+    playParams: PlayParam;
+    playlistType: PlaylistType;
+    url: string;
+  }
+
+  interface PlaylistResource extends Resource {
+    attributes: PlaylistResourceAttribute;
+    type: 'playlists';
+  }
+
+  interface ArtistResource extends Resource {
+    attributes: {
+      genreNames: string[];
+      name: string;
+      url: string;
+    };
+    type: 'artists';
+  }
+
+  interface AlbumResourceAttributes {
+    artistName: string;
+    artwork: Artwork;
+    contentRating: string; // 'explicit', maybe an enum
+    copyright: string;
+    editorialNotes: CollectionDescription;
+    genreNames: string[];
+    isComplete: boolean;
+    isMasteredForItunes: boolean;
+    isSingle: boolean;
+    name: string;
+    playParams: PlayParam;
+    recordLabel: string;
+    releaseDate: string;
+    trackCount: number;
+    url: string;
+  }
+
+  interface AlbumResource extends Resource {
+    attributes: AlbumResourceAttributes;
+    type: 'albums';
+  }
+
+  interface SongResourceAttributes {
+    albumName: string;
+    artistName: string;
+    artwork: Artwork;
+    discNumber: number;
+    durationInMillis: number;
+    genreNames: string[];
+    isrc: string;
+    name: string;
+    playParams: PlayParam;
+    previews: Preview[];
+    releaseDate: string;
+    trackNumber: number;
+    url: string;
+  }
+
+  interface SongResource extends Resource {
+    attributes: SongResourceAttributes;
+    type: 'songs';
+  }
+
+  interface ResourceRelationship {
+    type: ResourceType;
+    [ResourceType.artist]?: ArtistResourceData;
+    [ResourceType.album]?: AlbumResourceData;
+    [ResourceType.playlist]?: PlaylistResourceData;
+    tracks?: SongResourceData;
+  }
+
+  interface ResourceData {
+    data: [Resource];
+    href: String;
+    next?: String;
+  }
+
+  interface PlaylistResourceData extends ResourceData {
+    data: [PlaylistResource];
+  }
+
+  interface ArtistResourceData extends ResourceData {
+    data: [ArtistResource];
+  }
+
+  interface AlbumResourceData extends ResourceData {
+    data: [AlbumResource];
+  }
+
+  interface SongResourceData {
+    data: [SongResource];
+  }
+
+  interface Artwork {
+    bgColor: string;
+    height: number;
+    textColor1: string;
+    textColor2: string;
+    textColor3: string;
+    textColor4: string;
+    url: string;
+    width: number;
+  }
+
+  interface CollectionDescription {
+    short: string;
+    standard: string;
+  }
+
+  interface PlayParam {
+    id: string;
+    kind: Kind;
+  }
+
+  enum PlaylistType {
+    editorial = 'editorial'
+  }
+
+  interface Preview {
+    url: string;
+  }
+
+  interface SearchResult {
+    [ResourceType.album]?: {
+      data: [AlbumResource];
+      href: String;
+      next?: String;
+    };
+
+    [ResourceType.playlist]?: {
+      data: [PlaylistResource];
+      href: String;
+      next?: String;
+    };
+
+    [ResourceType.song]?: {
+      data: [SongResource];
+      href: String;
+      next?: String;
+    };
+
+    [ResourceType.artist]?: {
+      data: [ArtistResource];
+      href: String;
+      next?: String;
+    };
+  }
+
+  enum Kind {
+    album = 'album',
+    song = 'song',
+    playlist = 'playlist'
+  }
+
+  interface PlaylistContainer {
+    attributes: PlaylistResourceAttribute;
+    id: string;
+    name: Kind.playlist;
+    type: ResourceType.playlist;
+  }
+
+  interface AlbumContainer {
+    attributes: AlbumResourceAttributes;
+    id: string;
+    name: Kind.album;
+    type: ResourceType.album;
+  }
+
+  enum Events {
+    authorizationStatusDidChange = 'authorizationStatusDidChange',
+    authorizationStatusWillChange = 'authorizationStatusWillChange',
+    bufferedProgressDidChange = 'bufferedProgressDidChange',
+    eligibleForSubscribeView = 'eligibleForSubscribeView',
+    loaded = 'musickitloaded',
+    mediaCanPlay = 'mediaCanPlay',
+    mediaItemDidChange = 'mediaItemDidChange',
+    mediaItemStateDidChange = 'mediaItemStateDidChange',
+    mediaItemStateWillChange = 'mediaItemStateWillChange',
+    mediaItemWillChange = 'mediaItemWillChange',
+    mediaPlaybackError = 'mediaPlaybackError',
+    metadataDidChange = 'metadataDidChange',
+    playbackBitrateDidChange = 'playbackBitrateDidChange',
+    playbackDurationDidChange = 'playbackDurationDidChange',
+    playbackProgressDidChange = 'playbackProgressDidChange',
+    playbackStateDidChange = 'playbackStateDidChange',
+    playbackStateWillChange = 'playbackStateWillChange',
+    playbackTargetAvailableDidChange = 'playbackTargetAvailableDidChange',
+    playbackTimeDidChange = 'playbackTimeDidChange',
+    playbackVolumeDidChange = 'playbackVolumeDidChange',
+    primaryPlayerDidChange = 'primaryPlayerDidChange',
+    queueItemForStartPosition = 'queueItemForStartPosition',
+    queueItemsDidChange = 'queueItemsDidChange',
+    queuePositionDidChange = 'queuePositionDidChange',
+    storefrontCountryCodeDidChange = 'storefrontCountryCodeDidChange',
+    storefrontIdentifierDidChange = 'storefrontIdentifierDidChange',
+    userTokenDidChange = 'userTokenDidChange'
+  }
+
   interface MediaItem {
+    new (options: MediaItemOptions): MediaItem;
     /**
      * A string of information about the album.
      */
@@ -602,7 +663,9 @@ declare namespace MusicKit {
     /**
      * The attributes object for the media item.
      */
-    attributes: MediaResourceSongAttributes;
+    attributes: SongResourceAttributes;
+
+    container: PlaylistContainer | AlbumContainer;
 
     /**
      * A string containing the content rating for the media item.
@@ -659,6 +722,8 @@ declare namespace MusicKit {
      */
     releaseDate: Date | undefined;
 
+    // songId: string;
+
     /**
      * The name of the media item.
      */
@@ -678,178 +743,170 @@ declare namespace MusicKit {
   interface MediaItemOptions {
     attributes?: any;
     id?: string;
+    type: MediaItemType;
   }
 
-  enum MediaItemType {
-    song = 'song'
-  }
+  type MediaItemType = 'song';
 
-  enum MediaResourceType {
-    album = 'albums',
-    song = 'songs',
-    artist = 'artists',
-    playlist = 'playlists'
-  }
+  interface Player {
+    /**
+     * The current bit rate of the music player.
+     */
+    readonly bitrate: PlaybackBitrate;
 
-  interface MediaResourceSongAttributes {
-    albumName: string;
+    /**
+     * The music player has EME loaded.
+     */
+    readonly canSupportDRM: boolean;
 
-    artistName: string;
+    /**
+     * The current playback duration.
+     */
+    readonly currentPlaybackDuration: any;
 
-    artwork: Artwork;
+    /**
+     * The current playback progress.
+     */
+    readonly currentPlaybackProgress: number;
 
-    discNumber: number;
+    /**
+     * The current position of the playhead.
+     */
+    readonly currentPlaybackTime: any;
 
-    durationInMillis: number;
+    /**
+     * The current playback duration in hours and minutes.
+     */
+    readonly formattedCurrentPlaybackDuration: number;
 
-    genreNames: string[];
+    /**
+     * A Boolean value indicating whether the player is currently playing.
+     */
+    readonly isPlaying: boolean;
 
-    isrc: string;
+    /**
+     * The currently-playing media item, or the media item, within an queue, that you have designated to begin playback.
+     */
+    readonly nowPlayingItem: any;
 
-    name: string;
+    /**
+     * The index of the now playing item in the current playback queue.
+     */
+    readonly nowPlayingItemIndex: number | undefined;
 
-    playParams: PlayParam;
+    /**
+     *  The current playback rate for the player.
+     */
+    readonly playbackRate: number;
 
-    previews: Preview[];
+    /**
+     * The current playback state of the music player.
+     */
+    readonly playbackState: PlaybackStates;
 
-    releaseDate: string;
+    /**
+     * A Boolean value that indicates whether a playback target is available.
+     */
+    readonly playbackTargetAvailable: boolean;
 
-    trackNumber: number;
+    /**
+     * The current playback queue of the music player.
+     */
+    readonly queue: Queue;
 
-    url: string;
-  }
+    /**
+     * The current repeat mode of the music player.
+     */
+    readonly repeatMode: PlayerRepeatMode;
 
-  interface MediaResourceArtistAttributes {
-    genreNames: string[];
-    name: string;
-    url: string;
-  }
+    /**
+     * The current shuffle mode of the music player.
+     */
+    readonly shuffleMode: PlayerShuffleMode;
 
-  interface MediaResourcePlaylistAttributes {
-    artwork: Artwork;
-    curatorName: string;
-    description: CollectionDescription;
-    lastModifiedDate: string;
-    name: string;
-    playParams: PlayParam;
-    playlistType: PlaylistType;
-    url: string;
-  }
+    /**
+     * A number indicating the current volume of the music player.
+     */
+    readonly volume: number;
 
-  interface MediaResourceAlbumAttributes {
-    artistName: string;
-    artwork: Artwork;
-    contentRating: string; // 'explicit', maybe an enum
-    copyright: string;
-    editorialNotes: CollectionDescription;
-    genreNames: string[];
-    isComplete: boolean;
-    isMasteredForItunes: boolean;
-    isSingle: boolean;
-    name: string;
-    playParams: PlayParam;
-    recordLabel: string;
-    releaseDate: string;
-    trackCount: number;
-    url: string;
-  }
+    /**
+     * Adds an event listener as a callback for an event name.
+     * @param name The name of the event.
+     * @param callback The callback function to invoke when the event occurs.
+     */
+    addEventListener(name: string, callback: CallbackType): void;
 
-  interface MediaResource {
-    attributes:
-      | MediaResourceAlbumAttributes
-      | MediaResourceSongAttributes
-      | MediaResourceArtistAttributes
-      | MediaResourcePlaylistAttributes;
-    id: string;
-    href: string;
-    type: MediaResourceType;
-    relationships?: MediaResourceRelationship;
-  }
+    /**
+     * Begins playing the media item at the specified index in the queue immediately.
+     * @param index The queue index to begin playing media.
+     */
+    changeToMediaAtIndex(index: number): Promise<void>;
 
-  interface MediaResourceRelationship {
-    type: MediaResourceType;
-    [MediaResourceType.album]?: ResourceData;
-    [MediaResourceType.playlist]?: ResourceData;
-    tracks?: ResourceData;
-  }
+    /**
+     * Begins playing the media item in the queue immediately.
+     * @param descriptor A descriptor can be a MusicKit.MediaItem instance or a string identifier.
+     * @returns Returns the current media item position.
+     */
+    changeToMediaItem(descriptor: descriptor): Promise<number>;
 
-  interface ResourceData {
-    data: [MediaResource];
-    href: String;
-    next?: String;
-  }
+    /**
+     * Sets the volume to 0.
+     */
+    mute(): void;
 
-  interface Artwork {
-    bgColor: string;
-    height: number;
-    textColor1: string;
-    textColor2: string;
-    textColor3: string;
-    textColor4: string;
-    url: string;
-    width: number;
-  }
+    /**
+     * Pauses playback of the current item.
+     */
+    pause(): void;
 
-  interface CollectionDescription {
-    short: string;
-    standard: string;
-  }
+    /**
+     * Initiates playback of the current item.
+     */
+    play(): Promise<void>;
 
-  interface PlayParam {
-    id: String;
-    kind: Kind;
-  }
+    /**
+     * Prepares a music player for playback.
+     * @param descriptor A descriptor can be a MusicKit.MediaItem instance or a string identifier.
+     */
+    prepareToPlay(descriptor: descriptor): Promise<void>;
 
-  enum Kind {
-    album = 'album',
-    song = 'song',
-    playlist = 'playlist'
-  }
+    /**
+     * removeEventListener
+     * @param name The name of the event.
+     * @param callback The callback function to remove.
+     */
+    removeEventListener(name: string, callback: CallbackType): void;
 
-  enum PlaylistType {
-    editorial = 'editorial'
-  }
+    /**
+     * Sets the playback point to a specified time.
+     * @param time The time to set as the playback point.
+     */
+    seekToTime(time: number): Promise<void>;
 
-  interface Preview {
-    url: string;
-  }
+    /**
+     * Displays the playback target picker if a playback target is available.
+     */
+    showPlaybackTargetPicker(): void;
 
-  interface SearchResult {
-    [MediaResourceType.album]?: ResourceData;
-    [MediaResourceType.playlist]?: ResourceData;
-    [MediaResourceType.song]?: ResourceData;
-    [MediaResourceType.artist]?: ResourceData;
-  }
+    /**
+     * Starts playback of the next media item in the playback queue.
+     * If the player is not playing, this method designates the next media item as the next to be played.
+     * @returns The current media item position.
+     */
+    skipToNextItem(): Promise<number>;
 
-  enum Events {
-    authorizationStatusDidChange = 'authorizationStatusDidChange',
-    authorizationStatusWillChange = 'authorizationStatusWillChange',
-    bufferedProgressDidChange = 'bufferedProgressDidChange',
-    eligibleForSubscribeView = 'eligibleForSubscribeView',
-    loaded = 'musickitloaded',
-    mediaCanPlay = 'mediaCanPlay',
-    mediaItemDidChange = 'mediaItemDidChange',
-    mediaItemStateDidChange = 'mediaItemStateDidChange',
-    mediaItemStateWillChange = 'mediaItemStateWillChange',
-    mediaItemWillChange = 'mediaItemWillChange',
-    mediaPlaybackError = 'mediaPlaybackError',
-    metadataDidChange = 'metadataDidChange',
-    playbackBitrateDidChange = 'playbackBitrateDidChange',
-    playbackDurationDidChange = 'playbackDurationDidChange',
-    playbackProgressDidChange = 'playbackProgressDidChange',
-    playbackStateDidChange = 'playbackStateDidChange',
-    playbackStateWillChange = 'playbackStateWillChange',
-    playbackTargetAvailableDidChange = 'playbackTargetAvailableDidChange',
-    playbackTimeDidChange = 'playbackTimeDidChange',
-    playbackVolumeDidChange = 'playbackVolumeDidChange',
-    primaryPlayerDidChange = 'primaryPlayerDidChange',
-    queueItemForStartPosition = 'queueItemForStartPosition',
-    queueItemsDidChange = 'queueItemsDidChange',
-    queuePositionDidChange = 'queuePositionDidChange',
-    storefrontCountryCodeDidChange = 'storefrontCountryCodeDidChange',
-    storefrontIdentifierDidChange = 'storefrontIdentifierDidChange',
-    userTokenDidChange = 'userTokenDidChange'
+    /**
+     * Starts playback of the previous media item in the playback queue.
+     * If the player is not playing, this method designates the previous media item as the next to be played.
+     * @returns The current media item position.
+     */
+    skipToPreviousItem(): Promise<number>;
+
+    /**
+     * Stops the currently playing media item.
+     */
+    stop(): void;
   }
 }
 
-// declare var MusicKitInstance: MusicKit.MusicKitInstance;
+declare var MediaItem: MusicKit.MediaItem;

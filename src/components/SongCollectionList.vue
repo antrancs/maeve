@@ -16,12 +16,13 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import SongCollectionItem from './SongCollectionItem.vue';
+import { Collection } from '@/@types/model/model';
 
 @Component({
   components: { SongCollectionItem }
 })
 export default class SongCollectionList extends Vue {
-  @Prop() collections!: any[];
+  @Prop() collections!: Collection[];
 }
 </script>
 

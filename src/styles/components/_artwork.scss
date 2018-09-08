@@ -29,6 +29,10 @@
   position: absolute;
   top: 0;
   width: 100%;
+
+  &.playing {
+    opacity: 1;
+  }
 }
 
 .artwork-overlay__icon {

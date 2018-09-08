@@ -6,13 +6,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 
 @Component({})
 export default class AppHeader extends Vue {
-  @Prop() collectionType!: string;
-  @Prop() songs!: any[];
-
   handleSearchTextChanged(evt: any) {
     const searchText = evt.target.value;
 

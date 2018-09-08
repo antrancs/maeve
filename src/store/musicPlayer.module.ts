@@ -2,8 +2,6 @@ import { GetterTree, MutationTree, ActionTree } from 'vuex';
 
 import musicPlayerService from '@/services/musicPlayer.service';
 import { getArtworkUrl } from '@/utils/utils';
-import { MusicPlayerState, PlayCollectionAtIndexPayload } from './types';
-
 import {
   PAUSE_CURRENT_TRACK,
   PLAY_COLLECTION_AT_INDEX,
@@ -17,6 +15,7 @@ import {
   SET_IS_PLAYING,
   SET_PLAYBACK_PROGESS
 } from '@/store/mutations.type';
+import { MusicPlayerState, PlayCollectionAtIndexPayload } from './types';
 
 const initialState: MusicPlayerState = {
   currentPlaying: null,
@@ -27,21 +26,23 @@ const initialState: MusicPlayerState = {
 const getters: GetterTree<MusicPlayerState, any> = {
   currentTrackArtwork(state) {
     return state.currentPlaying
-      ? getArtworkUrl(state.currentPlaying.attributes.artwork.url, 500, 500)
+      ? getArtworkUrl(state.currentPlaying.artwork.url, 500, 500)
       : '';
   }
 };
 
 const actions: ActionTree<MusicPlayerState, any> = {
   [PLAY_NEXT](context) {
-    musicPlayerService.playNext().then(() => {
-      context.commit(SET_IS_PLAYING, { isPlaying: true });
+    musicPlayerService.playNext().then(currentTrack => {
+      context.commit(SET_CURRENTLY_PLAYING_SONG, currentTrack);
+      context.commit(SET_IS_PLAYING, true);
     });
   },
 
   [PLAY_PREVIOUS](context) {
-    musicPlayerService.playPrevious().then(() => {
-      context.commit(SET_IS_PLAYING, { isPlaying: true });
+    musicPlayerService.playPrevious().then(currentTrack => {
+      context.commit(SET_CURRENTLY_PLAYING_SONG, currentTrack);
+      context.commit(SET_IS_PLAYING, true);
     });
   },
 
@@ -51,13 +52,13 @@ const actions: ActionTree<MusicPlayerState, any> = {
   ) {
     musicPlayerService
       .playCollectionAtIndex(collectionId, collectionType, index)
-      .then(currentlyPlayingTrack => {
-        context.commit(SET_CURRENTLY_PLAYING_SONG, currentlyPlayingTrack);
+      .then(currentTrack => {
+        context.commit(SET_CURRENTLY_PLAYING_SONG, currentTrack);
         context.commit(SET_IS_PLAYING, true);
       });
   },
 
-  [TOGGLE_CURRENT_TRACK]({ dispatch, getters }) {
+  [TOGGLE_CURRENT_TRACK]({ dispatch }) {
     if (musicPlayerService.isPlaying) {
       dispatch(PAUSE_CURRENT_TRACK);
     } else {
@@ -84,8 +85,8 @@ const actions: ActionTree<MusicPlayerState, any> = {
 
 /* eslint no-param-reassign: ["error", { "props": false }] */
 const mutations: MutationTree<MusicPlayerState> = {
-  [SET_CURRENTLY_PLAYING_SONG](state, song: MusicKit.MediaItem) {
-    state.currentPlaying = song;
+  [SET_CURRENTLY_PLAYING_SONG](state, track: MusicKit.MediaItem) {
+    state.currentPlaying = track;
   },
 
   [SET_IS_PLAYING](state, isPlaying: boolean) {

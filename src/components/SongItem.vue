@@ -2,22 +2,21 @@
   <div class="song-item" @click="play">
     <div class="song-item__left">
       <div class="song-item__track-number">
-        <div v-if="collectionType === 'albums'">{{ song.trackNumber }}</div>
-        <img v-else class="artwork" :src="artworkUrl" alt="">
+        <slot :track="track"></slot>
         <div class="track-number__overlay">
           <icon class="icon" name="play"></icon>
         </div>
       </div>
-      <div>{{ song.name }}</div>
+      <div>{{ track.attributes.name }}</div>
     </div>
 
     <div class="song-item__middle">
-      <div class="text-height--one-line">{{ song.artistName }}</div>
+      <div class="text-height--one-line">{{ track.attributes.artistName }}</div>
       <div
-        v-if="collectionType === 'playlists'"
+        v-if="shouldShowAlbumName"
         class="text-height--one-line"
       >
-        {{ song.albumName }}
+        {{ track.attributes.albumName }}
       </div>
     </div>
 
@@ -25,7 +24,7 @@
       <div class="option">
         <icon class="icon" name="ellipsis-v"></icon>
       </div>
-      <div>{{ song.durationInMillis | formatSongDuration }}</div>
+      <div>{{ track.attributes.durationInMillis | formatSongDuration }}</div>
     </div>
   </div>
 </template>
@@ -35,7 +34,6 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import 'vue-awesome/icons/ellipsis-v';
 import 'vue-awesome/icons/play';
 import Icon from 'vue-awesome/components/Icon.vue';
-import { getArtworkUrl } from '@/utils/utils';
 
 @Component({
   components: { Icon },
@@ -55,15 +53,13 @@ import { getArtworkUrl } from '@/utils/utils';
   }
 })
 export default class SongItem extends Vue {
-  @Prop() song!: any;
-  @Prop() collectionType!: string;
-
-  get artworkUrl() {
-    return getArtworkUrl(this.song.artwork.url, 50, 50);
-  }
+  @Prop() track!: MusicKit.SongResource;
+  @Prop() shouldShowAlbumName!: boolean;
+  @Prop() index!: number;
 
   play() {
-    console.log('Playing song');
+    console.log('playing');
+    this.$emit('onSongItemClicked', this.index);
   }
 }
 </script>

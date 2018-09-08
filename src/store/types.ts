@@ -4,12 +4,12 @@ export interface MusicPlayerState {
   playbackProgress: number;
 }
 
-export type PlayCollectionAction = (
+export type PlayCollectionAtIndexAction = (
   payload: PlayCollectionAtIndexPayload
 ) => void;
 
 export type PlayCollectionAtIndexPayload = {
   collectionId: string;
-  collectionType: string;
+  collectionType: MusicKit.Kind;
   index: number;
 };

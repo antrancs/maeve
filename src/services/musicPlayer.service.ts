@@ -1,6 +1,4 @@
 import musicKit from '@/services/musicKit';
-// import SongQueue from '@/utils/SongQueue';
-// import musicApiService, { CollectionType } from '@/services/musicApi.service';
 
 const musicPlayerService = {
   get isPlaying(): boolean {
@@ -37,21 +35,26 @@ const musicPlayerService = {
       .then(() => music.player.nowPlayingItem);
   },
 
-  playNext(): Promise<number> {
-    return musicKit.getPlayerInstance().skipToNextItem();
+  playNext(): Promise<MusicKit.MediaItem> {
+    const musicKitPlayer = musicKit.getPlayerInstance();
+    return musicKitPlayer
+      .skipToNextItem()
+      .then(() => musicKitPlayer.nowPlayingItem);
   },
 
-  playPrevious(): Promise<number> {
-    return musicKit.getPlayerInstance().skipToPreviousItem();
+  playPrevious(): Promise<MusicKit.MediaItem> {
+    const musicKitPlayer = musicKit.getPlayerInstance();
+    return musicKitPlayer
+      .skipToPreviousItem()
+      .then(() => musicKitPlayer.nowPlayingItem);
   },
 
   playCollectionAtIndex(
     collectionId: string,
-    collectionType: string,
+    collectionType: MusicKit.Kind,
     index: number
   ): Promise<MusicKit.MediaItem> {
     const music = musicKit.getInstance();
-
     return music
       .setQueue({
         [collectionType]: collectionId

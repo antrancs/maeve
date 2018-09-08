@@ -27,11 +27,16 @@ export default class ArtistDetail extends Vue {
 
   created() {
     const artistId = this.$route.params.id;
-    musicApiService.getArtist(artistId).then(({ name, albums, playlists }) => {
-      this.info = { name };
-      this.albums = albums;
-      this.playlists = playlists;
-    });
+    musicApiService
+      .getArtist(artistId)
+      .then(({ name, albums, playlists }) => {
+        this.info = { name };
+        this.albums = albums;
+        this.playlists = playlists;
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 }
 </script>

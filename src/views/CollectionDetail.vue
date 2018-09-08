@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="collection-detail-header">
+    <div class="collection-detail-header" v-if="collection">
         <div class="content">
           <h2>{{ collection.name }}</h2>
           <h3>{{ collection.artistName || collection.curatorName }}</h3>
@@ -26,7 +26,11 @@
         </picture>
     </div>
 
-    <song-list :songs="tracks" :collection-type="collectionType"></song-list>
+    <song-list
+      :tracks="tracks"
+      :collection="collection"
+    >
+    </song-list>
   </div>
 </template>
 
@@ -37,21 +41,26 @@ import { Action } from 'vuex-class';
 import SongList from '@/components/SongList.vue';
 import { getArtworkUrl } from '@/utils/utils';
 import musicApiService, { CollectionType } from '@/services/musicApi.service';
-import { PlayCollectionAction } from '@/store/types';
+import { PlayCollectionAtIndexAction } from '@/store/types';
+import { Collection } from '@/@types/model/model';
 
 @Component({
   components: { SongList }
 })
 export default class CollectionDetail extends Vue {
-  collection: any = {};
-  tracks: any[] = [];
+  collection: Collection | null = null;
+  tracks: MusicKit.SongResource[] = [];
 
-  @Action playCollectionAtIndex!: PlayCollectionAction;
+  @Action playCollectionAtIndex!: PlayCollectionAtIndexAction;
 
   get collectionType() {
     return this.$route.path.startsWith('/albums')
       ? CollectionType.album
       : CollectionType.playlist;
+  }
+
+  get collectionId() {
+    return this.$route.params.id;
   }
 
   created() {
@@ -68,12 +77,29 @@ export default class CollectionDetail extends Vue {
   }
 
   play() {
-    const { id, kind } = this.collection.playParams;
+    if (!this.collection) {
+      return;
+    }
+    const { id, kind } = this.collection.attributes.playParams;
 
     this.playCollectionAtIndex({
       collectionId: id,
       collectionType: kind,
       index: 0
+    });
+  }
+
+  handleSongItemClicked(index: number) {
+    if (!this.collection) {
+      return;
+    }
+
+    const { id, kind } = this.collection.attributes.playParams;
+
+    this.playCollectionAtIndex({
+      collectionId: id,
+      collectionType: kind,
+      index: index
     });
   }
 }

@@ -1,6 +1,6 @@
 <template>
-    <div class="header">
-        <h1>Maeve</h1>
+    <div class="app-header">
+        <div class="brand">Maeve</div>
         <input type="text" class="search-bar" @change="handleSearchTextChanged">
     </div>
 </template>
@@ -21,9 +21,14 @@ export default class AppHeader extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.header {
+.app-header {
+  background-color: #1e212c;
   display: flex;
-  height: 50px;
+  flex: 0 0 5rem;
+}
+
+.brand {
+  flex-basis: 18rem;
 }
 
 .search-bar {

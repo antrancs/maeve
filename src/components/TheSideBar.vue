@@ -1,12 +1,12 @@
 <template>
-    <div class="sidebar">
-        <sidebar-authenticated v-if="isLoggedIn"></sidebar-authenticated>
-        <sidebar-unauthenticated v-else></sidebar-unauthenticated>
+  <div class="sidebar">
+    <sidebar-authenticated v-if="isLoggedIn"></sidebar-authenticated>
+    <sidebar-unauthenticated v-else></sidebar-unauthenticated>
 
-        <img
-          class="side-bar__song-artwork"
-          :src="currentTrackArtwork" alt="">
-    </div>
+    <img
+      class="side-bar__song-artwork"
+      :src="currentTrackArtwork" alt="">
+  </div>
 </template>
 
 <script lang="ts">
@@ -30,7 +30,7 @@ export default class AppSidebar extends Vue {
 
 <style lang="scss" scoped>
 .sidebar {
-  flex: 0 0 180px;
+  flex: 0 0 18rem;
 }
 
 .side-bar__song-artwork {

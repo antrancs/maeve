@@ -58,13 +58,10 @@ import 'vue-awesome/icons/play-circle';
 import 'vue-awesome/icons/random';
 import 'vue-awesome/icons/redo';
 import 'vue-awesome/icons/volume-up';
-import Icon from 'vue-awesome/components/Icon.vue';
 
 import { MusicPlayerState } from '@/store/types';
 
-@Component({
-  components: { Icon }
-})
+@Component({})
 export default class PlayerBar extends Vue {
   @State musicPlayer!: MusicPlayerState;
 

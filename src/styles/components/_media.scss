@@ -1,0 +1,32 @@
+.media-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.media-column {
+  flex: 0 0 getColumnWidth(2);
+  margin-bottom: $m-size;
+  margin-right: 1.5%;
+  max-width: getColumnWidth(2);
+}
+
+@media (min-width: $bp-tablet-portrait) {
+  .media-column {
+    flex: 0 0 getColumnWidth(3);
+    max-width: getColumnWidth(3);
+  }
+}
+
+@media (min-width: $bp-tablet-landscape) {
+  .media-column {
+    flex: 0 0 getColumnWidth(4);
+    max-width: getColumnWidth(4);
+  }
+}
+
+@media (min-width: $bp-desktop) {
+  .media-column {
+    flex: 0 0 getColumnWidth(5);
+    max-width: getColumnWidth(5);
+  }
+}

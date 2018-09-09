@@ -8,9 +8,11 @@ html {
 }
 
 body {
-  background: $bg-color;
-  color: $primary-text-color;
+  // background: $bg-color;
+  color: #e8e8e8;
+  font-family: 'Lato', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: $regular-font;
   height: 100%;
-  overflow: hidden;
+  min-width: 100%;
+  overflow-x: hidden;
 }

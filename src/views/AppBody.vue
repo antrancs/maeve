@@ -1,7 +1,9 @@
 <template>
     <div class="app-body">
         <app-sidebar :is-logged-in="true"></app-sidebar>
-        <router-view class="main-content"></router-view>
+        <div class="main-content-wrapper">
+          <router-view class="main-content"></router-view>
+        </div>
     </div>
 </template>
 
@@ -19,14 +21,26 @@ export default class AppBody extends Vue {}
 <style lang="scss" scoped>
 .app-body {
   display: flex;
-  height: calc(100% - 50px);
+  flex: 1;
+  // height: calc(100% - 50px);
+  overflow-y: auto;
+}
+
+.main-content-wrapper {
+  display: flex;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .main-content {
-  height: 100%;
-  overflow-y: auto;
-  padding-left: 16px;
-  padding-bottom: 102px;
-  width: 100%;
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 0 $l-size;
+}
+
+.main-content::after {
+  content: '';
+  display: block;
+  padding-bottom: 100px;
 }
 </style>

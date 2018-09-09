@@ -7,14 +7,21 @@
           <icon class="icon" name="play"></icon>
         </div>
       </div>
-      <div>{{ track.attributes.name }}</div>
+      <div class="song-name long-text-truncated">
+        {{ track.attributes.name }}
+      </div>
+      <icon
+        class="explitcit-icon"
+        v-if="track.attributes.contentRating === 'explicit'"
+        name="explicit"
+      />
     </div>
 
     <div class="song-item__middle">
-      <div class="text-height--one-line">{{ track.attributes.artistName }}</div>
+      <div class="long-text-truncated song-item__artist-name">{{ track.attributes.artistName }}</div>
       <div
         v-if="shouldShowAlbumName"
-        class="text-height--one-line"
+        class="long-text-truncated song-item_album-name"
       >
         {{ track.attributes.albumName }}
       </div>
@@ -33,10 +40,8 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import 'vue-awesome/icons/ellipsis-v';
 import 'vue-awesome/icons/play';
-import Icon from 'vue-awesome/components/Icon.vue';
 
 @Component({
-  components: { Icon },
   filters: {
     formatSongDuration(value: number) {
       if (!value) {

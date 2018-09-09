@@ -4,17 +4,48 @@ $secondary-text-color: #aaa;
 $primary-dark-color: rgb(35, 35, 35);
 $bg-color: linear-gradient(rgb(85, 72, 68), rgb(8, 7, 7) 85%);
 $black-color: #000;
+$white-color: #fff;
 $black-color-0-5: lighten($black-color, 20);
 $player-bar-color: #282828;
 
+$divider-color: rgba(255, 255, 255, 0.08);
+// Foreground colors:
+$fg-color: #e8e8e8;
+$fg-color-1: #cecfd0;
+$fg-color-2: #b3b4b7;
+$fg-color-3: #9c9da1;
+$fg-color-4: #828389;
+$fg-color-5: #6a6b73;
+$fg-color-6: #50515b;
+$fg-color-7: #43444f;
+$fg-color-8: #363843;
+
+// Accent colors:
+$accent-color: #1cc5bc;
+$accent-hover-color: #10b5ac;
+$accent-fg-color: #e1e1e1;
+$accent-fg-hover-color: #cfd3da;
+
+$track-index-color: $fg-color-4;
+$subtitle-color: $fg-color-4;
+
 // Space
-$medium-size: 1.6rem;
+$xs-size: 0.4rem;
+$s-size: 0.8rem;
+$m-size: 1.6rem;
+$l-size: 2.4rem;
+$margin-column: 1.5%;
 
 // Fonts
-$small-font: 1.4rem;
-$regular-font: 1.6rem;
+$regular-font: 1.4rem;
 $large-font: 2.2rem;
 
 // Components' sizes
 $player-bar-height: 7.2rem;
 $line-height: 1.8rem;
+
+// Break points
+$bp-big-desktop: 1800px;
+$bp-desktop: 1200px;
+$bp-tablet-landscape: 900px;
+$bp-tablet-portrait: 768px;

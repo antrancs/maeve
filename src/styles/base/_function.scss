@@ -1,3 +1,7 @@
 @function get-max-line-height($number-of-lines) {
   @return $line-height * $number-of-lines;
 }
+
+@function getColumnWidth($number-of-columns) {
+  @return (100 - $margin-column * $number-of-columns) / $number-of-columns;
+}

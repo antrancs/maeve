@@ -5,6 +5,7 @@
   height: $player-bar-height;
   position: fixed;
   width: 100%;
+  z-index: 100;
 }
 
 .player-bar {

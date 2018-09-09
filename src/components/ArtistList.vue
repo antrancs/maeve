@@ -1,5 +1,5 @@
 <template>
-  <div style="display: flex">
+  <div class="media-list">
     <artist-item
       v-for="artist in artists"
       :key="artist.id"

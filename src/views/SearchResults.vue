@@ -1,25 +1,25 @@
 <template>
     <div>
-        <h2>Search Results</h2>
-        <div>
-          <h3>Artists</h3>
-          <artist-list :artists="artists"></artist-list>
-        </div>
+      <h2>Search Results</h2>
+      <div>
+        <h3>Artists</h3>
+        <artist-list :artists="artists"></artist-list>
+      </div>
 
-        <div>
-          <h3>Songs</h3>
-          <song-collection-list></song-collection-list>
-        </div>
+      <div>
+        <h3>Songs</h3>
+        <song-collection-list></song-collection-list>
+      </div>
 
-        <div>
-          <h3>Albums</h3>
-          <song-collection-list :collections="albums"></song-collection-list>
-        </div>
+      <div>
+        <h3>Albums</h3>
+        <song-collection-list :collections="albums"></song-collection-list>
+      </div>
 
-        <div>
-          <h3>Playlists</h3>
-          <song-collection-list :collections="playlists"></song-collection-list>
-        </div>
+      <div>
+        <h3>Playlists</h3>
+        <song-collection-list :collections="playlists"></song-collection-list>
+      </div>
     </div>
 </template>
 

@@ -26,8 +26,15 @@ const extractArtworkUrl = (html: string) => {
   return artwork;
 };
 
-const formatArtworkUrl = (artworkUrl = '') =>
-  `${artworkUrl.substring(0, artworkUrl.lastIndexOf('/') + 1)}400x400bb.jpg`;
+const formatArtworkUrl = (artworkUrl: string) => {
+  if (!artworkUrl || artworkUrl.length === 0) {
+    return '';
+  }
+  return `${artworkUrl.substring(
+    0,
+    artworkUrl.lastIndexOf('/') + 1
+  )}400x400bb.jpg`;
+};
 
 /**
  * A workaround to get the artwork for an artist as Apple Music API doesn't support it yet

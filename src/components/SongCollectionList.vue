@@ -27,8 +27,4 @@ export default class SongCollectionList extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.media-list {
-  display: flex;
-  flex-wrap: wrap;
-}
 </style>

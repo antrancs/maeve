@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="media-column">
     <router-link :to="{ name: 'artist', params: { id: artist.id }}">
-      <img :src="artistArtwork" alt="" class="artist-item__artwork">
+      <img :src="artistArtwork" alt="" class="artwork">
     </router-link>
 
     <h3>{{artist.attributes.name}}</h3>
@@ -24,15 +24,13 @@ export default class ArtistItem extends Vue {
 
   getArtistArtwork() {
     getArtistArtwork(this.artist.attributes.url).then(artwork => {
-      this.artistArtwork = artwork;
+      this.artistArtwork =
+        artwork.length > 0 ? artwork : 'https://via.placeholder.com/500x500';
     });
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.artist-item__artwork {
-  width: 200px;
-  height: 200px;
-}
+@import '@/styles/components/_artwork.scss';
 </style>

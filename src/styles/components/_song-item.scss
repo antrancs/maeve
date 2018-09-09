@@ -2,8 +2,8 @@
   align-items: center;
   display: flex;
   justify-content: space-between;
-  height: 5.6rem;
-  border-bottom: 0.5px solid gray;
+  height: 5rem;
+  border-bottom: 1px solid $divider-color;
 
   &:hover {
     .option {
@@ -25,7 +25,9 @@
 .song-item__left {
   align-items: center;
   display: flex;
-  flex-basis: 35%;
+  flex-basis: 33%;
+  margin-right: 2%;
+  max-width: 33%;
 }
 
 .song-item__middle {
@@ -51,9 +53,20 @@
 }
 
 .song-item__track-number {
+  color: $track-index-color;
   flex: 0 0 3rem;
+  margin-right: $m-size;
   position: relative;
   text-align: center;
+}
+
+.song-name {
+  color: $fg-color;
+}
+
+.song-item__artist-name,
+.song-item_album-name {
+  color: $fg-color-2;
 }
 
 .track-number__overlay {

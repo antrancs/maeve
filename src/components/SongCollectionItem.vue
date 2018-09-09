@@ -1,5 +1,5 @@
 <template>
-  <div class="song-collection">
+  <div class="media-column">
     <router-link :to="{ path: `${collection.type}/${collection.id}` }">
       <div class="artwork-wrapper">
         <img class="artwork" :src="artworkUrl" alt="">
@@ -20,8 +20,21 @@
       </div>
     </router-link>
 
-    <p class="media-item__info-title">{{collection.name}}</p>
-    <p>{{collection.artistName || collection.curatorName}}</p>
+    <div class="media-details">
+      <div class="media-details__title">
+        <div class="long-text-truncated">
+          {{ collection.attributes.name }}
+        </div>
+        <icon
+          class="explitcit-icon"
+          v-if="collection.attributes.contentRating === 'explicit'"
+          name="explicit"
+        />
+      </div>
+      <div class="media-details__subtitle">
+        {{ collection.attributes.artistName || collection.attributes.curatorName }}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -30,16 +43,13 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { State, Action } from 'vuex-class';
 import 'vue-awesome/icons/play-circle';
 import 'vue-awesome/icons/pause-circle';
-import Icon from 'vue-awesome/components/Icon.vue';
 
 import { getArtworkUrl } from '@/utils/utils';
 import { PlayCollectionAtIndexPayload } from '@/store/types';
 import { Collection } from '@/@types/model/model';
 import { MusicPlayerState } from '@/store/types';
 
-@Component({
-  components: { Icon }
-})
+@Component({})
 export default class SongCollectionItem extends Vue {
   @Prop() collection!: Collection;
   @State musicPlayer!: MusicPlayerState;
@@ -79,6 +89,19 @@ export default class SongCollectionItem extends Vue {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/components/_song-collection.scss';
 @import '@/styles/components/_artwork.scss';
+
+.media-details {
+  margin-top: $s-size;
+}
+
+.media-details__title {
+  align-items: center;
+  display: flex;
+}
+
+.media-details__subtitle {
+  color: $subtitle-color;
+  margin-top: $xs-size;
+}
 </style>

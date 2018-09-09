@@ -1,28 +1,45 @@
 <template>
-  <div>
+  <div class="collection-detail">
     <div class="collection-detail-header" v-if="collection">
-        <div class="content">
-          <h2>{{ collection.name }}</h2>
-          <h3>{{ collection.artistName || collection.curatorName }}</h3>
-          <button @click="play">Play</button>
-          <button>Shuffle </button>
+        <div class="content group-control">
+          <img :src="getCollectionArtwork(300, 300)" class="collection-artwork"/>
+          
+          <div>
+            <h2 class="collection-title">
+              {{ collectionName }}
+              <icon v-if="collection.attributes.contentRating === 'explicit'" name="explicit"/>
+            </h2>
+            <span class="collection-subtitle">
+              {{ collectionArtistName }}
+              -
+              {{releaseYear}}
+            </span>
+
+            <div>
+              {{ tracks.length }} tracks
+            </div>
+            <div class="group-control">
+              <button @click="play" class="button">PLAY</button>
+              <button class="button">SHUFFLE</button>
+            </div>
+          </div>
         </div>
         <picture class="collection-detail-header__banner">
           <source
-            media="(max-width: 540px)"
-            :srcset="getArtworkUrl(collection.artwork, 540, 540)">
+            media="(min-width: 1200px)"
+            :srcset="getCollectionArtwork(1000, 1000)">
 
           <source
-            media="(max-width: 817px)"
-            :srcset="getArtworkUrl(collection.artwork, 817, 817)">
+            media="(min-width: 900px)"
+            :srcset="getCollectionArtwork(800, 800)">
 
           <source
-            media="(max-width: 1105px)"
-            :srcset="getArtworkUrl(collection.artwork, 1105, 1105)">
+            media="(min-width: 768px)"
+            :srcset="getCollectionArtwork(540, 540)">
 
           <img
             class="image"
-            :src="getArtworkUrl(collection.artwork, 400, 400)"/>
+            :src="getCollectionArtwork(400, 400)"/>
         </picture>
     </div>
 
@@ -53,27 +70,51 @@ export default class CollectionDetail extends Vue {
 
   @Action playCollectionAtIndex!: PlayCollectionAtIndexAction;
 
-  get collectionType() {
+  get collectionName(): string {
+    return this.collection ? this.collection.attributes.name : '';
+  }
+
+  get collectionArtistName(): string {
+    return this.collection
+      ? this.collection.attributes.artistName ||
+          this.collection.attributes.curatorName
+      : '';
+  }
+
+  get collectionType(): string {
     return this.$route.path.startsWith('/albums')
       ? CollectionType.album
       : CollectionType.playlist;
   }
 
-  get collectionId() {
+  get collectionId(): string {
     return this.$route.params.id;
+  }
+
+  get releaseYear(): string {
+    if (!this.collection) {
+      return '';
+    }
+    const date =
+      this.collection.attributes.releaseDate ||
+      this.collection.attributes.lastModifiedDate;
+    return date.substring(0, 4);
   }
 
   created() {
     const collectionId = this.$route.params.id;
     musicApiService
-      .getCollection(collectionId, this.collectionType)
+      .getCollection(collectionId, <CollectionType>this.collectionType)
       .then(({ collection, tracks }) => {
         this.collection = collection;
         this.tracks = tracks;
       });
   }
-  getArtworkUrl(artwork: MusicKit.Artwork, width: number, height: number) {
-    return artwork ? getArtworkUrl(artwork.url, width, height) : '';
+
+  getCollectionArtwork(width: number, height: number) {
+    return this.collection
+      ? getArtworkUrl(this.collection.attributes.artwork.url, width, height)
+      : '';
   }
 
   play() {
@@ -106,17 +147,29 @@ export default class CollectionDetail extends Vue {
 </script>
 
 <style lang="scss" scoped>
+.collection-detail {
+  width: 100%;
+}
+
+.collection-artwork {
+  width: 20rem;
+  height: 20rem;
+}
+
 .collection-detail-header {
-  height: 350px;
+  height: 40rem;
   position: relative;
 }
 
 .content {
-  position: relative;
-  z-index: 100;
-  background-color: rgba($color: (#000000), $alpha: 0.4);
+  align-items: flex-end;
+  background-color: rgba($color: (#000000), $alpha: 0.6);
   color: white;
+  display: flex;
   height: 100%;
+  padding: $m-size;
+  position: relative;
+  z-index: 50;
 }
 
 .collection-detail-header__banner {
@@ -127,9 +180,21 @@ export default class CollectionDetail extends Vue {
   overflow: hidden;
 }
 
+.collection-title {
+  font-size: 3rem;
+  margin: 0 0 $s-size 0;
+}
+
+.collection-subtitle {
+  color: $subtitle-color;
+  font-size: 1.8rem;
+}
+
+.collection-artist {
+}
+
 .image {
   width: 100%;
-  height: 100%;
   object-fit: cover;
 }
 </style>

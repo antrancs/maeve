@@ -1,0 +1,13 @@
+.button {
+  background-color: $accent-color;
+  border: none;
+  border-radius: 0.4rem;
+  color: $accent-fg-color;
+  padding: 1.5rem;
+  width: 14rem;
+}
+
+.button:hover {
+  background-color: $accent-hover-color;
+  color: $accent-fg-hover-color;
+}

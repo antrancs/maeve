@@ -4,7 +4,7 @@
       <img :src="artistArtwork" alt="" class="artwork">
     </router-link>
 
-    <h3>{{artist.attributes.name}}</h3>
+    <h3>{{ artist.attributes.name }}</h3>
   </div>
 </template>
 
@@ -13,9 +13,10 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { getArtistArtwork } from '@/utils/utils';
 import { Artist } from '@/@types/model/model';
 
-@Component({})
+@Component
 export default class ArtistItem extends Vue {
   @Prop() artist!: MusicKit.ArtistResource;
+
   artistArtwork: string = '';
 
   created() {

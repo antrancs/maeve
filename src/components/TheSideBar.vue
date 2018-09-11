@@ -30,6 +30,7 @@ export default class AppSidebar extends Vue {
 
 <style lang="scss" scoped>
 .sidebar {
+  background-color: $sidebar-color;
   flex: 0 0 18rem;
 }
 

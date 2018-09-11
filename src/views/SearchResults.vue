@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="content-spacing">
       <h2>Search Results</h2>
       <div>
         <h3>Artists</h3>

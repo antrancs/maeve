@@ -20,6 +20,9 @@ $fg-color-6: #50515b;
 $fg-color-7: #43444f;
 $fg-color-8: #363843;
 
+// Background colors:
+$bg-in-1: #0b0e1a;
+
 // Accent colors:
 $accent-color: #1cc5bc;
 $accent-hover-color: #10b5ac;
@@ -28,12 +31,14 @@ $accent-fg-hover-color: #cfd3da;
 
 $track-index-color: $fg-color-4;
 $subtitle-color: $fg-color-4;
+$sidebar-color: $bg-in-1;
 
 // Space
 $xs-size: 0.4rem;
 $s-size: 0.8rem;
 $m-size: 1.6rem;
 $l-size: 2.4rem;
+$xl-size: 3.2rem;
 $margin-column: 1.5%;
 
 // Fonts

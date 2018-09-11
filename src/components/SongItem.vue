@@ -1,15 +1,33 @@
 <template>
-  <div class="song-item" @click="play">
+  <div class="song-item">
     <div class="song-item__left">
-      <div class="song-item__track-number">
-        <slot :track="track"></slot>
-        <div class="track-number__overlay">
-          <icon class="icon" name="play"></icon>
+      <div class="index-column">
+        <media-artwork
+          v-if="!isFromAlbum"
+          :artwork-url="artworkUrl"
+        >
+        </media-artwork>
+
+        <media-artwork-overlay
+          :show-background="!isFromAlbum"
+          :is-active="isActive"
+          :is-playing="isPlaying"
+          @playingControlClicked="() => onSongItemClicked(index)"
+        >
+        </media-artwork-overlay>
+
+        <div
+          v-show="isFromAlbum && !isActive"
+          class="track-number"
+        >
+          {{ track.attributes.trackNumber }}
         </div>
       </div>
+
       <div class="song-name long-text-truncated">
         {{ track.attributes.name }}
       </div>
+
       <icon
         class="explitcit-icon"
         v-if="track.attributes.contentRating === 'explicit'"
@@ -38,10 +56,16 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import { State } from 'vuex-class';
 import 'vue-awesome/icons/ellipsis-v';
-import 'vue-awesome/icons/play';
+
+import { MusicPlayerState } from '@/store/types';
+import { getArtworkUrl } from '@/utils/utils';
+import MediaArtwork from './MediaArtwork.vue';
+import MediaArtworkOverlay from './MediaArtworkOverlay.vue';
 
 @Component({
+  components: { MediaArtworkOverlay, MediaArtwork },
   filters: {
     formatSongDuration(value: number) {
       if (!value) {
@@ -59,12 +83,28 @@ import 'vue-awesome/icons/play';
 })
 export default class SongItem extends Vue {
   @Prop() track!: MusicKit.SongResource;
-  @Prop() shouldShowAlbumName!: boolean;
+  @Prop({ default: true })
+  shouldShowAlbumName!: boolean;
+  @Prop({ default: true })
+  isFromAlbum!: boolean;
   @Prop() index!: number;
+  @Prop() onSongItemClicked!: (index: number) => void;
 
-  play() {
-    console.log('playing');
-    this.$emit('onSongItemClicked', this.index);
+  @State musicPlayer!: MusicPlayerState;
+
+  get isActive(): boolean {
+    return (
+      this.musicPlayer.currentPlaying !== null &&
+      this.musicPlayer.currentPlaying.id === this.track.id
+    );
+  }
+
+  get isPlaying(): boolean {
+    return this.musicPlayer.isPlaying;
+  }
+
+  get artworkUrl(): string {
+    return getArtworkUrl(this.track.attributes.artwork.url, 50, 50);
   }
 }
 </script>
@@ -73,6 +113,6 @@ export default class SongItem extends Vue {
 @import '@/styles/components/_song-item.scss';
 
 .artwork {
-  max-width: 3rem;
+  max-width: 3.2rem;
 }
 </style>

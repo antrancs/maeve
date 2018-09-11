@@ -8,7 +8,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
-@Component({})
+@Component
 export default class AppHeader extends Vue {
   handleSearchTextChanged(evt: any) {
     const searchText = evt.target.value;

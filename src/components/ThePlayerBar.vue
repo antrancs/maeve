@@ -61,7 +61,7 @@ import 'vue-awesome/icons/volume-up';
 
 import { MusicPlayerState } from '@/store/types';
 
-@Component({})
+@Component
 export default class PlayerBar extends Vue {
   @State musicPlayer!: MusicPlayerState;
 

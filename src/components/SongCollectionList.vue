@@ -22,7 +22,8 @@ import { Collection } from '@/@types/model/model';
   components: { SongCollectionItem }
 })
 export default class SongCollectionList extends Vue {
-  @Prop() collections!: Collection[];
+  @Prop({ default: () => [] })
+  collections!: Collection[];
 }
 </script>
 

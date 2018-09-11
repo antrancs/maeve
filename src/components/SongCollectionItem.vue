@@ -5,16 +5,17 @@
         <img class="artwork" :src="artworkUrl" alt="">
         <div class="artwork-overlay" :class="artworkOverlayClass">
           <div @click.prevent="handleIconClicked">
-            <icon v-if="isCollectionBeingPlayed && musicPlayer.isPlaying"
+            <icon
+              v-if="isCollectionBeingPlayed && musicPlayer.isPlaying"
               class="artwork-overlay__icon"
               name="pause-circle"
             >
             </icon>
-             <icon v-else
+            <icon v-else
               class="artwork-overlay__icon"
               name="play-circle"
             >
-             </icon>
+            </icon>
           </div>
         </div>
       </div>
@@ -49,10 +50,12 @@ import { PlayCollectionAtIndexPayload } from '@/store/types';
 import { Collection } from '@/@types/model/model';
 import { MusicPlayerState } from '@/store/types';
 
-@Component({})
+@Component
 export default class SongCollectionItem extends Vue {
   @Prop() collection!: Collection;
+
   @State musicPlayer!: MusicPlayerState;
+
   @Action
   playCollectionAtIndex!: (payload: PlayCollectionAtIndexPayload) => void;
   @Action toggleCurrentTrack!: () => void;
@@ -72,7 +75,7 @@ export default class SongCollectionItem extends Vue {
     return getArtworkUrl(this.collection.attributes.artwork.url, 500, 500);
   }
 
-  handleIconClicked() {
+  private handleIconClicked() {
     if (this.isCollectionBeingPlayed) {
       this.toggleCurrentTrack();
     } else {

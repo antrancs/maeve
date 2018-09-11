@@ -18,7 +18,8 @@ import ArtistItem from './ArtistItem.vue';
   components: { ArtistItem }
 })
 export default class ArtistList extends Vue {
-  @Prop() artists!: Artist[];
+  @Prop({ default: () => [] })
+  artists!: Artist[];
 }
 </script>
 

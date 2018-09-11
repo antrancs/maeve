@@ -32,12 +32,6 @@ export default class AppBody extends Vue {}
   overflow-y: auto;
 }
 
-.main-content {
-  margin: 0 auto;
-  max-width: 1200px;
-  padding: 0 $l-size;
-}
-
 .main-content::after {
   content: '';
   display: block;

@@ -1,26 +1,28 @@
 <template>
   <div class="collection-detail">
     <div class="collection-detail-header" v-if="collection">
-        <div class="content group-control">
-          <img :src="getCollectionArtwork(300, 300)" class="collection-artwork"/>
+        <div class="banner-overlay">
+          <div class="content-spacing content group-control">
+            <img :src="getCollectionArtwork(300, 300)" class="collection-artwork"/>
           
-          <div>
-            <h2 class="collection-title">
-              {{ collectionName }}
-              <icon v-if="collection.attributes.contentRating === 'explicit'" name="explicit"/>
-            </h2>
-            <span class="collection-subtitle">
-              {{ collectionArtistName }}
-              -
-              {{releaseYear}}
-            </span>
-
             <div>
-              {{ tracks.length }} tracks
-            </div>
-            <div class="group-control">
-              <button @click="play" class="button">PLAY</button>
-              <button class="button">SHUFFLE</button>
+              <h2 class="collection-title">
+                {{ collectionName }}
+                <icon v-if="collection.attributes.contentRating === 'explicit'" name="explicit"/>
+              </h2>
+              <span class="collection-subtitle">
+                {{ collectionArtistName }}
+                -
+                {{releaseYear}}
+              </span>
+
+              <div>
+                {{ tracks.length }} tracks
+              </div>
+              <div class="group-control">
+                <button @click="play" class="button">PLAY</button>
+                <button class="button">SHUFFLE</button>
+              </div>
             </div>
           </div>
         </div>
@@ -43,11 +45,13 @@
         </picture>
     </div>
 
-    <song-list
-      :tracks="tracks"
-      :collection="collection"
-    >
-    </song-list>
+    <div class="content-spacing">
+       <song-list
+        :tracks="tracks"
+        :collection="collection"
+      >
+      </song-list>
+    </div>
   </div>
 </template>
 
@@ -158,16 +162,23 @@ export default class CollectionDetail extends Vue {
 
 .collection-detail-header {
   height: 40rem;
+  margin-bottom: $xl-size;
   position: relative;
+}
+
+.banner-overlay {
+  background-color: rgba($color: (#000000), $alpha: 0.6);
+  height: 100%;
+  position: relative;
+  z-index: 40;
 }
 
 .content {
   align-items: flex-end;
-  background-color: rgba($color: (#000000), $alpha: 0.6);
   color: white;
   display: flex;
   height: 100%;
-  padding: $m-size;
+  padding-bottom: $l-size;
   position: relative;
   z-index: 50;
 }

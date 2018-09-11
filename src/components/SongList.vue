@@ -5,32 +5,22 @@
       v-for="(track, index) in tracks"
       :track="track"
       :index="index"
-      :shouldShowAlbumName="shouldShowAlbumName"
-      @onSongItemClicked="handleSongItemClicked"
+      :is-from-album="isFromAlbum"
+      :on-song-item-clicked="handleSongItemClicked"
     >
-      <template slot-scope="slotProps">
-        <div v-if="isFromAlbum" class="track-number">
-          {{ slotProps.track.attributes.trackNumber }}
-        </div>
-        <img
-          v-else class="artwork"
-          :src="getArtworkUrl(slotProps.track.attributes.artwork.url)"
-          alt=""
-        />
-      </template>
     </song-item>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Action } from 'vuex-class';
+import { Action, State } from 'vuex-class';
 
-import { getArtworkUrl } from '@/utils/utils';
-import { PlayCollectionAtIndexAction } from '@/store/types';
-import SongItem from './SongItem.vue';
 import { CollectionType } from '@/services/musicApi.service';
 import { Collection } from '@/@types/model/model';
+import { PlayCollectionAtIndexAction } from '@/store/types';
+import { MusicPlayerState } from '@/store/types';
+import SongItem from './SongItem.vue';
 
 @Component({
   components: { SongItem }
@@ -39,20 +29,31 @@ export default class SongList extends Vue {
   @Prop() collection!: Collection | null;
   @Prop() tracks!: MusicKit.SongResource[];
 
-  @Action playCollectionAtIndex!: PlayCollectionAtIndexAction;
+  @State musicPlayer!: MusicPlayerState;
 
-  get isFromAlbum() {
-    return this.collection && this.collection.type === CollectionType.album;
+  @Action playCollectionAtIndex!: PlayCollectionAtIndexAction;
+  @Action toggleCurrentTrack!: () => void;
+
+  get isFromAlbum(): boolean {
+    return (
+      this.collection !== null && this.collection.type === CollectionType.album
+    );
   }
 
-  get shouldShowAlbumName() {
+  get shouldShowAlbumName(): boolean {
     return !this.collection || this.collection.type === CollectionType.playlist;
   }
-  getArtworkUrl(artworkUrl: string) {
-    return getArtworkUrl(artworkUrl, 50, 50);
-  }
 
-  handleSongItemClicked(index: number) {
+  handleSongItemClicked(index: number): void {
+    // the clicked song is being played, just toggle the current track
+    if (
+      this.musicPlayer.currentPlaying &&
+      this.musicPlayer.currentPlaying.id === this.tracks[index].id
+    ) {
+      this.toggleCurrentTrack();
+      return;
+    }
+
     if (this.collection) {
       const { id, kind } = this.collection.attributes.playParams;
       this.playCollectionAtIndex({
@@ -71,8 +72,22 @@ export default class SongList extends Vue {
 .artwork {
   max-width: 3rem;
 }
+
 .song-list {
   color: $fg-color-4;
   width: 100%;
+}
+
+.icon-playing {
+  align-items: center;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 50;
 }
 </style>

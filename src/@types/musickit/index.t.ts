@@ -254,6 +254,16 @@ declare namespace MusicKit {
      * @param parameters A query parameters object that is serialized and passed directly to the Apple Music API.
      */
     search(term: string, parameters: QueryParameters): Promise<SearchResult>;
+
+    /**
+     * Fetch a storefront using its identifier.
+     * @param id A storefront identifier.
+     * @param parameters A query parameters object that is serialized and passed directly to the Apple Music API.
+     * @returns A storefront resource.
+     */
+    storefront(id: string, parameters: QueryParameters): Promise<any>;
+
+    recommendations(): Promise<any[]>;
   }
 
   /**
@@ -427,6 +437,7 @@ declare namespace MusicKit {
     id: string;
     href: string;
     relationships?: ResourceRelationship;
+    // type: string;
   }
 
   interface PlaylistResourceAttribute {
@@ -560,27 +571,29 @@ declare namespace MusicKit {
   interface SearchResult {
     [ResourceType.album]?: {
       data: [AlbumResource];
-      href: String;
-      next?: String;
+      href: string;
+      next?: string;
     };
 
     [ResourceType.playlist]?: {
       data: [PlaylistResource];
-      href: String;
-      next?: String;
+      href: string;
+      next?: string;
     };
 
     [ResourceType.song]?: {
       data: [SongResource];
-      href: String;
-      next?: String;
+      href: string;
+      next?: string;
     };
 
     [ResourceType.artist]?: {
       data: [ArtistResource];
-      href: String;
-      next?: String;
+      href: string;
+      next?: string;
     };
+
+    [key: string]: any;
   }
 
   enum Kind {
@@ -907,6 +920,8 @@ declare namespace MusicKit {
      */
     stop(): void;
   }
+
+  interface ResponseRoot {}
 }
 
 declare var MediaItem: MusicKit.MediaItem;

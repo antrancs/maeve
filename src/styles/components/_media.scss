@@ -19,14 +19,14 @@
 
 @media (min-width: $bp-tablet-landscape) {
   .media-column {
-    flex: 0 0 getColumnWidth(4);
-    max-width: getColumnWidth(4);
+    flex: 0 0 getColumnWidth(5);
+    max-width: getColumnWidth(5);
   }
 }
 
 @media (min-width: $bp-desktop) {
   .media-column {
-    flex: 0 0 getColumnWidth(5);
-    max-width: getColumnWidth(5);
+    flex: 0 0 getColumnWidth(6);
+    max-width: getColumnWidth(6);
   }
 }

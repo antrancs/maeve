@@ -16,6 +16,7 @@
     "vue": "^2.5.17",
     "vue-awesome": "^3.1.0",
     "vue-class-component": "^6.2.0",
+    "vue-infinite-loading": "^2.3.3",
     "vue-property-decorator": "^7.0.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",

@@ -1,6 +1,6 @@
 <template>
   <div class="media-column">
-    <router-link :to="{ path: `${collection.type}/${collection.id}` }">
+    <router-link :to="{ name: collection.type, params: { id: collection.id } }">
       <div class="artwork-wrapper">
         <img class="artwork" :src="artworkUrl" alt="">
         <div class="artwork-overlay" :class="artworkOverlayClass">

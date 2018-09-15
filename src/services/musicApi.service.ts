@@ -15,14 +15,14 @@ enum CollectionType {
 }
 
 const MusicApiService = {
-  search(
+  searchAll(
     searchString = ''
   ): Promise<{
     albums: MusicKit.AlbumResource[];
     songs: MusicKit.SongResource[];
     artists: MusicKit.ArtistResource[];
     playlists: MusicKit.PlaylistResource[];
-  }> {
+  } | null> {
     if (!searchString) {
       return Promise.reject();
     }
@@ -30,14 +30,15 @@ const MusicApiService = {
     return musicKit
       .getApiInstance()
       .search(searchString, {
-        limit: 10,
+        limit: 11,
         types: Object.values(MediaType).join(',')
       })
       .then(result => {
-        if (Object.keys(result).length === 0) {
-          return { albums: [], playlists: [], artists: [], songs: [] };
+        if (this.isResultEmpty(result)) {
+          return null;
         }
 
+        console.log(result);
         const albums = result.albums ? result.albums.data : [];
         const playlists = result.playlists ? result.playlists.data : [];
         const artists = result.artists ? result.artists.data : [];
@@ -52,12 +53,43 @@ const MusicApiService = {
       });
   },
 
+  searchOneResource(
+    query: string,
+    resourceType: string,
+    limit: number,
+    offset: number
+  ): Promise<{
+    data: MusicKit.AlbumResource[];
+    hasNext: boolean;
+    offset: number;
+  } | null> {
+    this.getRecommendations();
+    return musicKit
+      .getApiInstance()
+      .search(query, {
+        limit,
+        types: resourceType,
+        offset
+      })
+      .then(result => {
+        if (this.isResultEmpty(result) || !result[resourceType]) {
+          return null;
+        }
+        const resource = result[resourceType];
+        const hasNext = !!resource.next;
+        return {
+          data: resource.data,
+          hasNext,
+          offset: hasNext ? this.getOffsetFromNext(result.albums!.next!) : 0
+        };
+      });
+  },
+
   getArtist(artistId: string) {
     return musicKit
       .getApiInstance()
       .artist(artistId, { include: 'albums,playlists' })
       .then(artistRes => {
-        console.log(artistRes);
         // relationships should be there when specifing 'include' in the search parameter
         const relationships = artistRes.relationships!;
         return {
@@ -66,6 +98,10 @@ const MusicApiService = {
           playlists: relationships.playlists ? relationships.playlists.data : []
         };
       });
+  },
+
+  getRecommendations() {
+    return musicKit.getApiInstance().recommendations();
   },
 
   extractCollectionResult(
@@ -95,7 +131,6 @@ const MusicApiService = {
     collection: Collection;
     tracks: MusicKit.SongResource[];
   } | null> {
-    console.log(collectionId, collectionType);
     if (collectionType === CollectionType.album) {
       return musicKit
         .getApiInstance()
@@ -107,6 +142,19 @@ const MusicApiService = {
         .playlist(collectionId, { include: 'tracks' })
         .then(this.extractCollectionResult);
     }
+  },
+
+  isResultEmpty(result: object) {
+    return Object.keys(result).length === 0;
+  },
+
+  getOffsetFromNext(next: string): number {
+    const matches = next.match(/search\?offset=(\d+)/);
+
+    if (!matches || matches.length < 2) {
+      return 0;
+    }
+    return +matches[1];
   }
 };
 

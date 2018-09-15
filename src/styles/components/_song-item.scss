@@ -17,11 +17,6 @@
 }
 
 .song-item__left {
-  // align-items: center;
-  // display: flex;
-  // flex-basis: 33%;
-  // margin-right: 2%;
-  // max-width: 33%;
   border-radius: 0.2rem;
   overflow: hidden;
   flex: none;
@@ -36,17 +31,6 @@
   display: flex;
   flex: 1;
   flex-wrap: wrap;
-  // justify-content: center;
-  // max-width: 55%;
-
-  // :nth-child(1) {
-  //   flex-basis: 45%;
-  //   margin-right: 5%;
-  // }
-
-  // :nth-child(2) {
-  //   flex-basis: 55%;
-  // }
 }
 
 .song-item__right {

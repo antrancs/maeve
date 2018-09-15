@@ -1,6 +1,6 @@
 <template>
   <div class="media-column">
-    <router-link :to="{ name: 'artist', params: { id: artist.id }}">
+    <router-link :to="{ name: 'artists', params: { id: artist.id }}">
       <img :src="artistArtwork" alt="" class="artwork">
     </router-link>
 

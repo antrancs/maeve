@@ -96,7 +96,7 @@ declare namespace MusicKit {
     /**
      * Unauthorizes the app for the current user.
      */
-    unauthorize(): void;
+    unauthorize(): Promise<void>;
 
     /**
      * Pauses playback of the media player.

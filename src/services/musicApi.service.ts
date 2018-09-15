@@ -70,7 +70,11 @@ const MusicApiService = {
 
   extractCollectionResult(
     result: MusicKit.AlbumResource | MusicKit.PlaylistResource
-  ): { collection: Collection; tracks: MusicKit.SongResource[] } {
+  ): { collection: Collection; tracks: MusicKit.SongResource[] } | null {
+    if (!result) {
+      return null;
+    }
+
     const { attributes, id, type } = result;
     let tracks = result.relationships ? result.relationships.tracks!.data : [];
 
@@ -87,7 +91,11 @@ const MusicApiService = {
   getCollection(
     collectionId: string,
     collectionType: CollectionType
-  ): Promise<{ collection: Collection; tracks: MusicKit.SongResource[] }> {
+  ): Promise<{
+    collection: Collection;
+    tracks: MusicKit.SongResource[];
+  } | null> {
+    console.log(collectionId, collectionType);
     if (collectionType === CollectionType.album) {
       return musicKit
         .getApiInstance()

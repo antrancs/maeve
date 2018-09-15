@@ -7,6 +7,7 @@
       :index="index"
       :is-from-album="isFromAlbum"
       :on-song-item-clicked="handleSongItemClicked"
+      :is-playlist="isPlaylist"
     >
     </song-item>
   </div>
@@ -26,8 +27,10 @@ import SongItem from './SongItem.vue';
   components: { SongItem }
 })
 export default class SongList extends Vue {
-  @Prop() collection!: Collection | null;
+  @Prop() collection!: Collection | undefined;
   @Prop() tracks!: MusicKit.SongResource[];
+  @Prop({ default: false })
+  isPlaylist!: boolean;
 
   @State musicPlayer!: MusicPlayerState;
 
@@ -36,12 +39,9 @@ export default class SongList extends Vue {
 
   get isFromAlbum(): boolean {
     return (
-      this.collection !== null && this.collection.type === CollectionType.album
+      this.collection !== undefined &&
+      this.collection.type === CollectionType.album
     );
-  }
-
-  get shouldShowAlbumName(): boolean {
-    return !this.collection || this.collection.type === CollectionType.playlist;
   }
 
   handleSongItemClicked(index: number): void {

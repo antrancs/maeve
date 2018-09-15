@@ -72,7 +72,8 @@ export default class CollectionDetail extends Vue {
   collection: Collection | null = null;
   tracks: MusicKit.SongResource[] = [];
 
-  @Action playCollectionAtIndex!: PlayCollectionAtIndexAction;
+  @Action
+  playCollectionAtIndex!: PlayCollectionAtIndexAction;
 
   get collectionName(): string {
     return this.collection ? this.collection.attributes.name : '';
@@ -109,7 +110,11 @@ export default class CollectionDetail extends Vue {
     const collectionId = this.$route.params.id;
     musicApiService
       .getCollection(collectionId, <CollectionType>this.collectionType)
-      .then(({ collection, tracks }) => {
+      .then(result => {
+        if (!result) {
+          return;
+        }
+        const { collection, tracks } = result;
         this.collection = collection;
         this.tracks = tracks;
       });
@@ -167,7 +172,12 @@ export default class CollectionDetail extends Vue {
 }
 
 .banner-overlay {
-  background-color: rgba($color: (#000000), $alpha: 0.6);
+  background-color: rgba(
+    $color: (
+      #000000
+    ),
+    $alpha: 0.6
+  );
   height: 100%;
   position: relative;
   z-index: 40;

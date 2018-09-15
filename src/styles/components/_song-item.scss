@@ -17,34 +17,41 @@
 }
 
 .song-item__left {
-  align-items: center;
-  display: flex;
-  flex-basis: 33%;
-  margin-right: 2%;
-  max-width: 33%;
+  // align-items: center;
+  // display: flex;
+  // flex-basis: 33%;
+  // margin-right: 2%;
+  // max-width: 33%;
+  border-radius: 0.2rem;
+  overflow: hidden;
+  flex: none;
+  height: 3.2rem;
+  width: 3.2rem;
+  margin-right: 2.4rem;
+  position: relative;
 }
 
 .song-item__middle {
-  align-items: center;
+  align-items: flex-start;
   display: flex;
-  flex-basis: 55%;
-  justify-content: center;
-  max-width: 55%;
+  flex: 1;
+  flex-wrap: wrap;
+  // justify-content: center;
+  // max-width: 55%;
 
-  :nth-child(1) {
-    flex-basis: 45%;
-    margin-right: 5%;
-  }
+  // :nth-child(1) {
+  //   flex-basis: 45%;
+  //   margin-right: 5%;
+  // }
 
-  :nth-child(2) {
-    flex-basis: 55%;
-  }
+  // :nth-child(2) {
+  //   flex-basis: 55%;
+  // }
 }
 
 .song-item__right {
-  display: flex;
-  justify-content: flex-end;
-  flex-basis: 10%;
+  flex: none;
+  width: 50px;
 }
 
 .index-column {
@@ -63,13 +70,39 @@
   display: none;
 }
 
-.song-name {
+.song-item__song-name {
   color: $fg-color;
+  display: flex;
+  flex-basis: 38%;
+  margin-right: 2%;
+
+  &.playlist {
+    flex: 0 0 98%;
+  }
 }
 
 .song-item__artist-name,
-.song-item_album-name {
+.song-item__album-name {
   color: $fg-color-2;
+}
+
+.song-item__artist-name {
+  flex-basis: 28%;
+  margin-right: 2%;
+
+  &.playlist {
+    flex: 0 0 auto;
+  }
+}
+
+.song-item__album-name {
+  flex-basis: 28%;
+  margin-right: 2%;
+
+  &.playlist {
+    flex: 0 0 auto;
+    max-width: 40%;
+  }
 }
 
 .option {

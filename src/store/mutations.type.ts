@@ -4,3 +4,7 @@ export const SET_CURRENTLY_PLAYING_SONG = 'setCurrentlyPlayingSong';
 export const SET_IS_PLAYING = 'setIsPlaying';
 export const SET_PLAYBACK_PROGESS = 'setPlaybackProgress';
 export const SET_SONG_QUEUE = 'setSongQueue';
+
+export const SET_USER_TOKEN = 'setUserToken';
+export const LOGIN = 'login';
+export const LOGOUT = 'logout';

@@ -7,11 +7,15 @@
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
+import { Action } from 'vuex-class';
 
 @Component
 export default class SidebarUnauthenticated extends Vue {
+  @Action login!: () => void;
+
   authorize() {
-    console.log('Authorize');
+    this.login();
+    // console.log('Authorize');
     // this.$music.authorize();
   }
 }

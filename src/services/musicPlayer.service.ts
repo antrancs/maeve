@@ -5,6 +5,10 @@ const musicPlayerService = {
     return musicKit.getPlayerInstance().isPlaying;
   },
 
+  get queuedSongs(): MusicKit.MediaItem[] {
+    return musicKit.getPlayerInstance().queue.items;
+  },
+
   play(): Promise<void> {
     // play() returns a promise
     return musicKit.getPlayerInstance().play();
@@ -52,7 +56,7 @@ const musicPlayerService = {
   playCollectionAtIndex(
     collectionId: string,
     collectionType: MusicKit.Kind,
-    index: number
+    index: number = 0
   ): Promise<MusicKit.MediaItem> {
     const music = musicKit.getInstance();
     return music
@@ -60,7 +64,6 @@ const musicPlayerService = {
         [collectionType]: collectionId
       })
       .then(() => music.player.changeToMediaAtIndex(index))
-      .then(() => music.player.play())
       .then(() => music.player.nowPlayingItem);
   }
 };

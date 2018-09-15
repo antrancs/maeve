@@ -13,14 +13,16 @@ import {
 import {
   SET_CURRENTLY_PLAYING_SONG,
   SET_IS_PLAYING,
-  SET_PLAYBACK_PROGESS
+  SET_PLAYBACK_PROGESS,
+  SET_SONG_QUEUE
 } from '@/store/mutations.type';
 import { MusicPlayerState, PlayCollectionAtIndexPayload } from './types';
 
 const initialState: MusicPlayerState = {
   currentPlaying: null,
   isPlaying: false,
-  playbackProgress: 0
+  playbackProgress: 0,
+  queuedSongs: []
 };
 
 const getters: GetterTree<MusicPlayerState, any> = {
@@ -55,6 +57,7 @@ const actions: ActionTree<MusicPlayerState, any> = {
       .then(currentTrack => {
         context.commit(SET_CURRENTLY_PLAYING_SONG, currentTrack);
         context.commit(SET_IS_PLAYING, true);
+        context.commit(SET_SONG_QUEUE, musicPlayerService.queuedSongs);
       });
   },
 
@@ -95,7 +98,7 @@ const mutations: MutationTree<MusicPlayerState> = {
 
   [SET_PLAYBACK_PROGESS](state, playbackProgress: number) {
     state.playbackProgress = playbackProgress;
-  }
+  },
 
   // [ADD_MULTI_SONGS_TO_QUEUE](state, { songs }) {
   //   if (!Array.isArray(songs)) {
@@ -104,9 +107,9 @@ const mutations: MutationTree<MusicPlayerState> = {
   //   state.songQueue.push(...songs);
   // },
 
-  // [SET_SONG_QUEUE](state, { songs }) {
-  //   state.songQueue = songs;
-  // }
+  [SET_SONG_QUEUE](state, songs) {
+    state.queuedSongs = songs;
+  }
 };
 
 export default {

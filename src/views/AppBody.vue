@@ -1,10 +1,10 @@
 <template>
-    <div class="app-body">
-        <app-sidebar :is-logged-in="true"></app-sidebar>
-        <div class="main-content-wrapper">
-          <router-view class="main-content"></router-view>
-        </div>
+  <div class="app-body">
+    <app-sidebar :is-logged-in="false"></app-sidebar>
+    <div class="main-content-wrapper">
+      <router-view class="main-content"></router-view>
     </div>
+  </div>
 </template>
 
 <script lang="ts">

@@ -40,7 +40,9 @@
 
       <div class="player-bar__right">
         <icon name="volume-up" class="icon"></icon>
-        <icon name="list" class="icon"></icon>
+        <span @click="$emit('songQueueIconClicked')">
+          <icon name="list" class="icon"></icon>
+        </span>
       </div>
     </div>
   </div>

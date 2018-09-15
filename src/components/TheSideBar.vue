@@ -1,6 +1,6 @@
 <template>
   <div class="sidebar">
-    <sidebar-authenticated v-if="isLoggedIn"></sidebar-authenticated>
+    <sidebar-authenticated v-if="isAuthenticated"></sidebar-authenticated>
     <sidebar-unauthenticated v-else></sidebar-unauthenticated>
 
     <img
@@ -23,8 +23,11 @@ import SidebarUnauthenticated from './TheSidebarUnauthenticated.vue';
   }
 })
 export default class AppSidebar extends Vue {
-  @Prop() isLoggedIn!: boolean;
+  @Prop({ default: false })
+  isLoggedIn!: boolean;
+
   @Getter currentTrackArtwork!: string;
+  @Getter isAuthenticated!: boolean;
 }
 </script>
 

@@ -4,23 +4,34 @@
       <app-header></app-header>
       <app-body></app-body>
     </div>
-    <player-bar></player-bar>
+    <player-bar @songQueueIconClicked="toggleSongQueue"></player-bar>
+    <song-queue :show-song-queue="showSongQueue"></song-queue>
   </div>
 </template>
 
-<script>
-import AppHeader from './components/TheHeader.vue';
-import AppBody from './views/AppBody.vue';
-import PlayerBar from './components/ThePlayerBar.vue';
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
 
-export default {
-  name: 'App',
+import AppBody from '@/views/AppBody.vue';
+import AppHeader from '@/components/TheHeader.vue';
+import PlayerBar from '@/components/ThePlayerBar.vue';
+import SongQueue from '@/components/SongQueue.vue';
+
+@Component({
   components: {
     AppHeader,
     AppBody,
-    PlayerBar
+    PlayerBar,
+    SongQueue
   }
-};
+})
+export default class App extends Vue {
+  private showSongQueue = false;
+
+  private toggleSongQueue(): void {
+    this.showSongQueue = !this.showSongQueue;
+  }
+}
 </script>
 
 <style lang="scss">

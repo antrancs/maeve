@@ -1,7 +1,9 @@
+// MusicPlayer module
 export interface MusicPlayerState {
   currentPlaying: MusicKit.MediaItem | null;
   isPlaying: boolean;
   playbackProgress: number;
+  queuedSongs: MusicKit.MediaItem[];
 }
 
 export type PlayCollectionAtIndexAction = (
@@ -13,3 +15,8 @@ export type PlayCollectionAtIndexPayload = {
   collectionType: MusicKit.Kind;
   index: number;
 };
+
+// Auth module
+export interface AuthState {
+  musicUserToken: string | null;
+}

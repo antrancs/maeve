@@ -1,55 +1,56 @@
 <template>
   <div class="song-item">
     <div class="song-item__left">
-      <div class="index-column">
-        <media-artwork
-          v-if="!isFromAlbum"
-          :artwork-url="artworkUrl"
-        >
-        </media-artwork>
+      <media-artwork
+        v-if="!isFromAlbum"
+        :artwork-url="artworkUrl"
+      >
+      </media-artwork>
 
-        <media-artwork-overlay
-          :show-background="!isFromAlbum"
-          :is-active="isActive"
-          :is-playing="isPlaying"
-          @playingControlClicked="() => onSongItemClicked(index)"
-        >
-        </media-artwork-overlay>
+      <media-artwork-overlay
+        :show-background="!isFromAlbum"
+        :is-active="isActive"
+        :is-playing="isPlaying"
+        @playingControlClicked="() => onSongItemClicked(index)"
+      >
+      </media-artwork-overlay>
 
-        <div
-          v-show="isFromAlbum && !isActive"
-          class="track-number"
-        >
-          {{ track.attributes.trackNumber }}
-        </div>
+      <div
+        v-show="isFromAlbum && !isActive"
+        class="track-number"
+      >
+        {{ track.attributes.trackNumber }}
       </div>
-
-      <div class="song-name long-text-truncated">
-        {{ track.attributes.name }}
-      </div>
-
-      <icon
-        class="explitcit-icon"
-        v-if="track.attributes.contentRating === 'explicit'"
-        name="explicit"
-      />
     </div>
 
     <div class="song-item__middle">
-      <div class="long-text-truncated song-item__artist-name">{{ track.attributes.artistName }}</div>
+      <div :class="['song-item__song-name', { playlist: isPlaylist }]">
+        <div class="long-text-truncated">
+          {{ track.attributes.name }}
+        </div>
+
+        <icon
+          class="explitcit-icon"
+          v-if="track.attributes.contentRating === 'explicit'"
+          name="explicit"
+        />
+      </div>
+
+      <div :class="['long-text-truncated', 'song-item__artist-name', { playlist: isPlaylist }]">{{ track.attributes.artistName }}</div>
       <div
-        v-if="shouldShowAlbumName"
-        class="long-text-truncated song-item_album-name"
+        v-if="!isFromAlbum"
+        :class="['long-text-truncated', 'song-item__album-name', { playlist: isPlaylist }]"
       >
         {{ track.attributes.albumName }}
       </div>
     </div>
 
+    <!-- <div class="option">
+      <icon class="icon" name="ellipsis-v"></icon>
+    </div> -->
+
     <div class="song-item__right">
-      <div class="option">
-        <icon class="icon" name="ellipsis-v"></icon>
-      </div>
-      <div>{{ track.attributes.durationInMillis | formatSongDuration }}</div>
+      {{ track.attributes.durationInMillis | formatSongDuration }}
     </div>
   </div>
 </template>
@@ -84,11 +85,11 @@ import MediaArtworkOverlay from './MediaArtworkOverlay.vue';
 export default class SongItem extends Vue {
   @Prop() track!: MusicKit.SongResource;
   @Prop({ default: true })
-  shouldShowAlbumName!: boolean;
-  @Prop({ default: true })
   isFromAlbum!: boolean;
   @Prop() index!: number;
   @Prop() onSongItemClicked!: (index: number) => void;
+  @Prop({ default: false })
+  isPlaylist!: boolean;
 
   @State musicPlayer!: MusicPlayerState;
 

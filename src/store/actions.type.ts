@@ -5,3 +5,5 @@ export const PLAY_NEXT = 'playNext';
 export const PLAY_SONG = 'playSong';
 export const RESUME_CURRENT_TRACK = 'resumeCurrentTrack';
 export const TOGGLE_CURRENT_TRACK = 'toggleCurrentTrack'; // play or pause the current song
+
+export const CHANGE_ROUTE = 'changeRoute';

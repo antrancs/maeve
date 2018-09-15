@@ -1,12 +1,16 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import musicPlayer from '@/store/musicPlayer.module';
+import musicPlayer from './musicPlayer.module';
+import auth from './auth.module';
+import router from './router.module';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
-    musicPlayer
+    musicPlayer,
+    auth,
+    router
   }
 });

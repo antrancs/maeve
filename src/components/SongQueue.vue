@@ -7,7 +7,11 @@
             <h1>Header</h1>
           </div>
           <div class="queue-items">
-            <song-list :tracks="queuedSongs"></song-list>
+            <song-list
+              :tracks="queuedSongs"
+              :is-queue="true"
+            >
+            </song-list>
           </div>
         </div>
       </div>

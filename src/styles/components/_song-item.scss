@@ -6,7 +6,7 @@
   border-bottom: 1px solid $divider-color;
 
   &:hover {
-    .option {
+    .song-item__menu {
       opacity: 1;
     }
     .track-number {
@@ -34,8 +34,12 @@
 }
 
 .song-item__right {
-  flex: none;
-  width: 50px;
+  flex: 0 0 5rem;
+}
+
+.song-item__menu {
+  flex: 0 0 3rem;
+  opacity: 0;
 }
 
 .index-column {
@@ -60,7 +64,7 @@
   flex-basis: 38%;
   margin-right: 2%;
 
-  &.playlist {
+  &.queue {
     flex: 0 0 98%;
   }
 }
@@ -74,7 +78,7 @@
   flex-basis: 28%;
   margin-right: 2%;
 
-  &.playlist {
+  &.queue {
     flex: 0 0 auto;
   }
 }
@@ -83,12 +87,8 @@
   flex-basis: 28%;
   margin-right: 2%;
 
-  &.playlist {
+  &.queue {
     flex: 0 0 auto;
     max-width: 40%;
   }
-}
-
-.option {
-  opacity: 0;
 }

@@ -2,7 +2,8 @@ import { GetterTree, MutationTree, ActionTree } from 'vuex';
 
 import authService from '@/services/auth.service';
 import { AuthState } from './types';
-import { SET_USER_TOKEN, LOGIN, LOGOUT } from './mutations.type';
+import { SET_USER_TOKEN } from './mutations.type';
+import { LOGIN, LOGOUT } from '@/store/actions.type';
 
 const initialState: AuthState = {
   musicUserToken: authService.userToken

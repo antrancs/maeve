@@ -14,6 +14,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import SongCollectionList from '@/components/SongCollectionList.vue';
 import musicApiService from '@/services/musicApi.service';
+import { Collection } from '@/@types/model/model';
 
 @Component({
   components: {
@@ -21,18 +22,30 @@ import musicApiService from '@/services/musicApi.service';
   }
 })
 export default class ForYou extends Vue {
-  private recommendations: any[] = [];
+  private recommendations: MusicKit.Recommendation[] = [];
 
-  getDataArray(recommendation: any): any[] {
+  getDataArray(recommendation: MusicKit.Recommendation): Collection[] {
+    if (!recommendation.relationships) {
+      return [];
+    }
+
+    // Single recommendation
     if (recommendation.relationships.contents) {
-      return recommendation.relationships.contents.data;
+      return recommendation.relationships.contents.data as Collection[];
     } else if (recommendation.relationships.recommendations) {
-      const contents = recommendation.relationships.recommendations.data.reduce(
-        (acc: any[], current: any) => {
-          return acc.concat(this.getDataArray(current));
-        },
+      // Group recommendation
+      const recommendations = recommendation.relationships.recommendations
+        .data as MusicKit.Recommendation[];
+      if (!recommendations) {
+        return [];
+      }
+
+      const contents = recommendations.reduce(
+        (acc: Collection[], current: MusicKit.Recommendation) =>
+          acc.concat(this.getDataArray(current)),
         []
       );
+
       return contents;
     }
     return [];
@@ -42,6 +55,7 @@ export default class ForYou extends Vue {
     musicApiService
       .getRecommendations()
       .then(result => {
+        console.log('recommendation', result);
         if (!result) {
           // TODO: display no results found
           return;

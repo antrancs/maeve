@@ -1,6 +1,5 @@
-import { pick } from 'lodash';
 import musicKit from '@/services/musicKit';
-import { Collection } from '@/@types/model/model';
+import { Collection, CollectionType } from '@/@types/model/model';
 
 enum MediaType {
   artist = 'artists',
@@ -9,19 +8,14 @@ enum MediaType {
   playlist = 'playlists'
 }
 
-enum CollectionType {
-  playlist = 'playlists',
-  album = 'albums'
-}
-
 const MusicApiService = {
   searchAll(
     searchString = ''
   ): Promise<{
-    albums: MusicKit.AlbumResource[];
-    songs: MusicKit.SongResource[];
-    artists: MusicKit.ArtistResource[];
-    playlists: MusicKit.PlaylistResource[];
+    albums: MusicKit.Album[];
+    songs: MusicKit.Song[];
+    artists: MusicKit.Artist[];
+    playlists: MusicKit.Playlist[];
   } | null> {
     if (!searchString) {
       return Promise.reject();
@@ -59,11 +53,10 @@ const MusicApiService = {
     limit: number,
     offset: number
   ): Promise<{
-    data: MusicKit.AlbumResource[];
+    data: MusicKit.Album[];
     hasNext: boolean;
     offset: number;
   } | null> {
-    this.getRecommendations();
     return musicKit
       .getApiInstance()
       .search(query, {
@@ -91,35 +84,50 @@ const MusicApiService = {
       .artist(artistId, { include: 'albums,playlists' })
       .then(artistRes => {
         // relationships should be there when specifing 'include' in the search parameter
-        const relationships = artistRes.relationships!;
+        const { relationships } = artistRes;
+        let albums: MusicKit.Album[] = [];
+        let playlists: MusicKit.Playlist[] = [];
+
+        if (relationships) {
+          albums = relationships.albums ? relationships.albums.data : [];
+          playlists = relationships.playlists
+            ? relationships.playlists.data
+            : [];
+        }
         return {
           name: artistRes.attributes ? artistRes.attributes.name : '',
-          albums: relationships.albums ? relationships.albums.data : [],
-          playlists: relationships.playlists ? relationships.playlists.data : []
+          albums,
+          playlists
         };
       });
   },
 
-  getRecommendations() {
+  getRecommendations(): Promise<MusicKit.Recommendation[]> {
     return musicKit.getApiInstance().recommendations();
   },
 
+  getLibraryPlaylists() {
+    return musicKit.getApiInstance().library.playlists();
+  },
+
+  getLibraryAlbums() {
+    return musicKit.getApiInstance().library.albums();
+  },
+
   extractCollectionResult(
-    result: MusicKit.AlbumResource | MusicKit.PlaylistResource
-  ): { collection: Collection; tracks: MusicKit.SongResource[] } | null {
+    result: MusicKit.Album | MusicKit.Playlist
+  ): { collection: Collection; tracks: MusicKit.Song[] } | null {
+    console.log(result);
     if (!result) {
       return null;
     }
 
-    const { attributes, id, type } = result;
-    let tracks = result.relationships ? result.relationships.tracks!.data : [];
+    const tracks = result.relationships
+      ? result.relationships.tracks!.data
+      : [];
 
     return {
-      collection: {
-        attributes,
-        id,
-        type: <CollectionType>type
-      },
+      collection: result,
       tracks
     };
   },
@@ -129,7 +137,7 @@ const MusicApiService = {
     collectionType: CollectionType
   ): Promise<{
     collection: Collection;
-    tracks: MusicKit.SongResource[];
+    tracks: MusicKit.Song[];
   } | null> {
     if (collectionType === CollectionType.album) {
       return musicKit
@@ -139,12 +147,45 @@ const MusicApiService = {
     } else {
       return musicKit
         .getApiInstance()
-        .playlist(collectionId, { include: 'tracks' })
+        .playlist(collectionId, { include: 'tracks, artists' })
         .then(this.extractCollectionResult);
     }
   },
 
-  isResultEmpty(result: object) {
+  getLibraryCollection(
+    collectionId: string,
+    collectionType: string
+  ): Promise<{
+    collection: Collection;
+    tracks: MusicKit.LibrarySong[];
+  } | null> {
+    console.log(collectionType);
+    let promise: Promise<MusicKit.LibraryAlbum | MusicKit.LibraryPlaylist>;
+    const api = musicKit.getApiInstance();
+    if (collectionType === CollectionType.libraryAlbum) {
+      promise = api.library.album(collectionId);
+    } else {
+      promise = api.library.playlist(collectionId);
+    }
+
+    return promise.then(collection => {
+      if (!collection) {
+        return null;
+      }
+
+      let tracks: MusicKit.LibrarySong[] = [];
+      if (collection.relationships && collection.relationships.tracks) {
+        tracks = collection.relationships.tracks.data;
+      }
+
+      return {
+        collection,
+        tracks
+      };
+    });
+  },
+
+  isResultEmpty(result: object): boolean {
     return Object.keys(result).length === 0;
   },
 

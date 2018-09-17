@@ -8,7 +8,10 @@ import {
   PLAY_NEXT,
   PLAY_PREVIOUS,
   RESUME_CURRENT_TRACK,
-  TOGGLE_CURRENT_TRACK
+  TOGGLE_CURRENT_TRACK,
+  APPEND_SONGS,
+  ADD_TO_LIBRARY,
+  PREPEND_SONGS
 } from '@/store/actions.type';
 import {
   SET_CURRENTLY_PLAYING_SONG,
@@ -16,7 +19,12 @@ import {
   SET_PLAYBACK_PROGESS,
   SET_SONG_QUEUE
 } from '@/store/mutations.type';
-import { MusicPlayerState, PlayCollectionAtIndexPayload } from './types';
+import {
+  MusicPlayerState,
+  PlayCollectionAtIndexPayload,
+  AppendSongsPayload,
+  AddToLibraryPayload
+} from './types';
 
 const initialState: MusicPlayerState = {
   currentPlaying: null,
@@ -83,6 +91,17 @@ const actions: ActionTree<MusicPlayerState, any> = {
       .catch(err => {
         console.log(err);
       });
+  },
+
+  [APPEND_SONGS]({ commit }, { items }: AppendSongsPayload) {
+    musicPlayerService.appendItemsToQueue(items);
+    commit(SET_SONG_QUEUE, musicPlayerService.queuedSongs);
+  },
+
+  [ADD_TO_LIBRARY]({ commit }, { itemIds, type }: AddToLibraryPayload) {
+    musicPlayerService.addToLibrary(itemIds, type).then(() => {
+      console.log('Added done');
+    });
   }
 };
 

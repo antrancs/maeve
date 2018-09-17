@@ -5,13 +5,23 @@ export interface Artist {
   url: string;
 }
 
-enum CollectionType {
+export enum CollectionType {
   album = 'albums',
-  playlist = 'playlists'
+  playlist = 'playlists',
+  libraryPlaylist = 'library-playlists',
+  libraryAlbum = 'library-albums'
 }
 
-export interface Collection {
-  id: string;
-  attributes: any;
-  type: CollectionType;
-}
+export type Collection =
+  | MusicKit.Album
+  | MusicKit.Playlist
+  | MusicKit.LibraryAlbum
+  | MusicKit.LibraryPlaylist;
+
+export type Song = MusicKit.Song | MusicKit.LibrarySong;
+
+// export interface Collection {
+//   id: string;
+//   attributes: any;
+//   type: CollectionType;
+// }

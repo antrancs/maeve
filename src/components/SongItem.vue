@@ -24,7 +24,7 @@
     </div>
 
     <div class="song-item__middle">
-      <div :class="['song-item__song-name', { playlist: isPlaylist }]">
+      <div :class="['song-item__song-name', { queue: isQueue }]">
         <div class="long-text-truncated">
           {{ track.attributes.name }}
         </div>
@@ -36,18 +36,21 @@
         />
       </div>
 
-      <div :class="['long-text-truncated', 'song-item__artist-name', { playlist: isPlaylist }]">{{ track.attributes.artistName }}</div>
+      <div :class="['long-text-truncated', 'song-item__artist-name', { queue: isQueue }]">{{ track.attributes.artistName }}</div>
       <div
         v-if="!isFromAlbum"
-        :class="['long-text-truncated', 'song-item__album-name', { playlist: isPlaylist }]"
+        :class="['long-text-truncated', 'song-item__album-name', { queue: isQueue }]"
       >
         {{ track.attributes.albumName }}
       </div>
     </div>
 
-    <!-- <div class="option">
-      <icon class="icon" name="ellipsis-v"></icon>
-    </div> -->
+    <div class="song-item__menu" v-if="!isQueue">
+      <span @click.prevent.stop="handleMoreIconClicked">
+        <icon class="icon" name="ellipsis-h">
+        </icon>
+      </span>
+    </div>
 
     <div class="song-item__right">
       {{ track.attributes.durationInMillis | formatSongDuration }}
@@ -57,10 +60,10 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { State } from 'vuex-class';
-import 'vue-awesome/icons/ellipsis-v';
+import { State, Action } from 'vuex-class';
+import 'vue-awesome/icons/ellipsis-h';
 
-import { MusicPlayerState } from '@/store/types';
+import { MusicPlayerState, ToggleContextMenuPayload } from '@/store/types';
 import { getArtworkUrl } from '@/utils/utils';
 import MediaArtwork from './MediaArtwork.vue';
 import MediaArtworkOverlay from './MediaArtworkOverlay.vue';
@@ -83,15 +86,17 @@ import MediaArtworkOverlay from './MediaArtworkOverlay.vue';
   }
 })
 export default class SongItem extends Vue {
-  @Prop() track!: MusicKit.SongResource;
+  @Prop() track!: MusicKit.Song;
   @Prop({ default: true })
   isFromAlbum!: boolean;
   @Prop() index!: number;
   @Prop() onSongItemClicked!: (index: number) => void;
   @Prop({ default: false })
-  isPlaylist!: boolean;
+  isQueue!: boolean;
 
   @State musicPlayer!: MusicPlayerState;
+
+  @Action toggleContextMenu!: (payload: ToggleContextMenuPayload) => void;
 
   get isActive(): boolean {
     return (
@@ -105,7 +110,27 @@ export default class SongItem extends Vue {
   }
 
   get artworkUrl(): string {
-    return getArtworkUrl(this.track.attributes.artwork.url, 50, 50);
+    const { attributes } = this.track;
+    if (!attributes) {
+      return '';
+    }
+    return getArtworkUrl(attributes.artwork.url, 50, 50);
+  }
+
+  handleMoreIconClicked(event: MouseEvent) {
+    // this.$refs.contextMenu.show(event);
+
+    const mediaItem = new MusicKit.MediaItem({
+      id: this.track.id,
+      attributes: this.track.attributes,
+      type: 'song'
+    });
+
+    this.toggleContextMenu({
+      pageX: event.pageX,
+      pageY: event.pageY,
+      selectedTrack: mediaItem
+    });
   }
 }
 </script>

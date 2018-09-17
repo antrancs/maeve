@@ -6,5 +6,7 @@ export const SET_PLAYBACK_PROGESS = 'setPlaybackProgress';
 export const SET_SONG_QUEUE = 'setSongQueue';
 
 export const SET_USER_TOKEN = 'setUserToken';
-export const LOGIN = 'login';
-export const LOGOUT = 'logout';
+
+export const SET_SHOWING_CONTEXT_MENU = 'setShowingContextMenu';
+export const SET_CONTEXT_MENU_DISPLAY_POSITION =
+  'setContextMenuDisplayPosition';

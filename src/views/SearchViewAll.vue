@@ -26,7 +26,7 @@ export default class SearchViewAll extends Vue {
   private fetchLimit = 20;
   private hasNext = true;
   private data: any[] = [];
-  private idSet = new Set<String>();
+  private idSet = new Set<string>();
 
   created() {
     const typeSet = new Set(['albums', 'playlists', 'songs', 'artists']);

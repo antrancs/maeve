@@ -15,16 +15,18 @@ import { Artist } from '@/@types/model/model';
 
 @Component
 export default class ArtistItem extends Vue {
-  @Prop() artist!: MusicKit.ArtistResource;
+  @Prop() artist!: MusicKit.Artist;
 
   artistArtwork: string = '';
 
   created() {
-    this.getArtistArtwork();
+    if (this.artist.attributes) {
+      this.getArtistArtwork(this.artist.attributes.url);
+    }
   }
 
-  getArtistArtwork() {
-    getArtistArtwork(this.artist.attributes.url).then(artwork => {
+  getArtistArtwork(url: string) {
+    getArtistArtwork(url).then(artwork => {
       this.artistArtwork =
         artwork.length > 0 ? artwork : 'https://via.placeholder.com/500x500';
     });

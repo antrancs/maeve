@@ -36,14 +36,31 @@ export default new Router({
       props: true
     },
     {
+      path: '/me/library-playlists/:id',
+      name: 'library-playlists',
+      component: () => import('./views/CollectionDetail.vue'),
+      props: true
+    },
+    {
+      path: '/me/library-albums/:id',
+      name: 'library-albums',
+      component: () => import('./views/CollectionDetail.vue'),
+      props: true
+    },
+    {
       path: '/artists/:id',
       name: 'artists',
       component: () => import('./views/ArtistDetail.vue')
     },
     {
-      path: '/foryou',
+      path: '/me/for-you',
       name: 'forYou',
       component: () => import('./views/ForYou.vue')
+    },
+    {
+      path: '/me/playlists',
+      name: 'myPlaylists',
+      component: () => import('./views/Playlists.vue')
     },
     {
       path: '/404',

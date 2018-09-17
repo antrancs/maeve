@@ -55,7 +55,7 @@ const musicPlayerService = {
 
   playCollectionAtIndex(
     collectionId: string,
-    collectionType: MusicKit.Kind,
+    collectionType: string,
     index: number = 0
   ): Promise<MusicKit.MediaItem> {
     const music = musicKit.getInstance();
@@ -65,6 +65,16 @@ const musicPlayerService = {
       })
       .then(() => music.player.changeToMediaAtIndex(index))
       .then(() => music.player.nowPlayingItem);
+  },
+
+  appendItemsToQueue(items: MusicKit.MediaItem[]): void {
+    musicKit.getPlayerInstance().queue.append({ items });
+  },
+
+  addToLibrary(itemIds: string[], type: string) {
+    return musicKit.getApiInstance().addToLibrary({
+      [type]: itemIds
+    });
   }
 };
 

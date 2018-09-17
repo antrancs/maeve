@@ -1,3 +1,4 @@
+// tslint:disable-next-line
 declare namespace MusicKit {
   /**
    * Configure a MusicKit instance.
@@ -200,7 +201,7 @@ declare namespace MusicKit {
      * @param parameters A query parameters object that is serialized and passed directly to the Apple Music API.
      * @returns An album resource.
      */
-    album(id: string, parameters: QueryParameters): Promise<AlbumResource>;
+    album(id: string, parameters: QueryParameters): Promise<Album>;
 
     /**
      * Fetch one or more albums using their identifiers.
@@ -208,7 +209,7 @@ declare namespace MusicKit {
      * @param parameters A query parameters object that is serialized and passed directly to the Apple Music API
      * @returns An array of album resources.
      */
-    albums(ids: string[], parameters: QueryParameters): Promise<object[]>;
+    albums(ids: string[], parameters: QueryParameters): Promise<Album[]>;
 
     /**
      * Fetch an Apple curator using its identifier.
@@ -235,7 +236,7 @@ declare namespace MusicKit {
      * @param parameters A query parameters object that is serialized and passed directly to the Apple Music API.
      * @returns An artist resource.
      */
-    artist(id: string, parameters: QueryParameters): Promise<ArtistResource>;
+    artist(id: string, parameters: QueryParameters): Promise<Artist>;
 
     /**
      * Fetch an artist using its identifier.
@@ -243,10 +244,7 @@ declare namespace MusicKit {
      * @param parameters A query parameters object that is serialized and passed directly to the Apple Music API.
      * @returns A playlist resource.
      */
-    playlist(
-      id: string,
-      parameters: QueryParameters
-    ): Promise<PlaylistResource>;
+    playlist(id: string, parameters: QueryParameters): Promise<Playlist>;
 
     /**
      * Search the catalog using a query.
@@ -263,7 +261,7 @@ declare namespace MusicKit {
      */
     storefront(id: string, parameters: QueryParameters): Promise<any>;
 
-    recommendations(): Promise<any[]>;
+    recommendations(): Promise<Recommendation[]>;
   }
 
   /**
@@ -276,7 +274,7 @@ declare namespace MusicKit {
      * @param parameters A query parameters object that is serialized and passed directly to the Cloud Library API.
      * @returns A library album resource.
      */
-    album(id: string, parameters: QueryParameters): Promise<object>;
+    album(id: string, parameters?: QueryParameters): Promise<LibraryAlbum>;
 
     /**
      * Fetch one or more library albums using their identifiers.
@@ -285,7 +283,10 @@ declare namespace MusicKit {
      * @param parameters A query parameters object that is serialized and passed directly to the Cloud Library API.
      * @returns An array of library album resources.
      */
-    albums(ids: string[], parameters: QueryParameters): Promise<object[]>;
+    albums(
+      ids?: string[],
+      parameters?: QueryParameters
+    ): Promise<LibraryAlbum[]>;
 
     /**
      * Fetch a library artist using its identifier.
@@ -293,7 +294,7 @@ declare namespace MusicKit {
      * @param parameters A query parameters object that is serialized and passed directly to the Cloud Library API.
      * @returns A library artist resource.
      */
-    artist(id: string, parameters: QueryParameters): Promise<object>;
+    artist(id: string, parameters: QueryParameters): Promise<LibraryArtist>;
 
     /**
      * Fetch one or more library artists using their identifiers.
@@ -302,7 +303,10 @@ declare namespace MusicKit {
      * @param parameters A query parameters object that is serialized and passed directly to the Cloud Library API.
      * @returns: An array of library artist resources.
      */
-    artists(ids: string[], parameters: QueryParameters): Promise<object[]>;
+    artists(
+      ids: string[],
+      parameters: QueryParameters
+    ): Promise<LibraryArtist[]>;
 
     /**
      * Fetch a library music video using its identifier.
@@ -319,7 +323,10 @@ declare namespace MusicKit {
      * @param parameters A query parameters object that is serialized and passed directly to the Cloud Library API.
      * @returns: An array of library music video resources.
      */
-    musicVideos(ids: string[], parameters: QueryParameters): Promise<object[]>;
+    musicVideos(
+      ids?: string[],
+      parameters?: QueryParameters
+    ): Promise<object[]>;
 
     /**
      * Fetch a library playlist using its identifier.
@@ -327,7 +334,10 @@ declare namespace MusicKit {
      * @param parameters A query parameters object that is serialized and passed directly to the Cloud Library API.
      * @returns A library playlist resource.
      */
-    playlist(id: string, parameters: QueryParameters): Promise<object>;
+    playlist(
+      id: string,
+      parameters?: QueryParameters
+    ): Promise<LibraryPlaylist>;
 
     /**
      * Fetch one or more library playlists using their identifiers.
@@ -336,7 +346,10 @@ declare namespace MusicKit {
      * @param parameters A query parameters object that is serialized and passed directly to the Cloud Library API.
      * @returns: An array of library playlist resources.
      */
-    playlists(ids: string[], parameters: QueryParameters): Promise<object[]>;
+    playlists(
+      ids?: string[],
+      parameters?: QueryParameters
+    ): Promise<LibraryPlaylist[]>;
 
     /**
      * Search the library using a query.
@@ -352,7 +365,7 @@ declare namespace MusicKit {
      * @param parameters A query parameters object that is serialized and passed directly to the Cloud Library API.
      * @returns A library song resource.
      */
-    song(id: string, parameters: QueryParameters): Promise<object>;
+    song(id: string, parameters: QueryParameters): Promise<LibrarySong>;
 
     /**
      * Fetch one or more library songs using their identifiers.
@@ -361,7 +374,7 @@ declare namespace MusicKit {
      * @param parameters A query parameters object that is serialized and passed directly to the Cloud Library API.
      * @returns An array of library song resources.
      */
-    songs(ids: string[], parameters: QueryParameters): Promise<object[]>;
+    songs(ids: string[], parameters: QueryParameters): Promise<LibrarySong[]>;
   }
 
   interface Queue {
@@ -394,10 +407,52 @@ declare namespace MusicKit {
      * The previous playable media item in the queue
      */
     previousPlayableItem: MediaItem | undefined;
+
+    /**
+     * Add an event listener for a MusicKit queue by name.
+     * @param name The name of the event.
+     * @param callback The callback function to invoke when the event occurs.
+     */
+    addEventListener(name: string, callback: CallbackType): void;
+
+    /**
+     * Inserts the media items defined by the queue descriptor after the last media item in the current queue.
+     * @param descriptor A queue descriptor.
+     */
+    append(descriptor: QueueDescriptor): void;
+
+    /**
+     * Returns the index in the playback queue for a media item descriptor.
+     * @param descriptor A descriptor can be an instance of the MusicKit.MediaItem class, or a string identifier.
+     */
+    indexForItem(descriptor: descriptor): number;
+
+    /**
+     * Returns the media item located in the indicated array index.
+     * @param index The array index for the media item.
+     */
+    item(index: number): MediaItem;
+
+    /**
+     * Inserts the media items defined by the queue descriptor into the current queue immediately after the currently playing media item.
+     * @param descriptor A queue descriptor.
+     */
+    prepend(descriptor: QueueDescriptor): void;
+
+    /**
+     * Removes an event listener for a MusicKit queue by name.
+     * @param name The name of the event.
+     * @param callback The callback function to remove.
+     */
+    removeEventListener(name: string, callback: CallbackType): void;
   }
 
+  interface QueueDescriptor {
+    items: MediaItem[];
+  }
   /**
-   * The catalog album used to set a music player's playback queue.
+   * The options to use when setting a music player's playback queue.
+   * Ref: https://developer.apple.com/documentation/musickitjs/musickit/setqueueoptions
    */
   interface SetQueueOptions {
     /**
@@ -406,9 +461,9 @@ declare namespace MusicKit {
     album?: string;
 
     /**
-     * The catalog album used to set a music player's playback queue.
+     * The media items used to set a music player's playback queue.
      */
-    albums?: string[];
+    items?: MusicKit.descriptor[];
 
     /**
      * The playlist used to set a music player's playback queue.
@@ -416,179 +471,137 @@ declare namespace MusicKit {
     playlist?: string;
 
     /**
+     * The parameters used to set a music player's playback queue.
+     */
+    parameters?: QueryParameters;
+
+    /**
      * The song used to set a music player's playback queue.
      */
     song?: string;
 
     /**
+     * The songs used to set a music player's playback queue.
+     */
+    songs?: string[];
+
+    /**
      * The start position for a set playback queue.
      */
     startPosition?: number;
-  }
 
-  enum ResourceType {
-    album = 'albums',
-    song = 'songs',
-    artist = 'artists',
-    playlist = 'playlists'
-  }
-
-  interface Resource {
-    id: string;
-    href: string;
-    relationships?: ResourceRelationship;
-    // type: string;
-  }
-
-  interface PlaylistResourceAttribute {
-    artwork: Artwork;
-    curatorName: string;
-    description: CollectionDescription;
-    lastModifiedDate: string;
-    name: string;
-    playParams: PlayParam;
-    playlistType: PlaylistType;
-    url: string;
-  }
-
-  interface PlaylistResource extends Resource {
-    attributes: PlaylistResourceAttribute;
-    type: 'playlists';
-  }
-
-  interface ArtistResource extends Resource {
-    attributes: {
-      genreNames: string[];
-      name: string;
-      url: string;
-    };
-    type: 'artists';
-  }
-
-  interface AlbumResourceAttributes {
-    artistName: string;
-    artwork: Artwork;
-    contentRating: string; // 'explicit', maybe an enum
-    copyright: string;
-    editorialNotes: CollectionDescription;
-    genreNames: string[];
-    isComplete: boolean;
-    isMasteredForItunes: boolean;
-    isSingle: boolean;
-    name: string;
-    playParams: PlayParam;
-    recordLabel: string;
-    releaseDate: string;
-    trackCount: number;
-    url: string;
-  }
-
-  interface AlbumResource extends Resource {
-    attributes: AlbumResourceAttributes;
-    type: 'albums';
-  }
-
-  interface SongResourceAttributes {
-    albumName: string;
-    artistName: string;
-    artwork: Artwork;
-    discNumber: number;
-    durationInMillis: number;
-    genreNames: string[];
-    isrc: string;
-    name: string;
-    playParams: PlayParam;
-    previews: Preview[];
-    releaseDate: string;
-    trackNumber: number;
-    url: string;
-  }
-
-  interface SongResource extends Resource {
-    attributes: SongResourceAttributes;
-    type: 'songs';
-  }
-
-  interface ResourceRelationship {
-    type: ResourceType;
-    [ResourceType.artist]?: ArtistResourceData;
-    [ResourceType.album]?: AlbumResourceData;
-    [ResourceType.playlist]?: PlaylistResourceData;
-    tracks?: SongResourceData;
+    /**
+     * A content URL used to set a music player's playback queue.
+     */
+    url?: string;
   }
 
   interface ResourceData {
     data: [Resource];
-    href: String;
-    next?: String;
+    href: string;
+    next?: string;
   }
 
   interface PlaylistResourceData extends ResourceData {
-    data: [PlaylistResource];
+    data: [Playlist];
   }
 
   interface ArtistResourceData extends ResourceData {
-    data: [ArtistResource];
+    data: [Artist];
   }
 
   interface AlbumResourceData extends ResourceData {
-    data: [AlbumResource];
+    data: [Album];
   }
 
   interface SongResourceData {
-    data: [SongResource];
+    data: [Song];
   }
 
   interface Artwork {
-    bgColor: string;
+    /**
+     * The average background color of the image.
+     */
+    bgColor?: string;
+
+    /**
+     * (Required) The maximum height available for the image.
+     */
     height: number;
-    textColor1: string;
-    textColor2: string;
-    textColor3: string;
-    textColor4: string;
+
+    /**
+     * The primary text color that may be used if the background color is displayed.
+     */
+    textColor1?: string;
+
+    /**
+     * The secondary text color that may be used if the background color is displayed.
+     */
+    textColor2?: string;
+
+    /**
+     * The tertiary text color that may be used if the background color is displayed
+     */
+    textColor3?: string;
+
+    /**
+     * The final post-tertiary text color that may be used if the background color is displayed.
+     */
+    textColor4?: string;
+
+    /**
+     * (Required) The URL to request the image asset. The image filename must be preceded by {w}x{h},
+     * as placeholders for the width and height values as described above (for example, {w}x{h}bb.jpeg).
+     */
     url: string;
+
+    /**
+     * (Required) The maximum width available for the image.
+     */
     width: number;
-  }
-
-  interface CollectionDescription {
-    short: string;
-    standard: string;
-  }
-
-  interface PlayParam {
-    id: string;
-    kind: Kind;
   }
 
   enum PlaylistType {
     editorial = 'editorial'
   }
 
+  /**
+   * An object that represents a preview for resources.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/preview
+   */
   interface Preview {
+    /**
+     * The preview artwork for the associated music video.
+     */
+    artwork?: Artwork;
+
+    /**
+     * (Required) The preview URL for the content.
+     */
     url: string;
   }
 
   interface SearchResult {
-    [ResourceType.album]?: {
-      data: [AlbumResource];
+    albums: {
+      data: [Album];
       href: string;
       next?: string;
     };
 
-    [ResourceType.playlist]?: {
-      data: [PlaylistResource];
+    playlists: {
+      data: [Playlist];
       href: string;
       next?: string;
     };
 
-    [ResourceType.song]?: {
-      data: [SongResource];
+    songs?: {
+      data: [Song];
       href: string;
       next?: string;
     };
 
-    [ResourceType.artist]?: {
-      data: [ArtistResource];
+    artists?: {
+      data: [Artist];
       href: string;
       next?: string;
     };
@@ -596,6 +609,7 @@ declare namespace MusicKit {
     [key: string]: any;
   }
 
+  // REMOVE
   enum Kind {
     album = 'album',
     song = 'song',
@@ -603,17 +617,17 @@ declare namespace MusicKit {
   }
 
   interface PlaylistContainer {
-    attributes: PlaylistResourceAttribute;
+    attributes: PlaylistAttributes;
     id: string;
     name: Kind.playlist;
-    type: ResourceType.playlist;
+    type: 'playlists';
   }
 
   interface AlbumContainer {
-    attributes: AlbumResourceAttributes;
+    attributes: AlbumAttributes;
     id: string;
     name: Kind.album;
-    type: ResourceType.album;
+    type: 'albums';
   }
 
   enum Events {
@@ -646,8 +660,13 @@ declare namespace MusicKit {
     userTokenDidChange = 'userTokenDidChange'
   }
 
-  interface MediaItem {
-    new (options: MediaItemOptions): MediaItem;
+  // interface MediaItemConstructor {
+  //   new (options: MediaItemOptions): MediaItem;
+  // }
+
+  class MediaItem {
+    constructor(options: MediaItemOptions);
+    // new (options: MediaItemOptions);
     /**
      * A string of information about the album.
      */
@@ -676,7 +695,7 @@ declare namespace MusicKit {
     /**
      * The attributes object for the media item.
      */
-    attributes: SongResourceAttributes;
+    attributes: SongAttributes;
 
     container: PlaylistContainer | AlbumContainer;
 
@@ -921,7 +940,1025 @@ declare namespace MusicKit {
     stop(): void;
   }
 
-  interface ResponseRoot {}
+  /////// New /////////////
+  /**
+   * A resource—such as an album, song, or playlist—in the Apple Music catalog or iCloud Music Library.
+   * A Resource object may contain just these identifier members: id, type, href, and meta.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/resource
+   */
+  interface Resource {
+    /**
+     * Attributes belonging to the resource (can be a subset of the attributes).
+     * The members are the names of the attributes defined in the object model.
+     */
+    attributes?: ResourceAttributes;
+    /**
+     * (Required) Persistent identifier of the resource.
+     */
+    id: string;
+
+    /**
+     * A URL subpath that fetches the resource as the primary object.
+     * This member is only present in responses.
+     */
+    href?: string;
+
+    /**
+     * Relationships belonging to the resource (can be a subset of the relationships).
+     * The members are the names of the relationships defined in the object model.
+     */
+    relationships?: ResourceRelationships;
+
+    /**
+     * (Required) The type of resource.
+     */
+    type: string;
+  }
+
+  interface ResourceRelationships {}
+
+  interface ResourceAttributes {}
+
+  /**
+   * A to-one or to-many relationship from one resource object to others.
+   * A to-one relationship contains a single object in the data array.
+   * The rules that apply to the members of this object are:
+   *    + Must contain one of these members: href, data, or meta.
+   *    + If a to-many relationship, may contain the next member.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/relationship
+   */
+  interface Relationship {
+    /**
+     * One or more destination objects.
+     */
+    data?: Resource[];
+
+    /**
+     * A URL subpath that fetches the resource as the primary object.
+     * This member is only present in responses.
+     */
+    href?: string;
+
+    /**
+     * Link to the next page of resources in the relationship.
+     * Contains the offset query parameter that specifies the next page.
+     */
+    next?: string;
+  }
+
+  /**
+   * A Resource object that represents an album.
+   */
+  interface Album extends Resource {
+    /**
+     * The attributes for the album.
+     */
+    attributes?: AlbumAttributes;
+
+    /**
+     * The relationships for the album.
+     */
+    relationships?: AlbumRelationships;
+
+    /**
+     * (Required) This value will always be albums.
+     */
+    type: string;
+  }
+
+  /**
+   * A Resource object that represents a playlist.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/playlist
+   */
+  interface Playlist extends Resource {
+    /**
+     * The attributes for the playlist.
+     */
+    attributes?: PlaylistAttributes;
+
+    /**
+     * The relationships for the playlist.
+     */
+    relationships?: PlaylistRelationships;
+
+    /**
+     * (Required) This value will always be playlists.
+     */
+    type: string;
+  }
+
+  /**
+   * A Resource object that represents an artist of an album where an artist can be one or more persons.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/artist
+   */
+  interface Artist extends Resource {
+    /**
+     * The attributes for the artist.
+     */
+    attributes?: ArtistAttributes;
+
+    /**
+     * The relationships for the artist.
+     */
+    relationships?: ArtistRelationships;
+
+    /**
+     * (Required) This value will always be artists.
+     */
+    type: string;
+  }
+
+  /**
+   * A Resource object that represents a song.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/song
+   */
+  interface Song extends Resource {
+    /**
+     * The attributes for the song.
+     */
+    attributes?: SongAttributes;
+
+    /**
+     * The relationships for the song.
+     */
+    relationships?: SongRelationships;
+
+    /**
+     * (Required) This value will always be songs.
+     */
+    type: string;
+  }
+
+  /**
+   * An object that represents a genre for resources.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/genre
+   */
+  interface Genre extends Resource {
+    /**
+     * The attributes for the genre.
+     */
+    attributes?: GenreAttributes;
+
+    /**
+     * (Required) This value will always be genres.
+     */
+    type: string;
+  }
+
+  /**
+   * A Resource object that represents recommended resources for a user calculated using their selected preferences.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/recommendation
+   */
+  interface Recommendation extends Resource {
+    /**
+     * The attributes for the recommendation.
+     */
+    attributes?: RecommendationAttributes;
+
+    /**
+     * For contents, a list of recommended candidates that are a mixture of albums and playlists.
+     * For recommendations, a list of recommendations within a group.
+     */
+    relationships?: RecommendationRelationships;
+
+    /**
+     * (Required) This value will always be personal-recommendation.
+     */
+    type: string;
+
+    /**
+     * (Required) The URL for the next page.
+     */
+    next: string;
+
+    /**
+     * (Required) The ID of the recommendation.
+     */
+    id: string;
+
+    /**
+     * (Required) The URL for the recommendation.
+     */
+    href: string;
+  }
+
+  /**
+   * A Resource object that represents a library album.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/libraryalbum
+   */
+  interface LibraryAlbum extends Resource {
+    /**
+     * The attributes for the library album.
+     */
+    attributes?: LibraryAlbumAttributes;
+
+    /**
+     * The relationships for the library album.
+     */
+    relationships?: LibraryAlbumRelationships;
+
+    /**
+     * (Required) This value will always be libraryAlbums.
+     */
+    type: string;
+  }
+
+  /**
+   * A Resource object that represents a library artist.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/libraryartist
+   */
+  interface LibraryArtist extends Resource {
+    /**
+     * The attributes for the library artist.
+     */
+    attributes?: LibraryArtistAttributes;
+
+    /**
+     * The relationships for the library artist.
+     */
+    relationships?: LibraryArtistRelationships;
+
+    /**
+     * (Required) This value will alway be libraryArtists.
+     */
+    type: string;
+  }
+
+  /**
+   * A Resource object that represents a library song.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/librarysong
+   */
+  interface LibrarySong extends Resource {
+    /**
+     * The attributes for the library song.
+     */
+    attributes?: LibrarySongAttributes;
+
+    /**
+     * The relationships for the library song.
+     */
+    relationships?: LibrarySongRelationships;
+
+    /**
+     * (Required) This value will alway be librarySongs.
+     */
+    type: string;
+  }
+
+  /**
+   * A Resource object that represents a library playlist.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/libraryplaylist
+   */
+  interface LibraryPlaylist extends Resource {
+    /**
+     * The attributes for the library playlist.
+     */
+    attributes?: LibraryPlaylistAttributes;
+
+    /**
+     * The relationships for the library playlist.
+     */
+    relationships?: LibraryPlaylistRelationships;
+
+    /**
+     * (Required) This value will alway be libraryPlaylists.
+     */
+    type: string;
+  }
+
+  /**
+   * The attributes for a library playlist object.
+   */
+  interface LibraryPlaylistAttributes {
+    /**
+     * The playlist artwork.
+     */
+    artwork?: Artwork;
+
+    /**
+     * A description of the playlist.
+     */
+    description?: string;
+
+    /**
+     * (Required) The localized name of the album.
+     */
+    name: string;
+
+    /**
+     * The parameters to use to play back the tracks in the playlist.
+     */
+    playParams?: PlayParameters;
+
+    /**
+     * (Required) Indicates whether the playlist can be edited.
+     */
+    canEdit: boolean;
+  }
+  /**
+   * The attributes for a library song object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/librarysong/attributes
+   */
+  interface LibrarySongAttributes {
+    /**
+     * (Required) The name of the album the song appears on.
+     */
+    albumName: string;
+
+    /**
+     * (Required) The artist’s name.
+     */
+    artistName: string;
+
+    /**
+     * (Required) The album artwork.
+     */
+    artwork: Artwork;
+
+    /**
+     * The Recording Industry Association of America (RIAA) rating of the content.
+     * The possible values for this rating are clean and explicit. No value means no rating.
+     */
+    contentRating?: string;
+
+    /**
+     * (Required) The disc number the song appears on.
+     */
+    discNumber: number;
+
+    /**
+     * The approximate length of the song in milliseconds.
+     */
+    durationInMillis?: number;
+
+    /**
+     * (Required) The localized name of the song.
+     */
+    name: string;
+
+    /**
+     * The parameters to use to playback the song.
+     */
+    playParams?: PlayParameters;
+
+    /**
+     * (Required) The number of the song in the album’s track list.
+     */
+    trackNumber: number;
+  }
+
+  interface LibraryAlbumAttributes {
+    /**
+     * (Required) The artist’s name.
+     */
+    artistName: string;
+
+    /**
+     * (Required) The album artwork.
+     */
+    artwork: Artwork;
+
+    /**
+     * The Recording Industry Association of America (RIAA) rating of the content.
+     * The possible values for this rating are clean and explicit. No value means no rating.
+     */
+    contentRating: string;
+
+    /**
+     * (Required) The localized name of the album.
+     */
+    name: string;
+
+    /**
+     * The parameters to use to playback the tracks of the album.
+     */
+    playParams?: PlayParameters;
+
+    /**
+     * (Required) The number of tracks.
+     */
+    trackCount: number;
+  }
+  /**
+   * The attributes for a recommendation object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/recommendation/attributes
+   */
+  interface RecommendationAttributes {
+    /**
+     * (Required) Whether the recommendation is of group type.
+     */
+    isGroupRecommendation: boolean;
+
+    /**
+     * (Required) The date in UTC format when the recommendation is updated.
+     */
+    nextUpdateDate: Date;
+
+    /**
+     * (Required) The localized reason for the recommendation.
+     */
+    reason: string;
+
+    /**
+     * (Required) The resource types supported by the recommendation.
+     */
+    resourceTypes: string[];
+
+    /**
+     * (Required) The localized title for the recommendation.
+     */
+    title: string;
+  }
+
+  /**
+   * The attributes for an artist object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/artist/attributes
+   */
+  interface ArtistAttributes {
+    /**
+     * The notes about the artist that appear in the iTunes Store.
+     */
+    editorialNotes?: EditorialNotes;
+
+    /**
+     * (Required) The names of the genres associated with this artist.
+     */
+    genreNames: string[];
+
+    /**
+     * (Required) The localized name of the artist.
+     */
+    name: string;
+
+    /**
+     * (Required) The URL for sharing an artist in the iTunes Store.
+     */
+    url: string;
+  }
+
+  /**
+   * The attributes for a song object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/song/attributes
+   */
+  interface SongAttributes {
+    /**
+     * (Required) The name of the album the song appears on.
+     */
+    albumName: string;
+
+    /**
+     * (Required) The artist’s name.
+     */
+    artistName: string;
+
+    /**
+     * (Required) The album artwork.
+     */
+    artwork: Artwork;
+
+    /**
+     * The song’s composer.
+     */
+    composerName?: string;
+
+    /**
+     * The Recording Industry Association of America (RIAA) rating of the content.
+     * The possible values for this rating are clean and explicit. No value means no rating.
+     */
+    contentRating?: string;
+
+    /**
+     * (Required) The disc number the song appears on.
+     */
+    discNumber: number;
+
+    /**
+     * The duration of the song in milliseconds.
+     */
+    durationInMillis?: number;
+
+    /**
+     * The notes about the song that appear in the iTunes Store.
+     */
+    editorialNotes?: EditorialNotes;
+
+    /**
+     * (Required) The genre names the song is associated with.
+     */
+    genreNames: string[];
+
+    /**
+     * (Required) The International Standard Recording Code (ISRC) for the song.
+     */
+    isrc: string;
+
+    /**
+     * (Classical music only) The movement count of this song.
+     */
+    movementCount: number;
+
+    /**
+     * (Classical music only) The movement name of this song.
+     */
+    movementName: string;
+
+    /**
+     * (Classical music only) The movement number of this song.
+     */
+    movementNumber: number;
+
+    /**
+     * (Required) The localized name of the song.
+     */
+    name: string;
+
+    /**
+     * The parameters to use to playback the song.
+     */
+    playParams?: PlayParameters;
+
+    /**
+     * (Required) The preview assets for the song.
+     */
+    previews: Preview[];
+
+    /**
+     * (Required) The release date of the song in YYYY-MM-DD format.
+     */
+    releaseDate: string;
+
+    /**
+     * (Required) The number of the song in the album’s track list.
+     */
+    trackNumber: number;
+
+    /**
+     * (Required) The URL for sharing a song in the iTunes Store.
+     */
+    url: string;
+
+    /**
+     * (Classical music only) The name of the associated work.
+     */
+    workName?: string;
+  }
+
+  /**
+   * The attributes for an album object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/album/attributes
+   */
+  interface AlbumAttributes {
+    /**
+     * (Required) The name of the album the music video appears on.
+     */
+    albumName: string;
+
+    /**
+     * (Required) The artist’s name.
+     */
+    artistName: string;
+
+    /**
+     * The album artwork.
+     */
+    artwork?: Artwork;
+
+    /**
+     * The Recording Industry Association of America (RIAA) rating of the content.
+     * The possible values for this rating are clean and explicit. No value means no rating.
+     */
+    contentRating?: string;
+
+    /**
+     * The copyright text.
+     */
+    copyright?: string;
+
+    /**
+     * The notes about the album that appear in the iTunes Store.
+     */
+    editorialNotes?: EditorialNotes;
+
+    /**
+     * (Required) The names of the genres associated with this album.
+     */
+    genreNames: [string];
+
+    /**
+     * (Required) Indicates whether the album is complete. If true, the album is complete; otherwise, it is not.
+     * An album is complete if it contains all its tracks and songs.
+     */
+    isComplete: boolean;
+
+    /**
+     * (Required) Indicates whether the album contains a single song.
+     */
+    isSingle: boolean;
+
+    /**
+     * (Required) The localized name of the album.
+     */
+    name: string;
+
+    /**
+     * The parameters to use to play back the tracks of the album.
+     */
+    playParams?: PlayParameters;
+
+    /**
+     * (Required) The name of the record label for the album.
+     */
+    recordLabel: string;
+
+    /**
+     * (Required) The release date of the album in YYYY-MM-DD format.
+     */
+    releaseDate: Date;
+
+    /**
+     * (Required) The number of tracks.
+     */
+    trackCount: number;
+
+    /**
+     * (Required) The URL for sharing the album in the iTunes Store.
+     */
+    url: string;
+
+    /**
+     * (Required) Indicates whether the album has been delivered as Mastered for iTunes.
+     */
+    isMasteredForItunes: boolean;
+  }
+
+  /**
+   * The attributes for a playlist object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/playlist/attributes
+   */
+  interface PlaylistAttributes {
+    /**
+     * The playlist artwork.
+     */
+    artwork?: Artwork;
+
+    /**
+     * The display name of the curator.
+     */
+    curatorName?: string;
+
+    /**
+     * A description of the playlist.
+     */
+    description?: EditorialNotes;
+
+    /**
+     * (Required) The date the playlist was last modified.
+     */
+    lastModifiedDate: Date;
+
+    /**
+     * (Required) The localized name of the album.
+     */
+    name: string;
+
+    /**
+     * The parameters to use to play back the tracks in the playlist.
+     */
+    playParams?: PlayParameters;
+
+    /**
+     * (Required) The type of playlist. Possible values are:
+     *  + user-shared: A playlist created and shared by an Apple Music user.
+     *  + editorial: A playlist created by an Apple Music curator.
+     *  + external: A playlist created by a non-Apple curator or brand.
+     *  + personal-mix: A personalized playlist for an Apple Music user.
+     *    Possible values: user-shared, editorial, external, personal-mix
+     */
+    playlistType: string;
+
+    /**
+     * (Required) The URL for sharing an album in the iTunes Store.
+     */
+    url: string;
+  }
+
+  /**
+   * The attributes for a genre object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/genre/attributes
+   */
+  interface GenreAttributes {
+    /**
+     * (Required) The localized name of the genre.
+     */
+    name: string;
+  }
+
+  interface EditorialNotes {
+    /**
+     * (Required) Notes shown when the content is prominently displayed.
+     */
+    short: string;
+
+    /**
+     * (Required) Abbreviated notes shown inline or when the content is shown alongside other content.
+     */
+    standard: string;
+  }
+
+  /**
+   * The attributes for a library artist object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/libraryartist/attributes
+   */
+  interface LibraryArtistAttributes {
+    /**
+     * (Required) The artist’s name.
+     */
+    name: string;
+  }
+
+  /**
+   * An object that represents play parameters for resources.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/playparameters
+   */
+  interface PlayParameters {
+    /**
+     * (Required) The ID of the content to use for playback.
+     */
+    id: string;
+
+    /**
+     * (Required) The kind of the content to use for playback.
+     */
+    kind: string;
+  }
+
+  /**
+   * The relationships for an album object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/album/relationships
+   */
+  interface AlbumRelationships {
+    /**
+     * The artists associated with the album. By default, artists includes identifiers only.
+     * Fetch limits: 10 default, 10 maximum
+     */
+    artists?: ArtistRelationship;
+
+    /**
+     * The genres for the album. By default, genres is not included.
+     * Fetch limits: None
+     */
+    genres?: GenreRelationship;
+
+    /**
+     * The songs and music videos on the album. By default, tracks includes objects.
+     * Fetch limits: 300 default, 300 maximum
+     */
+    tracks?: TrackRelationship;
+  }
+
+  /**
+   * The relationships for a library album object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/libraryalbum/relationships
+   */
+  interface LibraryAlbumRelationships {
+    /**
+     * The library artists associated with the album. By default, artists is not included.
+     * Fetch limits: 10 default, 10 maximum
+     */
+    artists: LibraryArtistRelationship;
+
+    /**
+     * The library songs and library music videos on the album.
+     * Only available when fetching single library album resource by ID. By default, tracks includes objects.
+     * Fetch limits: 300 default, 300 maximum
+     */
+    tracks: LibraryTrackRelationship;
+  }
+
+  /**
+   * The relationships for a recommendation object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/recommendation/relationships
+   */
+  interface RecommendationRelationships {
+    /**
+     * The contents associated with the content recommendation type. By default, contents includes objects.
+     * Fetch limits: 10 default, 10 maximum
+     */
+    contents?: Relationship;
+
+    /**
+     * The recommendations associated with the group recommendation type.
+     * By default, recommendations includes objects.
+     * Fetch limits: None
+     */
+    recommendations?: Relationship;
+  }
+  /**
+   * The relationships for a playlist object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/playlist/relationships
+   */
+  interface PlaylistRelationships {
+    /**
+     * The curator that created the playlist. By default, curator includes identifiers only.
+     * Fetch limits: None
+     */
+    curator?: CuratorRelationship;
+
+    /**
+     * The songs and music videos included in the playlist. By default, tracks includes objects.
+     * Fetch limits: 100 default, 300 maximum
+     */
+    tracks?: TrackRelationship;
+  }
+
+  /**
+   * The relationships for an artist object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/artist/relationships
+   */
+  interface ArtistRelationships {
+    /**
+     * The albums associated with the artist. By default, albums includes identifiers only.
+     * Fetch limits: 25 default, 100 maximum
+     */
+    albums?: AlbumRelationship;
+
+    /**
+     * The genres associated with the artist. By default, genres is not included.
+     * Fetch limits: None
+     */
+    genres?: GenreRelationship;
+
+    /**
+     * The music videos associated with the artist. By default, musicVideos is not included.
+     * Fetch limits: 25 default, 100 maximum
+     */
+    musicVideos?: MusicVideoRelationship;
+
+    /**
+     * The playlists associated with the artist. By default, playlists is not included.
+     * Fetch limits: 10 default, 10 maximum
+     */
+    playlists?: PlaylistRelationship;
+
+    /**
+     * The station associated with the artist. By default, station is not included.
+     * Fetch limits: None (one station)
+     */
+    station?: StationRelationship;
+  }
+
+  /**
+   * The relationships for a song object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/song/relationships
+   */
+  interface SongRelationships {
+    /**
+     * The albums associated with the song. By default, albums includes identifiers only.
+     * Fetch limits: 10 default, 10 maximum
+     */
+    albums?: AlbumRelationship;
+
+    /**
+     * The artists associated with the song. By default, artists includes identifiers only.
+     * Fetch limits: 10 default, 10 maximum
+     */
+    artists?: ArtistRelationship;
+
+    /**
+     * The genres associated with the song. By default, genres is not included.
+     * Fetch limits: None
+     */
+    genres?: GenreRelationship;
+
+    /**
+     * The station associated with the song. By default, station is not included.
+     * Fetch limits: None (one station)
+     */
+    station?: StationRelationship;
+  }
+
+  /**
+   * The relationships for a library artist object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/libraryartist/relationships
+   */
+  interface LibraryArtistRelationships {
+    /**
+     * The library albums associated with the artist.
+     * By default, albums is not included. It is available only when fetching a single library artist resource by ID.
+     * Fetch limits: 25 default, 100 maximum
+     */
+    albums?: LibraryAlbumRelationship;
+  }
+
+  /**
+   * The relationships for a library song object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/librarysong/relationships
+   */
+  interface LibrarySongRelationships {
+    /**
+     * The library albums associated with the song. By default, albums is not included.
+     * Fetch limits: 10 default, 10 maximum
+     */
+    albums?: LibraryAlbumRelationship;
+
+    /**
+     * The library artists associated with the song. By default, artists is not included.
+     * Fetch limits: 10 default, 10 maximum
+     */
+    artists?: LibraryArtistRelationship;
+  }
+
+  /**
+   * The relationships for a library playlist object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/libraryplaylist/relationships
+   */
+  interface LibraryPlaylistRelationships {
+    /**
+     * The library songs and library music videos included in the playlist.
+     * By default, tracks is not included. Only available when fetching a single library playlist resource by ID.
+     * Fetch limits: 100 default, 100 maximum
+     */
+    tracks?: LibraryTrackRelationship;
+  }
+
+  /**
+   * An object that represents the album relationship for a Resource object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/albumrelationship
+   */
+  interface AlbumRelationship extends Relationship {
+    /**
+     * (Required) The data for the album included in the relationship.
+     */
+    data: [Album];
+  }
+
+  /**
+   * An object that represents the artist relationship for a Resource object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/artistrelationship
+   */
+  interface ArtistRelationship extends Relationship {
+    /**
+     * (Required) The data for the artist included in the relationship.
+     */
+    data: [Artist];
+  }
+
+  /**
+   * An object that represents the track relationship for a Resource object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/trackrelationship
+   */
+  interface TrackRelationship extends Relationship {
+    /**
+     * (Required) The data for the track included in the relationship.
+     */
+    data: [Song];
+  }
+
+  interface GenreRelationship extends Relationship {
+    data: [Genre];
+  }
+
+  interface CuratorRelationship extends Relationship {}
+
+  interface MusicVideoRelationship extends Relationship {}
+
+  /**
+   * An object that represents the playlist relationship for a Resource object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/playlistrelationship
+   */
+  interface PlaylistRelationship {
+    /**
+     * (Required) The data for the playlist included in the relationship.
+     */
+    data: [Playlist];
+  }
+
+  /**
+   * An object that represents the library artist relationship for a Resource object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/libraryartistrelationship
+   */
+  interface LibraryArtistRelationship extends Relationship {
+    /**
+     * (Required) The data for the library artist included in the relationship.
+     */
+    data: LibraryArtist[];
+  }
+
+  interface LibraryAlbumRelationship extends Relationship {
+    /**
+     * (Required) The data for the library album included in the relationship.
+     */
+    data: LibraryAlbum[];
+  }
+
+  interface LibraryTrackRelationship extends Relationship {
+    /**
+     * (Required) The data for the library track included in the relationship.
+     */
+    data: LibrarySong[];
+  }
+
+  interface StationRelationship {}
 }
 
 declare var MediaItem: MusicKit.MediaItem;

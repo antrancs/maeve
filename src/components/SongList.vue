@@ -7,7 +7,7 @@
       :index="index"
       :is-from-album="isFromAlbum"
       :on-song-item-clicked="handleSongItemClicked"
-      :is-playlist="isPlaylist"
+      :is-queue="isQueue"
     >
     </song-item>
   </div>
@@ -27,10 +27,13 @@ import SongItem from './SongItem.vue';
   components: { SongItem }
 })
 export default class SongList extends Vue {
+  contextMenuWidth: number | null = null;
+  contextMenuHeight: number | null = null;
+
   @Prop() collection!: Collection | undefined;
-  @Prop() tracks!: MusicKit.SongResource[];
+  @Prop() tracks!: MusicKit.Song[];
   @Prop({ default: false })
-  isPlaylist!: boolean;
+  isQueue!: boolean;
 
   @State musicPlayer!: MusicPlayerState;
 
@@ -40,7 +43,8 @@ export default class SongList extends Vue {
   get isFromAlbum(): boolean {
     return (
       this.collection !== undefined &&
-      this.collection.type === CollectionType.album
+      (this.collection.type === CollectionType.album ||
+        this.collection.type === CollectionType.libraryAlbum)
     );
   }
 
@@ -54,12 +58,15 @@ export default class SongList extends Vue {
       return;
     }
 
-    if (this.collection) {
-      const { id, kind } = this.collection.attributes.playParams;
+    if (this.collection && this.collection.attributes) {
+      const { playParams } = this.collection.attributes;
+      if (!playParams) {
+        return;
+      }
       this.playCollectionAtIndex({
         index,
-        collectionId: id,
-        collectionType: kind
+        collectionId: playParams.id,
+        collectionType: playParams.kind
       });
     } else {
       // Play items

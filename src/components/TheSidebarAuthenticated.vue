@@ -7,7 +7,9 @@
             <li>
                 <router-link :to="{ name: 'forYou' }">For You</router-link>
             </li>
-            <li>Playlists</li>
+            <li>
+                <router-link :to="{ name: 'myPlaylists' }">Playlists</router-link>
+            </li>
         </ul>
         <button @click="logout">Log out</button>
     </div>

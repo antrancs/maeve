@@ -12,10 +12,11 @@
               </h2>
               <span class="collection-subtitle">
                 {{ collectionArtistName }}
+              </span>
+              <span v-if="collectionType !== 'library-playlists'">
                 -
                 {{releaseYear}}
               </span>
-
               <div>
                 {{ tracks.length }} tracks
               </div>
@@ -63,33 +64,47 @@ import SongList from '@/components/SongList.vue';
 import { getArtworkUrl } from '@/utils/utils';
 import musicApiService, { CollectionType } from '@/services/musicApi.service';
 import { PlayCollectionAtIndexAction } from '@/store/types';
-import { Collection } from '@/@types/model/model';
+import { Collection, Song } from '@/@types/model/model';
 
 @Component({
   components: { SongList }
 })
 export default class CollectionDetail extends Vue {
   collection: Collection | null = null;
-  tracks: MusicKit.SongResource[] = [];
+  tracks: Song[] = [];
 
-  @Action
-  playCollectionAtIndex!: PlayCollectionAtIndexAction;
+  @Action playCollectionAtIndex!: PlayCollectionAtIndexAction;
 
   get collectionName(): string {
-    return this.collection ? this.collection.attributes.name : '';
+    if (!this.collection || !this.collection.attributes) {
+      return '';
+    }
+    return this.collection.attributes.name;
   }
 
   get collectionArtistName(): string {
-    return this.collection
-      ? this.collection.attributes.artistName ||
-          this.collection.attributes.curatorName
-      : '';
+    if (!this.collection || !this.collection.attributes) {
+      return '';
+    }
+
+    return (
+      (this.collection.attributes as MusicKit.AlbumAttributes).artistName ||
+      (this.collection.attributes as MusicKit.PlaylistAttributes).curatorName ||
+      ''
+    );
   }
 
-  get collectionType(): string {
-    return this.$route.path.startsWith('/albums')
-      ? CollectionType.album
-      : CollectionType.playlist;
+  get collectionType(): CollectionType {
+    const path = this.$route.path;
+    if (path.startsWith('/albums')) {
+      return CollectionType.album;
+    } else if (path.startsWith('/playlists')) {
+      return CollectionType.playlist;
+    } else if (path.startsWith('./library-playlists')) {
+      return CollectionType.libraryPlaylist;
+    } else {
+      return CollectionType.libraryAlbum;
+    }
   }
 
   get collectionId(): string {
@@ -97,39 +112,83 @@ export default class CollectionDetail extends Vue {
   }
 
   get releaseYear(): string {
-    if (!this.collection) {
+    if (!this.collection || !this.collection.attributes) {
       return '';
     }
-    const date =
-      this.collection.attributes.releaseDate ||
-      this.collection.attributes.lastModifiedDate;
-    return date.substring(0, 4);
+
+    let date = '';
+    switch (this.collectionType) {
+      case CollectionType.album:
+        date = (this.collection
+          .attributes as MusicKit.AlbumAttributes).releaseDate
+          .toString()
+          .substring(0, 4); // get year only
+        break;
+
+      case CollectionType.playlist:
+        date = (this.collection
+          .attributes as MusicKit.PlaylistAttributes).lastModifiedDate
+          .toString()
+          .substring(0, 4); // get year only
+    }
+
+    return date;
   }
 
   created() {
     const collectionId = this.$route.params.id;
-    musicApiService
-      .getCollection(collectionId, <CollectionType>this.collectionType)
-      .then(result => {
-        if (!result) {
-          return;
-        }
-        const { collection, tracks } = result;
-        this.collection = collection;
-        this.tracks = tracks;
-      });
+    let promise: Promise<{ collection: Collection; tracks: Song[] } | null>;
+    switch (this.collectionType) {
+      case CollectionType.libraryPlaylist:
+      case CollectionType.libraryAlbum:
+        promise = musicApiService.getLibraryCollection(
+          collectionId,
+          this.collectionType
+        );
+        break;
+
+      case CollectionType.album:
+      case CollectionType.playlist:
+        promise = musicApiService.getCollection(
+          collectionId,
+          this.collectionType
+        );
+        break;
+
+      default:
+        promise = Promise.reject('Invalid collection type');
+    }
+    promise.then(result => {
+      if (!result) {
+        return;
+      }
+
+      const { collection, tracks } = result;
+      this.collection = collection;
+      this.tracks = tracks;
+    });
   }
 
   getCollectionArtwork(width: number, height: number) {
-    return this.collection
-      ? getArtworkUrl(this.collection.attributes.artwork.url, width, height)
-      : '';
+    if (
+      !this.collection ||
+      !this.collection.attributes ||
+      !this.collection.attributes.artwork
+    ) {
+      return '';
+    }
+    return getArtworkUrl(this.collection.attributes.artwork.url, width, height);
   }
 
   play() {
-    if (!this.collection) {
+    if (
+      !this.collection ||
+      !this.collection.attributes ||
+      !this.collection.attributes.playParams
+    ) {
       return;
     }
+
     const { id, kind } = this.collection.attributes.playParams;
 
     this.playCollectionAtIndex({
@@ -140,7 +199,11 @@ export default class CollectionDetail extends Vue {
   }
 
   handleSongItemClicked(index: number) {
-    if (!this.collection) {
+    if (
+      !this.collection ||
+      !this.collection.attributes ||
+      !this.collection.attributes.playParams
+    ) {
       return;
     }
 
@@ -149,7 +212,7 @@ export default class CollectionDetail extends Vue {
     this.playCollectionAtIndex({
       collectionId: id,
       collectionType: kind,
-      index: index
+      index
     });
   }
 }
@@ -172,12 +235,7 @@ export default class CollectionDetail extends Vue {
 }
 
 .banner-overlay {
-  background-color: rgba(
-    $color: (
-      #000000
-    ),
-    $alpha: 0.6
-  );
+  background-color: rgba($color: (#000000), $alpha: 0.6);
   height: 100%;
   position: relative;
   z-index: 40;

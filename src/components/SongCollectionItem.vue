@@ -60,18 +60,28 @@ export default class SongCollectionItem extends Vue {
   playCollectionAtIndex!: (payload: PlayCollectionAtIndexPayload) => void;
   @Action toggleCurrentTrack!: () => void;
 
-  get isCollectionBeingPlayed() {
+  get isCollectionBeingPlayed(): boolean {
     return (
-      this.musicPlayer.currentPlaying &&
+      this.musicPlayer.currentPlaying !== null &&
       this.collection.id === this.musicPlayer.currentPlaying.container.id
     );
   }
-  get artworkOverlayClass() {
+
+  get artworkOverlayClass(): object {
     return {
       playing: this.isCollectionBeingPlayed
     };
   }
-  get artworkUrl() {
+
+  get artworkUrl(): string {
+    if (
+      !this.collection ||
+      !this.collection.attributes ||
+      !this.collection.attributes.artwork
+    ) {
+      return '';
+    }
+
     return getArtworkUrl(this.collection.attributes.artwork.url, 500, 500);
   }
 
@@ -79,6 +89,14 @@ export default class SongCollectionItem extends Vue {
     if (this.isCollectionBeingPlayed) {
       this.toggleCurrentTrack();
     } else {
+      if (
+        !this.collection ||
+        !this.collection.attributes ||
+        !this.collection.attributes.playParams
+      ) {
+        return;
+      }
+
       const { id, kind } = this.collection.attributes.playParams;
 
       this.playCollectionAtIndex({

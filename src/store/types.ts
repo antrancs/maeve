@@ -24,7 +24,9 @@ export type AddToLibraryPayload = {
   itemIds: string[];
   type: string;
 };
-export type AddToLibraryAction = (payload: AddToLibraryPayload) => void;
+export type AddToLibraryAction = (
+  payload: AddToLibraryPayload
+) => Promise<void>;
 
 // Auth module
 export interface AuthState {

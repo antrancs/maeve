@@ -107,12 +107,14 @@ export default class CollectionDetail extends Vue {
   get collectionType(): CollectionType {
     // For now, there should be 4 types of collection: album, playlist, library-playlist & library-album
     // There might be more
+
     const path = this.$route.path;
+    console.log(path);
     if (path.startsWith('/albums')) {
       return CollectionType.album;
     } else if (path.startsWith('/playlists')) {
       return CollectionType.playlist;
-    } else if (path.startsWith('./library-playlists')) {
+    } else if (path.startsWith('/me/library-playlists')) {
       return CollectionType.libraryPlaylist;
     } else {
       return CollectionType.libraryAlbum;
@@ -171,15 +173,18 @@ export default class CollectionDetail extends Vue {
       default:
         promise = Promise.reject('Invalid collection type');
     }
-    promise.then(result => {
-      if (!result) {
-        return;
-      }
+    promise
+      .then(result => {
+        if (!result) {
+          return;
+        }
 
-      const { collection, tracks } = result;
-      this.collection = collection;
-      this.tracks = tracks;
-    });
+        const { collection, tracks } = result;
+        this.collection = collection;
+        this.tracks = tracks;
+      })
+      // @ts-ignore
+      .catch(() => this.$toasted.global.error());
   }
 
   // Methods

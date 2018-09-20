@@ -108,8 +108,11 @@ export default class SearchResults extends Vue {
         this.artists = artists;
         this.playlists = playlists;
       })
+      // @ts-ignore
       .catch(err => {
         console.log(err);
+        // @ts-ignore
+        this.$toasted.global.error();
       });
   }
 

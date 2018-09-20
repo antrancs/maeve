@@ -18,7 +18,7 @@
     >
       <context-menu-item :on-click="addNext">Play next</context-menu-item>
       <context-menu-item :on-click="handleAddToQueue">Add to queue</context-menu-item>
-      <context-menu-item :on-click="handleAddToLibrary">Add to playlist</context-menu-item>
+      <context-menu-item :on-click="handleAddToLibrary">Add to library</context-menu-item>
     </context-menu>
   </div>
 </template>
@@ -97,7 +97,12 @@ export default class SongList extends Vue {
       type: 'song'
     });
 
+    // appendSongs is synchronous
     this.appendSongs({ items: [mediaItem] });
+    // @ts-ignore
+    this.$toasted.global.notify({
+      message: 'Song added to queue'
+    });
   }
 
   addNext() {}
@@ -110,7 +115,18 @@ export default class SongList extends Vue {
     this.addToLibrary({
       itemIds: [this.selectedTrack.id],
       type: 'songs'
-    });
+    })
+      .then(() =>
+        // @ts-ignore
+        this.$toasted.global.notify({
+          message: 'Song added to library'
+        })
+      )
+      .catch(err => {
+        console.log(err);
+        // @ts-ignore
+        this.$toasted.global.error();
+      });
   }
 
   /**

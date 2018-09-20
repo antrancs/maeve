@@ -99,9 +99,7 @@ const actions: ActionTree<MusicPlayerState, any> = {
   },
 
   [ADD_TO_LIBRARY]({ commit }, { itemIds, type }: AddToLibraryPayload) {
-    musicPlayerService.addToLibrary(itemIds, type).then(() => {
-      console.log('Added done');
-    });
+    return musicPlayerService.addToLibrary(itemIds, type);
   }
 };
 

@@ -16,8 +16,6 @@ export default class SidebarUnauthenticated extends Vue {
 
   authorize() {
     this.login();
-    // console.log('Authorize');
-    // this.$music.authorize();
   }
 }
 </script>

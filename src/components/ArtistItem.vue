@@ -35,11 +35,17 @@ export default class ArtistItem extends Vue {
 
   // Helper functions
   private $_getArtistArtwork(url: string) {
-    getArtistArtwork(url).then(artwork => {
-      this.artistArtwork = artwork
-        ? artwork
-        : 'https://via.placeholder.com/500x500';
-    });
+    getArtistArtwork(url)
+      .then(artwork => {
+        this.artistArtwork = artwork
+          ? artwork
+          : 'https://via.placeholder.com/500x500';
+      })
+      .catch(err => {
+        console.log(err);
+        // @ts-ignore
+        this.$toasted.global.error();
+      });
   }
 }
 </script>

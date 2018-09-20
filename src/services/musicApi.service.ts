@@ -201,10 +201,9 @@ class MusicApiService {
    * Extract the collection's info and its 'tracks' relationships
    * @param result An Album or Playlist instance
    */
-  private extractCollectionResult(
+  private extractCollectionResult = (
     result: MusicKit.Album | MusicKit.Playlist
-  ): { collection: Collection; tracks: MusicKit.Song[] } | null {
-    console.log(result);
+  ): { collection: Collection; tracks: MusicKit.Song[] } | null => {
     if (this.isResultEmpty(result)) {
       return null;
     }
@@ -217,7 +216,7 @@ class MusicApiService {
       collection: result,
       tracks
     };
-  }
+  };
 
   /**
    * Check if the returned result from the API is empty

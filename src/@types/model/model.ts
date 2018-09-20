@@ -1,3 +1,5 @@
+export type Nullable<T> = T | null;
+
 export interface Artist {
   id: string;
   name: string;

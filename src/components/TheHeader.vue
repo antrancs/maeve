@@ -1,8 +1,12 @@
 <template>
-    <div class="app-header">
-        <div class="brand">Maeve</div>
-        <input type="text" class="search-bar" @change="handleSearchTextChanged">
-    </div>
+  <div class="app-header">
+    <div class="brand">Maeve</div>
+    <input
+      type="text"
+      class="search-bar"
+      @change="handleSearchTextChanged"
+    />
+  </div>
 </template>
 
 <script lang="ts">

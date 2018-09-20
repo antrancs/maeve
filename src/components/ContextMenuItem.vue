@@ -10,6 +10,7 @@ import { Prop, Component } from 'vue-property-decorator';
 
 @Component
 export default class ContextMenuItem extends Vue {
+  // Props
   @Prop() onClick!: () => void;
 }
 </script>

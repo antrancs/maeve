@@ -19,26 +19,9 @@ const musicPlayerService = {
     musicKit.getPlayerInstance().pause();
   },
 
-  playSong(
-    song: MusicKit.MediaItem,
-    collectionId: string
-  ): Promise<MusicKit.MediaItem> {
-    const music = musicKit.getInstance();
-
-    return music
-      .setQueue({
-        album: collectionId
-      })
-      .then(queue => {
-        if (queue.items.length === 0) {
-          return Promise.resolve();
-        }
-
-        return this.play();
-      })
-      .then(() => music.player.nowPlayingItem);
-  },
-
+  /**
+   * Play next track from the queue
+   */
   playNext(): Promise<MusicKit.MediaItem> {
     const musicKitPlayer = musicKit.getPlayerInstance();
     return musicKitPlayer
@@ -46,6 +29,9 @@ const musicPlayerService = {
       .then(() => musicKitPlayer.nowPlayingItem);
   },
 
+  /**
+   * Play previous track from the queue
+   */
   playPrevious(): Promise<MusicKit.MediaItem> {
     const musicKitPlayer = musicKit.getPlayerInstance();
     return musicKitPlayer
@@ -53,24 +39,41 @@ const musicPlayerService = {
       .then(() => musicKitPlayer.nowPlayingItem);
   },
 
+  /**
+   * Play the collection (album/playlist) at the specified index
+   * @param playParams Play parameters
+   * @param index Index
+   */
   playCollectionAtIndex(
-    collectionId: string,
-    collectionType: string,
+    playParams: MusicKit.PlayParameters,
     index: number = 0
   ): Promise<MusicKit.MediaItem> {
+    if (!playParams) {
+      return Promise.reject('Playparams must be supplied to play');
+    }
+
     const music = musicKit.getInstance();
     return music
       .setQueue({
-        [collectionType]: collectionId
+        [playParams.kind]: playParams.id
       })
       .then(() => music.player.changeToMediaAtIndex(index))
       .then(() => music.player.nowPlayingItem);
   },
 
+  /**
+   * Append the items to the tail of the queue
+   * @param items Items to be added
+   */
   appendItemsToQueue(items: MusicKit.MediaItem[]): void {
     musicKit.getPlayerInstance().queue.append({ items });
   },
 
+  /**
+   * Add multiple items to the user's library
+   * @param itemIds Ids of the items to be added
+   * @param type Type of these items
+   */
   addToLibrary(itemIds: string[], type: string) {
     return musicKit.getApiInstance().addToLibrary({
       [type]: itemIds

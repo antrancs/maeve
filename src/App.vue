@@ -39,7 +39,7 @@ export default class App extends Vue {
 @import '@/styles/styles.scss';
 
 #app {
-  background: #121622;
+  background: $bg-color;
   height: 100%;
 }
 
@@ -59,5 +59,9 @@ export default class App extends Vue {
 .media-item__info-title {
   font-weight: bold;
   overflow: hidden;
+}
+
+.context-menu-showing {
+  overflow-y: hidden;
 }
 </style>

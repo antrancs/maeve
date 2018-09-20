@@ -42,18 +42,16 @@ export default class SongQueue extends Vue {
 
 <style lang="scss" scoped>
 .slide-fade-enter-active {
-  transition: all 0.6s ease;
+  transition: transform 0.6s ease;
 }
 
 .slide-fade-leave-active {
-  transition: all 0.6s;
+  transition: transform 0.6s;
 }
 
 .slide-fade-enter, .slide-fade-leave-to
 /* .slide-fade-leave-active below version 2.1.8 */ {
   transform: translateX(412px);
-  -webkit-perspective: 1000;
-  -webkit-backface-visibility: hidden;
 }
 
 .song-queue-modal {

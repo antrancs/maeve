@@ -1,0 +1,30 @@
+.sidebar {
+  background-color: $sidebar-color;
+  flex: 0 0 18rem;
+}
+
+.side-bar__song-artwork {
+  height: 180px;
+  width: 180px;
+  position: fixed;
+  bottom: 72px;
+}
+
+.sidebar__menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar__menu-item {
+  padding: 1.6rem 1.8rem;
+
+  & a {
+    color: $fg-color-6;
+    text-decoration: none;
+  }
+
+  & a.router-link-exact-active {
+    color: $fg-color-1;
+  }
+}

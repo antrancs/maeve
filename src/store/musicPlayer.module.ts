@@ -58,10 +58,10 @@ const actions: ActionTree<MusicPlayerState, any> = {
 
   [PLAY_COLLECTION_AT_INDEX](
     context,
-    { collectionId, collectionType, index }: PlayCollectionAtIndexPayload
+    { playParams, index }: PlayCollectionAtIndexPayload
   ) {
     musicPlayerService
-      .playCollectionAtIndex(collectionId, collectionType, index)
+      .playCollectionAtIndex(playParams, index)
       .then(currentTrack => {
         context.commit(SET_CURRENTLY_PLAYING_SONG, currentTrack);
         context.commit(SET_IS_PLAYING, true);

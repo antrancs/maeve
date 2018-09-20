@@ -21,7 +21,7 @@
                 {{ tracks.length }} tracks
               </div>
               <div class="group-control">
-                <button @click="play" class="button">PLAY</button>
+                <button @click="playCollection" class="button">PLAY</button>
                 <button class="button">SHUFFLE</button>
               </div>
             </div>
@@ -62,19 +62,28 @@ import { Action } from 'vuex-class';
 
 import SongList from '@/components/SongList.vue';
 import { getArtworkUrl } from '@/utils/utils';
-import musicApiService, { CollectionType } from '@/services/musicApi.service';
+import musicApiService from '@/services/musicApi.service';
 import { PlayCollectionAtIndexAction } from '@/store/types';
-import { Collection, Song } from '@/@types/model/model';
+import {
+  Collection,
+  Song,
+  Nullable,
+  CollectionType
+} from '@/@types/model/model';
+import { PLAY_COLLECTION_AT_INDEX } from '@/store/actions.type';
 
 @Component({
   components: { SongList }
 })
 export default class CollectionDetail extends Vue {
-  collection: Collection | null = null;
-  tracks: Song[] = [];
+  // Data
+  private collection: Nullable<Collection> = null;
+  private tracks: Song[] = [];
 
-  @Action playCollectionAtIndex!: PlayCollectionAtIndexAction;
+  // Action
+  @Action [PLAY_COLLECTION_AT_INDEX]: PlayCollectionAtIndexAction;
 
+  // Computed
   get collectionName(): string {
     if (!this.collection || !this.collection.attributes) {
       return '';
@@ -87,6 +96,7 @@ export default class CollectionDetail extends Vue {
       return '';
     }
 
+    // artistName is only available for album
     return (
       (this.collection.attributes as MusicKit.AlbumAttributes).artistName ||
       (this.collection.attributes as MusicKit.PlaylistAttributes).curatorName ||
@@ -95,6 +105,8 @@ export default class CollectionDetail extends Vue {
   }
 
   get collectionType(): CollectionType {
+    // For now, there should be 4 types of collection: album, playlist, library-playlist & library-album
+    // There might be more
     const path = this.$route.path;
     if (path.startsWith('/albums')) {
       return CollectionType.album;
@@ -116,25 +128,26 @@ export default class CollectionDetail extends Vue {
       return '';
     }
 
-    let date = '';
+    let year = '';
     switch (this.collectionType) {
       case CollectionType.album:
-        date = (this.collection
+        year = (this.collection
           .attributes as MusicKit.AlbumAttributes).releaseDate
           .toString()
           .substring(0, 4); // get year only
         break;
 
       case CollectionType.playlist:
-        date = (this.collection
+        year = (this.collection
           .attributes as MusicKit.PlaylistAttributes).lastModifiedDate
           .toString()
           .substring(0, 4); // get year only
     }
 
-    return date;
+    return year;
   }
 
+  // Life cycle methods
   created() {
     const collectionId = this.$route.params.id;
     let promise: Promise<{ collection: Collection; tracks: Song[] } | null>;
@@ -169,6 +182,7 @@ export default class CollectionDetail extends Vue {
     });
   }
 
+  // Methods
   getCollectionArtwork(width: number, height: number) {
     if (
       !this.collection ||
@@ -180,7 +194,10 @@ export default class CollectionDetail extends Vue {
     return getArtworkUrl(this.collection.attributes.artwork.url, width, height);
   }
 
-  play() {
+  /**
+   * Play the entire collection
+   */
+  playCollection() {
     if (
       !this.collection ||
       !this.collection.attributes ||
@@ -189,32 +206,27 @@ export default class CollectionDetail extends Vue {
       return;
     }
 
-    const { id, kind } = this.collection.attributes.playParams;
-
+    // Start with the first song by default
     this.playCollectionAtIndex({
-      collectionId: id,
-      collectionType: kind,
+      playParams: this.collection.attributes.playParams,
       index: 0
     });
   }
 
-  handleSongItemClicked(index: number) {
-    if (
-      !this.collection ||
-      !this.collection.attributes ||
-      !this.collection.attributes.playParams
-    ) {
-      return;
-    }
+  // handleSongItemClicked(index: number) {
+  //   if (
+  //     !this.collection ||
+  //     !this.collection.attributes ||
+  //     !this.collection.attributes.playParams
+  //   ) {
+  //     return;
+  //   }
 
-    const { id, kind } = this.collection.attributes.playParams;
-
-    this.playCollectionAtIndex({
-      collectionId: id,
-      collectionType: kind,
-      index
-    });
-  }
+  //   this.playCollectionAtIndex({
+  //     playParams: this.collection.attributes.playParams,
+  //     index
+  //   });
+  // }
 }
 </script>
 

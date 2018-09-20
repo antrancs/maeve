@@ -8,10 +8,10 @@
       </media-artwork>
 
       <media-artwork-overlay
-        :show-background="!isFromAlbum"
         :is-active="isActive"
         :is-playing="isPlaying"
-        @playingControlClicked="() => onSongItemClicked(index)"
+        :show-background="!isFromAlbum"
+        @playing-control-clicked="() => onSongItemClicked(index)"
       >
       </media-artwork-overlay>
 
@@ -63,7 +63,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { State, Action } from 'vuex-class';
 import 'vue-awesome/icons/ellipsis-h';
 
-import { MusicPlayerState, ToggleContextMenuPayload } from '@/store/types';
+import { MusicPlayerState } from '@/store/types';
 import { getArtworkUrl } from '@/utils/utils';
 import MediaArtwork from './MediaArtwork.vue';
 import MediaArtworkOverlay from './MediaArtworkOverlay.vue';
@@ -96,8 +96,6 @@ export default class SongItem extends Vue {
 
   @State musicPlayer!: MusicPlayerState;
 
-  @Action toggleContextMenu!: (payload: ToggleContextMenuPayload) => void;
-
   get isActive(): boolean {
     return (
       this.musicPlayer.currentPlaying !== null &&
@@ -118,18 +116,9 @@ export default class SongItem extends Vue {
   }
 
   handleMoreIconClicked(event: MouseEvent) {
-    // this.$refs.contextMenu.show(event);
-
-    const mediaItem = new MusicKit.MediaItem({
-      id: this.track.id,
-      attributes: this.track.attributes,
-      type: 'song'
-    });
-
-    this.toggleContextMenu({
-      pageX: event.pageX,
-      pageY: event.pageY,
-      selectedTrack: mediaItem
+    // @ts-ignore
+    this.$contextMenu.open('cm-song-list', event, {
+      selectedTrack: this.track
     });
   }
 }

@@ -8,10 +8,11 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
+import { LOGIN } from '@/store/actions.type';
 
 @Component
 export default class SidebarUnauthenticated extends Vue {
-  @Action login!: () => void;
+  @Action [LOGIN]: () => void;
 
   authorize() {
     this.login();

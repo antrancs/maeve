@@ -49,17 +49,25 @@ import { getArtworkUrl } from '@/utils/utils';
 import { PlayCollectionAtIndexPayload } from '@/store/types';
 import { Collection } from '@/@types/model/model';
 import { MusicPlayerState } from '@/store/types';
+import {
+  PLAY_COLLECTION_AT_INDEX,
+  TOGGLE_CURRENT_TRACK
+} from '@/store/actions.type';
 
 @Component
 export default class SongCollectionItem extends Vue {
+  // Props
   @Prop() collection!: Collection;
 
+  // State
   @State musicPlayer!: MusicPlayerState;
 
+  // Action
   @Action
-  playCollectionAtIndex!: (payload: PlayCollectionAtIndexPayload) => void;
-  @Action toggleCurrentTrack!: () => void;
+  [PLAY_COLLECTION_AT_INDEX]: (payload: PlayCollectionAtIndexPayload) => void;
+  @Action [TOGGLE_CURRENT_TRACK]!: () => void;
 
+  // Computed
   get isCollectionBeingPlayed(): boolean {
     return (
       this.musicPlayer.currentPlaying !== null &&
@@ -85,6 +93,7 @@ export default class SongCollectionItem extends Vue {
     return getArtworkUrl(this.collection.attributes.artwork.url, 500, 500);
   }
 
+  // Methods
   private handleIconClicked() {
     if (this.isCollectionBeingPlayed) {
       this.toggleCurrentTrack();
@@ -97,11 +106,8 @@ export default class SongCollectionItem extends Vue {
         return;
       }
 
-      const { id, kind } = this.collection.attributes.playParams;
-
       this.playCollectionAtIndex({
-        collectionId: id,
-        collectionType: kind,
+        playParams: this.collection.attributes.playParams,
         index: 0
       });
     }

@@ -2,6 +2,7 @@ import Vue from 'vue';
 
 import store from '@/store';
 import router from '@/router';
+import '@/plugins';
 import musicKit from '@/services/musicKit';
 import { connectMusicKitToStore } from '@/setup/musickit';
 import '@/setup/icons';

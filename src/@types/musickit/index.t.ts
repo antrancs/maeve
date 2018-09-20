@@ -434,7 +434,8 @@ declare namespace MusicKit {
     item(index: number): MediaItem;
 
     /**
-     * Inserts the media items defined by the queue descriptor into the current queue immediately after the currently playing media item.
+     * Inserts the media items defined by the queue descriptor into the current queue immediately
+     * after the currently playing media item.
      * @param descriptor A queue descriptor.
      */
     prepend(descriptor: QueueDescriptor): void;
@@ -660,13 +661,8 @@ declare namespace MusicKit {
     userTokenDidChange = 'userTokenDidChange'
   }
 
-  // interface MediaItemConstructor {
-  //   new (options: MediaItemOptions): MediaItem;
-  // }
-
   class MediaItem {
     constructor(options: MediaItemOptions);
-    // new (options: MediaItemOptions);
     /**
      * A string of information about the album.
      */
@@ -1542,7 +1538,7 @@ declare namespace MusicKit {
     /**
      * (Required) The names of the genres associated with this album.
      */
-    genreNames: [string];
+    genreNames: string[];
 
     /**
      * (Required) Indicates whether the album is complete. If true, the album is complete; otherwise, it is not.
@@ -1960,5 +1956,3 @@ declare namespace MusicKit {
 
   interface StationRelationship {}
 }
-
-declare var MediaItem: MusicKit.MediaItem;

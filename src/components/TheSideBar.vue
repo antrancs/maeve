@@ -4,13 +4,16 @@
     <sidebar-unauthenticated v-else></sidebar-unauthenticated>
 
     <img
+      v-if="currentTrackArtwork && currentTrackArtwork.length > 0"
       class="side-bar__song-artwork"
-      :src="currentTrackArtwork" alt="">
+      :src="currentTrackArtwork"
+      alt=""
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
 
 import SidebarAuthenticated from './TheSidebarAuthenticated.vue';
@@ -23,24 +26,11 @@ import SidebarUnauthenticated from './TheSidebarUnauthenticated.vue';
   }
 })
 export default class AppSidebar extends Vue {
-  @Prop({ default: false })
-  isLoggedIn!: boolean;
-
   @Getter currentTrackArtwork!: string;
   @Getter isAuthenticated!: boolean;
 }
 </script>
 
-<style lang="scss" scoped>
-.sidebar {
-  background-color: $sidebar-color;
-  flex: 0 0 18rem;
-}
-
-.side-bar__song-artwork {
-  height: 180px;
-  width: 180px;
-  position: fixed;
-  bottom: 72px;
-}
+<style lang="scss">
+@import '@/styles/components/_sidebar.scss';
 </style>

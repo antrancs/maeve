@@ -11,11 +11,11 @@ export type PlayCollectionAtIndexAction = (
 ) => void;
 
 export type PlayCollectionAtIndexPayload = {
-  collectionId: string;
-  collectionType: string;
+  playParams: MusicKit.PlayParameters;
   index: number;
 };
 
+export type AppendSongsAction = (payload: AppendSongsPayload) => void;
 export type AppendSongsPayload = {
   items: MusicKit.MediaItem[];
 };
@@ -24,21 +24,9 @@ export type AddToLibraryPayload = {
   itemIds: string[];
   type: string;
 };
+export type AddToLibraryAction = (payload: AddToLibraryPayload) => void;
 
 // Auth module
 export interface AuthState {
   musicUserToken: string | null;
 }
-
-// Context menu
-export interface ContextMenuState {
-  selectedTrack: MusicKit.MediaItem | null;
-  isContextMenuShowing: boolean;
-  displayPositionPageX: number;
-  displayPositionPageY: number;
-}
-export type ToggleContextMenuPayload = {
-  pageX: number;
-  pageY: number;
-  selectedTrack: MusicKit.MediaItem;
-};

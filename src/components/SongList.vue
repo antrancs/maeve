@@ -10,6 +10,16 @@
       :is-queue="isQueue"
     >
     </song-item>
+
+    <context-menu
+      name="cm-song-list"
+      @before-open="beforeOpenContextMenu"
+      @before-close="beforeCloseContextMenu"
+    >
+      <context-menu-item :on-click="addNext">Play next</context-menu-item>
+      <context-menu-item :on-click="handleAddToQueue">Add to queue</context-menu-item>
+      <context-menu-item :on-click="handleAddToLibrary">Add to playlist</context-menu-item>
+    </context-menu>
   </div>
 </template>
 
@@ -17,29 +27,49 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { Action, State } from 'vuex-class';
 
-import { CollectionType } from '@/services/musicApi.service';
-import { Collection } from '@/@types/model/model';
-import { PlayCollectionAtIndexAction } from '@/store/types';
-import { MusicPlayerState } from '@/store/types';
+import { Collection, Nullable, CollectionType } from '@/@types/model/model';
+import {
+  PlayCollectionAtIndexAction,
+  AppendSongsPayload,
+  AddToLibraryPayload,
+  MusicPlayerState,
+  AppendSongsAction,
+  AddToLibraryAction
+} from '@/store/types';
+import {
+  PLAY_COLLECTION_AT_INDEX,
+  ADD_TO_LIBRARY,
+  TOGGLE_CURRENT_TRACK,
+  APPEND_SONGS
+} from '@/store/actions.type';
+
 import SongItem from './SongItem.vue';
+import ContextMenu from './ContextMenu.vue';
+import ContextMenuItem from './ContextMenuItem.vue';
 
 @Component({
-  components: { SongItem }
+  components: { SongItem, ContextMenu, ContextMenuItem }
 })
 export default class SongList extends Vue {
-  contextMenuWidth: number | null = null;
-  contextMenuHeight: number | null = null;
+  // Data
+  private selectedTrack: Nullable<MusicKit.Song> = null;
 
+  // Props
   @Prop() collection!: Collection | undefined;
   @Prop() tracks!: MusicKit.Song[];
   @Prop({ default: false })
   isQueue!: boolean;
 
+  // State
   @State musicPlayer!: MusicPlayerState;
 
-  @Action playCollectionAtIndex!: PlayCollectionAtIndexAction;
-  @Action toggleCurrentTrack!: () => void;
+  // Action
+  @Action [PLAY_COLLECTION_AT_INDEX]: PlayCollectionAtIndexAction;
+  @Action [TOGGLE_CURRENT_TRACK]: () => void;
+  @Action [APPEND_SONGS]: AppendSongsAction;
+  @Action [ADD_TO_LIBRARY]: AddToLibraryAction;
 
+  // Computed
   get isFromAlbum(): boolean {
     return (
       this.collection !== undefined &&
@@ -48,6 +78,45 @@ export default class SongList extends Vue {
     );
   }
 
+  // Methods
+  beforeOpenContextMenu(event: any) {
+    this.selectedTrack = event.params.selectedTrack;
+  }
+
+  beforeCloseContextMenu() {
+    this.selectedTrack = null;
+  }
+
+  handleAddToQueue(event: MouseEvent) {
+    if (!this.selectedTrack) {
+      return;
+    }
+    const mediaItem = new MusicKit.MediaItem({
+      id: this.selectedTrack.id,
+      attributes: this.selectedTrack.attributes,
+      type: 'song'
+    });
+
+    this.appendSongs({ items: [mediaItem] });
+  }
+
+  addNext() {}
+
+  handleAddToLibrary() {
+    if (!this.selectedTrack) {
+      return;
+    }
+
+    this.addToLibrary({
+      itemIds: [this.selectedTrack.id],
+      type: 'songs'
+    });
+  }
+
+  /**
+   * Event handler when a song row is clicked
+   * @param index Index of the clicked row
+   */
   handleSongItemClicked(index: number): void {
     // the clicked song is being played, just toggle the current track
     if (
@@ -63,10 +132,10 @@ export default class SongList extends Vue {
       if (!playParams) {
         return;
       }
+
       this.playCollectionAtIndex({
         index,
-        collectionId: playParams.id,
-        collectionType: playParams.kind
+        playParams
       });
     } else {
       // Play items

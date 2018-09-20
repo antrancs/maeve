@@ -1,7 +1,7 @@
 <template>
 <div>
   <div class="artist-info">
-    {{info.name}}
+    {{ info.name }}
   </div>
   <h3>Albums</h3>
   <song-collection-list :collections="albums"></song-collection-list>
@@ -21,11 +21,18 @@ import musicApiService from '@/services/musicApi.service';
   components: { SongCollectionList }
 })
 export default class ArtistDetail extends Vue {
-  info: object = {};
-  albums: any[] = [];
-  playlists: any[] = [];
+  // Data
+  private info: object = {};
+  private albums: MusicKit.Album[] = [];
+  private playlists: MusicKit.Playlist[] = [];
 
+  // Life cycle methods
   created() {
+    this.$_getArtistInfo();
+  }
+
+  // Helper methods
+  $_getArtistInfo() {
     const artistId = this.$route.params.id;
     musicApiService
       .getArtist(artistId)

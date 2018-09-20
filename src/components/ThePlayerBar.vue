@@ -62,19 +62,28 @@ import 'vue-awesome/icons/redo';
 import 'vue-awesome/icons/volume-up';
 
 import { MusicPlayerState } from '@/store/types';
+import {
+  PLAY_NEXT,
+  PLAY_PREVIOUS,
+  TOGGLE_CURRENT_TRACK
+} from '@/store/actions.type';
 
 @Component
 export default class PlayerBar extends Vue {
+  // State
   @State musicPlayer!: MusicPlayerState;
 
-  @Action playNext!: () => void;
-  @Action playPrevious!: () => void;
-  @Action toggleCurrentTrack!: () => void;
+  // Action
+  @Action [PLAY_NEXT]: () => void;
+  @Action [PLAY_PREVIOUS]: () => void;
+  @Action [TOGGLE_CURRENT_TRACK]: () => void;
 
+  // Computed
   get songStatusIcon() {
     return this.musicPlayer.isPlaying ? 'pause-circle' : 'play-circle';
   }
 
+  // Methods
   handleForwardClicked() {
     this.playNext();
   }

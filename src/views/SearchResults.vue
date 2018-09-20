@@ -61,12 +61,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import SongCollectionList from '@/components/SongCollectionList.vue';
 import SongList from '@/components/SongList.vue';
 import ArtistList from '@/components/ArtistList.vue';
 import musicApiService from '@/services/musicApi.service';
+import { Route } from 'vue-router';
 
 @Component({
   components: {
@@ -76,15 +77,24 @@ import musicApiService from '@/services/musicApi.service';
   }
 })
 export default class SearchResults extends Vue {
-  albums: any[] = [];
-  songs: any[] = [];
-  artists: any[] = [];
-  playlists: any[] = [];
-  queryString: string = '';
+  private albums: any[] = [];
+  private songs: any[] = [];
+  private artists: any[] = [];
+  private playlists: any[] = [];
+  private queryString = '';
+
+  @Watch('$route')
+  onRouteChange(to: Route, from: Route, next: () => void) {
+    this.queryString = to.query.q;
+    this.search();
+  }
 
   created() {
     this.queryString = this.$route.query.q;
+    this.search();
+  }
 
+  search() {
     musicApiService
       .searchAll(this.queryString)
       .then(result => {

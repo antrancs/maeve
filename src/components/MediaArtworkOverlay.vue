@@ -7,7 +7,7 @@
           class="playing-control"
           @mouseover="playingControlHovered = true"
           @mouseout="playingControlHovered = false"
-          @click="$emit('playingControlClicked')"
+          @click="$emit('playing-control-clicked')"
         >
           <icon color="#fff" :name="contentIcon"></icon>
         </div>
@@ -24,8 +24,10 @@ import 'vue-awesome/icons/headphones';
 
 @Component
 export default class ArtworkOverlay extends Vue {
+  // Data
   private playingControlHovered: boolean = false;
 
+  // Props
   @Prop({ default: true })
   private showBackground!: boolean;
   @Prop({ default: false })
@@ -33,6 +35,7 @@ export default class ArtworkOverlay extends Vue {
   @Prop({ default: false })
   private isPlaying!: boolean;
 
+  // Computed
   get contentIcon(): string {
     if (this.isPlaying && this.isActive) {
       return this.playingControlHovered ? 'pause' : 'headphones';
@@ -44,35 +47,35 @@ export default class ArtworkOverlay extends Vue {
 
 <style scoped lang="scss">
 .artwork-overlay {
+  display: none;
+  height: 100%;
   position: absolute;
   width: 100%;
-  height: 100%;
-  display: none;
 }
 
 .artwork-overlay__background {
-  position: absolute;
-  top: 0;
-  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
   bottom: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 .content {
-  position: absolute;
-  top: 0;
-  right: 0;
   bottom: 0;
   left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 .content-wrapper {
-  display: flex;
   align-items: center;
+  display: flex;
+  height: 32px;
   justify-content: center;
   width: 32px;
-  height: 32px;
 }
 
 .song-item:hover .artwork-overlay {
@@ -84,8 +87,8 @@ export default class ArtworkOverlay extends Vue {
 }
 
 .playing-control {
-  display: flex;
   align-items: center;
   cursor: pointer;
+  display: flex;
 }
 </style>

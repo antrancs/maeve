@@ -11,27 +11,28 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component
 export default class MediaArtwork extends Vue {
+  // Props
   @Prop() artworkUrl!: string;
 }
 </script>
 
 <style scoped lang="scss">
 .artwork {
-  position: absolute;
-  width: 100%;
   height: 100%;
+  position: absolute;
   overflow: hidden;
+  width: 100%;
 }
 
 .image-wrapper {
-  display: flex;
   align-items: center;
-  width: 100%;
+  display: flex;
   height: 100;
+  width: 100%;
 }
 
 .artwork-image {
-  width: 100%;
   height: 100%;
+  width: 100%;
 }
 </style>

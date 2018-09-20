@@ -1,14 +1,11 @@
 import musicKit from '@/services/musicKit';
 import { Collection, CollectionType } from '@/@types/model/model';
 
-enum MediaType {
-  artist = 'artists',
-  album = 'albums',
-  song = 'songs',
-  playlist = 'playlists'
-}
-
-const MusicApiService = {
+class MusicApiService {
+  /**
+   * Search all catalog resources based on the search term
+   * @param searchString The search term
+   */
   searchAll(
     searchString = ''
   ): Promise<{
@@ -25,7 +22,7 @@ const MusicApiService = {
       .getApiInstance()
       .search(searchString, {
         limit: 11,
-        types: Object.values(MediaType).join(',')
+        types: 'artists,albums,songs,playlists'
       })
       .then(result => {
         if (this.isResultEmpty(result)) {
@@ -45,8 +42,15 @@ const MusicApiService = {
           songs
         };
       });
-  },
+  }
 
+  /**
+   * Search the catalog for 1 particular resource (album/playlist/song/artist)
+   * @param query The search term
+   * @param resourceType Resource type
+   * @param limit Limit to fetch, max is 25
+   * @param offset Search offset
+   */
   searchOneResource(
     query: string,
     resourceType: string,
@@ -70,14 +74,21 @@ const MusicApiService = {
         }
         const resource = result[resourceType];
         const hasNext = !!resource.next;
+
+        // We need to extract the offset from the next url for subsequent queries.
+        // Manually increasing the offset can lead to duplicates from the returned results
         return {
           data: resource.data,
           hasNext,
           offset: hasNext ? this.getOffsetFromNext(result.albums!.next!) : 0
         };
       });
-  },
+  }
 
+  /**
+   * Get the artist's details and their relationships (albums, playlists)
+   * @param artistId id of the artist
+   */
   getArtist(artistId: string) {
     return musicKit
       .getApiInstance()
@@ -100,38 +111,34 @@ const MusicApiService = {
           playlists
         };
       });
-  },
+  }
 
+  /**
+   * Get recommendations for the current user
+   */
   getRecommendations(): Promise<MusicKit.Recommendation[]> {
     return musicKit.getApiInstance().recommendations();
-  },
+  }
 
-  getLibraryPlaylists() {
+  /**
+   * Get all playlists in the user's library
+   */
+  getLibraryPlaylists(): Promise<MusicKit.LibraryPlaylist[]> {
     return musicKit.getApiInstance().library.playlists();
-  },
+  }
 
-  getLibraryAlbums() {
+  /**
+   * Get all albums in the user's library
+   */
+  getLibraryAlbums(): Promise<MusicKit.LibraryAlbum[]> {
     return musicKit.getApiInstance().library.albums();
-  },
+  }
 
-  extractCollectionResult(
-    result: MusicKit.Album | MusicKit.Playlist
-  ): { collection: Collection; tracks: MusicKit.Song[] } | null {
-    console.log(result);
-    if (!result) {
-      return null;
-    }
-
-    const tracks = result.relationships
-      ? result.relationships.tracks!.data
-      : [];
-
-    return {
-      collection: result,
-      tracks
-    };
-  },
-
+  /**
+   * Get a collection (album, playlist) details and its relationships
+   * @param collectionId collection id
+   * @param collectionType collection type
+   */
   getCollection(
     collectionId: string,
     collectionType: CollectionType
@@ -150,8 +157,13 @@ const MusicApiService = {
         .playlist(collectionId, { include: 'tracks, artists' })
         .then(this.extractCollectionResult);
     }
-  },
+  }
 
+  /**
+   * Get a library collection (library-playlist, library-album) details and its relationship
+   * @param collectionId Library collection id
+   * @param collectionType Library collection type
+   */
   getLibraryCollection(
     collectionId: string,
     collectionType: string
@@ -169,7 +181,7 @@ const MusicApiService = {
     }
 
     return promise.then(collection => {
-      if (!collection) {
+      if (this.isResultEmpty(collection)) {
         return null;
       }
 
@@ -183,21 +195,53 @@ const MusicApiService = {
         tracks
       };
     });
-  },
+  }
 
-  isResultEmpty(result: object): boolean {
-    return Object.keys(result).length === 0;
-  },
+  /**
+   * Extract the collection's info and its 'tracks' relationships
+   * @param result An Album or Playlist instance
+   */
+  private extractCollectionResult(
+    result: MusicKit.Album | MusicKit.Playlist
+  ): { collection: Collection; tracks: MusicKit.Song[] } | null {
+    console.log(result);
+    if (this.isResultEmpty(result)) {
+      return null;
+    }
 
-  getOffsetFromNext(next: string): number {
+    const tracks = result.relationships
+      ? result.relationships.tracks!.data
+      : [];
+
+    return {
+      collection: result,
+      tracks
+    };
+  }
+
+  /**
+   * Check if the returned result from the API is empty
+   * @param result The result object
+   */
+  private isResultEmpty(result: object): boolean {
+    return !result || Object.keys(result).length === 0;
+  }
+
+  /**
+   * Extract the offset info from a 'next' URL returned from a search query
+   * @param next The 'next' URL
+   * @returns 0 if no match
+   */
+  private getOffsetFromNext(next: string): number {
     const matches = next.match(/search\?offset=(\d+)/);
 
     if (!matches || matches.length < 2) {
       return 0;
     }
+
+    // The second item should contain the matched result
     return +matches[1];
   }
-};
+}
 
-export { CollectionType };
-export default MusicApiService;
+export default new MusicApiService();

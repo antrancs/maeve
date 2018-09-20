@@ -1,7 +1,11 @@
 <template>
   <div class="media-column">
     <router-link :to="{ name: 'artists', params: { id: artist.id }}">
-      <img :src="artistArtwork" alt="" class="artwork">
+      <img
+        :src="artistArtwork"
+        alt=""
+        class="artwork"
+      />
     </router-link>
 
     <h3>{{ artist.attributes.name }}</h3>
@@ -10,25 +14,31 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+
 import { getArtistArtwork } from '@/utils/utils';
 import { Artist } from '@/@types/model/model';
 
 @Component
 export default class ArtistItem extends Vue {
+  // Data
+  private artistArtwork: string = '';
+
+  // Props
   @Prop() artist!: MusicKit.Artist;
 
-  artistArtwork: string = '';
-
+  // Life cycle methods
   created() {
     if (this.artist.attributes) {
-      this.getArtistArtwork(this.artist.attributes.url);
+      this.$_getArtistArtwork(this.artist.attributes.url);
     }
   }
 
-  getArtistArtwork(url: string) {
+  // Helper functions
+  private $_getArtistArtwork(url: string) {
     getArtistArtwork(url).then(artwork => {
-      this.artistArtwork =
-        artwork.length > 0 ? artwork : 'https://via.placeholder.com/500x500';
+      this.artistArtwork = artwork
+        ? artwork
+        : 'https://via.placeholder.com/500x500';
     });
   }
 }

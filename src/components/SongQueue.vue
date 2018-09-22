@@ -21,10 +21,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { State } from 'vuex-class';
-import { Prop, Component } from 'vue-property-decorator';
+import { State, Action } from 'vuex-class';
+import { Prop, Component, Provide } from 'vue-property-decorator';
 
 import SongList from './SongList.vue';
+import { HandleSongClicked } from '@/@types/model/model';
+import { SkipToSongAtIndexAction } from '@/store/types';
 
 @Component({
   components: {
@@ -32,11 +34,32 @@ import SongList from './SongList.vue';
   }
 })
 export default class SongQueue extends Vue {
+  // Props
   @Prop({ default: false })
   showSongQueue!: boolean;
 
+  // State
   @State(state => state.musicPlayer.queuedSongs)
   queuedSongs!: MusicKit.MediaItem[];
+
+  // Action
+  @Action skipToSongAtIndex!: SkipToSongAtIndexAction;
+
+  // Provide/Inject
+  @Provide() handleSongClicked: HandleSongClicked = this.$_playSongFromQueue;
+
+  // Helper methods
+  /**
+   * Play a specified song in the queue
+   * @param index Index of the song
+   * @param songId Id of the song
+   */
+  $_playSongFromQueue(index: number, songId: string) {
+    // Just skip to the song in the queue. No need to re-initialize the queu
+    this.skipToSongAtIndex({
+      index
+    });
+  }
 }
 </script>
 

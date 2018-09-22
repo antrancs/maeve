@@ -47,14 +47,26 @@ export const artistsResource: MusicKit.Artist[] = [
   }
 ];
 
-export const songsResource: MusicKit.Artist[] = [
+export const songsResource: MusicKit.Song[] = [
   {
     id: 's1',
     type: 'songs',
     attributes: {
       name: "You're special",
       genreNames: ['Hip-Hop'],
-      url: ''
+      url: '',
+      albumName: 'Perception',
+      artistName: 'NF',
+      artwork: {
+        url: '',
+        width: 500,
+        height: 500
+      },
+      discNumber: 1,
+      isrc: 'NDJKKD',
+      previews: [{ url: 'itunes.com' }],
+      releaseDate: '01/01/2017',
+      trackNumber: 5
     }
   }
 ];

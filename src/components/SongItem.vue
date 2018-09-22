@@ -11,7 +11,7 @@
         :is-active="isActive"
         :is-playing="isPlaying"
         :show-background="!isFromAlbum"
-        @playing-control-clicked="() => onSongItemClicked(index)"
+        @playing-control-clicked="onSongClicked"
       >
       </media-artwork-overlay>
 
@@ -59,12 +59,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Inject } from 'vue-property-decorator';
 import { State, Action } from 'vuex-class';
 import 'vue-awesome/icons/ellipsis-h';
 
 import { MusicPlayerState } from '@/store/types';
 import { getArtworkUrl } from '@/utils/utils';
+import { TOGGLE_CURRENT_TRACK } from '@/store/actions.type';
+import { HandleSongClicked } from '@/@types/model/model';
 import MediaArtwork from './MediaArtwork.vue';
 import MediaArtworkOverlay from './MediaArtworkOverlay.vue';
 
@@ -86,16 +88,24 @@ import MediaArtworkOverlay from './MediaArtworkOverlay.vue';
   }
 })
 export default class SongItem extends Vue {
+  // Props
   @Prop() track!: MusicKit.Song;
   @Prop({ default: true })
   isFromAlbum!: boolean;
   @Prop() index!: number;
-  @Prop() onSongItemClicked!: (index: number) => void;
   @Prop({ default: false })
   isQueue!: boolean;
 
+  // State
   @State musicPlayer!: MusicPlayerState;
 
+  // Action
+  @Action [TOGGLE_CURRENT_TRACK]: () => void;
+
+  // Provide/Inject
+  @Inject() handleSongClicked!: HandleSongClicked;
+
+  // computed
   get isActive(): boolean {
     return (
       this.musicPlayer.currentPlaying !== null &&
@@ -115,11 +125,29 @@ export default class SongItem extends Vue {
     return getArtworkUrl(attributes.artwork.url, 50, 50);
   }
 
+  // Methods
   handleMoreIconClicked(event: MouseEvent) {
     // @ts-ignore
     this.$contextMenu.open('cm-song-list', event, {
       selectedTrack: this.track
     });
+  }
+
+  /**
+   * Event handler when a song row is clicked
+   */
+  onSongClicked() {
+    // Toggle the song if it's playing
+    if (
+      this.musicPlayer.currentPlaying &&
+      this.musicPlayer.currentPlaying.id === this.track.id
+    ) {
+      this.toggleCurrentTrack();
+      return;
+    }
+
+    // Forward the song info to the provider method
+    this.handleSongClicked(this.index, this.track.id);
   }
 }
 </script>

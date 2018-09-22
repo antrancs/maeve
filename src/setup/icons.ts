@@ -3,6 +3,7 @@ import Icon from 'vue-awesome/components/Icon.vue';
 
 Vue.component('icon', Icon);
 
+// @ts-ignore
 Icon.register({
   explicit: {
     width: 24,

@@ -57,7 +57,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Provide } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 
 import SongList from '@/components/SongList.vue';
@@ -68,7 +68,8 @@ import {
   Collection,
   Song,
   Nullable,
-  CollectionType
+  CollectionType,
+  HandleSongClicked
 } from '@/@types/model/model';
 import { PLAY_COLLECTION_AT_INDEX } from '@/store/actions.type';
 
@@ -82,6 +83,9 @@ export default class CollectionDetail extends Vue {
 
   // Action
   @Action [PLAY_COLLECTION_AT_INDEX]: PlayCollectionAtIndexAction;
+
+  // Provide/Inject
+  @Provide() handleSongClicked: HandleSongClicked = this.playSongFromCollection;
 
   // Computed
   get collectionName(): string {
@@ -218,20 +222,24 @@ export default class CollectionDetail extends Vue {
     });
   }
 
-  // handleSongItemClicked(index: number) {
-  //   if (
-  //     !this.collection ||
-  //     !this.collection.attributes ||
-  //     !this.collection.attributes.playParams
-  //   ) {
-  //     return;
-  //   }
-
-  //   this.playCollectionAtIndex({
-  //     playParams: this.collection.attributes.playParams,
-  //     index
-  //   });
-  // }
+  /**
+   * Play a song based on its index or id from a collection
+   * @param index Index of the song in the collection
+   * @param songId Id of the the song
+   */
+  playSongFromCollection(index: number, songId: string) {
+    if (
+      !this.collection ||
+      !this.collection.attributes ||
+      !this.collection.attributes.playParams
+    ) {
+      return;
+    }
+    this.playCollectionAtIndex({
+      playParams: this.collection.attributes.playParams,
+      index
+    });
+  }
 }
 </script>
 
@@ -284,9 +292,6 @@ export default class CollectionDetail extends Vue {
 .collection-subtitle {
   color: $subtitle-color;
   font-size: 1.8rem;
-}
-
-.collection-artist {
 }
 
 .image {

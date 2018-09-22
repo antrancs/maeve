@@ -30,10 +30,18 @@ class MusicApiService {
         }
 
         console.log(result);
-        const albums = result.albums ? result.albums.data : [];
-        const playlists = result.playlists ? result.playlists.data : [];
-        const artists = result.artists ? result.artists.data : [];
-        const songs = result.songs ? result.songs.data : [];
+        const albums = result.albums
+          ? (result.albums.data as MusicKit.Album[])
+          : [];
+        const playlists = result.playlists
+          ? (result.playlists.data as MusicKit.Playlist[])
+          : [];
+        const artists = result.artists
+          ? (result.artists.data as MusicKit.Artist[])
+          : [];
+        const songs = result.songs
+          ? (result.songs.data as MusicKit.Song[])
+          : [];
 
         return {
           albums,
@@ -57,7 +65,7 @@ class MusicApiService {
     limit: number,
     offset: number
   ): Promise<{
-    data: MusicKit.Album[];
+    data: MusicKit.Resource[];
     hasNext: boolean;
     offset: number;
   } | null> {
@@ -72,15 +80,15 @@ class MusicApiService {
         if (this.isResultEmpty(result) || !result[resourceType]) {
           return null;
         }
-        const resource = result[resourceType];
+        const resource = result[resourceType]!;
         const hasNext = !!resource.next;
 
         // We need to extract the offset from the next url for subsequent queries.
         // Manually increasing the offset can lead to duplicates from the returned results
         return {
-          data: resource.data,
+          data: resource.data || [],
           hasNext,
-          offset: hasNext ? this.getOffsetFromNext(result.albums!.next!) : 0
+          offset: hasNext ? this.getOffsetFromNext(resource.next!) : 0
         };
       });
   }
@@ -89,7 +97,13 @@ class MusicApiService {
    * Get the artist's details and their relationships (albums, playlists)
    * @param artistId id of the artist
    */
-  getArtist(artistId: string) {
+  getArtist(
+    artistId: string
+  ): Promise<{
+    name: string;
+    albums: MusicKit.Album[];
+    playlists: MusicKit.Playlist[];
+  }> {
     return musicKit
       .getApiInstance()
       .artist(artistId, { include: 'albums,playlists' })
@@ -198,27 +212,6 @@ class MusicApiService {
   }
 
   /**
-   * Extract the collection's info and its 'tracks' relationships
-   * @param result An Album or Playlist instance
-   */
-  private extractCollectionResult = (
-    result: MusicKit.Album | MusicKit.Playlist
-  ): { collection: Collection; tracks: MusicKit.Song[] } | null => {
-    if (this.isResultEmpty(result)) {
-      return null;
-    }
-
-    const tracks = result.relationships
-      ? result.relationships.tracks!.data
-      : [];
-
-    return {
-      collection: result,
-      tracks
-    };
-  };
-
-  /**
    * Check if the returned result from the API is empty
    * @param result The result object
    */
@@ -241,6 +234,27 @@ class MusicApiService {
     // The second item should contain the matched result
     return +matches[1];
   }
+
+  /**
+   * Extract the collection's info and its 'tracks' relationships
+   * @param result An Album or Playlist instance
+   */
+  private extractCollectionResult = (
+    result: MusicKit.Album | MusicKit.Playlist
+  ): { collection: Collection; tracks: MusicKit.Song[] } | null => {
+    if (this.isResultEmpty(result)) {
+      return null;
+    }
+
+    const tracks = result.relationships
+      ? result.relationships.tracks!.data
+      : [];
+
+    return {
+      collection: result,
+      tracks
+    };
+  };
 }
 
 export default new MusicApiService();

@@ -127,16 +127,16 @@ declare namespace MusicKit {
   }
 
   enum PlaybackStates {
-    completed = 'completed',
-    ended = 'ended',
-    loading = 'loading',
-    none = 'none',
-    paused = 'paused',
-    playing = 'playing',
-    seeking = 'seeking',
-    stalled = 'stalled',
-    stopped = 'stopped',
-    waiting = 'waiting'
+    none = 0,
+    loading = 1,
+    playing = 2,
+    paused = 3,
+    stopped = 4,
+    ended = 5,
+    seeking = 6,
+    waiting = 8,
+    stalled = 9,
+    completed = 10
   }
 
   enum PlayerRepeatMode {
@@ -583,31 +583,11 @@ declare namespace MusicKit {
   }
 
   interface SearchResult {
-    albums: {
-      data: [Album];
-      href: string;
-      next?: string;
-    };
-
-    playlists: {
-      data: [Playlist];
-      href: string;
-      next?: string;
-    };
-
-    songs?: {
-      data: [Song];
-      href: string;
-      next?: string;
-    };
-
-    artists?: {
-      data: [Artist];
-      href: string;
-      next?: string;
-    };
-
-    [key: string]: any;
+    albums?: ResponseRoot;
+    playlists?: ResponseRoot;
+    songs?: ResponseRoot;
+    artists?: ResponseRoot;
+    [key: string]: ResponseRoot | undefined;
   }
 
   // REMOVE
@@ -1451,17 +1431,17 @@ declare namespace MusicKit {
     /**
      * (Classical music only) The movement count of this song.
      */
-    movementCount: number;
+    movementCount?: number;
 
     /**
      * (Classical music only) The movement name of this song.
      */
-    movementName: string;
+    movementName?: string;
 
     /**
      * (Classical music only) The movement number of this song.
      */
-    movementNumber: number;
+    movementNumber?: number;
 
     /**
      * (Required) The localized name of the song.
@@ -1885,7 +1865,7 @@ declare namespace MusicKit {
     /**
      * (Required) The data for the album included in the relationship.
      */
-    data: [Album];
+    data: Album[];
   }
 
   /**
@@ -1896,7 +1876,7 @@ declare namespace MusicKit {
     /**
      * (Required) The data for the artist included in the relationship.
      */
-    data: [Artist];
+    data: Artist[];
   }
 
   /**
@@ -1907,11 +1887,11 @@ declare namespace MusicKit {
     /**
      * (Required) The data for the track included in the relationship.
      */
-    data: [Song];
+    data: Song[];
   }
 
   interface GenreRelationship extends Relationship {
-    data: [Genre];
+    data: Genre[];
   }
 
   interface CuratorRelationship extends Relationship {}
@@ -1955,4 +1935,97 @@ declare namespace MusicKit {
   }
 
   interface StationRelationship {}
+
+  /**
+   * The JSON root object contained in every response.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/responseroot
+   */
+  interface ResponseRoot {
+    /**
+     * The primary data for a request or response. If data exists, this property is an array of one
+     * or more resource objects. If no data exists, this property is an empty array or null.
+     */
+    data?: Resource[];
+
+    /**
+     * An array of one or more errors that occurred while executing the operation.
+     */
+    errors?: MusicKit.Error[];
+
+    /**
+     * A link to the request that generated the response data or results; not present in a request.
+     */
+    href?: string;
+
+    /**
+     *  Information about the request or response. The members may be any of the endpoint parameters.
+     */
+    meta?: any;
+
+    /**
+     *  A link to the next page of data or results; contains the offset query parameter
+     *  that specifies the next page. See Fetch Resources by Page.
+     */
+    next?: string;
+
+    /**
+     * The results of the operation. If there are results, the object contains contents;
+     * otherwise, it is empty or null.
+     */
+    results?: ResponseRootResults;
+  }
+
+  /**
+   * Information about an error that occurred while processing a request.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/error
+   */
+  interface Error {
+    /**
+     * The code for this error. For possible values, see HTTP Status Codes.
+     */
+    code: string;
+
+    /**
+     * A long description of the problem; may be localized.
+     */
+    detail?: string;
+
+    /**
+     * A unique identifier for this occurrence of the error.
+     */
+    id: string;
+
+    /**
+     * A object containing references to the source of the error. For possible members, see Source object.
+     */
+    source?: ErrorSource;
+
+    /**
+     * The HTTP status code for this problem.
+     */
+    status: string;
+
+    /**
+     * A short description of the problem; may be localized.
+     */
+    title: string;
+  }
+
+  interface ResponseRootResults {}
+
+  /**
+   * The Source object represents the source of an error.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/error/source
+   */
+  interface ErrorSource {
+    /**
+     * The URI query parameter that caused the error.
+     */
+    parameter: string;
+
+    /**
+     *  A pointer to the associated entry in the request document.
+     */
+    pointer: any;
+  }
 }

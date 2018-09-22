@@ -6,6 +6,7 @@ import {
   artistsResource,
   songsResource
 } from './../data/resourceData';
+import { CollectionType } from '@/@types/model/model';
 
 describe('musicApi.service', () => {
   let musicKitMock: jest.SpyInstance<() => MusicKit.API>;
@@ -100,6 +101,34 @@ describe('musicApi.service', () => {
         expect(result!.hasNext).toBe(true);
         expect(result!.offset).toBe(offset);
       });
+    });
+  });
+
+  describe('getCollection', () => {
+    it('Should return Album collection with tracks relationships', () => {
+      const albumsWithRelationships: MusicKit.Album = {
+        ...albumsResource[0],
+        relationships: {
+          tracks: {
+            data: songsResource
+          }
+        }
+      };
+      const albumMock = jest.fn(() => Promise.resolve(albumsWithRelationships));
+
+      musicKitMock.mockImplementation(() => ({
+        album: albumMock
+      }));
+
+      return musicApi
+        .getCollection('c123', CollectionType.album)
+        .then(result => {
+          expect(result).toBeTruthy();
+          expect(result!.collection).toBeTruthy();
+          expect(result!.tracks).toBeTruthy();
+
+          expect(result!.collection).toEqual(albumsWithRelationships);
+        });
     });
   });
 });

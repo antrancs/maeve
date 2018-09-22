@@ -1,11 +1,11 @@
 <template>
-    <div class="content-spacing">
-      <h2>Show All</h2>
-      <song-collection-list :collections="data"></song-collection-list>
-      <infinite-loading @infinite="infiniteHandler" spinner="circles">
-          <span slot="no-more"></span>
-      </infinite-loading>
-    </div>
+  <div class="content-spacing">
+    <h2>Show All</h2>
+    <song-collection-list :collections="data"></song-collection-list>
+    <infinite-loading @infinite="infiniteHandler" spinner="circles">
+      <span slot="no-more"></span>
+    </infinite-loading>
+  </div>
 </template>
 
 <script lang="ts">

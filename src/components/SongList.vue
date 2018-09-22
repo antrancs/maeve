@@ -6,7 +6,6 @@
       :track="track"
       :index="index"
       :is-from-album="isFromAlbum"
-      :on-song-item-clicked="handleSongItemClicked"
       :is-queue="isQueue"
     >
     </song-item>
@@ -39,7 +38,6 @@ import {
 import {
   PLAY_COLLECTION_AT_INDEX,
   ADD_TO_LIBRARY,
-  TOGGLE_CURRENT_TRACK,
   APPEND_SONGS
 } from '@/store/actions.type';
 
@@ -65,7 +63,6 @@ export default class SongList extends Vue {
 
   // Action
   @Action [PLAY_COLLECTION_AT_INDEX]: PlayCollectionAtIndexAction;
-  @Action [TOGGLE_CURRENT_TRACK]: () => void;
   @Action [APPEND_SONGS]: AppendSongsAction;
   @Action [ADD_TO_LIBRARY]: AddToLibraryAction;
 
@@ -127,35 +124,6 @@ export default class SongList extends Vue {
         // @ts-ignore
         this.$toasted.global.error();
       });
-  }
-
-  /**
-   * Event handler when a song row is clicked
-   * @param index Index of the clicked row
-   */
-  handleSongItemClicked(index: number): void {
-    // the clicked song is being played, just toggle the current track
-    if (
-      this.musicPlayer.currentPlaying &&
-      this.musicPlayer.currentPlaying.id === this.tracks[index].id
-    ) {
-      this.toggleCurrentTrack();
-      return;
-    }
-
-    if (this.collection && this.collection.attributes) {
-      const { playParams } = this.collection.attributes;
-      if (!playParams) {
-        return;
-      }
-
-      this.playCollectionAtIndex({
-        index,
-        playParams
-      });
-    } else {
-      // Play items
-    }
   }
 }
 </script>

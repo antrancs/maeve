@@ -22,8 +22,5 @@ export type Collection =
 
 export type Song = MusicKit.Song | MusicKit.LibrarySong;
 
-// export interface Collection {
-//   id: string;
-//   attributes: any;
-//   type: CollectionType;
-// }
+// Methods
+export type HandleSongClicked = (index: number, songId: string) => void;

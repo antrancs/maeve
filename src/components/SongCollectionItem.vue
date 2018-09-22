@@ -46,7 +46,10 @@ import 'vue-awesome/icons/play-circle';
 import 'vue-awesome/icons/pause-circle';
 
 import { getArtworkUrl } from '@/utils/utils';
-import { PlayCollectionAtIndexPayload } from '@/store/types';
+import {
+  PlayCollectionAtIndexPayload,
+  PlayCollectionAtIndexAction
+} from '@/store/types';
 import { Collection } from '@/@types/model/model';
 import { MusicPlayerState } from '@/store/types';
 import {
@@ -63,8 +66,7 @@ export default class SongCollectionItem extends Vue {
   @State musicPlayer!: MusicPlayerState;
 
   // Action
-  @Action
-  [PLAY_COLLECTION_AT_INDEX]: (payload: PlayCollectionAtIndexPayload) => void;
+  @Action [PLAY_COLLECTION_AT_INDEX]: PlayCollectionAtIndexAction;
   @Action [TOGGLE_CURRENT_TRACK]!: () => void;
 
   // Computed
@@ -94,7 +96,7 @@ export default class SongCollectionItem extends Vue {
   }
 
   // Methods
-  private handleIconClicked() {
+  handleIconClicked() {
     if (this.isCollectionBeingPlayed) {
       this.toggleCurrentTrack();
     } else {

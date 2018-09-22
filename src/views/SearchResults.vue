@@ -61,13 +61,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch, Provide } from 'vue-property-decorator';
+import { Action } from 'vuex-class';
+import { Route } from 'vue-router';
 
 import SongCollectionList from '@/components/SongCollectionList.vue';
 import SongList from '@/components/SongList.vue';
 import ArtistList from '@/components/ArtistList.vue';
 import musicApiService from '@/services/musicApi.service';
-import { Route } from 'vue-router';
+import { PLAY_SONGS } from '@/store/actions.type';
+import { HandleSongClicked } from '@/@types/model/model';
+import { PlaySongsAction } from '@/store/types';
 
 @Component({
   components: {
@@ -77,24 +81,59 @@ import { Route } from 'vue-router';
   }
 })
 export default class SearchResults extends Vue {
-  private albums: any[] = [];
-  private songs: any[] = [];
-  private artists: any[] = [];
-  private playlists: any[] = [];
+  // Data
+  private albums: MusicKit.Album[] = [];
+  private songs: MusicKit.Song[] = [];
+  private artists: MusicKit.Artist[] = [];
+  private playlists: MusicKit.Playlist[] = [];
   private queryString = '';
 
+  // Action
+  @Action [PLAY_SONGS]: PlaySongsAction;
+
+  // Provide/Inject
+  @Provide() handleSongClicked: HandleSongClicked = this.$_playAllSongs;
+
+  // Watch
   @Watch('$route')
   onRouteChange(to: Route, from: Route, next: () => void) {
     this.queryString = to.query.q;
-    this.search();
+    this.$_search();
   }
 
+  // Life cycle methods
   created() {
     this.queryString = this.$route.query.q;
-    this.search();
+    this.$_search();
   }
 
-  search() {
+  // Methods
+  /**
+   * Get a subset of a collection
+   */
+  getFirstNResults(collections: any[], count: number) {
+    return collections.slice(0, count);
+  }
+
+  // Helper methods
+  /**
+   * Play all songs returned from the search, starting with the selected song
+   * @param index Index of the selected song
+   * @param songId Id of the selected song
+   */
+  private $_playAllSongs(index: number, songId: string) {
+    // Make the selected song the first song in the queue
+    const songIds = [
+      songId,
+      ...this.songs.filter(song => song.id !== songId).map(song => song.id)
+    ];
+
+    this.playSongs({
+      ids: songIds
+    });
+  }
+
+  private $_search() {
     musicApiService
       .searchAll(this.queryString)
       .then(result => {
@@ -108,16 +147,11 @@ export default class SearchResults extends Vue {
         this.artists = artists;
         this.playlists = playlists;
       })
-      // @ts-ignore
       .catch(err => {
         console.log(err);
         // @ts-ignore
         this.$toasted.global.error();
       });
-  }
-
-  getFirstNResults(collections: any[], count: number) {
-    return collections.slice(0, count);
   }
 }
 </script>

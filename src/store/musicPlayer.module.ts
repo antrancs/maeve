@@ -11,7 +11,9 @@ import {
   TOGGLE_CURRENT_TRACK,
   APPEND_SONGS,
   ADD_TO_LIBRARY,
-  PREPEND_SONGS
+  PREPEND_SONGS,
+  PLAY_SONGS,
+  PLAY_COLLECTION_WITH_SONG
 } from '@/store/actions.type';
 import {
   SET_CURRENTLY_PLAYING_SONG,
@@ -23,7 +25,10 @@ import {
   MusicPlayerState,
   PlayCollectionAtIndexPayload,
   AppendSongsPayload,
-  AddToLibraryPayload
+  AddToLibraryPayload,
+  PlayCollectionWithSongPayload,
+  SkipToSongAtIndexPayload,
+  PlaySongsPayload
 } from './types';
 
 const initialState: MusicPlayerState = {
@@ -42,31 +47,21 @@ const getters: GetterTree<MusicPlayerState, any> = {
 };
 
 const actions: ActionTree<MusicPlayerState, any> = {
-  [PLAY_NEXT](context) {
-    musicPlayerService.playNext().then(currentTrack => {
-      context.commit(SET_CURRENTLY_PLAYING_SONG, currentTrack);
-      context.commit(SET_IS_PLAYING, true);
-    });
+  [PLAY_NEXT]() {
+    musicPlayerService.playNext();
   },
 
-  [PLAY_PREVIOUS](context) {
-    musicPlayerService.playPrevious().then(currentTrack => {
-      context.commit(SET_CURRENTLY_PLAYING_SONG, currentTrack);
-      context.commit(SET_IS_PLAYING, true);
-    });
+  [PLAY_PREVIOUS]() {
+    musicPlayerService.playPrevious();
   },
 
   [PLAY_COLLECTION_AT_INDEX](
     context,
     { playParams, index }: PlayCollectionAtIndexPayload
   ) {
-    musicPlayerService
-      .playCollectionAtIndex(playParams, index)
-      .then(currentTrack => {
-        context.commit(SET_CURRENTLY_PLAYING_SONG, currentTrack);
-        context.commit(SET_IS_PLAYING, true);
-        context.commit(SET_SONG_QUEUE, musicPlayerService.queuedSongs);
-      });
+    musicPlayerService.playCollectionAtIndex(playParams, index).then(() => {
+      context.commit(SET_SONG_QUEUE, musicPlayerService.queuedSongs);
+    });
   },
 
   [TOGGLE_CURRENT_TRACK]({ dispatch }) {
@@ -77,20 +72,14 @@ const actions: ActionTree<MusicPlayerState, any> = {
     }
   },
 
-  [PAUSE_CURRENT_TRACK]({ commit }) {
+  [PAUSE_CURRENT_TRACK]() {
     musicPlayerService.pause();
-    commit(SET_IS_PLAYING, false);
   },
 
-  [RESUME_CURRENT_TRACK]({ commit }) {
-    musicPlayerService
-      .play()
-      .then(() => {
-        commit(SET_IS_PLAYING, true);
-      })
-      .catch(err => {
-        console.log(err);
-      });
+  [RESUME_CURRENT_TRACK]() {
+    return musicPlayerService.play().catch(err => {
+      console.log(err);
+    });
   },
 
   [APPEND_SONGS]({ commit }, { items }: AppendSongsPayload) {
@@ -98,8 +87,29 @@ const actions: ActionTree<MusicPlayerState, any> = {
     commit(SET_SONG_QUEUE, musicPlayerService.queuedSongs);
   },
 
-  [ADD_TO_LIBRARY]({ commit }, { itemIds, type }: AddToLibraryPayload) {
+  [ADD_TO_LIBRARY](_, { itemIds, type }: AddToLibraryPayload) {
     return musicPlayerService.addToLibrary(itemIds, type);
+  },
+
+  [PLAY_SONGS](context, { ids }: PlaySongsPayload) {
+    return musicPlayerService.playSongs(ids).then(() => {
+      context.commit(SET_SONG_QUEUE, musicPlayerService.queuedSongs);
+    });
+  },
+
+  [PLAY_COLLECTION_WITH_SONG](
+    context,
+    { playParams, songId }: PlayCollectionWithSongPayload
+  ) {
+    return musicPlayerService
+      .playCollectionWithSong(playParams, songId)
+      .then(() => {
+        context.commit(SET_SONG_QUEUE, musicPlayerService.queuedSongs);
+      });
+  },
+
+  skipToSongAtIndex(_, { index }: SkipToSongAtIndexPayload) {
+    return musicPlayerService.skipToSongAtIndex(index);
   }
 };
 

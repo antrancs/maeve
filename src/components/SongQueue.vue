@@ -27,6 +27,7 @@ import { Prop, Component, Provide } from 'vue-property-decorator';
 import SongList from './SongList.vue';
 import { HandleSongClicked } from '@/@types/model/model';
 import { SkipToSongAtIndexAction } from '@/store/types';
+import { SKIP_TO_SONG_AT_INDEX } from '@/store/actions.type';
 
 @Component({
   components: {
@@ -43,7 +44,7 @@ export default class SongQueue extends Vue {
   queuedSongs!: MusicKit.MediaItem[];
 
   // Action
-  @Action skipToSongAtIndex!: SkipToSongAtIndexAction;
+  @Action [SKIP_TO_SONG_AT_INDEX]!: SkipToSongAtIndexAction;
 
   // Provide/Inject
   @Provide() handleSongClicked: HandleSongClicked = this.$_playSongFromQueue;

@@ -6,7 +6,7 @@
     <img
       v-if="currentTrackArtwork && currentTrackArtwork.length > 0"
       class="side-bar__song-artwork"
-      :src="currentTrackArtwork"
+      v-lazy="currentTrackArtwork"
       alt=""
     />
   </div>

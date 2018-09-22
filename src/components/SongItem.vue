@@ -1,25 +1,29 @@
 <template>
   <div class="song-item">
     <div class="song-item__left">
-      <media-artwork
-        v-if="!isFromAlbum"
-        :artwork-url="artworkUrl"
-      >
-      </media-artwork>
+      <div v-if="showLoading" class="spinner">
+      </div>
+      <div v-else class="size-fit">
+        <media-artwork
+          v-if="!isFromAlbum"
+          :artwork-url="artworkUrl"
+        >
+        </media-artwork>
 
-      <media-artwork-overlay
-        :is-active="isActive"
-        :is-playing="isPlaying"
-        :show-background="!isFromAlbum"
-        @playing-control-clicked="onSongClicked"
-      >
-      </media-artwork-overlay>
+        <media-artwork-overlay
+          :is-active="isActive"
+          :is-playing="isPlaying"
+          :show-background="!isFromAlbum"
+          @playing-control-clicked="onSongClicked"
+        >
+        </media-artwork-overlay>
 
-      <div
-        v-show="isFromAlbum && !isActive"
-        class="track-number"
-      >
-        {{ track.attributes.trackNumber }}
+        <div
+          v-show="isFromAlbum && !isActive"
+          class="track-number flex-center size-fit"
+        >
+          {{ track.attributes.trackNumber }}
+        </div>
       </div>
     </div>
 
@@ -59,14 +63,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Inject } from 'vue-property-decorator';
+import { Component, Prop, Vue, Inject, Watch } from 'vue-property-decorator';
 import { State, Action } from 'vuex-class';
 import 'vue-awesome/icons/ellipsis-h';
 
 import { MusicPlayerState } from '@/store/types';
 import { getArtworkUrl } from '@/utils/utils';
 import { TOGGLE_CURRENT_TRACK } from '@/store/actions.type';
-import { HandleSongClicked } from '@/@types/model/model';
+import { HandleSongClicked, Nullable } from '@/@types/model/model';
 import MediaArtwork from './MediaArtwork.vue';
 import MediaArtworkOverlay from './MediaArtworkOverlay.vue';
 
@@ -88,6 +92,7 @@ import MediaArtworkOverlay from './MediaArtworkOverlay.vue';
   }
 })
 export default class SongItem extends Vue {
+  private showLoading = false;
   // Props
   @Prop() track!: MusicKit.Song;
   @Prop({ default: true })
@@ -125,6 +130,13 @@ export default class SongItem extends Vue {
     return getArtworkUrl(attributes.artwork.url, 50, 50);
   }
 
+  @Watch('musicPlayer.isLoading')
+  onLoadingChanged(newValue: boolean) {
+    if (!newValue) {
+      this.showLoading = false;
+    }
+  }
+
   // Methods
   handleMoreIconClicked(event: MouseEvent) {
     // @ts-ignore
@@ -146,6 +158,7 @@ export default class SongItem extends Vue {
       return;
     }
 
+    this.showLoading = true;
     // Forward the song info to the provider method
     this.handleSongClicked(this.index, this.track.id);
   }

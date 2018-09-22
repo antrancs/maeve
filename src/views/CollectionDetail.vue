@@ -3,7 +3,7 @@
     <div class="collection-detail-header" v-if="collection">
         <div class="banner-overlay">
           <div class="content-spacing content group-control">
-            <img :src="getCollectionArtwork(300, 300)" class="collection-artwork"/>
+            <img v-lazy="getCollectionArtwork(300, 300)" class="collection-artwork"/>
           
             <div>
               <h2 class="collection-title">

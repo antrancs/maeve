@@ -3,7 +3,8 @@ import { Store } from 'vuex';
 import {
   SET_PLAYBACK_PROGESS,
   SET_IS_PLAYING,
-  SET_CURRENTLY_PLAYING_SONG
+  SET_CURRENTLY_PLAYING_SONG,
+  SET_SONG_LOADING
 } from '@/store/mutations.type';
 import { CHANGE_ROUTE } from '@/store/actions.type';
 
@@ -28,9 +29,11 @@ export function connectMusicKitToStore(
         break;
       case MusicKit.PlaybackStates.playing:
         store.commit(SET_IS_PLAYING, true);
+        store.commit(SET_SONG_LOADING, false);
         break;
       case MusicKit.PlaybackStates.loading:
-        console.log('Loading state');
+        store.commit(SET_SONG_LOADING, true);
+        console.log('Loading state', event);
     }
   }
 

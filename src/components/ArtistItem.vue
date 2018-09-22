@@ -2,7 +2,7 @@
   <div class="media-column">
     <router-link :to="{ name: 'artists', params: { id: artist.id }}">
       <img
-        :src="artistArtwork"
+        v-lazy="artistArtwork"
         alt=""
         class="artwork"
       />

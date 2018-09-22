@@ -1,9 +1,12 @@
+import { Nullable } from '@/@types/model/model';
+
 // MusicPlayer module
 export interface MusicPlayerState {
   currentPlaying: MusicKit.MediaItem | null;
   isPlaying: boolean;
   playbackProgress: number;
   queuedSongs: MusicKit.MediaItem[];
+  isLoading: boolean;
 }
 
 // Payload

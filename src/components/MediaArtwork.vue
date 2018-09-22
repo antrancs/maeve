@@ -1,7 +1,7 @@
 <template>
   <div class="artwork">
     <div class="image-wrapper">
-      <img class="artwork-image" :src="artworkUrl" alt="">
+      <img class="artwork-image" v-lazy="artworkUrl" alt="">
     </div>
   </div>
 </template>

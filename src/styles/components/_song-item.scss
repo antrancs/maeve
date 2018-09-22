@@ -18,12 +18,12 @@
 
 .song-item__left {
   border-radius: 0.2rem;
-  overflow: hidden;
-  flex: none;
+  flex-basis: none;
   height: 3.2rem;
-  width: 3.2rem;
   margin-right: 2.4rem;
+  overflow: hidden;
   position: relative;
+  width: 3.2rem;
 }
 
 .song-item__middle {

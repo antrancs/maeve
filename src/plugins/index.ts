@@ -2,6 +2,7 @@ import Vue from 'vue';
 // https://github.com/shakee93/vue-toasted/issues/81
 // @ts-ignore
 import Toasted from 'vue-toasted';
+import VueLazyload from 'vue-lazyload';
 
 import ContextMenuPlugin from './contextMenu.plugin';
 
@@ -33,5 +34,10 @@ Vue.toasted.register(
     type: 'success'
   }
 );
+
+Vue.use(VueLazyload, {
+  // set observer to true
+  observer: true
+});
 
 Vue.use(ContextMenuPlugin);

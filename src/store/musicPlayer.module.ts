@@ -13,13 +13,15 @@ import {
   ADD_TO_LIBRARY,
   PREPEND_SONGS,
   PLAY_SONGS,
-  PLAY_COLLECTION_WITH_SONG
+  PLAY_COLLECTION_WITH_SONG,
+  SKIP_TO_SONG_AT_INDEX
 } from '@/store/actions.type';
 import {
   SET_CURRENTLY_PLAYING_SONG,
   SET_IS_PLAYING,
   SET_PLAYBACK_PROGESS,
-  SET_SONG_QUEUE
+  SET_SONG_QUEUE,
+  SET_SONG_LOADING
 } from '@/store/mutations.type';
 import {
   MusicPlayerState,
@@ -30,16 +32,18 @@ import {
   SkipToSongAtIndexPayload,
   PlaySongsPayload
 } from './types';
+import { Nullable } from '@/@types/model/model';
 
 const initialState: MusicPlayerState = {
   currentPlaying: null,
   isPlaying: false,
   playbackProgress: 0,
-  queuedSongs: []
+  queuedSongs: [],
+  isLoading: false
 };
 
 const getters: GetterTree<MusicPlayerState, any> = {
-  currentTrackArtwork(state) {
+  currentTrackArtwork(state): string {
     return state.currentPlaying
       ? getArtworkUrl(state.currentPlaying.artwork.url, 500, 500)
       : '';
@@ -108,7 +112,7 @@ const actions: ActionTree<MusicPlayerState, any> = {
       });
   },
 
-  skipToSongAtIndex(_, { index }: SkipToSongAtIndexPayload) {
+  [SKIP_TO_SONG_AT_INDEX](_, { index }: SkipToSongAtIndexPayload) {
     return musicPlayerService.skipToSongAtIndex(index);
   }
 };
@@ -123,16 +127,13 @@ const mutations: MutationTree<MusicPlayerState> = {
     state.isPlaying = isPlaying;
   },
 
+  [SET_SONG_LOADING](state, isLoading: boolean) {
+    state.isLoading = isLoading;
+  },
+
   [SET_PLAYBACK_PROGESS](state, playbackProgress: number) {
     state.playbackProgress = playbackProgress;
   },
-
-  // [ADD_MULTI_SONGS_TO_QUEUE](state, { songs }) {
-  //   if (!Array.isArray(songs)) {
-  //     throw new Error('Must supply an array');
-  //   }
-  //   state.songQueue.push(...songs);
-  // },
 
   [SET_SONG_QUEUE](state, songs) {
     state.queuedSongs = songs;

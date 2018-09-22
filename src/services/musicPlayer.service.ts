@@ -1,4 +1,5 @@
 import musicKit from '@/services/musicKit';
+import { Nullable } from '@/@types/model/model';
 
 const musicPlayerService = {
   get isPlaying(): boolean {
@@ -7,6 +8,10 @@ const musicPlayerService = {
 
   get queuedSongs(): MusicKit.MediaItem[] {
     return musicKit.getPlayerInstance().queue.items;
+  },
+
+  get nextSongInQueue(): Nullable<MusicKit.MediaItem> {
+    return musicKit.getPlayerInstance().queue.nextPlayableItem;
   },
 
   play(): Promise<void> {

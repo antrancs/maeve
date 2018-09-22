@@ -2,7 +2,7 @@
   <div class="media-column">
     <router-link :to="{ name: collection.type, params: { id: collection.id } }">
       <div class="artwork-wrapper">
-        <img class="artwork" :src="artworkUrl" alt="">
+        <img class="artwork" v-lazy="artworkUrl">
         <div class="artwork-overlay" :class="artworkOverlayClass">
           <div @click.prevent="handleIconClicked">
             <icon
@@ -50,7 +50,7 @@ import {
   PlayCollectionAtIndexPayload,
   PlayCollectionAtIndexAction
 } from '@/store/types';
-import { Collection } from '@/@types/model/model';
+import { Collection, Nullable } from '@/@types/model/model';
 import { MusicPlayerState } from '@/store/types';
 import {
   PLAY_COLLECTION_AT_INDEX,

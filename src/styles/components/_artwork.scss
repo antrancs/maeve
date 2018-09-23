@@ -12,7 +12,7 @@
 }
 
 .artwork {
-  max-width: 26rem;
+  // max-width: 26rem;
   width: 100%;
   position: relative;
 }
@@ -37,6 +37,7 @@
 
 .artwork-overlay__icon {
   height: 5rem;
+  transition: height 0.25s ease-in-out;
   width: auto;
 
   &:hover {

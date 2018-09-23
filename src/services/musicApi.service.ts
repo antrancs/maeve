@@ -174,6 +174,32 @@ class MusicApiService {
   }
 
   /**
+   * Get all details of one or more playlists
+   * @param ids Playlist ids
+   */
+  getPlaylists(ids: string[]): Promise<MusicKit.Playlist[]> {
+    return musicKit.getApiInstance().playlists(ids);
+  }
+
+  /**
+   * Get all details of one or more activities
+   * @param ids Activity ids
+   */
+  getActivities(ids: string[]): Promise<MusicKit.Activity[]> {
+    return musicKit.getApiInstance().activities(ids);
+  }
+
+  /**
+   * Get all details of one activity
+   * @param id Id of the activity
+   */
+  getActivity(id: string): Promise<MusicKit.Activity> {
+    return musicKit.getApiInstance().activity(id, {
+      include: 'playlists'
+    });
+  }
+
+  /**
    * Get a library collection (library-playlist, library-album) details and its relationship
    * @param collectionId Library collection id
    * @param collectionType Library collection type

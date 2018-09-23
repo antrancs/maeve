@@ -1,6 +1,6 @@
 <template>
-  <div :class="[{'artwork-overlay--active': isActive}, 'artwork-overlay']">
-    <div v-if="showBackground" class="artwork-overlay__background"></div>
+  <div :class="[{'media-artwork-overlay--active': isActive}, 'media-artwork-overlay']">
+    <div v-if="showBackground" class="media-artwork-overlay__background"></div>
     <div class="content">
       <div class="content-wrapper">
         <div
@@ -46,14 +46,14 @@ export default class ArtworkOverlay extends Vue {
 </script>
 
 <style scoped lang="scss">
-.artwork-overlay {
+.media-artwork-overlay {
   display: none;
   height: 100%;
   position: absolute;
   width: 100%;
 }
 
-.artwork-overlay__background {
+.media-artwork-overlay__background {
   background-color: rgba(0, 0, 0, 0.5);
   bottom: 0;
   left: 0;
@@ -73,16 +73,16 @@ export default class ArtworkOverlay extends Vue {
 .content-wrapper {
   align-items: center;
   display: flex;
-  height: 32px;
+  height: 3.2rem;
   justify-content: center;
-  width: 32px;
+  width: 3.2rem;
 }
 
-.song-item:hover .artwork-overlay {
+.song-item:hover .media-artwork-overlay {
   display: block;
 }
 
-.artwork-overlay--active {
+.media-artwork-overlay--active {
   display: block;
 }
 

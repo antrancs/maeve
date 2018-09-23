@@ -167,8 +167,4 @@ export default class SongItem extends Vue {
 
 <style lang="scss" scoped>
 @import '@/styles/components/_song-item.scss';
-
-.artwork {
-  max-width: 3.2rem;
-}
 </style>

@@ -4,6 +4,7 @@
   justify-content: space-between;
   height: 5rem;
   border-bottom: 1px solid $divider-color;
+  transition: background-color 0.25s ease-in-out;
 
   &:hover {
     .song-item__menu {

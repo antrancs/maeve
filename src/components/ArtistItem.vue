@@ -51,5 +51,4 @@ export default class ArtistItem extends Vue {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/components/_artwork.scss';
 </style>

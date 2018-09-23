@@ -1,5 +1,5 @@
 <template>
-  <div class="media-column">
+  <div v-if="collection && collection.attributes" class="media-column">
     <router-link :to="{ name: collection.type, params: { id: collection.id } }">
       <div class="artwork-wrapper">
         <img class="artwork" v-lazy="artworkUrl">
@@ -118,8 +118,6 @@ export default class SongCollectionItem extends Vue {
 </script>
 
 <style lang="scss" scoped>
-@import '@/styles/components/_artwork.scss';
-
 .media-details {
   margin-top: $s-size;
 }

@@ -179,7 +179,10 @@ declare namespace MusicKit {
      * @param parameters A query parameters object that is serialized and passed directly to the Apple Music API.
      * @returns An array of activity resources.
      */
-    activities(ids: string[], parameters: QueryParameters): Promise<object[]>;
+    activities(
+      ids: string[],
+      parameters?: QueryParameters
+    ): Promise<Activity[]>;
 
     /**
      * Fetch an activity using its identifier.
@@ -187,7 +190,7 @@ declare namespace MusicKit {
      * @param parameters A query params object that is serialized and passed directly to the Apple Music API.
      * @returns An activity resource.
      */
-    activity(id: string, parameters: QueryParameters): Promise<object>;
+    activity(id: string, parameters?: QueryParameters): Promise<Activity>;
 
     /**
      * Add a catalog resource to a user's library.
@@ -242,9 +245,16 @@ declare namespace MusicKit {
      * Fetch an artist using its identifier.
      * @param id A playlist identifier.
      * @param parameters A query parameters object that is serialized and passed directly to the Apple Music API.
-     * @returns A playlist resource.
+     * @returns An array of playlist resources.
      */
     playlist(id: string, parameters: QueryParameters): Promise<Playlist>;
+
+    /**
+     *
+     * @param ids An array of playlist identifiers.
+     * @param parameter A query parameters object that is serialized and passed directly to the Apple Music API.
+     */
+    playlists(ids: string[], parameter?: QueryParameters): Promise<Playlist[]>;
 
     /**
      * Search the catalog using a query.
@@ -1118,6 +1128,23 @@ declare namespace MusicKit {
     href: string;
   }
 
+  interface Activity extends Resource {
+    /**
+     * The attributes for the activity.
+     */
+    attributes?: ActivityAttributes;
+
+    /**
+     * The relationships for the activity.
+     */
+    relationships?: ActivityRelationships;
+
+    /**
+     * (Required) Always activities.
+     */
+    type: string;
+  }
+
   /**
    * A Resource object that represents a library album.
    * Ref: https://developer.apple.com/documentation/applemusicapi/libraryalbum
@@ -1344,6 +1371,32 @@ declare namespace MusicKit {
      * (Required) The localized title for the recommendation.
      */
     title: string;
+  }
+
+  /**
+   * The attributes for an activity object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/activity/attributes
+   */
+  interface ActivityAttributes {
+    /**
+     * (Required) The activity artwork.
+     */
+    artwork: Artwork;
+
+    /**
+     * The notes about the activity that appear in the iTunes Store.
+     */
+    editorialNotes?: EditorialNotes;
+
+    /**
+     * (Required) The localized name of the activity.
+     */
+    name: string;
+
+    /**
+     * (Required) The URL for sharing an activity in the iTunes Store.
+     */
+    url: string;
   }
 
   /**
@@ -1748,6 +1801,18 @@ declare namespace MusicKit {
   }
 
   /**
+   * The relationships for an activity object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/activity/relationships
+   */
+  interface ActivityRelationships {
+    /**
+     * The playlists associated with this activity. By default, playlists includes identifiers only.
+     * Fetch limits: 10 default, 10 maximum
+     */
+    playlists?: PlaylistRelationship;
+  }
+
+  /**
    * The relationships for an artist object.
    * Ref: https://developer.apple.com/documentation/applemusicapi/artist/relationships
    */
@@ -1906,7 +1971,7 @@ declare namespace MusicKit {
     /**
      * (Required) The data for the playlist included in the relationship.
      */
-    data: [Playlist];
+    data: Playlist[];
   }
 
   /**

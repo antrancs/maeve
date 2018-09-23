@@ -36,6 +36,12 @@ export default new Router({
       props: true
     },
     {
+      path: '/activities/:id',
+      name: 'activities',
+      component: () => import('./views/ActivityDetail.vue'),
+      props: true
+    },
+    {
       path: '/me/library-playlists/:id',
       name: 'library-playlists',
       component: () => import('./views/CollectionDetail.vue'),

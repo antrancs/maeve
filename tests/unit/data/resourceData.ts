@@ -52,7 +52,7 @@ export const songsResource: MusicKit.Song[] = [
     id: 's1',
     type: 'songs',
     attributes: {
-      name: "You're special",
+      name: `You're special`,
       genreNames: ['Hip-Hop'],
       url: '',
       albumName: 'Perception',

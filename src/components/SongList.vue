@@ -129,10 +129,6 @@ export default class SongList extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.artwork {
-  max-width: 3rem;
-}
-
 .song-list {
   color: $fg-color-4;
   width: 100%;

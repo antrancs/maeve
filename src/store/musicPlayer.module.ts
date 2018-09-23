@@ -21,7 +21,8 @@ import {
   SET_IS_PLAYING,
   SET_PLAYBACK_PROGESS,
   SET_SONG_QUEUE,
-  SET_SONG_LOADING
+  SET_SONG_LOADING,
+  SET_CURRENT_PLAYBACK_TIME
 } from '@/store/mutations.type';
 import {
   MusicPlayerState,
@@ -32,14 +33,14 @@ import {
   SkipToSongAtIndexPayload,
   PlaySongsPayload
 } from './types';
-import { Nullable } from '@/@types/model/model';
 
 const initialState: MusicPlayerState = {
   currentPlaying: null,
   isPlaying: false,
   playbackProgress: 0,
   queuedSongs: [],
-  isLoading: false
+  isLoading: false,
+  currentPlaybackTimeInMilliSeconds: 0
 };
 
 const getters: GetterTree<MusicPlayerState, any> = {
@@ -137,6 +138,10 @@ const mutations: MutationTree<MusicPlayerState> = {
 
   [SET_SONG_QUEUE](state, songs) {
     state.queuedSongs = songs;
+  },
+
+  [SET_CURRENT_PLAYBACK_TIME](state, currentPlaybackTime: number) {
+    state.currentPlaybackTimeInMilliSeconds = currentPlaybackTime * 1000;
   }
 };
 

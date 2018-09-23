@@ -7,6 +7,7 @@ export interface MusicPlayerState {
   playbackProgress: number;
   queuedSongs: MusicKit.MediaItem[];
   isLoading: boolean;
+  currentPlaybackTimeInMilliSeconds: number;
 }
 
 // Payload

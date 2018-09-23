@@ -4,7 +4,7 @@
       <div v-if="showSongQueue" class="song-queue-modal">
         <div class="container">
           <div>
-            <h1>Header</h1>
+            <h1>Song queue</h1>
           </div>
           <div class="queue-items">
             <song-list

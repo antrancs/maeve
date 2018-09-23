@@ -1,7 +1,7 @@
 <template>
-  <div class="content-spacing">
+  <div>
     <h2>Search Results</h2>
-    <section>
+    <section class="content-spacing">
       <div class="section-header">
         <h3>Artists</h3>
         <router-link
@@ -16,7 +16,7 @@
       </artist-list>
     </section>
 
-    <section>
+    <section class="content-spacing">
       <div class="section-header">
         <h3>Songs</h3>
         <router-link
@@ -30,7 +30,7 @@
       <song-list :tracks="getFirstNResults(songs, 5)"></song-list>
     </section>
 
-    <section>
+    <section class="content-spacing">
       <div class="section-header">
         <h3>Albums</h3>
         <router-link
@@ -44,7 +44,7 @@
       <song-collection-list :collections="getFirstNResults(albums, 10)"></song-collection-list>
     </section>
 
-    <section>
+    <section class="content-spacing">
       <div class="section-header">
         <h3>Playlists</h3>
         <router-link

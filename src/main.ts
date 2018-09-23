@@ -6,6 +6,7 @@ import '@/plugins';
 import musicKit from '@/services/musicKit';
 import { connectMusicKitToStore } from '@/setup/musickit';
 import '@/setup/icons';
+import '@/filters';
 import App from './App.vue';
 
 Vue.config.productionTip = false;

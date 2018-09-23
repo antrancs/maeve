@@ -29,6 +29,7 @@ export default class ActivityDetail extends Vue {
   // Data
   private activity: Nullable<MusicKit.Activity> = null;
 
+  // Computed
   get bannerImage(): string {
     if (!this.activity) {
       return '';
@@ -75,6 +76,7 @@ export default class ActivityDetail extends Vue {
     };
   }
 
+  // Life cycle methods
   created() {
     if (!this.activity) {
       const activityId = this.$route.params.id;
@@ -100,16 +102,6 @@ export default class ActivityDetail extends Vue {
   margin: 0 0 $xl-size $m-size;
   position: relative;
   z-index: 2;
-}
-
-.banner {
-  background-color: rgba(0, 0, 0, 0.4);
-  background-image: url('./../assets/workout.jpg');
-  background-size: cover;
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  top: 0;
 }
 
 .activity-content {

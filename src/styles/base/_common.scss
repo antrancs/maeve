@@ -11,6 +11,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  // display: block;
 }
 
 .content-spacing {
@@ -47,4 +48,13 @@
 .flex-column {
   display: flex;
   flex-direction: column;
+}
+
+.banner {
+  background-color: rgba(0, 0, 0, 0.4);
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
 }

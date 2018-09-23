@@ -6,7 +6,7 @@
     <img
       v-if="currentTrackArtwork && currentTrackArtwork.length > 0"
       class="side-bar__song-artwork"
-      v-lazy="currentTrackArtwork"
+      :src="currentTrackArtwork"
       alt=""
     />
   </div>
@@ -14,10 +14,12 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { Getter } from 'vuex-class';
+import { Getter, State } from 'vuex-class';
 
 import SidebarAuthenticated from './TheSidebarAuthenticated.vue';
 import SidebarUnauthenticated from './TheSidebarUnauthenticated.vue';
+import { MusicPlayerState } from '@/store/types';
+import { getArtworkUrl } from '@/utils/utils';
 
 @Component({
   components: {

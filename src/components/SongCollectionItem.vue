@@ -32,7 +32,7 @@
           name="explicit"
         />
       </div>
-      <div class="media-details__subtitle">
+      <div class="media-details__subtitle long-text-truncated">
         {{ collection.attributes.artistName || collection.attributes.curatorName }}
       </div>
     </div>

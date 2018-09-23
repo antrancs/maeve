@@ -1,14 +1,13 @@
 <template>
-  <div v-if="musicPlayer.currentPlaying" class="player-bar-wrapper">
+  <div v-if="currentPlaying" class="player-bar-wrapper">
     <div class="player-bar">
       <div class="player-bar__left">
-        <div class="player-bar__artist-name ">{{musicPlayer.currentPlaying.name}}</div>
-        <div class="player-bar__song-name">{{musicPlayer.currentPlaying.artistName}}</div>
+        <div class="player-bar__song-name long-text-truncated">{{ songName }}</div>
+        <div class="player-bar__artist-name long-text-truncated">{{ artistName }}</div>
       </div>
 
-      <div class="player-bar__center ">
-        <div class="player-bar__controls">
-          <icon name="redo" class="icon"></icon>
+      <div class="flex-column player-bar__center">
+        <div class="player-bar__controls group-control">
           <span @click="handleBackwardClicked">
             <icon name="backward" class="icon"></icon>
           </span>
@@ -25,16 +24,15 @@
             <icon name="forward" class="icon">
             </icon>
           </span>
-
-          <icon name="random" class="icon"></icon>
         </div>
 
-        <div>
-          <progress class="player-bar__progress-bar"
-            max="100" :value="musicPlayer.playbackProgress * 100"
-          >
-            {{musicPlayer.playbackProgress * 100}}
+        <div class="flex-row player-bar__progress group-control">
+          <div>{{ currentPlaybackTimeInMilliSeconds | formattedDuration }}</div>
+          <progress class="player-bar__progress-bar" max="100" :value="playbackProgress * 100">
+            {{ playbackProgress * 100 }}
           </progress>
+
+          <div>{{ currentPlaying.playbackDuration | formattedDuration }}</div>
         </div>
       </div>
 
@@ -67,11 +65,19 @@ import {
   PLAY_PREVIOUS,
   TOGGLE_CURRENT_TRACK
 } from '@/store/actions.type';
+import { Nullable } from '@/@types/model/model';
 
 @Component
 export default class PlayerBar extends Vue {
   // State
-  @State musicPlayer!: MusicPlayerState;
+  @State(state => state.musicPlayer.currentPlaying)
+  currentPlaying!: Nullable<MusicKit.MediaItem>;
+  @State(state => state.musicPlayer.isPlaying)
+  isPlaying!: boolean;
+  @State(state => state.musicPlayer.playbackProgress)
+  playbackProgress!: number;
+  @State(state => state.musicPlayer.currentPlaybackTimeInMilliSeconds)
+  currentPlaybackTimeInMilliSeconds!: number;
 
   // Action
   @Action [PLAY_NEXT]: () => void;
@@ -79,8 +85,16 @@ export default class PlayerBar extends Vue {
   @Action [TOGGLE_CURRENT_TRACK]: () => void;
 
   // Computed
-  get songStatusIcon() {
-    return this.musicPlayer.isPlaying ? 'pause-circle' : 'play-circle';
+  get songStatusIcon(): string {
+    return this.isPlaying ? 'pause-circle' : 'play-circle';
+  }
+
+  get artistName(): string {
+    return this.currentPlaying ? this.currentPlaying.artistName : '';
+  }
+
+  get songName(): string {
+    return this.currentPlaying ? this.currentPlaying.title : '';
   }
 
   // Methods

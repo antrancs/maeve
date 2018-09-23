@@ -1,11 +1,11 @@
 .sidebar {
   background-color: $sidebar-color;
-  flex: 0 0 18rem;
+  flex: 0 0 $sidebar-width;
 }
 
 .side-bar__song-artwork {
-  height: 180px;
-  width: 180px;
+  height: $sidebar-width;
+  width: $sidebar-width;
   position: fixed;
   bottom: 72px;
 }

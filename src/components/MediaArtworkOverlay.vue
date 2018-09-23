@@ -49,7 +49,6 @@ export default class ArtworkOverlay extends Vue {
 .media-artwork-overlay {
   display: none;
   height: 100%;
-  position: absolute;
   width: 100%;
 }
 

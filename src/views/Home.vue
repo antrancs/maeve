@@ -50,7 +50,6 @@ export default class Home extends Vue {
   private activities: MusicKit.Activity[] = [];
 
   created() {
-    console.log(activityIds);
     musicApiService
       .getPlaylists(this.featuredPlaylistIds)
       .then(playlists => {
@@ -61,7 +60,6 @@ export default class Home extends Vue {
       });
 
     musicApiService.getActivities(activityIds).then(activities => {
-      console.log(activities);
       this.activities = activities;
     });
   }

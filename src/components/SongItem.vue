@@ -42,8 +42,8 @@
 
       <div :class="['long-text-truncated', 'song-item__artist-name', { queue: isQueue }]">{{ track.attributes.artistName }}</div>
       <div
-        v-if="!isFromAlbum"
-        :class="['long-text-truncated', 'song-item__album-name', { queue: isQueue }]"
+        v-if="!isFromAlbum && !isQueue"
+        :class="['long-text-truncated', 'song-item__album-name']"
       >
         {{ track.attributes.albumName }}
       </div>
@@ -57,7 +57,7 @@
     </div>
 
     <div class="song-item__right">
-      {{ track.attributes.durationInMillis | formatSongDuration }}
+      {{ track.attributes.durationInMillis | formattedDuration }}
     </div>
   </div>
 </template>
@@ -75,21 +75,7 @@ import MediaArtwork from './MediaArtwork.vue';
 import MediaArtworkOverlay from './MediaArtworkOverlay.vue';
 
 @Component({
-  components: { MediaArtworkOverlay, MediaArtwork },
-  filters: {
-    formatSongDuration(value: number) {
-      if (!value) {
-        return '0:00';
-      }
-      const durationInSeconds = Math.floor(value / 1000);
-      const NUMBER_OF_SECONDS_IN_A_MINUTE = 60;
-      const minutes = Math.trunc(
-        durationInSeconds / NUMBER_OF_SECONDS_IN_A_MINUTE
-      );
-      const seconds = durationInSeconds % NUMBER_OF_SECONDS_IN_A_MINUTE;
-      return seconds < 10 ? `${minutes}:0${seconds}` : `${minutes}:${seconds}`;
-    }
-  }
+  components: { MediaArtworkOverlay, MediaArtwork }
 })
 export default class SongItem extends Vue {
   private showLoading = false;
@@ -160,6 +146,9 @@ export default class SongItem extends Vue {
 
     this.showLoading = true;
     // Forward the song info to the provider method
+    if (!this.handleSongClicked) {
+      return;
+    }
     this.handleSongClicked(this.index, this.track.id);
   }
 }

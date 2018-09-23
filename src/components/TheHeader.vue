@@ -32,7 +32,7 @@ export default class AppHeader extends Vue {
 }
 
 .brand {
-  flex-basis: 18rem;
+  flex-basis: $sidebar-width;
 }
 
 .search-bar {

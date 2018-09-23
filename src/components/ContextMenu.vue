@@ -17,9 +17,10 @@ import ContextMenuPlugin from '@/plugins/contextMenu.plugin';
 @Component
 export default class ContextMenu extends Vue {
   // Data
-  private width: number = 0;
+  private width: number = 150;
   private height: number = 0;
   private left: number = 0;
+  private right: number = 0;
   private top: number = 0;
   private isActive: boolean = false;
 
@@ -30,7 +31,8 @@ export default class ContextMenu extends Vue {
   get contextMenuStyle(): object {
     return {
       left: this.left + 'px',
-      top: this.top + 'px'
+      top: this.top + 'px',
+      width: this.width + 'px'
     };
   }
 
@@ -86,14 +88,25 @@ export default class ContextMenu extends Vue {
       params
     });
 
-    if (!this.width || !this.height) {
-      this.width = this.$el.offsetWidth;
-      this.height = this.$el.offsetHeight;
-    }
+    // if (!this.width || !this.height) {
+    //   this.width = this.$el.offsetWidth;
+    //   this.height = this.$el.offsetHeight;
+    //   console.log('width', this.width);
+    // }
 
-    if (this.width + clickEvent.pageX >= window.innerWidth) {
+    // if (this.width + clickEvent.pageX >= window.innerWidth) {
+    //   console.log('1');
+    //   this.left = clickEvent.pageX - this.width;
+    // } else {
+    //   console.log('2');
+    //   this.left = clickEvent.pageX;
+    // }
+
+    if (clickEvent.pageX - this.width >= 0) {
+      console.log('1');
       this.left = clickEvent.pageX - this.width;
     } else {
+      console.log('2');
       this.left = clickEvent.pageX;
     }
 

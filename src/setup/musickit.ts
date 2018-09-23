@@ -4,7 +4,8 @@ import {
   SET_PLAYBACK_PROGESS,
   SET_IS_PLAYING,
   SET_CURRENTLY_PLAYING_SONG,
-  SET_SONG_LOADING
+  SET_SONG_LOADING,
+  SET_CURRENT_PLAYBACK_TIME
 } from '@/store/mutations.type';
 import { CHANGE_ROUTE } from '@/store/actions.type';
 
@@ -33,7 +34,6 @@ export function connectMusicKitToStore(
         break;
       case MusicKit.PlaybackStates.loading:
         store.commit(SET_SONG_LOADING, true);
-        console.log('Loading state', event);
     }
   }
 
@@ -63,6 +63,19 @@ export function connectMusicKitToStore(
     ({ item }) => {
       store.commit(SET_CURRENTLY_PLAYING_SONG, item);
     }
+  );
+
+  function onPlaybackTimeDidChange(event: any) {
+    store.commit(SET_CURRENT_PLAYBACK_TIME, event.currentPlaybackTime);
+  }
+
+  musicKitInstance.removeEventListener(
+    MusicKit.Events.playbackTimeDidChange,
+    onPlaybackTimeDidChange
+  );
+  musicKitInstance.addEventListener(
+    MusicKit.Events.playbackTimeDidChange,
+    onPlaybackTimeDidChange
   );
 }
 

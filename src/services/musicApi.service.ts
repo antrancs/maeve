@@ -1,5 +1,5 @@
 import musicKit from '@/services/musicKit';
-import { Collection, CollectionType } from '@/@types/model/model';
+import { Collection, CollectionType, Nullable } from '@/@types/model/model';
 
 class MusicApiService {
   /**
@@ -100,7 +100,7 @@ class MusicApiService {
   getArtist(
     artistId: string
   ): Promise<{
-    name: string;
+    attributes: Nullable<MusicKit.ArtistAttributes>;
     albums: MusicKit.Album[];
     playlists: MusicKit.Playlist[];
   }> {
@@ -108,6 +108,7 @@ class MusicApiService {
       .getApiInstance()
       .artist(artistId, { include: 'albums,playlists' })
       .then(artistRes => {
+        console.log(artistRes);
         // relationships should be there when specifing 'include' in the search parameter
         const { relationships } = artistRes;
         let albums: MusicKit.Album[] = [];
@@ -120,7 +121,7 @@ class MusicApiService {
             : [];
         }
         return {
-          name: artistRes.attributes ? artistRes.attributes.name : '',
+          attributes: artistRes.attributes,
           albums,
           playlists
         };

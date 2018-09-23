@@ -23,32 +23,49 @@ const getArtworkUrl = (
 const extractArtworkUrl = (html: string) => {
   const $ = load(html);
   const artwork = $('meta[property="og:image:secure_url"]').attr('content');
+
   return artwork;
 };
 
-const formatArtworkUrl = (artworkUrl: string) => {
+const formatArtworkUrl = (
+  artworkUrl: string,
+  width: number,
+  height: number
+) => {
   if (!artworkUrl || artworkUrl.length === 0) {
     return '';
   }
   return `${artworkUrl.substring(
     0,
     artworkUrl.lastIndexOf('/') + 1
-  )}400x400bb.jpg`;
+  )}${width}x${height}bb.jpg`;
 };
 
 /**
  * A workaround to get the artwork for an artist as Apple Music API doesn't support it yet
  * @param {string} itunesUrl - iTunes URL for an artist
- *  @returns {Promise}
+ * @param width (optional) - If not provided, the placeholder url will be returned
+ * @param height (optional) - If not provided, the placeholder url will be returned
+ * @returns {Promise}
  */
-const getArtistArtwork = (itunesUrl: string) =>
-  axios
+const getArtistArtwork = (
+  itunesUrl: string,
+  width?: number,
+  height?: number
+): Promise<string> => {
+  return axios
     .get(itunesUrl)
     .then(result => extractArtworkUrl(result.data))
-    .then(formatArtworkUrl)
+    .then(url => {
+      if (!width || !height) {
+        return url;
+      }
+      return formatArtworkUrl(url, width, height);
+    })
     .catch(err => {
       console.log(err);
       return '';
     });
+};
 
-export { getArtworkUrl, getArtistArtwork };
+export { getArtworkUrl, getArtistArtwork, formatArtworkUrl };

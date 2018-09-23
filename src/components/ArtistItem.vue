@@ -1,11 +1,11 @@
 <template>
   <div class="media-column">
     <router-link :to="{ name: 'artists', params: { id: artist.id }}">
-      <img
-        v-lazy="artistArtwork"
-        alt=""
-        class="artwork"
-      />
+      <media-artwork
+        :artwork-url="artistArtwork"
+        :is-round="true"
+      >
+      </media-artwork>
     </router-link>
 
     <h3>{{ artist.attributes.name }}</h3>
@@ -17,8 +17,13 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { getArtistArtwork } from '@/utils/utils';
 import { Artist } from '@/@types/model/model';
+import MediaArtwork from './MediaArtwork.vue';
 
-@Component
+@Component({
+  components: {
+    MediaArtwork
+  }
+})
 export default class ArtistItem extends Vue {
   // Data
   private artistArtwork: string = '';
@@ -35,7 +40,7 @@ export default class ArtistItem extends Vue {
 
   // Helper functions
   private $_getArtistArtwork(url: string) {
-    getArtistArtwork(url)
+    getArtistArtwork(url, 400, 400)
       .then(artwork => {
         this.artistArtwork = artwork
           ? artwork

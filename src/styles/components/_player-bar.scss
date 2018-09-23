@@ -15,16 +15,20 @@
 }
 
 .player-bar__left {
-  flex: 0 0 20rem;
+  padding-left: $m-size;
+  padding-right: $s-size;
+  padding-top: $s-size;
+  flex: 0 0 $sidebar-width;
 }
 
 .player-bar__artist-name {
   color: white;
-  font-weight: bold;
 }
 
 .player-bar__song-name {
   color: white;
+  font-weight: bold;
+  margin-bottom: $s-size;
 }
 
 .player-bar__right {
@@ -32,9 +36,8 @@
 }
 
 .player-bar__center {
-  display: flex;
+  align-items: center;
   flex: 1;
-  flex-direction: column;
   justify-content: center;
 }
 
@@ -44,6 +47,11 @@
   justify-content: center;
 }
 
+.player-bar__progress {
+  width: 50%;
+}
+
 .player-bar__progress-bar {
-  width: 100%;
+  color: red;
+  flex: 1;
 }

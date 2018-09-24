@@ -58,3 +58,21 @@
   position: absolute;
   top: 0;
 }
+
+.section-title {
+  font-size: $header-font;
+  margin-bottom: $m-size;
+  margin-top: $m-size;
+}
+
+.main-text {
+  font-weight: bold;
+}
+
+.main-info-text {
+  font-weight: 500;
+}
+
+.sub-info-text {
+  color: $secondary-text-color;
+}

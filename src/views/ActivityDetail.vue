@@ -6,7 +6,7 @@
     </div>
     <div class="activity-content">
       <div class="activity-list">
-        <h3>Popular playlists</h3>
+        <h3 class="section-title">Popular playlists</h3>
 
         <song-collection-list :collections="playlists"></song-collection-list>
       </div>

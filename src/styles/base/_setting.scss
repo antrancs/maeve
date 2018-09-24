@@ -1,11 +1,10 @@
 // Colors
 $primary-text-color: #fff;
-$secondary-text-color: #aaa;
+$secondary-text-color: hsla(0, 0%, 100%, 0.6);
 $primary-dark-color: rgb(35, 35, 35);
 $bg-color: linear-gradient(rgb(85, 72, 68), rgb(8, 7, 7) 85%);
-$black-color: #000;
 $white-color: #fff;
-$black-color-0-5: lighten($black-color, 20);
+$black-color-0-5: lighten(black, 20);
 $player-bar-color: #282828;
 
 $divider-color: rgba(255, 255, 255, 0.08);
@@ -31,7 +30,7 @@ $accent-fg-color: #e1e1e1;
 $accent-fg-hover-color: #cfd3da;
 
 $track-index-color: $fg-color-4;
-$subtitle-color: $fg-color;
+// $subtitle-color: $fg-color;
 $sidebar-color: $bg-in-1;
 
 // Space
@@ -46,6 +45,7 @@ $margin-column: 1.5%;
 $regular-font: 1.4rem;
 $large-font: 2.2rem;
 $xl-font: 4.8rem;
+$header-font: 3rem;
 
 // Components' sizes
 $player-bar-height: 9.6rem;

@@ -32,7 +32,6 @@ export default class MediaArtwork extends Vue {
 
   // Computed
   get artworkImageStyle(): object {
-    console.log('artworkImageStyle');
     const style: any = {};
     if (this.isRound) {
       style['border-radius'] = '50%';

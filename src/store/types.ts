@@ -15,6 +15,10 @@ export type AppendSongsPayload = {
   items: MusicKit.MediaItem[];
 };
 
+export type PrependSongsPayload = {
+  items: MusicKit.MediaItem[];
+};
+
 export type AddToLibraryPayload = {
   itemIds: string[];
   type: string;
@@ -44,6 +48,8 @@ export type AddToLibraryAction = (
 ) => Promise<void>;
 
 export type AppendSongsAction = (payload: AppendSongsPayload) => void;
+
+export type PrependSongsAction = (payload: PrependSongsPayload) => void;
 
 export type PlayCollectionAtIndexAction = (
   payload: PlayCollectionAtIndexPayload

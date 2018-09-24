@@ -15,7 +15,7 @@
       @before-open="beforeOpenContextMenu"
       @before-close="beforeCloseContextMenu"
     >
-      <context-menu-item :on-click="addNext">Play next</context-menu-item>
+      <context-menu-item :on-click="handleAddNext">Play next</context-menu-item>
       <context-menu-item :on-click="handleAddToQueue">Add to queue</context-menu-item>
       <context-menu-item :on-click="handleAddToLibrary">Add to library</context-menu-item>
     </context-menu>
@@ -33,12 +33,14 @@ import {
   AddToLibraryPayload,
   MusicPlayerState,
   AppendSongsAction,
-  AddToLibraryAction
+  AddToLibraryAction,
+  PrependSongsAction
 } from '@/store/types';
 import {
   PLAY_COLLECTION_AT_INDEX,
   ADD_TO_LIBRARY,
-  APPEND_SONGS
+  APPEND_SONGS,
+  PREPEND_SONGS
 } from '@/store/actions.type';
 
 import SongItem from './SongItem.vue';
@@ -64,6 +66,7 @@ export default class SongList extends Vue {
   // Action
   @Action [PLAY_COLLECTION_AT_INDEX]: PlayCollectionAtIndexAction;
   @Action [APPEND_SONGS]: AppendSongsAction;
+  @Action [PREPEND_SONGS]: PrependSongsAction;
   @Action [ADD_TO_LIBRARY]: AddToLibraryAction;
 
   // Computed
@@ -102,7 +105,23 @@ export default class SongList extends Vue {
     });
   }
 
-  addNext() {}
+  handleAddNext() {
+    if (!this.selectedTrack) {
+      return;
+    }
+    const mediaItem = new MusicKit.MediaItem({
+      id: this.selectedTrack.id,
+      attributes: this.selectedTrack.attributes,
+      type: 'song'
+    });
+
+    this.prependSongs({ items: [mediaItem] });
+
+    // @ts-ignore
+    this.$toasted.global.notify({
+      message: 'Song added next'
+    });
+  }
 
   handleAddToLibrary() {
     if (!this.selectedTrack) {
@@ -131,6 +150,7 @@ export default class SongList extends Vue {
 <style lang="scss" scoped>
 .song-list {
   color: $fg-color-4;
+  margin-bottom: $m-size;
   width: 100%;
 }
 

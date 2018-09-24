@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <section class="content-spacing" v-if="featuredPlaylists.length > 0">
-      <h2>Featured Playlists</h2>
+      <h3 class="section-title">Featured Playlists</h3>
       <div class="flex-row feature-playlists">
         <featured-playlist
           v-for="playlist in featuredPlaylists"
@@ -13,7 +13,7 @@
     </section>
 
     <section class="content-spacing" v-if="activities.length > 0">
-      <h2>Activities & Mood</h2>
+      <h2 class="section-title">Activities & Mood</h2>
       <div class="flex-row">
         <activity-item
           v-for="activity in activities"

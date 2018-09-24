@@ -1,12 +1,12 @@
 <template>
     <div>
       <section class="content-spacing">
-        <h2>Your playlists</h2>
+        <h2 class="section-title">Your playlists</h2>
         <song-collection-list :collections="playlists"></song-collection-list>
       </section>
       
       <section class="content-spacing">
-        <h2>Your albums</h2>
+        <h2 class="section-title">Your albums</h2>
         <song-collection-list :collections="albums"></song-collection-list>
       </section>
     </div>
@@ -24,18 +24,18 @@ import musicApiService from '@/services/musicApi.service';
   }
 })
 export default class Playlists extends Vue {
+  // Data
   private playlists: MusicKit.LibraryPlaylist[] = [];
   private albums: MusicKit.LibraryAlbum[] = [];
 
+  // Life cycle methods
   created() {
     musicApiService.getLibraryPlaylists().then(playlists => {
       this.playlists = playlists;
-      console.log(playlists);
     });
 
     musicApiService.getLibraryAlbums().then(albums => {
       this.albums = albums;
-      console.log(albums);
     });
   }
 }

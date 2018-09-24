@@ -5,7 +5,7 @@
         <router-link to="/">
           <div class="flex-row menu__item">
             <div class="menu__item-icon">
-              <icon name="home" class="icon icon--large">
+              <icon name="home" class="icon icon--l">
               </icon>
             </div>
             
@@ -19,7 +19,7 @@
         <router-link :to="{ name: 'forYou' }">
           <div class="flex-row menu__item">
             <div class="menu__item-icon">
-              <icon name="grin-hearts" class="icon icon--large">
+              <icon name="grin-hearts" class="icon icon--l">
               </icon>
             </div>
             <div class="menu__item-text">
@@ -33,7 +33,7 @@
         <router-link :to="{ name: 'myPlaylists' }">
           <div class="flex-row menu__item">
             <div class="menu__item-icon">
-              <icon name="headset" class="icon icon--large">
+              <icon name="headset" class="icon icon--l">
               </icon>
             </div>
             <div class="menu__item-text">

@@ -9,19 +9,19 @@
       <div class="flex-column player-bar__center">
         <div class="player-bar__controls group-control">
           <span @click="handleBackwardClicked">
-            <icon name="backward" class="icon"></icon>
+            <icon name="backward" class="icon icon--l"></icon>
           </span>
 
           <span @click="toggleCurrentTrack">
             <icon
               :name="songStatusIcon"
-              class="icon icon--large"
+              class="icon icon--xl"
             >
             </icon>
           </span>
 
           <span @click="handleForwardClicked">
-            <icon name="forward" class="icon">
+            <icon name="forward" class="icon icon--l">
             </icon>
           </span>
         </div>
@@ -38,7 +38,7 @@
 
       <div class="player-bar__right flex-row">
         <div @click="$emit('songQueueIconClicked')">
-          <icon name="list" class="icon"></icon>
+          <icon name="list" class="icon icon--l"></icon>
         </div>
       </div>
     </div>

@@ -5,8 +5,8 @@
         <!-- <img class="artwork" v-lazy="artworkUrl"> -->
         <media-artwork
           :artwork="this.collection.attributes.artwork"
-          :width="400"
-          :height="400"
+          :width="300"
+          :height="300"
         >
         </media-artwork>
         <div class="artwork-overlay" :class="artworkOverlayClass">
@@ -29,7 +29,7 @@
 
     <div class="media-details">
       <div class="media-details__title">
-        <div class="long-text-truncated">
+        <div class="long-text-truncated main-info-text">
           {{ collection.attributes.name }}
         </div>
         <icon
@@ -38,7 +38,7 @@
           name="explicit"
         />
       </div>
-      <div class="media-details__subtitle long-text-truncated">
+      <div class="media-details__subtitle long-text-truncated sub-info-text">
         {{ collection.attributes.artistName || collection.attributes.curatorName }}
       </div>
     </div>
@@ -126,7 +126,6 @@ export default class SongCollectionItem extends Vue {
 }
 
 .media-details__subtitle {
-  color: $subtitle-color;
   margin-top: $xs-size;
 }
 </style>

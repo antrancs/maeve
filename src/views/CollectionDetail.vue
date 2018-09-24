@@ -18,11 +18,11 @@
                   {{ collectionName }}
                   <icon v-if="collection.attributes.contentRating === 'explicit'" name="explicit"/>
                 </h2>
-                <div class="collection-subtitle collection-artist-name">
+                <div class="collection-subtitle collection-artist-name sub-info-text ">
                   {{ collectionArtistName }}
                 </div>
 
-                <div class="collection-subtitle collection-metadata">
+                <div class="collection-subtitle collection-metadata sub-info-text ">
                   <span v-if="collectionType !== 'library-playlists'">
                   {{releaseYear}}
                   •
@@ -323,7 +323,6 @@ export default class CollectionDetail extends Vue {
 }
 
 .collection-subtitle {
-  color: $subtitle-color;
   font-size: 1.8rem;
 }
 

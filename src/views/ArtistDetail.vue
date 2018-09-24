@@ -8,17 +8,17 @@
     </div>
 
     <section class="content-spacing">
-      <h3>Albums</h3>
+      <h3 class="section-title">Albums</h3>
       <song-collection-list :collections="nonSingles"></song-collection-list>
     </section>
     
     <section class="content-spacing">
-      <h3>Singles</h3>
+      <h3 class="section-title">Singles</h3>
       <song-collection-list :collections="singles"></song-collection-list>
     </section>
 
     <section class="content-spacing">
-      <h3>Playlists</h3>
+      <h3 class="section-title">Playlists</h3>
       <song-collection-list :collections="playlists"></song-collection-list>
     </section>
   </div>

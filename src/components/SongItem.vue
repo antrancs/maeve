@@ -1,12 +1,12 @@
 <template>
-  <div class="song-item">
+  <div v-if="track && track.attributes" class="song-item">
     <div class="song-item__left">
       <div v-if="showLoading" class="spinner">
       </div>
       <div v-else class="size-fit">
         <media-artwork
           v-if="!isFromAlbum"
-          :artwork="this.track.attributes.artwork"
+          :artwork="track.attributes.artwork"
           :width="50"
           :height="50"
         >
@@ -21,7 +21,7 @@
         </media-artwork-overlay>
 
         <div
-          v-show="isFromAlbum && !isActive"
+          v-if="isFromAlbum && !isActive"
           class="track-number flex-center size-fit"
         >
           {{ track.attributes.trackNumber }}

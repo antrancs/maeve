@@ -96,6 +96,14 @@ const musicPlayerService = {
   },
 
   /**
+   * Add items after the currently playing item
+   * @param items Items to be added
+   */
+  prependItems(items: MusicKit.MediaItem[]): void {
+    musicKit.getPlayerInstance().queue.prepend({ items });
+  },
+
+  /**
    * Add multiple items to the user's library
    * @param itemIds Ids of the items to be added
    * @param type Type of these items

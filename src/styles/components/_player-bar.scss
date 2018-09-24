@@ -1,6 +1,6 @@
 .player-bar-wrapper {
   background-color: $player-bar-color;
-  border-top: 0.1rem solid $black-color;
+  border-top: 0.1rem solid black;
   bottom: 0;
   height: $player-bar-height;
   position: fixed;
@@ -15,10 +15,10 @@
 }
 
 .player-bar__left {
+  max-width: 10em;
   padding-left: $m-size;
   padding-right: $s-size;
   padding-top: $s-size;
-  flex: 0 0 $sidebar-width;
 }
 
 .player-bar__artist-name {
@@ -41,20 +41,32 @@
 .player-bar__center {
   align-items: center;
   flex: 1;
-  justify-content: center;
 }
 
 .player-bar__controls {
   align-items: center;
   display: flex;
   justify-content: center;
+  margin-top: $s-size;
+  margin-bottom: $m-size;
 }
 
 .player-bar__progress {
-  width: 50%;
+  width: 100%;
 }
 
 .player-bar__progress-bar {
   color: red;
   flex: 1;
+}
+
+@media (min-width: $bp-tablet-landscape) {
+  .player-bar__progress {
+    width: 60%;
+  }
+
+  .player-bar__left {
+    max-width: none;
+    flex: 0 0 $sidebar-width;
+  }
 }

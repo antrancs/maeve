@@ -2,7 +2,9 @@
   <div class="app-body">
     <app-sidebar></app-sidebar>
     <div class="main-content-wrapper">
-      <router-view class="main-content"></router-view>
+      <transition name="fade" mode="out-in">
+        <router-view class="main-content"></router-view>
+      </transition>
     </div>
   </div>
 </template>
@@ -42,5 +44,14 @@ export default class AppBody extends Vue {}
   content: '';
   display: block;
   padding-bottom: 10rem;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.25s ease-in-out;
+}
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
 }
 </style>

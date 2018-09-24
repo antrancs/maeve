@@ -1,12 +1,11 @@
 <template>
   <div>
-    <h2>Search Results</h2>
     <section
       class="content-spacing"
       v-if="artists.length > 0"
     >
       <div class="section-header">
-        <h3>Artists</h3>
+        <h3 class="section-title">Artists</h3>
         <router-link
           v-if="artists.length > 5"
           :to="{ name: 'searchViewAll', params: { type: 'artists' }, query: { q: queryString } }"
@@ -24,7 +23,7 @@
       v-if="songs.length > 0"
     >
       <div class="section-header">
-        <h3>Songs</h3>
+        <h3 class="section-title">Songs</h3>
         <router-link
           v-if="songs.length > 5"
           :to="{ name: 'searchViewAll', params: { type: 'songs' }, query: { q: queryString } }"
@@ -41,7 +40,7 @@
       v-if="albums.length > 0"
     >
       <div class="section-header">
-        <h3>Albums</h3>
+        <h3 class="section-title">Albums</h3>
         <router-link
           v-if="albums.length > 10"
           :to="{ name: 'searchViewAll', params: { type: 'albums' }, query: { q: queryString } }"
@@ -58,7 +57,7 @@
       v-if="playlists.length > 0"
     >
       <div class="section-header">
-        <h3>Playlists</h3>
+        <h3 class="section-title">Playlists</h3>
         <router-link
           v-if="playlists.length > 10"
           :to="{ name: 'searchViewAll', params: { type: 'playlists' }, query: { q: queryString } }"

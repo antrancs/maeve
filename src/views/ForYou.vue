@@ -5,9 +5,7 @@
         v-for="recommendation in recommendations"
         :key="recommendation.id"
       >
-        <div class="section-header">
-          <h3>{{ recommendation.attributes.title.stringForDisplay }}</h3>
-        </div>
+        <h3 class="section-title">{{ recommendation.attributes.title.stringForDisplay }}</h3>
 
         <song-collection-list :collections="getDataArray(recommendation)">
         </song-collection-list>

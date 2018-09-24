@@ -31,7 +31,8 @@ import {
   AddToLibraryPayload,
   PlayCollectionWithSongPayload,
   SkipToSongAtIndexPayload,
-  PlaySongsPayload
+  PlaySongsPayload,
+  PrependSongsPayload
 } from './types';
 
 const initialState: MusicPlayerState = {
@@ -46,7 +47,7 @@ const initialState: MusicPlayerState = {
 const getters: GetterTree<MusicPlayerState, any> = {
   currentTrackArtwork(state): string {
     return state.currentPlaying
-      ? getArtworkUrl(state.currentPlaying.artwork.url, 500, 500)
+      ? getArtworkUrl(state.currentPlaying.artwork.url, 300, 300)
       : '';
   }
 };
@@ -89,6 +90,11 @@ const actions: ActionTree<MusicPlayerState, any> = {
 
   [APPEND_SONGS]({ commit }, { items }: AppendSongsPayload) {
     musicPlayerService.appendItemsToQueue(items);
+    commit(SET_SONG_QUEUE, musicPlayerService.queuedSongs);
+  },
+
+  [PREPEND_SONGS]({ commit }, { items }: PrependSongsPayload) {
+    musicPlayerService.prependItems(items);
     commit(SET_SONG_QUEUE, musicPlayerService.queuedSongs);
   },
 

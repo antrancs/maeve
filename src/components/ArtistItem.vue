@@ -8,7 +8,9 @@
       </media-artwork>
     </router-link>
 
-    <h3>{{ artist.attributes.name }}</h3>
+    <div class="long-text-truncated main-info-text artist-item-name">
+      {{ artist.attributes.name }}
+    </div>
   </div>
 </template>
 
@@ -40,11 +42,11 @@ export default class ArtistItem extends Vue {
 
   // Helper functions
   private $_getArtistArtwork(url: string) {
-    getArtistArtwork(url, 400, 400)
+    getArtistArtwork(url, 300, 300)
       .then(artwork => {
         this.artistArtwork = artwork
           ? artwork
-          : 'https://via.placeholder.com/500x500';
+          : 'https://via.placeholder.com/300x300';
       })
       .catch(err => {
         console.log(err);
@@ -56,4 +58,8 @@ export default class ArtistItem extends Vue {
 </script>
 
 <style lang="scss" scoped>
+.artist-item-name {
+  margin-top: $s-size;
+  text-align: center;
+}
 </style>

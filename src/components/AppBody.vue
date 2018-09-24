@@ -12,7 +12,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import AppSidebar from './../components/TheSidebar.vue';
+import AppSidebar from '@/components/TheSidebar.vue';
 
 @Component({
   components: {

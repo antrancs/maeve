@@ -12,7 +12,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
-import AppBody from '@/views/AppBody.vue';
+import AppBody from '@/components/AppBody.vue';
 import AppHeader from '@/components/TheHeader.vue';
 import PlayerBar from '@/components/ThePlayerBar.vue';
 import SongQueue from '@/components/SongQueue.vue';

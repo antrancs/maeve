@@ -15,7 +15,7 @@
  */
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import SongCollectionItem from './SongCollectionItem.vue';
+import SongCollectionItem from '@/components/SongCollectionItem.vue';
 import { Collection } from '@/@types/model/model';
 
 @Component({

@@ -16,8 +16,8 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { Getter, State } from 'vuex-class';
 
-import SidebarAuthenticated from './TheSidebarAuthenticated.vue';
-import SidebarUnauthenticated from './TheSidebarUnauthenticated.vue';
+import SidebarAuthenticated from '@/components/TheSidebarAuthenticated.vue';
+import SidebarUnauthenticated from '@/components/TheSidebarUnauthenticated.vue';
 import { MusicPlayerState } from '@/store/types';
 
 @Component({

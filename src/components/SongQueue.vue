@@ -22,7 +22,7 @@ import Vue from 'vue';
 import { State, Action } from 'vuex-class';
 import { Prop, Component, Provide } from 'vue-property-decorator';
 
-import SongList from './SongList.vue';
+import SongList from '@/components/SongList.vue';
 import { HandleSongClicked } from '@/@types/model/model';
 import { SkipToSongAtIndexAction } from '@/store/types';
 import { SKIP_TO_SONG_AT_INDEX } from '@/store/actions.type';

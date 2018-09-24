@@ -12,7 +12,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { Artist } from '@/@types/model/model';
-import ArtistItem from './ArtistItem.vue';
+import ArtistItem from '@/components/ArtistItem.vue';
 
 @Component({
   components: { ArtistItem }

@@ -19,7 +19,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { getArtistArtwork } from '@/utils/utils';
 import { Artist } from '@/@types/model/model';
-import MediaArtwork from './MediaArtwork.vue';
+import MediaArtwork from '@/components/MediaArtwork.vue';
 
 @Component({
   components: {

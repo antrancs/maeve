@@ -43,9 +43,9 @@ import {
   PREPEND_SONGS
 } from '@/store/actions.type';
 
-import SongItem from './SongItem.vue';
-import ContextMenu from './ContextMenu.vue';
-import ContextMenuItem from './ContextMenuItem.vue';
+import SongItem from '@/components/SongItem.vue';
+import ContextMenu from '@/components/ContextMenu.vue';
+import ContextMenuItem from '@/components/ContextMenuItem.vue';
 
 @Component({
   components: { SongItem, ContextMenu, ContextMenuItem }

@@ -72,8 +72,8 @@ import 'vue-awesome/icons/ellipsis-h';
 import { MusicPlayerState } from '@/store/types';
 import { TOGGLE_CURRENT_TRACK } from '@/store/actions.type';
 import { HandleSongClicked, Nullable } from '@/@types/model/model';
-import MediaArtwork from './MediaArtwork.vue';
-import MediaArtworkOverlay from './MediaArtworkOverlay.vue';
+import MediaArtwork from '@/components/MediaArtwork.vue';
+import MediaArtworkOverlay from '@/components/MediaArtworkOverlay.vue';
 
 @Component({
   components: { MediaArtworkOverlay, MediaArtwork }

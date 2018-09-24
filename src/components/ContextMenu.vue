@@ -103,10 +103,8 @@ export default class ContextMenu extends Vue {
     // }
 
     if (clickEvent.pageX - this.width >= 0) {
-      console.log('1');
       this.left = clickEvent.pageX - this.width;
     } else {
-      console.log('2');
       this.left = clickEvent.pageX;
     }
 

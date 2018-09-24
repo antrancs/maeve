@@ -1,7 +1,7 @@
 <template>
     <div>
-        <p>Log in with your Apple Music to listen to full songs and manage your playlists</p>
-        <button @click="authorize">Log in</button>
+      <p>Log in with your Apple Music to listen to full songs and manage your playlists</p>
+      <button @click="authorize" class="button">Log in</button>
     </div>
 </template>
 

@@ -1,6 +1,7 @@
 <template>
-    <div class="content-spacing">
+    <div>
       <section
+        class="content-spacing"
         v-for="recommendation in recommendations"
         :key="recommendation.id"
       >

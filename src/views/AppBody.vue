@@ -24,7 +24,6 @@ export default class AppBody extends Vue {}
 .app-body {
   display: flex;
   flex: 1;
-  // height: calc(100% - 50px);
   overflow-y: auto;
 }
 
@@ -42,6 +41,6 @@ export default class AppBody extends Vue {}
 .main-content::after {
   content: '';
   display: block;
-  padding-bottom: 100px;
+  padding-bottom: 10rem;
 }
 </style>

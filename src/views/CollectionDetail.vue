@@ -2,31 +2,47 @@
   <div class="collection-detail">
     <div class="collection-detail-header" v-if="collection">
         <div class="banner-overlay">
-          <div class="content-spacing content group-control">
-            <img v-lazy="getCollectionArtwork(300, 300)" class="collection-artwork"/>
-
-            <div>
-              <h2 class="collection-title">
-                {{ collectionName }}
-                <icon v-if="collection.attributes.contentRating === 'explicit'" name="explicit"/>
-              </h2>
-              <span class="collection-subtitle">
-                {{ collectionArtistName }}
-              </span>
-              <span v-if="collectionType !== 'library-playlists'">
-                -
-                {{releaseYear}}
-              </span>
+          <div class="content-spacing content flex-column">
+            <!-- <img v-lazy="getCollectionArtwork(300, 300)" class="collection-artwork"/> -->
+            <div class="group-control content-upper">
+              <media-artwork
+                :artwork="collection.attributes.artwork"
+                class="collection-artwork"
+                :width="300"
+                :height="300"
+                :has-shadow="true"
+              >
+              </media-artwork>
               <div>
-                {{ tracks.length }} tracks
+                <h2 class="collection-title">
+                  {{ collectionName }}
+                  <icon v-if="collection.attributes.contentRating === 'explicit'" name="explicit"/>
+                </h2>
+                <div class="collection-subtitle collection-artist-name">
+                  {{ collectionArtistName }}
+                </div>
+
+                <div class="collection-subtitle collection-metadata">
+                  <span v-if="collectionType !== 'library-playlists'">
+                  {{releaseYear}}
+                  •
+                  </span>
+                  {{ tracks.length }} tracks
+                </div>
+                <div class="group-control control-buttons">
+                  <button @click="playCollection" class="button">PLAY</button>
+                  <button class="button">SHUFFLE</button>
+                </div>
               </div>
-              <div class="group-control">
-                <button @click="playCollection" class="button">PLAY</button>
-                <button class="button">SHUFFLE</button>
-              </div>
+            </div>
+
+            <div class="group-control control-buttons">
+              <button @click="playCollection" class="button">PLAY</button>
+              <button class="button">SHUFFLE</button>
             </div>
           </div>
         </div>
+
         <picture class="collection-detail-header__banner">
           <source
             media="(min-width: 1200px)"
@@ -61,6 +77,7 @@ import { Component, Prop, Vue, Provide } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 
 import SongList from '@/components/SongList.vue';
+import MediaArtwork from '@/components/MediaArtwork.vue';
 import { getArtworkUrl } from '@/utils/utils';
 import musicApiService from '@/services/musicApi.service';
 import { PlayCollectionAtIndexAction } from '@/store/types';
@@ -74,7 +91,7 @@ import {
 import { PLAY_COLLECTION_AT_INDEX } from '@/store/actions.type';
 
 @Component({
-  components: { SongList }
+  components: { SongList, MediaArtwork }
 })
 export default class CollectionDetail extends Vue {
   // Data
@@ -113,7 +130,6 @@ export default class CollectionDetail extends Vue {
     // There might be more
 
     const path = this.$route.path;
-    console.log(path);
     if (path.startsWith('/albums')) {
       return CollectionType.album;
     } else if (path.startsWith('/playlists')) {
@@ -249,8 +265,9 @@ export default class CollectionDetail extends Vue {
 }
 
 .collection-artwork {
-  width: 20rem;
-  height: 20rem;
+  margin-bottom: $m-size;
+  width: 15rem;
+  height: 15rem;
 }
 
 .collection-detail-header {
@@ -267,13 +284,29 @@ export default class CollectionDetail extends Vue {
 }
 
 .content {
-  align-items: flex-end;
+  align-items: center;
   color: white;
-  display: flex;
   height: 100%;
+  justify-content: flex-end;
   padding-bottom: $l-size;
   position: relative;
   z-index: 50;
+}
+
+.content .control-buttons {
+  display: flex;
+  margin-top: $m-size;
+}
+
+.content-upper {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  & .control-buttons {
+    display: none;
+  }
 }
 
 .collection-detail-header__banner {
@@ -285,7 +318,7 @@ export default class CollectionDetail extends Vue {
 }
 
 .collection-title {
-  font-size: 3rem;
+  font-size: 2rem;
   margin: 0 0 $s-size 0;
 }
 
@@ -294,8 +327,52 @@ export default class CollectionDetail extends Vue {
   font-size: 1.8rem;
 }
 
+.collection-artist-name {
+  margin-bottom: $s-size;
+}
+
 .image {
   width: 100%;
   object-fit: cover;
 }
+
+.collection-metadata {
+  margin-bottom: $l-size;
+}
+
+@media (min-width: $bp-phone) {
+  .content {
+    align-items: flex-start;
+  }
+
+  .content-upper {
+    align-items: flex-end;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+
+  .content .control-buttons {
+    display: none;
+  }
+
+  .content-upper .control-buttons {
+    display: block;
+  }
+
+  .collection-artwork {
+    margin-bottom: 0;
+    width: 20rem;
+    height: 20rem;
+  }
+
+  .collection-title {
+    font-size: 3rem;
+  }
+}
+
+// @media (min-width: $bp-tablet-landscape) {
+//   .content-upper {
+//     justify-content: flex-start;
+//   }
+// }
 </style>

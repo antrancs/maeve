@@ -3,8 +3,9 @@
   border: none;
   border-radius: 0.4rem;
   color: $accent-fg-color;
-  padding: 1.5rem;
-  width: 14rem;
+  font-weight: bold;
+  min-height: 3.8rem;
+  padding: 0.1rem 3.5rem;
 }
 
 .button:hover {

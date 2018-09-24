@@ -1,0 +1,20 @@
+.search-bar {
+  align-items: center;
+  height: 100%;
+  flex-basis: 40%;
+
+  & input {
+    background-color: $bg-color;
+    border: none;
+    border-radius: 0.6rem;
+    color: white;
+    height: 60%;
+    padding-left: $s-size;
+    width: 100%;
+  }
+
+  & input:focus {
+    background: white;
+    color: $bg-color;
+  }
+}

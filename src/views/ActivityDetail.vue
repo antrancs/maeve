@@ -130,7 +130,7 @@ export default class ActivityDetail extends Vue {
   overflow-x: hidden;
   transform: translateZ(0) skewY(-2deg);
   z-index: 3;
-  outline: 1px solid transparent;
+  outline: 0.1rem solid transparent;
   top: -2.5rem;
 }
 </style>

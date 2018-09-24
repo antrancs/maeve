@@ -1,7 +1,10 @@
 <template>
   <div>
     <h2>Search Results</h2>
-    <section class="content-spacing">
+    <section
+      class="content-spacing"
+      v-if="artists.length > 0"
+    >
       <div class="section-header">
         <h3>Artists</h3>
         <router-link
@@ -16,7 +19,10 @@
       </artist-list>
     </section>
 
-    <section class="content-spacing">
+    <section
+      class="content-spacing"
+      v-if="songs.length > 0"
+    >
       <div class="section-header">
         <h3>Songs</h3>
         <router-link
@@ -30,7 +36,10 @@
       <song-list :tracks="getFirstNResults(songs, 5)"></song-list>
     </section>
 
-    <section class="content-spacing">
+    <section
+      class="content-spacing"
+      v-if="albums.length > 0"
+    >
       <div class="section-header">
         <h3>Albums</h3>
         <router-link
@@ -44,7 +53,10 @@
       <song-collection-list :collections="getFirstNResults(albums, 10)"></song-collection-list>
     </section>
 
-    <section class="content-spacing">
+    <section
+      class="content-spacing"
+      v-if="playlists.length > 0"
+    >
       <div class="section-header">
         <h3>Playlists</h3>
         <router-link

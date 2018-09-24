@@ -2,7 +2,13 @@
   <div v-if="collection && collection.attributes" class="media-column">
     <router-link :to="{ name: collection.type, params: { id: collection.id } }">
       <div class="artwork-wrapper">
-        <img class="artwork" v-lazy="artworkUrl">
+        <!-- <img class="artwork" v-lazy="artworkUrl"> -->
+        <media-artwork
+          :artwork="this.collection.attributes.artwork"
+          :width="400"
+          :height="400"
+        >
+        </media-artwork>
         <div class="artwork-overlay" :class="artworkOverlayClass">
           <div @click.prevent="handleIconClicked">
             <icon
@@ -45,7 +51,7 @@ import { State, Action } from 'vuex-class';
 import 'vue-awesome/icons/play-circle';
 import 'vue-awesome/icons/pause-circle';
 
-import { getArtworkUrl } from '@/utils/utils';
+import MediaArtwork from '@/components/MediaArtwork.vue';
 import {
   PlayCollectionAtIndexPayload,
   PlayCollectionAtIndexAction
@@ -57,7 +63,11 @@ import {
   TOGGLE_CURRENT_TRACK
 } from '@/store/actions.type';
 
-@Component
+@Component({
+  components: {
+    MediaArtwork
+  }
+})
 export default class SongCollectionItem extends Vue {
   // Props
   @Prop() collection!: Collection;
@@ -81,18 +91,6 @@ export default class SongCollectionItem extends Vue {
     return {
       playing: this.isCollectionBeingPlayed
     };
-  }
-
-  get artworkUrl(): string {
-    if (
-      !this.collection ||
-      !this.collection.attributes ||
-      !this.collection.attributes.artwork
-    ) {
-      return '';
-    }
-
-    return getArtworkUrl(this.collection.attributes.artwork.url, 500, 500);
   }
 
   // Methods

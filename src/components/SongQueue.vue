@@ -3,9 +3,7 @@
     <transition name="slide-fade">
       <div v-if="showSongQueue" class="song-queue-modal">
         <div class="container">
-          <div>
-            <h1>Song queue</h1>
-          </div>
+          <h2 class="queue-title">Song queue</h2>
           <div class="queue-items">
             <song-list
               :tracks="queuedSongs"
@@ -73,18 +71,20 @@ export default class SongQueue extends Vue {
   transition: transform 0.6s;
 }
 
-.slide-fade-enter, .slide-fade-leave-to
-/* .slide-fade-leave-active below version 2.1.8 */ {
-  transform: translateX(412px);
+.slide-fade-enter,
+.slide-fade-leave-to {
+  transform: translateX(41rem);
 }
 
 .song-queue-modal {
+  box-shadow: 0 0.3rem 0.7rem 1rem rgba(0, 0, 0, 0.15),
+    0 2rem 6rem 0 rgba(0, 0, 0, 0.2);
   display: flex;
   position: fixed;
-  height: calc(100vh - 166px);
-  right: 24px;
-  top: 60px;
-  width: 368px;
+  height: calc(100vh - 18rem);
+  right: $l-size;
+  top: $header-height + $s-size;
+  width: 36.8rem;
   z-index: 1000;
 }
 
@@ -97,9 +97,11 @@ export default class SongQueue extends Vue {
 
 .queue-items {
   flex: 1;
-  // display: flex;
-  // flex-direction: column;
   overflow-y: auto;
+}
+
+.queue-title {
+  padding-left: $s-size;
 }
 </style>
 

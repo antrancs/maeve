@@ -18,10 +18,10 @@ export default class ContextMenuItem extends Vue {
 <style lang="scss" scoped>
 .context-menu-item {
   align-items: center;
-  border-bottom: 1px solid #ebebeb;
+  border-bottom: 0.1rem solid #ebebeb;
   cursor: pointer;
   display: flex;
-  padding: 8px 15px;
+  padding: 0.8rem 1.5rem;
 }
 </style>
 

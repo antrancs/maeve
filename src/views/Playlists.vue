@@ -1,10 +1,14 @@
 <template>
-    <div class="content-spacing">
-      <h2>Your playlists</h2>
-      <song-collection-list :collections="playlists"></song-collection-list>
-
-      <h2>Your albums</h2>
-      <song-collection-list :collections="albums"></song-collection-list>
+    <div>
+      <section class="content-spacing">
+        <h2>Your playlists</h2>
+        <song-collection-list :collections="playlists"></song-collection-list>
+      </section>
+      
+      <section class="content-spacing">
+        <h2>Your albums</h2>
+        <song-collection-list :collections="albums"></song-collection-list>
+      </section>
     </div>
 </template>
 

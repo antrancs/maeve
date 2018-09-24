@@ -1,8 +1,8 @@
 <template>
   <div class="home">
-    <section class="content-spacing">
+    <section class="content-spacing" v-if="featuredPlaylists.length > 0">
       <h2>Featured Playlists</h2>
-      <div class="flex-row">
+      <div class="flex-row feature-playlists">
         <featured-playlist
           v-for="playlist in featuredPlaylists"
           :key="playlist.id"
@@ -12,7 +12,7 @@
       </div>
     </section>
 
-    <section class="content-spacing">
+    <section class="content-spacing" v-if="activities.length > 0">
       <h2>Activities & Mood</h2>
       <div class="flex-row">
         <activity-item
@@ -33,6 +33,7 @@ import FeaturedPlaylist from '@/components/FeaturedPlaylist.vue';
 import ActivityItem from '@/components/ActivityItem.vue';
 import musicApiService from '@/services/musicApi.service';
 import { activityIds } from '@/utils/constants';
+
 @Component({
   components: {
     FeaturedPlaylist,
@@ -40,6 +41,7 @@ import { activityIds } from '@/utils/constants';
   }
 })
 export default class Home extends Vue {
+  // Data
   private featuredPlaylistIds = [
     'pl.567c541f63414e798be5cf214e155557', // Today at Apple
     'pl.2b0e6e332fdf4b7a91164da3162127b5', // Top 100 Global
@@ -49,6 +51,7 @@ export default class Home extends Vue {
   private featuredPlaylists: MusicKit.Playlist[] = [];
   private activities: MusicKit.Activity[] = [];
 
+  // Life cycle methods
   created() {
     musicApiService
       .getPlaylists(this.featuredPlaylistIds)
@@ -65,3 +68,6 @@ export default class Home extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+</style>

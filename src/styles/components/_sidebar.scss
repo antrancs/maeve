@@ -1,13 +1,14 @@
 .sidebar {
   background-color: $sidebar-color;
-  flex: 0 0 $sidebar-width;
+  flex: 0 0 $sidebar-width-collapsed;
 }
 
 .side-bar__song-artwork {
+  display: none;
   height: $sidebar-width;
   width: $sidebar-width;
   position: fixed;
-  bottom: 72px;
+  bottom: $player-bar-height;
 }
 
 .sidebar__menu {
@@ -16,7 +17,7 @@
   padding: 0;
 }
 
-.sidebar__menu-item {
+.menu__item-row {
   padding: 1.6rem 1.8rem;
 
   & a {
@@ -26,5 +27,44 @@
 
   & a.router-link-exact-active {
     color: $fg-color-1;
+  }
+}
+
+.menu__item {
+  align-items: center;
+}
+
+.menu__item-text {
+  display: none;
+}
+
+.menu__item-icon {
+  flex: 1;
+}
+
+.btn-logout {
+  display: none;
+}
+
+@media (min-width: $bp-tablet-landscape) {
+  .menu__item-text {
+    display: block;
+  }
+
+  .sidebar {
+    flex: 0 0 $sidebar-width;
+  }
+
+  .menu__item-icon {
+    flex: none;
+    margin-right: $m-size;
+  }
+
+  .btn-logout {
+    display: block;
+  }
+
+  .side-bar__song-artwork {
+    display: block;
   }
 }

@@ -1,9 +1,9 @@
 .song-item {
   align-items: center;
+  border-bottom: 0.1rem solid $divider-color;
   display: flex;
-  justify-content: space-between;
   height: 5rem;
-  border-bottom: 1px solid $divider-color;
+  justify-content: space-between;
   transition: background-color 0.25s ease-in-out;
 
   &:hover {
@@ -92,5 +92,19 @@
   &.queue {
     flex: 0 0 auto;
     max-width: 40%;
+  }
+}
+
+@media (max-width: $bp-tablet-landscape) {
+  .song-item__album-name {
+    display: none;
+  }
+
+  .song-item__artist-name {
+    flex: 0 0 98%;
+  }
+
+  .song-item__song-name {
+    flex: 0 0 98%;
   }
 }

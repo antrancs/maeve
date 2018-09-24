@@ -1,11 +1,13 @@
 <template>
-  <div class="app-header">
+  <div class="app-header flex-row">
     <div class="brand">Maeve</div>
-    <input
-      type="text"
-      class="search-bar"
-      @change="handleSearchTextChanged"
-    />
+    <div class="search-bar flex-row">
+      <input
+        type="text"
+        placeholder="Search"
+        @change="handleSearchTextChanged"
+      />
+    </div>
   </div>
 </template>
 
@@ -25,17 +27,15 @@ export default class AppHeader extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/components/_search-bar.scss';
 .app-header {
+  align-items: center;
   background-color: #1e212c;
-  display: flex;
-  flex: 0 0 5rem;
+  flex: none;
+  height: $header-height;
 }
 
 .brand {
   flex-basis: $sidebar-width;
-}
-
-.search-bar {
-  width: 300px;
 }
 </style>

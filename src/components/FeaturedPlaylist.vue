@@ -6,7 +6,7 @@
 
       <div class="flex-column featured-playlist__content size-fit">
         <div class="flex-center featured-playlist__artwork-wrapper">
-          <img :src="artworkUrl" alt="" class="featured-playlist__artwork" :style="artworkStyle">
+          <img v-lazy="artworkUrl" alt="" class="featured-playlist__artwork" :style="artworkStyle">
           <div class="absolute-fit flex-center featured-playlist__description">
             {{ playlistLongDescription }}
           </div>
@@ -28,10 +28,10 @@ import { getArtworkUrl } from '@/utils/utils';
 
 @Component
 export default class FeaturedPlaylist extends Vue {
-  // Data
   // Props
   @Prop() playlist!: MusicKit.Playlist;
 
+  // Computed
   get artworkUrl(): string {
     if (
       !this.playlist ||
@@ -55,7 +55,7 @@ export default class FeaturedPlaylist extends Vue {
       return {};
     }
     return {
-      'box-shadow': `3px 3px 10px #${
+      'box-shadow': `0.3rem 0.3rem 1rem #${
         this.playlist.attributes.artwork.textColor1
       }`
     };
@@ -77,10 +77,11 @@ export default class FeaturedPlaylist extends Vue {
 
 <style lang="scss" scoped>
 .featured-playlist {
-  flex: 0 0 getColumnWidth(3);
+  flex: 0 0 getColumnWidth(2);
+  height: 17rem;
+  margin-bottom: $m-size;
   margin-right: $margin-column;
-  max-width: getColumnWidth(3);
-  height: 33rem;
+  max-width: getColumnWidth(2);
   overflow: hidden;
   position: relative;
 
@@ -100,7 +101,7 @@ export default class FeaturedPlaylist extends Vue {
   bottom: 0;
   content: '';
   display: block;
-  filter: blur(14px);
+  filter: blur(1.4rem);
   height: 100%;
   left: 0;
   position: absolute;
@@ -117,7 +118,7 @@ export default class FeaturedPlaylist extends Vue {
   color: white;
   flex: none;
   position: relative;
-  height: 10rem;
+  height: 5rem;
 }
 
 .featured-playlist__artwork {
@@ -139,4 +140,23 @@ export default class FeaturedPlaylist extends Vue {
   padding: 1.6rem;
   transition: opacity 0.3s ease-in-out;
 }
+
+@media (min-width: $bp-phone) {
+  .featured-playlist {
+    flex: 0 0 getColumnWidth(3);
+    height: 33rem;
+    max-width: getColumnWidth(3);
+  }
+
+  .featured-playlist__info {
+    height: 10rem;
+  }
+}
+
+// @media (min-width: $bp-desktop) {
+//   .featured-playlist {
+//     flex: 0 0 getColumnWidth(3);
+//     max-width: getColumnWidth(3);
+//   }
+// }
 </style>

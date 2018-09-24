@@ -1,25 +1,59 @@
 <template>
   <div>
     <ul class="sidebar__menu">
-      <li class="sidebar__menu-item">
-        <router-link to="/">Home</router-link>
+      <li class="menu__item-row">
+        <router-link to="/">
+          <div class="flex-row menu__item">
+            <div class="menu__item-icon">
+              <icon name="home" class="icon icon--large">
+              </icon>
+            </div>
+            
+            <div class="menu__item-text">
+              Home
+            </div>
+          </div>
+        </router-link>
       </li>
-      <li class="sidebar__menu-item">
-        <router-link :to="{ name: 'forYou' }">For You</router-link>
+      <li class="menu__item-row">
+        <router-link :to="{ name: 'forYou' }">
+          <div class="flex-row menu__item">
+            <div class="menu__item-icon">
+              <icon name="grin-hearts" class="icon icon--large">
+              </icon>
+            </div>
+            <div class="menu__item-text">
+              For You
+            </div>
+          </div>
+        </router-link>
       </li>
 
-
-      <router-link tag="li" :to="{ name: 'myPlaylists' }" class="sidebar__menu-item">
-        <a>Your Library</a>
-      </router-link>
+      <li class="menu__item-row">
+        <router-link :to="{ name: 'myPlaylists' }">
+          <div class="flex-row menu__item">
+            <div class="menu__item-icon">
+              <icon name="headset" class="icon icon--large">
+              </icon>
+            </div>
+            <div class="menu__item-text">
+              Your Library
+            </div>
+          </div>
+        </router-link>
+      </li>
     </ul>
-    <button @click="logout">Log out</button>
+    <button class="btn-logout button" @click="logout">Log out</button>
   </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
+import 'vue-awesome/icons/home';
+import 'vue-awesome/icons/grin-hearts';
+import 'vue-awesome/icons/headset';
+
 import { LOGOUT } from '@/store/actions.type';
 
 @Component

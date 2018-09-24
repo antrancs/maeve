@@ -1,6 +1,6 @@
 .player-bar-wrapper {
   background-color: $player-bar-color;
-  border-top: 1px solid $black-color;
+  border-top: 0.1rem solid $black-color;
   bottom: 0;
   height: $player-bar-height;
   position: fixed;
@@ -32,7 +32,10 @@
 }
 
 .player-bar__right {
-  flex: 0 0 20rem;
+  align-items: center;
+  flex: 0 0 5rem;
+  justify-content: flex-end;
+  margin-right: $l-size;
 }
 
 .player-bar__center {

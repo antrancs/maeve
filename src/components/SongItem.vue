@@ -6,7 +6,9 @@
       <div v-else class="size-fit">
         <media-artwork
           v-if="!isFromAlbum"
-          :artwork-url="artworkUrl"
+          :artwork="this.track.attributes.artwork"
+          :width="50"
+          :height="50"
         >
         </media-artwork>
 
@@ -68,7 +70,6 @@ import { State, Action } from 'vuex-class';
 import 'vue-awesome/icons/ellipsis-h';
 
 import { MusicPlayerState } from '@/store/types';
-import { getArtworkUrl } from '@/utils/utils';
 import { TOGGLE_CURRENT_TRACK } from '@/store/actions.type';
 import { HandleSongClicked, Nullable } from '@/@types/model/model';
 import MediaArtwork from './MediaArtwork.vue';
@@ -106,14 +107,6 @@ export default class SongItem extends Vue {
 
   get isPlaying(): boolean {
     return this.musicPlayer.isPlaying;
-  }
-
-  get artworkUrl(): string {
-    const { attributes } = this.track;
-    if (!attributes) {
-      return '';
-    }
-    return getArtworkUrl(attributes.artwork.url, 50, 50);
   }
 
   @Watch('musicPlayer.isLoading')

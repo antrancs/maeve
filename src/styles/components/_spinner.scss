@@ -8,14 +8,14 @@
   animation: spinner 0.6s linear infinite;
   content: '';
   border-radius: 50%;
-  border-right: 2px solid transparent;
-  border-top: 2px solid $accent-color;
+  border-right: 0.2rem solid transparent;
+  border-top: 0.2rem solid $accent-color;
   box-sizing: border-box;
-  height: 20px;
+  height: 2rem;
   left: 50%;
-  margin-top: -10px;
-  margin-left: -10px;
+  margin-top: -1rem;
+  margin-left: -1rem;
   position: absolute;
   top: 50%;
-  width: 20px;
+  width: 2rem;
 }

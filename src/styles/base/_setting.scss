@@ -31,7 +31,7 @@ $accent-fg-color: #e1e1e1;
 $accent-fg-hover-color: #cfd3da;
 
 $track-index-color: $fg-color-4;
-$subtitle-color: $fg-color-4;
+$subtitle-color: $fg-color;
 $sidebar-color: $bg-in-1;
 
 // Space
@@ -43,17 +43,19 @@ $xl-size: 3.2rem;
 $margin-column: 1.5%;
 
 // Fonts
-$regular-font: 1.6rem;
+$regular-font: 1.4rem;
 $large-font: 2.2rem;
 $xl-font: 4.8rem;
 
 // Components' sizes
-$player-bar-height: 7.2rem;
+$player-bar-height: 9.6rem;
 $line-height: 1.8rem;
 $sidebar-width: 19rem;
+$sidebar-width-collapsed: 6rem;
+$header-height: 6rem;
 
 // Break points
 $bp-big-desktop: 1800px;
 $bp-desktop: 1200px;
 $bp-tablet-landscape: 900px;
-$bp-tablet-portrait: 768px;
+$bp-phone: 600px;

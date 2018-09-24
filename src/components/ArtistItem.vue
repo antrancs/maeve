@@ -2,7 +2,7 @@
   <div class="media-column">
     <router-link :to="{ name: 'artists', params: { id: artist.id }}">
       <media-artwork
-        :artwork-url="artistArtwork"
+        :artwork-url-for-artist="artistArtwork"
         :is-round="true"
       >
       </media-artwork>

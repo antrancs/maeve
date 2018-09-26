@@ -7,17 +7,17 @@
       </div>
     </div>
 
-    <section class="content-spacing">
+    <section v-if="nonSingles.length > 0" class="content-spacing">
       <h3 class="section-title">Albums</h3>
       <song-collection-list :collections="nonSingles"></song-collection-list>
     </section>
     
-    <section class="content-spacing">
+    <section v-if="singles.length > 0" class="content-spacing">
       <h3 class="section-title">Singles</h3>
       <song-collection-list :collections="singles"></song-collection-list>
     </section>
 
-    <section class="content-spacing">
+    <section v-if="playlists.length > 0"  class="content-spacing">
       <h3 class="section-title">Playlists</h3>
       <song-collection-list :collections="playlists"></song-collection-list>
     </section>
@@ -122,7 +122,12 @@ export default class ArtistDetail extends Vue {
 }
 
 .banner-overlay {
-  background-color: rgba($color: (#000000), $alpha: 0.6);
+  background-color: rgba(
+    $color: (
+      #000000
+    ),
+    $alpha: 0.6
+  );
   height: 100%;
   position: relative;
   z-index: 10;

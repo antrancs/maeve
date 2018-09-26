@@ -45,7 +45,8 @@ export default class Home extends Vue {
   private featuredPlaylistIds = [
     'pl.567c541f63414e798be5cf214e155557', // Today at Apple
     'pl.2b0e6e332fdf4b7a91164da3162127b5', // Top 100 Global
-    'pl.d25f5d1181894928af76c85c967f8f31' // Best of the week
+    'pl.d25f5d1181894928af76c85c967f8f31', // Best of the week
+    'pl.a0214a4b459d4f79a991d1151e6f211f' // Future hits
   ];
 
   private featuredPlaylists: MusicKit.Playlist[] = [];

@@ -12,6 +12,13 @@
         >
         </media-artwork>
 
+        <div
+          v-if="isFromAlbum && !isActive"
+          class="track-number flex-center size-fit"
+        >
+          {{ track.attributes.trackNumber }}
+        </div>
+
         <media-artwork-overlay
           :is-active="isActive"
           :is-playing="isPlaying"
@@ -19,19 +26,12 @@
           @playing-control-clicked="onSongClicked"
         >
         </media-artwork-overlay>
-
-        <div
-          v-if="isFromAlbum && !isActive"
-          class="track-number flex-center size-fit"
-        >
-          {{ track.attributes.trackNumber }}
-        </div>
       </div>
     </div>
 
     <div class="song-item__middle">
       <div :class="['song-item__song-name', { queue: isQueue }]">
-        <div class="long-text-truncated">
+        <div class="long-text-truncated main-info-text">
           {{ track.attributes.name }}
         </div>
 
@@ -81,21 +81,26 @@ import MediaArtworkOverlay from '@/components/MediaArtworkOverlay.vue';
 export default class SongItem extends Vue {
   private showLoading = false;
   // Props
-  @Prop() track!: MusicKit.Song;
+  @Prop()
+  track!: MusicKit.Song;
   @Prop({ default: true })
   isFromAlbum!: boolean;
-  @Prop() index!: number;
+  @Prop()
+  index!: number;
   @Prop({ default: false })
   isQueue!: boolean;
 
   // State
-  @State musicPlayer!: MusicPlayerState;
+  @State
+  musicPlayer!: MusicPlayerState;
 
   // Action
-  @Action [TOGGLE_CURRENT_TRACK]: () => void;
+  @Action
+  [TOGGLE_CURRENT_TRACK]: () => void;
 
   // Provide/Inject
-  @Inject() handleSongClicked!: HandleSongClicked;
+  @Inject()
+  handleSongClicked!: HandleSongClicked;
 
   // computed
   get isActive(): boolean {

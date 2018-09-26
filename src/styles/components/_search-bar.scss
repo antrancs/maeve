@@ -1,20 +1,36 @@
 .search-bar {
   align-items: center;
-  height: 100%;
-  flex-basis: 40%;
+  flex: 1;
+  // margin-left: $l-size;
 
-  & input {
+  input {
     background-color: $bg-color;
     border: none;
     border-radius: 0.6rem;
     color: white;
-    height: 60%;
+    height: 100%;
     padding-left: $s-size;
-    width: 100%;
+    width: 95%;
+    max-width: 45rem;
   }
 
-  & input:focus {
+  &input:focus {
     background: white;
     color: $bg-color;
+  }
+}
+
+@media (min-width: $bp-tablet-landscape) {
+  .search-bar input {
+    width: 70%;
+  }
+}
+@media (min-width: $bp-tablet-landscape) {
+  .brand {
+    flex: 0 0 $sidebar-width;
+  }
+
+  .search-bar input {
+    width: 50%;
   }
 }

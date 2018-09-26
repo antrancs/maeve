@@ -1,23 +1,23 @@
-.artwork-wrapper {
+.collection-artwork-wrapper {
   align-items: flex-start;
   display: flex;
   position: relative;
   width: 100%;
 
   &:hover {
-    .artwork-overlay {
+    .collection-artwork-overlay {
       opacity: 1;
     }
   }
 }
 
-.artwork {
+.collection-artwork {
   // max-width: 26rem;
   width: 100%;
   position: relative;
 }
 
-.artwork-overlay {
+.collection-artwork-overlay {
   align-items: center;
   background: rgba(0, 0, 0, 0.2);
   bottom: 0;
@@ -35,7 +35,7 @@
   }
 }
 
-.artwork-overlay__icon {
+.collection-artwork-overlay__icon {
   height: 5rem;
   transition: height 0.25s ease-in-out;
   width: auto;

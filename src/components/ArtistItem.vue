@@ -8,7 +8,7 @@
       </media-artwork>
     </router-link>
 
-    <div class="long-text-truncated main-info-text artist-item-name">
+    <div class="long-text-truncated main-info-text artist-item__name">
       {{ artist.attributes.name }}
     </div>
   </div>
@@ -31,7 +31,8 @@ export default class ArtistItem extends Vue {
   private artistArtwork: string = '';
 
   // Props
-  @Prop() artist!: MusicKit.Artist;
+  @Prop()
+  artist!: MusicKit.Artist;
 
   // Life cycle methods
   created() {
@@ -58,7 +59,7 @@ export default class ArtistItem extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.artist-item-name {
+.artist-item__name {
   margin-top: $s-size;
   text-align: center;
 }

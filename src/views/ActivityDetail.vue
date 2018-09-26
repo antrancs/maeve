@@ -92,7 +92,7 @@ export default class ActivityDetail extends Vue {
 <style lang="scss" scoped>
 .activity-header {
   justify-content: flex-end;
-  height: 45vh;
+  height: 30vh;
   position: relative;
   width: 100%;
 }
@@ -132,5 +132,11 @@ export default class ActivityDetail extends Vue {
   z-index: 3;
   outline: 0.1rem solid transparent;
   top: -2.5rem;
+}
+
+@media (min-width: $bp-phone) {
+  .activity-header {
+    height: 45vh;
+  }
 }
 </style>

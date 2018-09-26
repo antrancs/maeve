@@ -16,8 +16,14 @@
 
 .content-spacing {
   margin: 0 auto;
-  max-width: 1200px;
-  padding: 0 $l-size;
+  max-width: 150rem;
+  padding: 0 $m-size;
+}
+
+@media (min-width: $bp-tablet-landscape) {
+  .content-spacing {
+    padding: 0 $l-size;
+  }
 }
 
 .absolute-fit {
@@ -70,7 +76,7 @@
 }
 
 .main-info-text {
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .sub-info-text {

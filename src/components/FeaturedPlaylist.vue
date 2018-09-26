@@ -6,15 +6,19 @@
 
       <div class="flex-column featured-playlist__content size-fit">
         <div class="flex-center featured-playlist__artwork-wrapper">
-          <img v-lazy="artworkUrl" alt="" class="featured-playlist__artwork" :style="artworkStyle">
+          <img
+            v-lazy="artworkUrl"
+            alt=""
+            class="featured-playlist__artwork"
+            :style="artworkStyle"
+          >
           <div class="absolute-fit flex-center featured-playlist__description">
             {{ playlistLongDescription }}
           </div>
         </div>
 
-        <div class="featured-playlist__info">
-          <h5>PLAYLIST</h5>
-          <h4>{{ playlist.attributes.name }}</h4>
+        <div class="featured-playlist__info flex-row">
+          {{ playlist.attributes.name }}
         </div>
       </div>
     </router-link>
@@ -29,7 +33,8 @@ import { getArtworkUrl } from '@/utils/utils';
 @Component
 export default class FeaturedPlaylist extends Vue {
   // Props
-  @Prop() playlist!: MusicKit.Playlist;
+  @Prop()
+  playlist!: MusicKit.Playlist;
 
   // Computed
   get artworkUrl(): string {
@@ -67,18 +72,13 @@ export default class FeaturedPlaylist extends Vue {
     }
     return this.playlist.attributes.description.standard;
   }
-
-  // Life cycle methods
-  created() {
-    // console.log(this.playlist);
-  }
 }
 </script>
 
 <style lang="scss" scoped>
 .featured-playlist {
   flex: 0 0 getColumnWidth(2);
-  height: 17rem;
+  height: 20rem;
   margin-bottom: $m-size;
   margin-right: $margin-column;
   max-width: getColumnWidth(2);
@@ -97,6 +97,7 @@ export default class FeaturedPlaylist extends Vue {
 }
 
 .featured-playlist__background {
+  // background-color: black;
   background-size: cover;
   bottom: 0;
   content: '';
@@ -107,6 +108,9 @@ export default class FeaturedPlaylist extends Vue {
   position: absolute;
   right: 0;
   top: 0;
+  -webkit-transform: translateZ(0);
+  -webkit-perspective: 1000;
+  -webkit-backface-visibility: hidden;
 }
 
 .featured-playlist__content {
@@ -114,14 +118,20 @@ export default class FeaturedPlaylist extends Vue {
 }
 
 .featured-playlist__info {
+  align-items: center;
   background-color: rgba(0, 0, 0, 0.4);
   color: white;
   flex: none;
-  position: relative;
+  font-weight: bold;
+  font-size: 1.4rem;
   height: 5rem;
+  justify-content: center;
+  padding: $m-size;
+  position: relative;
 }
 
 .featured-playlist__artwork {
+  max-width: 7.5rem;
   width: 50%;
   transition: transform 0.3s ease-in-out;
 }
@@ -144,19 +154,37 @@ export default class FeaturedPlaylist extends Vue {
 @media (min-width: $bp-phone) {
   .featured-playlist {
     flex: 0 0 getColumnWidth(3);
-    height: 33rem;
+    height: 27rem;
     max-width: getColumnWidth(3);
   }
 
   .featured-playlist__info {
-    height: 10rem;
+    height: 8rem;
+  }
+
+  .featured-playlist__artwork {
+    max-width: 10rem;
+  }
+
+  .featured-playlist__info {
+    font-size: 2rem;
   }
 }
 
-// @media (min-width: $bp-desktop) {
-//   .featured-playlist {
-//     flex: 0 0 getColumnWidth(3);
-//     max-width: getColumnWidth(3);
-//   }
-// }
+@media (min-width: $bp-desktop) {
+  .featured-playlist {
+    height: 33rem;
+  }
+}
+
+@media (min-width: $bp-tablet-landscape) {
+  .featured-playlist {
+    flex: 0 0 getColumnWidth(4);
+    max-width: getColumnWidth(4);
+  }
+
+  .featured-playlist__artwork {
+    max-width: none;
+  }
+}
 </style>

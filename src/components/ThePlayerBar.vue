@@ -38,7 +38,7 @@
 
       <div class="player-bar__right flex-row">
         <div @click="$emit('songQueueIconClicked')">
-          <icon name="list" class="icon icon--l"></icon>
+          <icon name="list" class="icon"></icon>
         </div>
       </div>
     </div>
@@ -79,9 +79,12 @@ export default class PlayerBar extends Vue {
   currentPlaybackTimeInMilliSeconds!: number;
 
   // Action
-  @Action [PLAY_NEXT]: () => void;
-  @Action [PLAY_PREVIOUS]: () => void;
-  @Action [TOGGLE_CURRENT_TRACK]: () => void;
+  @Action
+  [PLAY_NEXT]: () => void;
+  @Action
+  [PLAY_PREVIOUS]: () => void;
+  @Action
+  [TOGGLE_CURRENT_TRACK]: () => void;
 
   // Computed
   get songStatusIcon(): string {

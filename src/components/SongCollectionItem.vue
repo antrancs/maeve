@@ -1,7 +1,7 @@
 <template>
   <div v-if="collection && collection.attributes" class="media-column">
     <router-link :to="{ name: collection.type, params: { id: collection.id } }">
-      <div class="artwork-wrapper">
+      <div class="collection-artwork-wrapper">
         <!-- <img class="artwork" v-lazy="artworkUrl"> -->
         <media-artwork
           :artwork="this.collection.attributes.artwork"
@@ -9,16 +9,16 @@
           :height="300"
         >
         </media-artwork>
-        <div class="artwork-overlay" :class="artworkOverlayClass">
+        <div class="collection-artwork-overlay" :class="artworkOverlayClass">
           <div @click.prevent="handleIconClicked">
             <icon
               v-if="isCollectionBeingPlayed && musicPlayer.isPlaying"
-              class="artwork-overlay__icon"
+              class="collection-artwork-overlay__icon"
               name="pause-circle"
             >
             </icon>
             <icon v-else
-              class="artwork-overlay__icon"
+              class="collection-artwork-overlay__icon"
               name="play-circle"
             >
             </icon>
@@ -70,14 +70,18 @@ import {
 })
 export default class SongCollectionItem extends Vue {
   // Props
-  @Prop() collection!: Collection;
+  @Prop()
+  collection!: Collection;
 
   // State
-  @State musicPlayer!: MusicPlayerState;
+  @State
+  musicPlayer!: MusicPlayerState;
 
   // Action
-  @Action [PLAY_COLLECTION_AT_INDEX]: PlayCollectionAtIndexAction;
-  @Action [TOGGLE_CURRENT_TRACK]!: () => void;
+  @Action
+  [PLAY_COLLECTION_AT_INDEX]: PlayCollectionAtIndexAction;
+  @Action
+  [TOGGLE_CURRENT_TRACK]!: () => void;
 
   // Computed
   get isCollectionBeingPlayed(): boolean {
@@ -116,6 +120,7 @@ export default class SongCollectionItem extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/components/_collection-artwork.scss';
 .media-details {
   margin-top: $s-size;
 }

@@ -18,11 +18,11 @@
                   {{ collectionName }}
                   <icon v-if="collection.attributes.contentRating === 'explicit'" name="explicit"/>
                 </h2>
-                <div class="collection-subtitle collection-artist-name sub-info-text ">
+                <div class="collection-subtitle collection-artist-name sub-info-text">
                   {{ collectionArtistName }}
                 </div>
 
-                <div class="collection-subtitle collection-metadata sub-info-text ">
+                <div class="collection-subtitle collection-metadata sub-info-text">
                   <span v-if="collectionType !== 'library-playlists'">
                   {{releaseYear}}
                   •
@@ -30,15 +30,15 @@
                   {{ tracks.length }} tracks
                 </div>
                 <div class="group-control control-buttons">
-                  <button @click="playCollection" class="button">PLAY</button>
-                  <button class="button">SHUFFLE</button>
+                  <button @click="playCollection" class="btn">PLAY</button>
+                  <button class="btn">SHUFFLE</button>
                 </div>
               </div>
             </div>
 
             <div class="group-control control-buttons">
-              <button @click="playCollection" class="button">PLAY</button>
-              <button class="button">SHUFFLE</button>
+              <button @click="playCollection" class="btn">PLAY</button>
+              <button class="btn">SHUFFLE</button>
             </div>
           </div>
         </div>
@@ -99,10 +99,12 @@ export default class CollectionDetail extends Vue {
   private tracks: Song[] = [];
 
   // Action
-  @Action [PLAY_COLLECTION_AT_INDEX]: PlayCollectionAtIndexAction;
+  @Action
+  [PLAY_COLLECTION_AT_INDEX]: PlayCollectionAtIndexAction;
 
   // Provide/Inject
-  @Provide() handleSongClicked: HandleSongClicked = this.playSongFromCollection;
+  @Provide()
+  handleSongClicked: HandleSongClicked = this.playSongFromCollection;
 
   // Computed
   get collectionName(): string {
@@ -271,20 +273,25 @@ export default class CollectionDetail extends Vue {
 }
 
 .collection-detail-header {
-  height: 40rem;
+  height: 40vh;
   margin-bottom: $xl-size;
   position: relative;
 }
 
 .banner-overlay {
-  background-color: rgba($color: (#000000), $alpha: 0.6);
+  background-color: rgba(
+    $color: (
+      #000000
+    ),
+    $alpha: 0.6
+  );
   height: 100%;
   position: relative;
   z-index: 40;
 }
 
 .content {
-  align-items: center;
+  align-items: flex-start;
   color: white;
   height: 100%;
   justify-content: flex-end;
@@ -301,7 +308,7 @@ export default class CollectionDetail extends Vue {
 .content-upper {
   align-items: center;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
 
   & .control-buttons {
@@ -346,7 +353,6 @@ export default class CollectionDetail extends Vue {
 
   .content-upper {
     align-items: flex-end;
-    flex-direction: row;
     justify-content: flex-start;
   }
 
@@ -366,6 +372,10 @@ export default class CollectionDetail extends Vue {
 
   .collection-title {
     font-size: 3rem;
+  }
+
+  .collection-detail-header {
+    height: 60vh;
   }
 }
 

@@ -11,14 +11,14 @@
   bottom: $player-bar-height;
 }
 
-.sidebar__menu {
+.sidebar-menu {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.menu__item-row {
-  padding: 1.6rem 1.8rem;
+.sidebar-menu-item {
+  padding: $m-size;
 
   & a {
     color: $fg-color-6;
@@ -26,19 +26,24 @@
   }
 
   & a.router-link-exact-active {
-    color: $fg-color-1;
+    font-weight: bold;
+    color: $accent-color;
   }
 }
 
-.menu__item {
+.router-link-exact-active .icon {
+  fill: $accent-color;
+}
+
+.menu-item-wrapper {
   align-items: center;
 }
 
-.menu__item-text {
+.sidebar-menu-item__text {
   display: none;
 }
 
-.menu__item-icon {
+.sidebar-menu-item__icon {
   flex: 1;
 }
 
@@ -47,7 +52,7 @@
 }
 
 @media (min-width: $bp-tablet-landscape) {
-  .menu__item-text {
+  .sidebar-menu-item__text {
     display: block;
   }
 
@@ -55,7 +60,7 @@
     flex: 0 0 $sidebar-width;
   }
 
-  .menu__item-icon {
+  .sidebar-menu-item__icon {
     flex: none;
     margin-right: $m-size;
   }

@@ -41,6 +41,7 @@ export default class AppBody extends Vue {}
 }
 
 .main-content::after {
+  background-color: transparent;
   content: '';
   display: block;
   padding-bottom: 10rem;

@@ -1,8 +1,8 @@
 <template>
   <div class="artwork">
-    <div class="image-wrapper">
+    <div class="artwork__image-wrapper">
       <img
-        class="artwork-image"
+        class="artwork__image"
         v-lazy="artworkUrlForArtist || artworkUrl"
         alt=""
         :style="artworkImageStyle"
@@ -20,10 +20,14 @@ export default class MediaArtwork extends Vue {
   // Props
   // Only artists need to pass in artwork url as Artwork is not available under artists for now.
   // For other types (albums, playlists, tracks...) pass the artwork object instead
-  @Prop() artworkUrlForArtist!: string;
-  @Prop() artwork!: MusicKit.Artwork;
-  @Prop() width!: number;
-  @Prop() height!: number;
+  @Prop()
+  artworkUrlForArtist!: string;
+  @Prop()
+  artwork!: MusicKit.Artwork;
+  @Prop()
+  width!: number;
+  @Prop()
+  height!: number;
   @Prop({ default: false })
   hasShadow!: boolean;
 
@@ -61,14 +65,14 @@ export default class MediaArtwork extends Vue {
   width: 100%;
 }
 
-.image-wrapper {
+.artwork__image-wrapper {
   align-items: center;
   display: flex;
   height: 100;
   width: 100%;
 }
 
-.artwork-image {
+.artwork__image {
   height: 100%;
   width: 100%;
 }

@@ -25,7 +25,8 @@ export default class ContextMenu extends Vue {
   private isActive: boolean = false;
 
   // Props
-  @Prop() name!: string;
+  @Prop()
+  name!: string;
 
   // Computed
   get contextMenuStyle(): object {
@@ -87,20 +88,6 @@ export default class ContextMenu extends Vue {
     this.$emit('before-open', {
       params
     });
-
-    // if (!this.width || !this.height) {
-    //   this.width = this.$el.offsetWidth;
-    //   this.height = this.$el.offsetHeight;
-    //   console.log('width', this.width);
-    // }
-
-    // if (this.width + clickEvent.pageX >= window.innerWidth) {
-    //   console.log('1');
-    //   this.left = clickEvent.pageX - this.width;
-    // } else {
-    //   console.log('2');
-    //   this.left = clickEvent.pageX;
-    // }
 
     if (clickEvent.pageX - this.width >= 0) {
       this.left = clickEvent.pageX - this.width;

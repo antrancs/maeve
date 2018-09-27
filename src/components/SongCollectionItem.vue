@@ -10,7 +10,7 @@
         >
         </media-artwork>
         <div class="collection-artwork-overlay" :class="artworkOverlayClass">
-          <div @click.prevent="handleIconClicked">
+          <button @click.prevent="handleIconClicked" class="btn btn--icon">
             <icon
               v-if="isCollectionBeingPlayed && musicPlayer.isPlaying"
               class="collection-artwork-overlay__icon"
@@ -22,7 +22,7 @@
               name="play-circle"
             >
             </icon>
-          </div>
+          </button>
         </div>
       </div>
     </router-link>
@@ -87,6 +87,7 @@ export default class SongCollectionItem extends Vue {
   get isCollectionBeingPlayed(): boolean {
     return (
       this.musicPlayer.currentPlaying !== null &&
+      this.musicPlayer.currentPlaying.container !== undefined &&
       this.collection.id === this.musicPlayer.currentPlaying.container.id
     );
   }

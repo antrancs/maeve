@@ -1,5 +1,8 @@
 <template>
-  <div v-if="track && track.attributes" class="song-item">
+  <div
+    v-if="track && track.attributes"
+    :class="['song-item', {'song-item--playing': isActive}]"
+  >
     <div class="song-item__left">
       <div v-if="showLoading" class="spinner">
       </div>
@@ -29,7 +32,7 @@
       </div>
     </div>
 
-    <div class="song-item__middle">
+    <div class="song-item__middle sub-info-text">
       <div :class="['song-item__song-name', { queue: isQueue }]">
         <div class="long-text-truncated main-info-text">
           {{ track.attributes.name }}
@@ -42,7 +45,9 @@
         />
       </div>
 
-      <div :class="['long-text-truncated', 'song-item__artist-name', { queue: isQueue }]">{{ track.attributes.artistName }}</div>
+      <div :class="['long-text-truncated', 'song-item__artist-name', { queue: isQueue }]">
+        {{ track.attributes.artistName }}
+      </div>
       <div
         v-if="!isFromAlbum && !isQueue"
         :class="['long-text-truncated', 'song-item__album-name']"
@@ -52,13 +57,13 @@
     </div>
 
     <div class="song-item__menu" v-if="!isQueue">
-      <span @click.prevent.stop="handleMoreIconClicked">
+      <button class="btn btn--icon" @click.prevent.stop="handleMoreIconClicked">
         <icon class="icon" name="ellipsis-h">
         </icon>
-      </span>
+      </button>
     </div>
 
-    <div class="song-item__right">
+    <div class="song-item__right sub-info-text">
       {{ track.attributes.durationInMillis | formattedDuration }}
     </div>
   </div>

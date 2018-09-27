@@ -46,7 +46,7 @@
 
 .index-column {
   align-items: center;
-  color: $track-index-color;
+  color: $secondary-text-color;
   display: flex;
   flex: 0 0 3.2rem;
   height: 3.2rem;
@@ -61,7 +61,6 @@
 }
 
 .song-item__song-name {
-  color: $fg-color;
   display: flex;
   flex-basis: 38%;
   margin-right: 2%;
@@ -71,17 +70,12 @@
   }
 }
 
-.song-item__artist-name,
-.song-item__album-name {
-  color: $fg-color-2;
-}
-
 .song-item__artist-name {
   flex-basis: 28%;
   margin-right: 2%;
 
   &.queue {
-    flex: 0 0 auto;
+    flex: 1;
   }
 }
 
@@ -107,4 +101,8 @@
   .song-item__song-name {
     flex: 0 0 98%;
   }
+}
+
+.song-item--playing * {
+  color: $accent-color;
 }

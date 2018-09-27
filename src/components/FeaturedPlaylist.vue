@@ -145,6 +145,7 @@ export default class FeaturedPlaylist extends Vue {
 .featured-playlist__description {
   background-color: rgba(0, 0, 0, 0.7);
   color: white;
+  display: none;
   font-size: $regular-font;
   opacity: 0;
   padding: 1.6rem;
@@ -185,6 +186,10 @@ export default class FeaturedPlaylist extends Vue {
 
   .featured-playlist__artwork {
     max-width: none;
+  }
+
+  .featured-playlist__description {
+    display: flex;
   }
 }
 </style>

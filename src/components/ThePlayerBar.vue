@@ -8,38 +8,32 @@
 
       <div class="flex-column player-bar__center">
         <div class="player-bar__controls group-control">
-          <span @click="handleBackwardClicked">
+          <button class="btn btn--icon" @click="handleBackwardClicked">
             <icon name="backward" class="icon icon--l"></icon>
-          </span>
+          </button>
 
-          <span @click="toggleCurrentTrack">
-            <icon
-              :name="songStatusIcon"
-              class="icon icon--xl"
-            >
-            </icon>
-          </span>
-
-          <span @click="handleForwardClicked">
-            <icon name="forward" class="icon icon--l">
-            </icon>
-          </span>
+          <button class="btn btn--icon" @click="toggleCurrentTrack">
+            <icon :name="songStatusIcon" class="icon icon--xl"></icon>
+          </button>
+          
+          <button class="btn btn--icon" @click="handleForwardClicked">
+            <icon name="forward" class="icon icon--l"></icon>
+          </button>
         </div>
 
         <div class="flex-row player-bar__progress group-control">
           <div>{{ currentPlaybackTimeInMilliSeconds | formattedDuration }}</div>
-          <progress class="player-bar__progress-bar" max="100" :value="playbackProgress * 100">
-            {{ playbackProgress * 100 }}
-          </progress>
-
+          <div class="progress-bar">
+            <div class="progress-bar__current-progress" :style="{ width: playbackProgress * 100 + '%' }"></div>
+          </div>
           <div>{{ currentPlaying.playbackDuration | formattedDuration }}</div>
         </div>
       </div>
 
       <div class="player-bar__right flex-row">
-        <div @click="$emit('songQueueIconClicked')">
+        <button class="btn btn--icon" @click="$emit('song-queue-icon-clicked')">
           <icon name="list" class="icon"></icon>
-        </div>
+        </button>
       </div>
     </div>
   </div>

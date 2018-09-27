@@ -52,12 +52,21 @@
 }
 
 .player-bar__progress {
+  align-items: center;
   width: 100%;
 }
 
-.player-bar__progress-bar {
-  color: red;
+.progress-bar {
+  background-color: #4d4d4d;
+  border-radius: 0.15rem;
   flex: 1;
+  height: 0.3rem;
+}
+
+.progress-bar__current-progress {
+  background-color: $accent-color;
+  border-radius: inherit;
+  height: 100%;
 }
 
 @media (min-width: $bp-tablet-landscape) {

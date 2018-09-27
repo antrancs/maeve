@@ -3,14 +3,14 @@
     <div v-if="showBackground" class="artwork-overlay__background"></div>
     <div class="content">
       <div class="content-wrapper">
-        <div
-          class="playing-control"
+        <button
+          class="playing-control btn btn--icon"
           @mouseover="playingControlHovered = true"
           @mouseout="playingControlHovered = false"
           @click="$emit('playing-control-clicked')"
         >
           <icon color="#fff" :name="contentIcon"></icon>
-        </div>
+        </button>
       </div>
     </div>
   </div>

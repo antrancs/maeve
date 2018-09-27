@@ -3,7 +3,9 @@
     <div class="artist-detail-header">
       <div class="banner" :style="bannerStyle"></div>
       <div class="banner-overlay flex-column artist-banner-overlay">
-        <h3 class="artist-name">{{ attributes.name }}</h3>
+        <div class="content-spacing artist-detail__info">
+          <h2 class="artist-detail__name">{{ attributes.name }}</h2>
+        </div>
       </div>
     </div>
 
@@ -137,10 +139,14 @@ export default class ArtistDetail extends Vue {
   justify-content: flex-end;
 }
 
-.artist-name {
+.artist-detail__name {
   font-size: $xl-font;
   margin: 0;
-  padding: $m-size;
+  padding-bottom: $m-size;
+}
+
+.artist-detail__info {
+  width: 100%;
 }
 </style>
 

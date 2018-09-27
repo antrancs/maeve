@@ -6,10 +6,22 @@
   cursor: pointer;
   font-weight: bold;
   min-height: 3.8rem;
+  outline: none;
   padding: 0.1rem 1.6rem;
+
+  &:hover {
+    background-color: $accent-hover-color;
+    color: $accent-fg-hover-color;
+  }
 }
 
-.btn:hover {
-  background-color: $accent-hover-color;
-  color: $accent-fg-hover-color;
+.btn--icon {
+  background: transparent;
+  border: none;
+  min-height: 0;
+  padding: 0;
+
+  &:hover {
+    background-color: transparent;
+  }
 }

@@ -404,20 +404,6 @@ declare namespace MusicKit {
     playlist = 'playlist'
   }
 
-  interface PlaylistContainer {
-    attributes: PlaylistAttributes;
-    id: string;
-    name: Kind.playlist;
-    type: 'playlists';
-  }
-
-  interface AlbumContainer {
-    attributes: AlbumAttributes;
-    id: string;
-    name: Kind.album;
-    type: 'albums';
-  }
-
   enum Events {
     authorizationStatusDidChange = 'authorizationStatusDidChange',
     authorizationStatusWillChange = 'authorizationStatusWillChange',
@@ -480,7 +466,7 @@ declare namespace MusicKit {
      */
     attributes: SongAttributes;
 
-    container: PlaylistContainer | AlbumContainer;
+    container?: Playlist | Album;
 
     /**
      * A string containing the content rating for the media item.
@@ -563,72 +549,6 @@ declare namespace MusicKit {
 
   type MediaItemType = 'song';
 
-  /////// New /////////////
-
-  interface ResourceRelationships {}
-
-  interface ResourceAttributes {}
-
-  /**
-   * A to-one or to-many relationship from one resource object to others.
-   * A to-one relationship contains a single object in the data array.
-   * The rules that apply to the members of this object are:
-   *    + Must contain one of these members: href, data, or meta.
-   *    + If a to-many relationship, may contain the next member.
-   * Ref: https://developer.apple.com/documentation/applemusicapi/relationship
-   */
-  interface Relationship {
-    /**
-     * One or more destination objects.
-     */
-    data?: Resource[];
-
-    /**
-     * A URL subpath that fetches the resource as the primary object.
-     * This member is only present in responses.
-     */
-    href?: string;
-
-    /**
-     * Link to the next page of resources in the relationship.
-     * Contains the offset query parameter that specifies the next page.
-     */
-    next?: string;
-  }
-
-  interface Activity extends Resource {
-    /**
-     * The attributes for the activity.
-     */
-    attributes?: ActivityAttributes;
-
-    /**
-     * The relationships for the activity.
-     */
-    relationships?: ActivityRelationships;
-
-    /**
-     * (Required) Always activities.
-     */
-    type: string;
-  }
-
-  /**
-   * An object that represents play parameters for resources.
-   * Ref: https://developer.apple.com/documentation/applemusicapi/playparameters
-   */
-  interface PlayParameters {
-    /**
-     * (Required) The ID of the content to use for playback.
-     */
-    id: string;
-
-    /**
-     * (Required) The kind of the content to use for playback.
-     */
-    kind: string;
-  }
-
   /**
    * The JSON root object contained in every response.
    * Ref: https://developer.apple.com/documentation/applemusicapi/responseroot
@@ -665,7 +585,7 @@ declare namespace MusicKit {
      * The results of the operation. If there are results, the object contains contents;
      * otherwise, it is empty or null.
      */
-    results?: ResponseRootResults;
+    results?: any;
   }
 
   /**
@@ -704,7 +624,7 @@ declare namespace MusicKit {
     title: string;
   }
 
-  interface ResponseRootResults {}
+  // interface ResponseRootResults {}
 
   /**
    * The Source object represents the source of an error.

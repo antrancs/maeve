@@ -21,3 +21,11 @@ body {
 a {
   text-decoration: none;
 }
+
+a:focus {
+  outline: none;
+}
+
+section > :last-child {
+  margin-bottom: $l-size;
+}

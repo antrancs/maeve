@@ -1,7 +1,6 @@
 .search-bar {
   align-items: center;
   flex: 1;
-  // margin-left: $l-size;
 
   input {
     background-color: $bg-color;
@@ -9,12 +8,14 @@
     border-radius: 0.6rem;
     color: white;
     height: 100%;
+    max-width: 45rem;
+    outline: none;
     padding-left: $s-size;
     width: 95%;
-    max-width: 45rem;
+    transition: background 0.25s ease;
   }
 
-  &input:focus {
+  & input:focus {
     background: white;
     color: $bg-color;
   }

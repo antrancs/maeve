@@ -9,7 +9,7 @@ import ContextMenuPlugin from './contextMenu.plugin';
 // Toasted plugin
 Vue.use(Toasted, {
   theme: 'primary',
-  position: 'bottom-center',
+  position: 'top-center',
   duration: 4000
 });
 

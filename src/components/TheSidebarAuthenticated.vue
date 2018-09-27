@@ -3,7 +3,7 @@
     <ul class="sidebar-menu">
       <li class="sidebar-menu-item">
         <router-link to="/">
-          <div class="flex-row menu__item">
+          <div class="flex-row sidebar-menu-item__wrapper">
             <div class="sidebar-menu-item__icon">
               <icon name="home" class="icon icon--l">
               </icon>
@@ -17,7 +17,7 @@
       </li>
       <li class="sidebar-menu-item">
         <router-link :to="{ name: 'forYou' }">
-          <div class="flex-row menu__item">
+          <div class="flex-row sidebar-menu-item__wrapper">
             <div class="sidebar-menu-item__icon">
               <icon name="grin-hearts" class="icon icon--l">
               </icon>
@@ -30,14 +30,14 @@
       </li>
 
       <li class="sidebar-menu-item">
-        <router-link :to="{ name: 'myPlaylists' }">
-          <div class="flex-row menu__item">
+        <router-link :to="{ name: 'myLibrary' }">
+          <div class="flex-row sidebar-menu-item__wrapper">
             <div class="sidebar-menu-item__icon">
               <icon name="headset" class="icon icon--l">
               </icon>
             </div>
             <div class="sidebar-menu-item__text">
-              Your Library
+              My Library
             </div>
           </div>
         </router-link>

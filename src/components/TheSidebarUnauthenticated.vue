@@ -3,7 +3,7 @@
     <ul class="sidebar-menu">
       <li class="sidebar-menu-item">
         <router-link to="/">
-          <div class="flex-row menu-item-wrapper">
+          <div class="flex-row sidebar-menu-item__wrapper">
             <div class="sidebar-menu-item__icon">
               <icon name="home" class="icon icon--l">
               </icon>

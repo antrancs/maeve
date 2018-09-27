@@ -1,10 +1,12 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+
+import store from '@/store';
 import Home from './views/Home.vue';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -45,13 +47,19 @@ export default new Router({
       path: '/me/library-playlists/:id',
       name: 'library-playlists',
       component: () => import('./views/CollectionDetail.vue'),
-      props: true
+      props: true,
+      meta: {
+        auth: true
+      }
     },
     {
       path: '/me/library-albums/:id',
       name: 'library-albums',
       component: () => import('./views/CollectionDetail.vue'),
-      props: true
+      props: true,
+      meta: {
+        auth: true
+      }
     },
     {
       path: '/artists/:id',
@@ -61,12 +69,18 @@ export default new Router({
     {
       path: '/me/for-you',
       name: 'forYou',
-      component: () => import('./views/ForYou.vue')
+      component: () => import('./views/ForYou.vue'),
+      meta: {
+        auth: true
+      }
     },
     {
-      path: '/me/playlists',
-      name: 'myPlaylists',
-      component: () => import('./views/Playlists.vue')
+      path: '/me/library',
+      name: 'myLibrary',
+      component: () => import('./views/MyLibrary.vue'),
+      meta: {
+        auth: true
+      }
     },
     {
       path: '/404',
@@ -79,3 +93,17 @@ export default new Router({
     }
   ]
 });
+
+router.beforeEach((to, from, next) => {
+  // If not authorized, go back to Home
+  if (
+    to.matched.some(record => record.meta.auth) &&
+    !store.getters.isAuthenticated
+  ) {
+    next({ name: 'home' });
+  } else {
+    next();
+  }
+});
+
+export default router;

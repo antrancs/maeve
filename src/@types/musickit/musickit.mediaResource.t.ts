@@ -9,7 +9,7 @@ declare namespace MusicKit {
      * Attributes belonging to the resource (can be a subset of the attributes).
      * The members are the names of the attributes defined in the object model.
      */
-    attributes?: ResourceAttributes;
+    attributes?: object;
     /**
      * (Required) Persistent identifier of the resource.
      */
@@ -25,7 +25,7 @@ declare namespace MusicKit {
      * Relationships belonging to the resource (can be a subset of the relationships).
      * The members are the names of the relationships defined in the object model.
      */
-    relationships?: ResourceRelationships;
+    relationships?: object;
 
     /**
      * (Required) The type of resource.
@@ -775,9 +775,27 @@ declare namespace MusicKit {
     data: Genre[];
   }
 
-  interface CuratorRelationship extends Relationship {}
+  /**
+   * An object that represents the curator relationship for a Resource object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/curatorrelationship?changes=_9
+   */
+  interface CuratorRelationship extends Relationship {
+    /**
+     * (Required) The data for the curator included in the relationship.
+     */
+    data: [Curator];
+  }
 
-  interface MusicVideoRelationship extends Relationship {}
+  /**
+   * An object that represents the music video relationship for a Resource object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/musicvideorelationship?changes=_9
+   */
+  interface MusicVideoRelationship extends Relationship {
+    /**
+     * (Required) The data for the music video included in the relationship.
+     */
+    data: [MusicVideo];
+  }
 
   /**
    * An object that represents the playlist relationship for a Resource object.
@@ -797,7 +815,13 @@ declare namespace MusicKit {
     data: LibraryAlbum[];
   }
 
-  interface StationRelationship {}
+  /**
+   * An object that represents the station relationship for a Resource object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/stationrelationship?changes=_9
+   */
+  interface StationRelationship extends Relationship {
+    data: [Station];
+  }
 
   /**
    * A Resource object that represents a library song.
@@ -1068,5 +1092,307 @@ declare namespace MusicKit {
      * (Required) The data for the artist included in the relationship.
      */
     data: Artist[];
+  }
+
+  /**
+   * A Resource object that represents a station.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/station?changes=_9
+   */
+  interface Station extends Resource {
+    attributes?: [StationAttributes];
+  }
+
+  /**
+   * The attributes for a station object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/station/attributes?changes=_9
+   */
+  interface StationAttributes {
+    /**
+     * (Required) The radio station artwork.
+     */
+    artwork: Artwork;
+
+    /**
+     * The duration of the stream. This value is not emitted for 'live' or programmed stations.
+     */
+    durationInMillis?: number;
+
+    /**
+     * The notes about the station that appear in Apple Music.
+     */
+    editorialNotes?: EditorialNotes;
+
+    /**
+     * The episode number of the station. This value is emitted when the station
+     * represents an episode of a show or other content.
+     */
+    episodeNumber?: number;
+
+    /**
+     * (Required) Whether the station is a live stream.
+     */
+    isLive: boolean;
+
+    /**
+     * (Required) The localized name of the station.
+     */
+    name: string;
+
+    /**
+     * (Required) The URL for sharing a station in Apple Music.
+     */
+    url: string;
+  }
+
+  /**
+   * A Resource object that represents a music video.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/musicvideo?changes=_9
+   */
+  interface MusicVideo extends Resource {
+    /**
+     * The attributes for the music video.
+     */
+    attributes: MusicVideoAttributes;
+
+    /**
+     * The relationships for the music video.
+     */
+    relationships: MusicVideoRelationships;
+
+    /**
+     * (Required) This value will always be musicVideos.
+     */
+    type: string;
+  }
+
+  interface MusicVideoAttributes {
+    /**
+     * The name of the album the music video appears on.
+     */
+    albumName?: string;
+
+    /**
+     * (Required) The artist’s name.
+     */
+    artistName: string;
+
+    /**
+     * (Required) The artwork for the music video’s associated album.
+     */
+    artwork: Artwork;
+
+    /**
+     * The Recording Industry Association of America (RIAA) rating of the content.
+     * The possible values for this rating are clean and explicit. No value means no rating.
+     */
+    contentRating?: string;
+
+    /**
+     * The duration of the music video in milliseconds.
+     */
+    durationInMillis?: number;
+
+    /**
+     * The editorial notes for the music video.
+     */
+    editorialNotes?: EditorialNotes;
+
+    /**
+     * (Required) The music video’s associated genres.
+     */
+    genreNames: [string];
+
+    /**
+     * (Required) The International Standard Recording Code (ISRC) for the music video.
+     */
+    isrc: string;
+
+    /**
+     * (Required) The localized name of the music video.
+     */
+    name: string;
+
+    /**
+     * The parameters to use to play back the music video.
+     */
+    playParams?: PlayParameters;
+
+    /**
+     * (Required) The preview assets for the music video.
+     */
+    previews: [Preview];
+
+    /**
+     * (Required) The release date of the music video in YYYY-MM-DD format.
+     */
+    releaseDate: Date;
+
+    /**
+     * The number of the music video in the album’s track list.
+     */
+    trackNumber?: number;
+
+    /**
+     * (Required) A URL for sharing the music video.
+     */
+    url: string;
+
+    /**
+     * The video subtype associated with the content.
+     */
+    videoSubType?: string;
+
+    /**
+     * (Required) Whether the music video has HDR10-encoded content.
+     */
+    hasHDR: boolean;
+
+    /**
+     * (Required) Whether the music video has 4K content.
+     */
+    has4K: boolean;
+  }
+
+  /**
+   * The relationships for a music video object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/musicvideo/relationships?changes=_9
+   */
+  interface MusicVideoRelationships {
+    /**
+     * The albums associated with the music video. By default, albums includes identifiers only.
+     * Fetch limits: 10 default, 10 maximum
+     */
+    albums?: AlbumRelationship;
+
+    /**
+     * The artists associated with the music video. By default, artists includes identifiers only.
+     * Fetch limits: 10 default, 10 maximum
+     */
+    artists?: ArtistRelationship;
+
+    /**
+     * The genres associated with the music video. By default, genres is not included.
+     * Fetch limits: None
+     */
+    genres?: GenreRelationship;
+  }
+
+  /**
+   * A Resource object that represents a curator of resources.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/curator?changes=_9
+   */
+  interface Curator extends Resource {
+    /**
+     * The attributes for the curator.
+     */
+    attributes?: CuratorAttributes;
+
+    /**
+     * The relationships for the curator.
+     */
+    relationships: CuratorRelationships;
+
+    /**
+     * (Required) This value will always be curators.
+     */
+    type: string;
+  }
+
+  /**
+   * The attributes for a curator object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/curator/attributes?changes=_9
+   */
+  interface CuratorAttributes {
+    /**
+     * (Required) The curator artwork.
+     */
+    artwork: Artwork;
+
+    /**
+     * The notes about the curator.
+     */
+    editorialNotes?: EditorialNotes;
+
+    /**
+     * (Required) The localized name of the curator.
+     */
+    name: string;
+
+    /**
+     * (Required) The URL for sharing a curator in Apple Music.
+     */
+    url: string;
+  }
+
+  /**
+   * The relationships for a curator object.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/curator/relationships?changes=_9
+   */
+  interface CuratorRelationships {
+    /**
+     * The playlists associated with the curator. By default, playlists includes identifiers only.
+     * Fetch limits: 10 default, 10 maximum
+     */
+    playlists: PlaylistRelationship;
+  }
+
+  /**
+   * A to-one or to-many relationship from one resource object to others.
+   * A to-one relationship contains a single object in the data array.
+   * The rules that apply to the members of this object are:
+   *    + Must contain one of these members: href, data, or meta.
+   *    + If a to-many relationship, may contain the next member.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/relationship
+   */
+  interface Relationship {
+    /**
+     * One or more destination objects.
+     */
+    data?: Resource[];
+
+    /**
+     * A URL subpath that fetches the resource as the primary object.
+     * This member is only present in responses.
+     */
+    href?: string;
+
+    /**
+     * Link to the next page of resources in the relationship.
+     * Contains the offset query parameter that specifies the next page.
+     */
+    next?: string;
+  }
+
+  interface Activity extends Resource {
+    /**
+     * The attributes for the activity.
+     */
+    attributes?: ActivityAttributes;
+
+    /**
+     * The relationships for the activity.
+     */
+    relationships?: ActivityRelationships;
+
+    /**
+     * (Required) Always activities.
+     */
+    type: string;
+  }
+
+  /**
+   * An object that represents play parameters for resources.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/playparameters
+   */
+  interface PlayParameters {
+    /**
+     * (Required) The ID of the content to use for playback.
+     */
+    id: string;
+
+    /**
+     * (Required) The kind of the content to use for playback.
+     */
+    kind: string;
   }
 }

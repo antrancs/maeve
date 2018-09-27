@@ -23,8 +23,7 @@ const actions: ActionTree<AuthState, any> = {
   },
 
   [LOGOUT]({ commit }) {
-    authService.logout().then(unauthRes => {
-      console.log({ unauthRes });
+    authService.logout().then(() => {
       commit(SET_USER_TOKEN, null);
     });
   }

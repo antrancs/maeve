@@ -15,7 +15,6 @@ class MusicKitService {
       // }
     } else {
       document.addEventListener('musickitloaded', () => {
-        console.log('musickitloaded');
         this.configure();
       });
     }

@@ -122,9 +122,11 @@ export default class ContextMenu extends Vue {
 
 <style lang="scss" scoped>
 .context-menu {
-  background-color: black;
-  border: 0.1rem solid #ebebeb;
+  background-color: $header-color;
+  border: 0.1rem solid $divider-color;
   border-bottom-width: 0px;
+  box-shadow: 0 0.3rem 0.7rem 1rem rgba(0, 0, 0, 0.15),
+    0 2rem 6rem 0 rgba(0, 0, 0, 0.2);
   display: none;
   left: 0;
   list-style: none;

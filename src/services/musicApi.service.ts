@@ -2,6 +2,10 @@ import musicKit from '@/services/musicKit';
 import { Collection, CollectionType, Nullable } from '@/@types/model/model';
 
 class MusicApiService {
+  constructor() {
+    this.extractCollectionResult = this.extractCollectionResult.bind(this);
+  }
+
   /**
    * Search all catalog resources based on the search term
    * @param searchString The search term
@@ -29,7 +33,6 @@ class MusicApiService {
           return null;
         }
 
-        console.log(result);
         const albums = result.albums
           ? (result.albums.data as MusicKit.Album[])
           : [];
@@ -108,7 +111,6 @@ class MusicApiService {
       .getApiInstance()
       .artist(artistId, { include: 'albums,playlists' })
       .then(artistRes => {
-        console.log(artistRes);
         // relationships should be there when specifing 'include' in the search parameter
         const { relationships } = artistRes;
         let albums: MusicKit.Album[] = [];
@@ -212,7 +214,6 @@ class MusicApiService {
     collection: Collection;
     tracks: MusicKit.LibrarySong[];
   } | null> {
-    console.log(collectionType);
     let promise: Promise<MusicKit.LibraryAlbum | MusicKit.LibraryPlaylist>;
     const api = musicKit.getApiInstance();
     if (collectionType === CollectionType.libraryAlbum) {
@@ -266,9 +267,9 @@ class MusicApiService {
    * Extract the collection's info and its 'tracks' relationships
    * @param result An Album or Playlist instance
    */
-  private extractCollectionResult = (
+  private extractCollectionResult(
     result: MusicKit.Album | MusicKit.Playlist
-  ): { collection: Collection; tracks: MusicKit.Song[] } | null => {
+  ): { collection: Collection; tracks: MusicKit.Song[] } | null {
     if (this.isResultEmpty(result)) {
       return null;
     }
@@ -281,7 +282,7 @@ class MusicApiService {
       collection: result,
       tracks
     };
-  };
+  }
 }
 
 export default new MusicApiService();

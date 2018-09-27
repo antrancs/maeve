@@ -42,7 +42,7 @@ export default class MediaArtwork extends Vue {
     }
 
     if (this.hasShadow) {
-      style['box-shadow'] = `0.3rem 0.3rem 1rem #${this.artwork.bgColor}`;
+      style['box-shadow'] = `0.2rem 0.2rem 1rem #${this.artwork.textColor1}`;
     }
 
     return style;

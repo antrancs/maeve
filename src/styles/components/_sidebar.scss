@@ -21,7 +21,7 @@
   padding: $m-size;
 
   & a {
-    color: $fg-color-6;
+    color: $primary-text-color;
     text-decoration: none;
   }
 
@@ -35,7 +35,7 @@
   fill: $accent-color;
 }
 
-.menu-item-wrapper {
+.sidebar-menu-item__wrapper {
   align-items: center;
 }
 

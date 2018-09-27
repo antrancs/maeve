@@ -27,6 +27,7 @@ export default class AppBody extends Vue {}
   display: flex;
   flex: 1;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .main-content-wrapper {
@@ -41,7 +42,7 @@ export default class AppBody extends Vue {}
 }
 
 .main-content::after {
-  background-color: transparent;
+  background-color: $bg-color;
   content: '';
   display: block;
   padding-bottom: 10rem;

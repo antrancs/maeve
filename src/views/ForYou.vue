@@ -33,7 +33,6 @@ export default class ForYou extends Vue {
     musicApiService
       .getRecommendations()
       .then(result => {
-        console.log('recommendation', result);
         if (!result) {
           // TODO: display no results found
           return;

@@ -9,7 +9,7 @@
       </media-artwork>
     </router-link>
 
-    <h3>{{ activity.attributes.name }}</h3>
+    <div class="main-info-text activity__name">{{ activity.attributes.name }}</div>
   </div>
 </template>
 
@@ -25,9 +25,13 @@ import MediaArtwork from '@/components/MediaArtwork.vue';
 })
 export default class ActivityItem extends Vue {
   // Props
-  @Prop() activity!: MusicKit.Activity;
+  @Prop()
+  activity!: MusicKit.Activity;
 }
 </script>
 
 <style lang="scss" scoped>
+.activity__name {
+  margin-top: $s-size;
+}
 </style>

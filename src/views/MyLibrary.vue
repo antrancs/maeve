@@ -1,12 +1,12 @@
 <template>
     <div>
-      <section class="content-spacing">
-        <h2 class="section-title">Your playlists</h2>
+      <section v-if="playlists.length > 0" class="content-spacing">
+        <h2 class="section-title">My playlists</h2>
         <song-collection-list :collections="playlists"></song-collection-list>
       </section>
       
-      <section class="content-spacing">
-        <h2 class="section-title">Your albums</h2>
+      <section v-if="albums.length > 0" class="content-spacing">
+        <h2 class="section-title">My albums</h2>
         <song-collection-list :collections="albums"></song-collection-list>
       </section>
     </div>
@@ -23,7 +23,7 @@ import musicApiService from '@/services/musicApi.service';
     SongCollectionList
   }
 })
-export default class Playlists extends Vue {
+export default class YourLibrary extends Vue {
   // Data
   private playlists: MusicKit.LibraryPlaylist[] = [];
   private albums: MusicKit.LibraryAlbum[] = [];

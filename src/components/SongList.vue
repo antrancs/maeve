@@ -55,19 +55,26 @@ export default class SongList extends Vue {
   private selectedTrack: Nullable<MusicKit.Song> = null;
 
   // Props
-  @Prop() collection!: Collection | undefined;
-  @Prop() tracks!: MusicKit.Song[];
+  @Prop()
+  collection!: Collection | undefined;
+  @Prop()
+  tracks!: MusicKit.Song[];
   @Prop({ default: false })
   isQueue!: boolean;
 
   // State
-  @State musicPlayer!: MusicPlayerState;
+  @State
+  musicPlayer!: MusicPlayerState;
 
   // Action
-  @Action [PLAY_COLLECTION_AT_INDEX]: PlayCollectionAtIndexAction;
-  @Action [APPEND_SONGS]: AppendSongsAction;
-  @Action [PREPEND_SONGS]: PrependSongsAction;
-  @Action [ADD_TO_LIBRARY]: AddToLibraryAction;
+  @Action
+  [PLAY_COLLECTION_AT_INDEX]: PlayCollectionAtIndexAction;
+  @Action
+  [APPEND_SONGS]: AppendSongsAction;
+  @Action
+  [PREPEND_SONGS]: PrependSongsAction;
+  @Action
+  [ADD_TO_LIBRARY]: AddToLibraryAction;
 
   // Computed
   get isFromAlbum(): boolean {
@@ -149,8 +156,6 @@ export default class SongList extends Vue {
 
 <style lang="scss" scoped>
 .song-list {
-  color: $fg-color-4;
-  margin-bottom: $m-size;
   width: 100%;
 }
 

@@ -8,30 +8,17 @@ $black-color-0-5: lighten(black, 20);
 $player-bar-color: #282828;
 
 $divider-color: rgba(255, 255, 255, 0.08);
-// Foreground colors:
-$fg-color: #e8e8e8;
-$fg-color-1: #cecfd0;
-$fg-color-2: #b3b4b7;
-$fg-color-3: #9c9da1;
-$fg-color-4: #828389;
-$fg-color-5: #6a6b73;
-$fg-color-6: #50515b;
-$fg-color-7: #43444f;
-$fg-color-8: #363843;
 
 // Background colors:
 $bg-color: #121622;
-$bg-in-1: #0b0e1a;
+$sidebar-color: #0b0e1a;
+$header-color: #1e212c;
 
 // Accent colors:
-$accent-color: #1cc5bc;
-$accent-hover-color: #10b5ac;
+$accent-color: #da0f47; // linear-gradient(#f82752, #da0f47);
+$accent-hover-color: darken($accent-color, 10%);
 $accent-fg-color: #e1e1e1;
 $accent-fg-hover-color: #cfd3da;
-
-$track-index-color: $fg-color-4;
-// $subtitle-color: $fg-color;
-$sidebar-color: $bg-in-1;
 
 // Space
 $xs-size: 0.4rem;
@@ -46,11 +33,12 @@ $regular-font: 1.4rem;
 $large-font: 2.2rem;
 $xl-font: 4.8rem;
 $header-font: 3rem;
+$header-font-mobile: 2.2rem;
 
 // Components' sizes
 $player-bar-height: 9.6rem;
 $line-height: 1.8rem;
-$sidebar-width: 19rem;
+$sidebar-width: 17rem;
 $sidebar-width-collapsed: 6rem;
 $header-height: 6rem;
 

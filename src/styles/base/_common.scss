@@ -66,9 +66,15 @@
 }
 
 .section-title {
-  font-size: $header-font;
+  font-size: $header-font-mobile;
   margin-bottom: $m-size;
   margin-top: $m-size;
+}
+
+@media (min-width: $bp-tablet-landscape) {
+  .section-title {
+    font-size: $header-font;
+  }
 }
 
 .main-text {
@@ -76,9 +82,20 @@
 }
 
 .main-info-text {
+  color: $primary-text-color;
   font-weight: 600;
 }
 
 .sub-info-text {
   color: $secondary-text-color;
+}
+
+.link {
+  color: $secondary-text-color;
+  text-decoration: none;
+}
+
+a.link:hover {
+  color: $primary-text-color;
+  text-decoration: underline;
 }

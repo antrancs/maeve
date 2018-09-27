@@ -31,7 +31,7 @@
                 </div>
                 <div class="group-control control-buttons">
                   <button @click="playCollection" class="btn">PLAY</button>
-                  <button class="btn">SHUFFLE</button>
+                  <button @click="shuffleSongs" class="btn">SHUFFLE</button>
                 </div>
               </div>
             </div>
@@ -75,12 +75,13 @@
 <script lang="ts">
 import { Component, Prop, Vue, Provide } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
+import { shuffle } from 'lodash';
 
 import SongList from '@/components/SongList.vue';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import { getArtworkUrl } from '@/utils/utils';
 import musicApiService from '@/services/musicApi.service';
-import { PlayCollectionAtIndexAction } from '@/store/types';
+import { PlayCollectionAtIndexAction, PlaySongsAction } from '@/store/types';
 import {
   Collection,
   Song,
@@ -88,7 +89,7 @@ import {
   CollectionType,
   HandleSongClicked
 } from '@/@types/model/model';
-import { PLAY_COLLECTION_AT_INDEX } from '@/store/actions.type';
+import { PLAY_COLLECTION_AT_INDEX, PLAY_SONGS } from '@/store/actions.type';
 
 @Component({
   components: { SongList, MediaArtwork }
@@ -101,6 +102,8 @@ export default class CollectionDetail extends Vue {
   // Action
   @Action
   [PLAY_COLLECTION_AT_INDEX]: PlayCollectionAtIndexAction;
+  @Action
+  [PLAY_SONGS]: PlaySongsAction;
 
   // Provide/Inject
   @Provide()
@@ -258,6 +261,16 @@ export default class CollectionDetail extends Vue {
       index
     });
   }
+
+  /**
+   * Shuffle the collection and play
+   */
+  shuffleSongs() {
+    const ids: string[] = this.tracks.map(({ id }) => id);
+    this.playSongs({
+      ids: shuffle(ids)
+    });
+  }
 }
 </script>
 
@@ -267,7 +280,8 @@ export default class CollectionDetail extends Vue {
 }
 
 .collection-artwork {
-  margin-bottom: $m-size;
+  max-height: 20vh;
+  max-width: 20vh;
   width: 15rem;
   height: 15rem;
 }
@@ -295,7 +309,7 @@ export default class CollectionDetail extends Vue {
   color: white;
   height: 100%;
   justify-content: flex-end;
-  padding-bottom: $l-size;
+  padding-bottom: $m-size;
   position: relative;
   z-index: 50;
 }
@@ -349,6 +363,7 @@ export default class CollectionDetail extends Vue {
 @media (min-width: $bp-phone) {
   .content {
     align-items: flex-start;
+    padding-bottom: $l-size;
   }
 
   .content-upper {
@@ -366,6 +381,8 @@ export default class CollectionDetail extends Vue {
 
   .collection-artwork {
     margin-bottom: 0;
+    max-height: none;
+    max-width: none;
     width: 20rem;
     height: 20rem;
   }

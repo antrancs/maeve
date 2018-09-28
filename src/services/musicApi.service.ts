@@ -1,9 +1,17 @@
+import axios, { AxiosInstance } from 'axios';
+
 import musicKit from '@/services/musicKit';
+import authService from '@/services/auth.service';
 import { Collection, CollectionType, Nullable } from '@/@types/model/model';
 
 class MusicApiService {
+  private axiosInstance: AxiosInstance;
+
   constructor() {
     this.extractCollectionResult = this.extractCollectionResult.bind(this);
+    this.axiosInstance = axios.create({
+      baseURL: 'https://api.music.apple.com/v1'
+    });
   }
 
   /**
@@ -163,14 +171,13 @@ class MusicApiService {
     collection: Collection;
     tracks: MusicKit.Song[];
   } | null> {
+    const api = musicKit.getApiInstance();
     if (collectionType === CollectionType.album) {
-      return musicKit
-        .getApiInstance()
+      return api
         .album(collectionId, { include: 'tracks' })
         .then(this.extractCollectionResult);
     } else {
-      return musicKit
-        .getApiInstance()
+      return api
         .playlist(collectionId, { include: 'tracks, artists' })
         .then(this.extractCollectionResult);
     }
@@ -237,6 +244,39 @@ class MusicApiService {
         tracks
       };
     });
+  }
+
+  /**
+   * Update the current user's storefront. Storefront is needed for making API request
+   */
+  updateUserStorefront() {
+    // By default, we use 'us' storefront to get music previews.
+    if (!authService.isAuthorized) {
+      musicKit.getApiInstance().storefrontId = 'us';
+      return;
+    }
+
+    return this.axiosInstance
+      .get('me/storefront', {
+        headers: this.apiHeaders
+      })
+      .then(result => {
+        const storefronts = result.data.data;
+        if (!Array.isArray(storefronts) || storefronts.length === 0) {
+          return;
+        }
+        musicKit.getApiInstance().storefrontId = storefronts[0].id;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  private get apiHeaders() {
+    return {
+      'Music-User-Token': authService.userToken,
+      Authorization: `Bearer ${authService.developerToken}`
+    };
   }
 
   /**

@@ -9,6 +9,10 @@ const authService = {
     return musicKit.getInstance().musicUserToken;
   },
 
+  get developerToken(): string {
+    return musicKit.getInstance().developerToken;
+  },
+
   login() {
     return musicKit.getInstance().authorize();
   },

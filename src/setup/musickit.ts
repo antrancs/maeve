@@ -65,7 +65,7 @@ export function connectMusicKitToStore(
     onPlaybackTimeDidChange
   );
 
-  window.onunload = function() {
+  window.onunload = () => {
     musicKitInstance.removeEventListener(
       MusicKit.Events.playbackProgressDidChange,
       onPlaybackProgressDidChange

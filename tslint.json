@@ -18,6 +18,7 @@
     "no-console": false,
     "member-ordering": false,
     "no-namespace": [true, "allow-declarations"],
-    "no-misused-new": false
+    "no-misused-new": false,
+    "object-literal-key-quotes": ["true", "as-needed"]
   }
 }

@@ -95,7 +95,16 @@
   text-decoration: none;
 }
 
+.link--external {
+  color: $accent-color;
+  text-decoration: underline;
+}
+
 a.link:hover {
   color: $primary-text-color;
   text-decoration: underline;
+}
+
+a.link--external:hover {
+  color: $accent-hover-color;
 }

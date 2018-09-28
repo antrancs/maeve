@@ -13,13 +13,12 @@ export function connectMusicKitToStore(
   musicKitInstance: MusicKit.MusicKitInstance,
   store: Store<any>
 ) {
-  unregisterEventsFromMusicKit(musicKitInstance);
-
+  function onPlaybackProgressDidChange(event: any) {
+    store.commit(SET_PLAYBACK_PROGESS, event.progress);
+  }
   musicKitInstance.addEventListener(
     MusicKit.Events.playbackProgressDidChange,
-    event => {
-      store.commit(SET_PLAYBACK_PROGESS, event.progress);
-    }
+    onPlaybackProgressDidChange
   );
 
   function onPlaybackStateDidChange(event: any) {
@@ -36,55 +35,56 @@ export function connectMusicKitToStore(
         store.commit(SET_SONG_LOADING, true);
     }
   }
-
-  musicKitInstance.removeEventListener(
-    MusicKit.Events.playbackStateDidChange,
-    onPlaybackStateDidChange
-  );
-
   musicKitInstance.addEventListener(
     MusicKit.Events.playbackStateDidChange,
     onPlaybackStateDidChange
   );
 
+  function onAuthorizationStatusDidChange({ authorizationStatus }: any) {
+    MusicKit.getInstance().player.stop();
+    store.dispatch(CHANGE_ROUTE, 'home');
+  }
   musicKitInstance.addEventListener(
     MusicKit.Events.authorizationStatusDidChange,
-    ({ authorizationStatus }) => {
-      if (authorizationStatus === 3) {
-        // window.location.href = '/';
-      }
-      MusicKit.getInstance().player.stop();
-      store.dispatch(CHANGE_ROUTE, 'home');
-    }
+    onAuthorizationStatusDidChange
   );
 
+  function onMediaItemDidChange({ item }: any) {
+    store.commit(SET_CURRENTLY_PLAYING_SONG, item);
+  }
   musicKitInstance.addEventListener(
     MusicKit.Events.mediaItemDidChange,
-    ({ item }) => {
-      store.commit(SET_CURRENTLY_PLAYING_SONG, item);
-    }
+    onMediaItemDidChange
   );
 
   function onPlaybackTimeDidChange(event: any) {
     store.commit(SET_CURRENT_PLAYBACK_TIME, event.currentPlaybackTime);
   }
-
-  musicKitInstance.removeEventListener(
-    MusicKit.Events.playbackTimeDidChange,
-    onPlaybackTimeDidChange
-  );
   musicKitInstance.addEventListener(
     MusicKit.Events.playbackTimeDidChange,
     onPlaybackTimeDidChange
   );
-}
 
-export function unregisterEventsFromMusicKit(
-  musicKitInstance: MusicKit.MusicKitInstance
-) {
-  musicKitInstance.removeEventListener(
-    MusicKit.Events.playbackProgressDidChange
-  );
-
-  musicKitInstance.removeEventListener(MusicKit.Events.playbackStateDidChange);
+  window.onunload = function() {
+    musicKitInstance.removeEventListener(
+      MusicKit.Events.playbackProgressDidChange,
+      onPlaybackProgressDidChange
+    );
+    musicKitInstance.removeEventListener(
+      MusicKit.Events.playbackStateDidChange,
+      onPlaybackStateDidChange
+    );
+    musicKitInstance.removeEventListener(
+      MusicKit.Events.authorizationStatusDidChange,
+      onAuthorizationStatusDidChange
+    );
+    musicKitInstance.removeEventListener(
+      MusicKit.Events.mediaItemDidChange,
+      onMediaItemDidChange
+    );
+    musicKitInstance.removeEventListener(
+      MusicKit.Events.playbackTimeDidChange,
+      onPlaybackTimeDidChange
+    );
+  };
 }

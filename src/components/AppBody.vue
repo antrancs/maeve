@@ -1,10 +1,12 @@
 <template>
   <div class="app-body">
     <app-sidebar></app-sidebar>
-    <div class="main-content-wrapper">
+    <div class="main-content-wrapper flex-column">
       <transition name="fade" mode="out-in">
         <router-view class="main-content"></router-view>
       </transition>
+
+      <app-footer></app-footer>
     </div>
   </div>
 </template>
@@ -13,10 +15,11 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import AppSidebar from '@/components/TheSidebar.vue';
-
+import AppFooter from '@/components/TheFooter.vue';
 @Component({
   components: {
-    AppSidebar
+    AppSidebar,
+    AppFooter
   }
 })
 export default class AppBody extends Vue {}
@@ -31,21 +34,16 @@ export default class AppBody extends Vue {}
 }
 
 .main-content-wrapper {
-  display: flex;
-  flex-direction: column;
   flex: 1;
   overflow-y: auto;
 }
 
-.context-menu-showing .main-content-wrapper {
-  overflow-y: hidden;
+.main-content {
+  flex: 1;
 }
 
-.main-content::after {
-  background-color: $bg-color;
-  content: '';
-  display: block;
-  padding-bottom: 10rem;
+.context-menu-showing .main-content-wrapper {
+  overflow-y: hidden;
 }
 
 .fade-enter-active,

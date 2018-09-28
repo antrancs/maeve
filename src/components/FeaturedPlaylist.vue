@@ -168,7 +168,7 @@ export default class FeaturedPlaylist extends Vue {
   }
 
   .featured-playlist__info {
-    font-size: 2rem;
+    font-size: 2.2rem;
   }
 }
 

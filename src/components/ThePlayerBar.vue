@@ -26,7 +26,11 @@
           <div class="progress-bar">
             <div class="progress-bar__current-progress" :style="{ width: playbackProgress * 100 + '%' }"></div>
           </div>
-          <div>{{ currentPlaying.playbackDuration | formattedDuration }}</div>
+
+          <div v-if="isAuthenticated">
+            {{ currentPlaying.playbackDuration | formattedDuration }}
+          </div>
+          <div v-else>0:30</div>
         </div>
       </div>
 
@@ -41,7 +45,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { State, Action } from 'vuex-class';
+import { State, Action, Getter } from 'vuex-class';
 
 import 'vue-awesome/icons/backward';
 import 'vue-awesome/icons/forward';
@@ -71,6 +75,9 @@ export default class PlayerBar extends Vue {
   playbackProgress!: number;
   @State(state => state.musicPlayer.currentPlaybackTimeInMilliSeconds)
   currentPlaybackTimeInMilliSeconds!: number;
+
+  @Getter
+  isAuthenticated!: boolean;
 
   // Action
   @Action

@@ -8,5 +8,6 @@ module.exports = {
           `
       }
     }
-  }
+  },
+  productionSourceMap: false
 };

@@ -67,22 +67,14 @@ export default class Home extends Vue {
         console.log(err);
       });
 
-    musicApiService
-      .getActivity('976439525')
-      .then(res => {
-        console.log(res);
-      })
-      .catch(err => {
-        console.log('err again', err);
-      });
-    musicApiService
-      .getActivities(activityIds)
-      .then(activities => {
-        this.activities = activities;
-      })
-      .catch(err => {
-        console.log({ err });
-      });
+    // musicApiService
+    //   .getActivities(activityIds)
+    //   .then(activities => {
+    //     this.activities = activities;
+    //   })
+    //   .catch(err => {
+    //     console.log({ err });
+    //   });
   }
 }
 </script>

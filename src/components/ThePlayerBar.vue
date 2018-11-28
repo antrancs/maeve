@@ -2,8 +2,12 @@
   <div v-if="currentPlaying" class="player-bar-wrapper">
     <div class="player-bar">
       <div class="player-bar__left">
-        <div class="player-bar__song-name long-text-truncated">{{ songName }}</div>
-        <div class="player-bar__artist-name long-text-truncated">{{ artistName }}</div>
+        <div class="player-bar__song-name long-text-truncated">
+          {{ songName }}
+        </div>
+        <div class="player-bar__artist-name long-text-truncated">
+          {{ artistName }}
+        </div>
       </div>
 
       <div class="flex-column player-bar__center">
@@ -15,7 +19,7 @@
           <button class="btn btn--icon" @click="toggleCurrentTrack">
             <icon :name="songStatusIcon" class="icon icon--xl"></icon>
           </button>
-          
+
           <button class="btn btn--icon" @click="handleForwardClicked">
             <icon name="forward" class="icon icon--l"></icon>
           </button>
@@ -24,7 +28,10 @@
         <div class="flex-row player-bar__progress group-control">
           <div>{{ currentPlaybackTimeInMilliSeconds | formattedDuration }}</div>
           <div class="progress-bar">
-            <div class="progress-bar__current-progress" :style="{ width: playbackProgress * 100 + '%' }"></div>
+            <div
+              class="progress-bar__current-progress"
+              :style="{ width: playbackProgress * 100 + '%' }"
+            ></div>
           </div>
 
           <div v-if="isAuthenticated">
@@ -35,7 +42,7 @@
       </div>
 
       <div class="player-bar__right flex-row">
-        <button class="btn btn--icon" @click="$emit('song-queue-icon-clicked')">
+        <button class="btn btn--icon" @click="toggleQueueVisibility">
           <icon name="list" class="icon"></icon>
         </button>
       </div>
@@ -45,7 +52,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { State, Action, Getter } from 'vuex-class';
+import { State, Action, Getter, Mutation } from 'vuex-class';
 
 import 'vue-awesome/icons/backward';
 import 'vue-awesome/icons/forward';
@@ -63,10 +70,10 @@ import {
   TOGGLE_CURRENT_TRACK
 } from '@/store/actions.type';
 import { Nullable } from '@/@types/model/model';
+import { TOGGLE_QUEUE_VISIBILITY } from '@/store/mutations.type';
 
 @Component
 export default class PlayerBar extends Vue {
-  // State
   @State(state => state.musicPlayer.currentPlaying)
   currentPlaying!: Nullable<MusicKit.MediaItem>;
   @State(state => state.musicPlayer.isPlaying)
@@ -79,7 +86,6 @@ export default class PlayerBar extends Vue {
   @Getter
   isAuthenticated!: boolean;
 
-  // Action
   @Action
   [PLAY_NEXT]: () => void;
   @Action
@@ -87,7 +93,9 @@ export default class PlayerBar extends Vue {
   @Action
   [TOGGLE_CURRENT_TRACK]: () => void;
 
-  // Computed
+  @Mutation
+  [TOGGLE_QUEUE_VISIBILITY]: () => void;
+
   get songStatusIcon(): string {
     return this.isPlaying ? 'pause-circle' : 'play-circle';
   }
@@ -100,7 +108,6 @@ export default class PlayerBar extends Vue {
     return this.currentPlaying ? this.currentPlaying.title : '';
   }
 
-  // Methods
   handleForwardClicked() {
     this.playNext();
   }

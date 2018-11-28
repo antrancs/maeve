@@ -1,12 +1,11 @@
 <template>
-    <div class="media-list">
-        <song-collection-item
-          v-for="collection in collections"
-          :key="collection.id"
-          :collection="collection"
-        >
-        </song-collection-item>
-    </div>
+  <div class="media-list">
+    <SongCollectionItem
+      v-for="collection in collections"
+      :key="collection.id"
+      :collection="collection"
+    />
+  </div>
 </template>
 
 <script lang="ts">
@@ -27,5 +26,4 @@ export default class SongCollectionList extends Vue {
 }
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

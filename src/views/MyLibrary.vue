@@ -1,15 +1,15 @@
 <template>
-    <div>
-      <section v-if="playlists.length > 0" class="content-spacing">
-        <h2 class="section-title">My playlists</h2>
-        <song-collection-list :collections="playlists"></song-collection-list>
-      </section>
-      
-      <section v-if="albums.length > 0" class="content-spacing">
-        <h2 class="section-title">My albums</h2>
-        <song-collection-list :collections="albums"></song-collection-list>
-      </section>
-    </div>
+  <div>
+    <section v-if="playlists.length > 0" class="content-spacing">
+      <h2 class="section-title">My playlists</h2>
+      <SongCollectionList :collections="playlists" />
+    </section>
+
+    <section v-if="albums.length > 0" class="content-spacing">
+      <h2 class="section-title">My albums</h2>
+      <SongCollectionList :collections="albums" />
+    </section>
+  </div>
 </template>
 
 <script lang="ts">
@@ -24,11 +24,9 @@ import musicApiService from '@/services/musicApi.service';
   }
 })
 export default class YourLibrary extends Vue {
-  // Data
   private playlists: MusicKit.LibraryPlaylist[] = [];
   private albums: MusicKit.LibraryAlbum[] = [];
 
-  // Life cycle methods
   created() {
     musicApiService.getLibraryPlaylists().then(playlists => {
       this.playlists = playlists;
@@ -41,5 +39,4 @@ export default class YourLibrary extends Vue {
 }
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

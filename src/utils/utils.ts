@@ -15,9 +15,9 @@ const getArtworkUrl = (
     '{h}': height
   };
 
-  return originalUrl.replace(/{w}|{h}/gi, matched =>
-    replace[matched].toString()
-  );
+  return originalUrl.replace(/{w}|{h}/gi, matched => {
+    return replace[matched].toString();
+  });
 };
 
 const extractArtworkUrl = (html: string) => {

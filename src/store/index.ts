@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import musicPlayer from './musicPlayer.module';
+import songQueue from './songQueue.module';
 import auth from './auth.module';
 import router from './router.module';
 
@@ -11,6 +12,7 @@ export default new Vuex.Store({
   modules: {
     musicPlayer,
     auth,
-    router
+    router,
+    songQueue
   }
 });

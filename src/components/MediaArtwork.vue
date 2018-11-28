@@ -4,9 +4,9 @@
       <img
         class="artwork__image"
         v-lazy="artworkUrlForArtist || artworkUrl"
-        alt=""
+        alt
         :style="artworkImageStyle"
-      >
+      />
     </div>
   </div>
 </template>
@@ -17,7 +17,6 @@ import { getArtworkUrl } from '@/utils/utils';
 
 @Component
 export default class MediaArtwork extends Vue {
-  // Props
   // Only artists need to pass in artwork url as Artwork is not available under artists for now.
   // For other types (albums, playlists, tracks...) pass the artwork object instead
   @Prop()
@@ -30,11 +29,9 @@ export default class MediaArtwork extends Vue {
   height!: number;
   @Prop({ default: false })
   hasShadow!: boolean;
-
   @Prop({ default: false })
   isRound!: boolean;
 
-  // Computed
   get artworkImageStyle(): object {
     const style: any = {};
     if (this.isRound) {

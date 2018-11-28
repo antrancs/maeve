@@ -1,24 +1,27 @@
 <template>
   <div class="song-list">
-    <song-item
+    <SongItem
       :key="track.id"
       v-for="(track, index) in tracks"
       :track="track"
       :index="index"
       :is-from-album="isFromAlbum"
       :is-queue="isQueue"
-    >
-    </song-item>
+    />
 
-    <context-menu
+    <ContextMenu
       name="cm-song-list"
       @before-open="beforeOpenContextMenu"
       @before-close="beforeCloseContextMenu"
     >
-      <context-menu-item :on-click="handleAddNext">Play next</context-menu-item>
-      <context-menu-item :on-click="handleAddToQueue">Add to queue</context-menu-item>
-      <context-menu-item :on-click="handleAddToLibrary">Add to library</context-menu-item>
-    </context-menu>
+      <ContextMenuItem :on-click="handleAddNext">Play next</ContextMenuItem>
+      <ContextMenuItem :on-click="handleAddToQueue"
+        >Add to queue</ContextMenuItem
+      >
+      <ContextMenuItem :on-click="handleAddToLibrary"
+        >Add to library</ContextMenuItem
+      >
+    </ContextMenu>
   </div>
 </template>
 
@@ -51,10 +54,8 @@ import ContextMenuItem from '@/components/ContextMenuItem.vue';
   components: { SongItem, ContextMenu, ContextMenuItem }
 })
 export default class SongList extends Vue {
-  // Data
   private selectedTrack: Nullable<MusicKit.Song> = null;
 
-  // Props
   @Prop()
   collection!: Collection | undefined;
   @Prop()
@@ -62,11 +63,9 @@ export default class SongList extends Vue {
   @Prop({ default: false })
   isQueue!: boolean;
 
-  // State
   @State
   musicPlayer!: MusicPlayerState;
 
-  // Action
   @Action
   [PLAY_COLLECTION_AT_INDEX]: PlayCollectionAtIndexAction;
   @Action
@@ -76,7 +75,6 @@ export default class SongList extends Vue {
   @Action
   [ADD_TO_LIBRARY]: AddToLibraryAction;
 
-  // Computed
   get isFromAlbum(): boolean {
     return (
       this.collection !== undefined &&
@@ -85,7 +83,6 @@ export default class SongList extends Vue {
     );
   }
 
-  // Methods
   beforeOpenContextMenu(event: any) {
     this.selectedTrack = event.params.selectedTrack;
   }
@@ -143,8 +140,8 @@ export default class SongList extends Vue {
         // @ts-ignore
         this.$toasted.global.notify({
           message: 'Song added to library'
-        })
-      )
+          // eslint-disable-next-line
+        }))
       .catch(err => {
         console.log(err);
         // @ts-ignore

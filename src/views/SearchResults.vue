@@ -1,78 +1,75 @@
 <template>
   <div>
     <div v-if="hasResults">
-      <section
-        class="content-spacing"
-        v-if="artists.length > 0"
-      >
+      <section class="content-spacing" v-if="artists.length > 0">
         <div class="section-header">
           <h3 class="section-title">Artists</h3>
           <router-link
             v-if="artists.length > 5"
-            :to="{ name: 'searchViewAll', params: { type: 'artists' }, query: { q: queryString } }"
+            :to="{
+              name: 'searchViewAll',
+              params: { type: 'artists' },
+              query: { q: queryString }
+            }"
             class="section-header__view-all link"
+            >View all</router-link
           >
-            View all
-          </router-link>
         </div>
-        <artist-list :artists="getFirstNResults(artists, 5)">
-        </artist-list>
+        <ArtistList :artists="getFirstNResults(artists, 5)" />
       </section>
 
-      <section
-        class="content-spacing"
-        v-if="songs.length > 0"
-      >
+      <section class="content-spacing" v-if="songs.length > 0">
         <div class="section-header">
           <h3 class="section-title">Songs</h3>
           <router-link
             v-if="songs.length > 5"
-            :to="{ name: 'searchViewAll', params: { type: 'songs' }, query: { q: queryString } }"
+            :to="{
+              name: 'searchViewAll',
+              params: { type: 'songs' },
+              query: { q: queryString }
+            }"
             class="section-header__view-all link"
+            >View all</router-link
           >
-            View all
-          </router-link>
         </div>
-        <song-list :tracks="getFirstNResults(songs, 5)"></song-list>
+        <SongList :tracks="getFirstNResults(songs, 5)" />
       </section>
 
-      <section
-        class="content-spacing"
-        v-if="albums.length > 0"
-      >
+      <section class="content-spacing" v-if="albums.length > 0">
         <div class="section-header">
           <h3 class="section-title">Albums</h3>
           <router-link
             v-if="albums.length > 10"
-            :to="{ name: 'searchViewAll', params: { type: 'albums' }, query: { q: queryString } }"
+            :to="{
+              name: 'searchViewAll',
+              params: { type: 'albums' },
+              query: { q: queryString }
+            }"
             class="section-header__view-all link"
+            >View all</router-link
           >
-            View all
-          </router-link>
         </div>
-        <song-collection-list :collections="getFirstNResults(albums, 10)"></song-collection-list>
+        <SongCollectionList :collections="getFirstNResults(albums, 10)" />
       </section>
 
-      <section
-        class="content-spacing"
-        v-if="playlists.length > 0"
-      >
+      <section class="content-spacing" v-if="playlists.length > 0">
         <div class="section-header">
           <h3 class="section-title">Playlists</h3>
           <router-link
             v-if="playlists.length > 10"
-            :to="{ name: 'searchViewAll', params: { type: 'playlists' }, query: { q: queryString } }"
+            :to="{
+              name: 'searchViewAll',
+              params: { type: 'playlists' },
+              query: { q: queryString }
+            }"
             class="section-header__view-all link"
+            >View all</router-link
           >
-            View all
-          </router-link>
         </div>
-        <song-collection-list :collections="getFirstNResults(playlists, 10)"></song-collection-list>
+        <SongCollectionList :collections="getFirstNResults(playlists, 10)" />
       </section>
     </div>
-    <div v-else class="content-spacing">
-      <h3>No results</h3>
-    </div>
+    <div v-else class="content-spacing"><h3>No results</h3></div>
   </div>
 </template>
 

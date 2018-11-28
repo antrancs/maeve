@@ -1,6 +1,6 @@
 <template>
   <div v-if="activity" class="content-spacing activity">
-    <div class="activity-header flex-column ">
+    <div class="activity-header flex-column">
       <div class="banner" :style="bannerStyle"></div>
       <h3 class="activity-title">{{ activity.attributes.name }}</h3>
     </div>
@@ -8,7 +8,7 @@
       <div class="activity-list">
         <h3 class="section-title">Popular playlists</h3>
 
-        <song-collection-list :collections="playlists"></song-collection-list>
+        <SongCollectionList :collections="playlists" />
       </div>
     </div>
   </div>
@@ -26,10 +26,8 @@ import { ActivityType } from '@/utils/constants';
   components: { SongCollectionList }
 })
 export default class ActivityDetail extends Vue {
-  // Data
   private activity: Nullable<MusicKit.Activity> = null;
 
-  // Computed
   get bannerImage(): string {
     if (!this.activity) {
       return '';
@@ -76,7 +74,6 @@ export default class ActivityDetail extends Vue {
     };
   }
 
-  // Life cycle methods
   created() {
     if (!this.activity) {
       const activityId = this.$route.params.id;

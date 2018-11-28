@@ -1,11 +1,11 @@
 <template>
   <div id="app">
     <div class="app-wrapper">
-      <app-header></app-header>
-      <app-body></app-body>
+      <AppHeader />
+      <AppBody />
     </div>
-    <player-bar @song-queue-icon-clicked="toggleSongQueue"></player-bar>
-    <song-queue ref="songQueue"></song-queue>
+    <PlayerBar />
+    <SongQueue />
   </div>
 </template>
 
@@ -26,13 +26,12 @@ import SongQueue from '@/components/SongQueue.vue';
   }
 })
 export default class App extends Vue {
-  $refs!: {
-    songQueue: SongQueue;
-  };
-
-  private toggleSongQueue(): void {
-    this.$refs.songQueue.toggle();
-  }
+  // $refs!: {
+  //   songQueue: SongQueue;
+  // };
+  // private toggleSongQueue(): void {
+  //   this.$refs.songQueue.toggle();
+  // }
 }
 </script>
 

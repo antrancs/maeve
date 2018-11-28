@@ -1,11 +1,7 @@
 <template>
   <div class="media-column">
-    <router-link :to="{ name: 'artists', params: { id: artist.id }}">
-      <media-artwork
-        :artwork-url-for-artist="artistArtwork"
-        :is-round="true"
-      >
-      </media-artwork>
+    <router-link :to="{ name: 'artists', params: { id: artist.id } }">
+      <MediaArtwork :artwork-url-for-artist="artistArtwork" :is-round="true" />
     </router-link>
 
     <div class="long-text-truncated main-info-text artist-item__name">
@@ -27,14 +23,11 @@ import MediaArtwork from '@/components/MediaArtwork.vue';
   }
 })
 export default class ArtistItem extends Vue {
-  // Data
   private artistArtwork: string = '';
 
-  // Props
   @Prop()
   artist!: MusicKit.Artist;
 
-  // Life cycle methods
   created() {
     if (this.artist.attributes) {
       this.$_getArtistArtwork(this.artist.attributes.url);

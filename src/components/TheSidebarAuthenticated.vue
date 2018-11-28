@@ -5,13 +5,10 @@
         <router-link to="/">
           <div class="flex-row sidebar-menu-item__wrapper">
             <div class="sidebar-menu-item__icon">
-              <icon name="home" class="icon icon--l">
-              </icon>
+              <icon name="home" class="icon icon--l"></icon>
             </div>
-            
-            <div class="sidebar-menu-item__text">
-              Home
-            </div>
+
+            <div class="sidebar-menu-item__text">Home</div>
           </div>
         </router-link>
       </li>
@@ -19,12 +16,9 @@
         <router-link :to="{ name: 'forYou' }">
           <div class="flex-row sidebar-menu-item__wrapper">
             <div class="sidebar-menu-item__icon">
-              <icon name="grin-hearts" class="icon icon--l">
-              </icon>
+              <icon name="grin-hearts" class="icon icon--l"></icon>
             </div>
-            <div class="sidebar-menu-item__text">
-              For You
-            </div>
+            <div class="sidebar-menu-item__text">For You</div>
           </div>
         </router-link>
       </li>
@@ -33,12 +27,9 @@
         <router-link :to="{ name: 'myLibrary' }">
           <div class="flex-row sidebar-menu-item__wrapper">
             <div class="sidebar-menu-item__icon">
-              <icon name="headset" class="icon icon--l">
-              </icon>
+              <icon name="headset" class="icon icon--l"></icon>
             </div>
-            <div class="sidebar-menu-item__text">
-              My Library
-            </div>
+            <div class="sidebar-menu-item__text">My Library</div>
           </div>
         </router-link>
       </li>
@@ -56,5 +47,4 @@ import 'vue-awesome/icons/headset';
 export default class SidebarAuthenticated extends Vue {}
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

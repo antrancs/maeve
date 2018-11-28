@@ -16,7 +16,6 @@ import ContextMenuPlugin from '@/plugins/contextMenu.plugin';
 
 @Component
 export default class ContextMenu extends Vue {
-  // Data
   private width: number = 150;
   private height: number = 0;
   private left: number = 0;
@@ -24,11 +23,9 @@ export default class ContextMenu extends Vue {
   private top: number = 0;
   private isActive: boolean = false;
 
-  // Props
   @Prop()
   name!: string;
 
-  // Computed
   get contextMenuStyle(): object {
     return {
       left: this.left + 'px',
@@ -37,7 +34,6 @@ export default class ContextMenu extends Vue {
     };
   }
 
-  // Life cycle methods
   beforeMount() {
     ContextMenuPlugin.event.$on('toggle', this.$_handleToggle);
     window.addEventListener('click', this.$_handleMouseClick);
@@ -141,4 +137,3 @@ export default class ContextMenu extends Vue {
   }
 }
 </style>
-

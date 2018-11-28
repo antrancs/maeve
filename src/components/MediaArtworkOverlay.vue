@@ -1,13 +1,13 @@
 <template>
-  <div :class="[{'artwork-overlay--active': isActive}, 'artwork-overlay']">
+  <div :class="[{ 'artwork-overlay--active': isActive }, 'artwork-overlay']">
     <div v-if="showBackground" class="artwork-overlay__background"></div>
     <div class="content">
       <div class="content-wrapper">
         <button
           class="playing-control btn btn--icon"
-          @mouseover="playingControlHovered = true"
-          @mouseout="playingControlHovered = false"
-          @click="$emit('playing-control-clicked')"
+          @mouseover="playingControlHovered = true;"
+          @mouseout="playingControlHovered = false;"
+          @click="$emit('playing-control-clicked');"
         >
           <icon color="#fff" :name="contentIcon"></icon>
         </button>
@@ -24,10 +24,8 @@ import 'vue-awesome/icons/headphones';
 
 @Component
 export default class ArtworkOverlay extends Vue {
-  // Data
   private playingControlHovered: boolean = false;
 
-  // Props
   @Prop({ default: true })
   private showBackground!: boolean;
   @Prop({ default: false })
@@ -35,7 +33,6 @@ export default class ArtworkOverlay extends Vue {
   @Prop({ default: false })
   private isPlaying!: boolean;
 
-  // Computed
   get contentIcon(): string {
     if (this.isPlaying && this.isActive) {
       return this.playingControlHovered ? 'pause' : 'headphones';

@@ -5,17 +5,12 @@
         <div class="queue__container">
           <div class="queue__header flex-row">
             <h2 class="queue__title">Song queue</h2>
-            <button @click="toggle" class="btn btn--icon">
-              <icon name="times" class="icon icon--l">
-            </icon>
+            <button @click="toggleQueueVisibility" class="btn btn--icon">
+              <icon name="times" class="icon icon--l"></icon>
             </button>
           </div>
           <div class="queue__items">
-            <song-list
-              :tracks="queuedSongs"
-              :is-queue="true"
-            >
-            </song-list>
+            <SongList :tracks="queuedSongs" :is-queue="true" />
           </div>
         </div>
       </div>
@@ -25,7 +20,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { State, Action } from 'vuex-class';
+import { State, Action, Mutation } from 'vuex-class';
 import { Prop, Component, Provide } from 'vue-property-decorator';
 import 'vue-awesome/icons/times';
 
@@ -33,6 +28,7 @@ import SongList from '@/components/SongList.vue';
 import { HandleSongClicked } from '@/@types/model/model';
 import { SkipToSongAtIndexAction } from '@/store/types';
 import { SKIP_TO_SONG_AT_INDEX } from '@/store/actions.type';
+import { TOGGLE_QUEUE_VISIBILITY } from '@/store/mutations.type';
 
 @Component({
   components: {
@@ -40,25 +36,18 @@ import { SKIP_TO_SONG_AT_INDEX } from '@/store/actions.type';
   }
 })
 export default class SongQueue extends Vue {
-  // Data
-  private visibility = false;
-
-  // State
   @State(state => state.musicPlayer.queuedSongs)
   queuedSongs!: MusicKit.MediaItem[];
+  @State(state => state.songQueue.visibility) visibility!: Boolean;
 
-  // Action
   @Action
   [SKIP_TO_SONG_AT_INDEX]!: SkipToSongAtIndexAction;
 
-  // Provide/Inject
+  @Mutation
+  [TOGGLE_QUEUE_VISIBILITY]: () => void;
+
   @Provide()
   handleSongClicked: HandleSongClicked = this.$_playSongFromQueue;
-
-  // Methods
-  toggle(): void {
-    this.visibility = !this.visibility;
-  }
 
   // Helper methods
   /**
@@ -67,7 +56,7 @@ export default class SongQueue extends Vue {
    * @param songId Id of the song
    */
   private $_playSongFromQueue(index: number, songId: string) {
-    // Just skip to the song in the queue. No need to re-initialize the queu
+    // Just skip to the song in the queue. No need to re-initialize the queue
     this.skipToSongAtIndex({
       index
     });
@@ -78,4 +67,3 @@ export default class SongQueue extends Vue {
 <style lang="scss" scoped>
 @import '@/styles/components/_song-queue.scss';
 </style>
-

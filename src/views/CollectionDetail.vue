@@ -1,80 +1,90 @@
 <template>
   <div class="collection-detail">
     <div class="collection-detail-header" v-if="collection">
-        <div class="banner-overlay">
-          <div class="content-spacing content flex-column">
-            <!-- <img v-lazy="getCollectionArtwork(300, 300)" class="collection-artwork"/> -->
-            <div class="group-control content-upper">
-              <media-artwork
-                :artwork="collection.attributes.artwork"
-                class="collection-artwork"
-                :width="300"
-                :height="300"
-                :has-shadow="true"
+      <div class="banner-overlay">
+        <div class="content-spacing content flex-column">
+          <!--
+            <img v-lazy="getCollectionArtwork(300, 300)" class="collection-artwork"/>
+          -->
+          <div class="group-control content-upper">
+            <MediaArtwork
+              :artwork="collection.attributes.artwork"
+              class="collection-artwork"
+              :width="300"
+              :height="300"
+              :has-shadow="true"
+            />
+            <div>
+              <h2 class="collection-title">
+                {{ collectionName }}
+                <icon
+                  v-if="collection.attributes.contentRating === 'explicit'"
+                  name="explicit"
+                />
+              </h2>
+              <div
+                class="collection-subtitle collection-artist-name sub-info-text"
               >
-              </media-artwork>
-              <div>
-                <h2 class="collection-title">
-                  {{ collectionName }}
-                  <icon v-if="collection.attributes.contentRating === 'explicit'" name="explicit"/>
-                </h2>
-                <div class="collection-subtitle collection-artist-name sub-info-text">
-                  {{ collectionArtistName }}
-                </div>
+                {{ collectionArtistName }}
+              </div>
 
-                <div class="collection-subtitle collection-metadata sub-info-text">
-                  <span v-if="collectionType !== 'library-playlists'">
-                  {{releaseYear}}
-                  •
-                  </span>
-                  {{ tracks.length }} tracks
-                </div>
-                <div class="group-control control-buttons">
-                  <button @click="playCollection" class="btn">PLAY</button>
-                  <button @click="shuffleSongs" class="btn">SHUFFLE</button>
-                </div>
+              <div
+                class="collection-subtitle collection-metadata sub-info-text"
+              >
+                <span v-if="collectionType !== 'library-playlists'"
+                  >{{ releaseYear }} •</span
+                >
+                {{ tracks.length }} tracks
+              </div>
+              <div class="group-control control-buttons">
+                <button @click="playCollection" class="btn">PLAY</button>
+                <button
+                  v-if="isAuthenticated"
+                  @click="shuffleSongs"
+                  class="btn"
+                >
+                  SHUFFLE
+                </button>
               </div>
             </div>
+          </div>
 
-            <div class="group-control control-buttons">
-              <button @click="playCollection" class="btn">PLAY</button>
-              <button class="btn">SHUFFLE</button>
-            </div>
+          <div class="group-control control-buttons">
+            <button @click="playCollection" class="btn">PLAY</button>
+            <button v-if="isAuthenticated" class="btn">SHUFFLE</button>
           </div>
         </div>
+      </div>
 
-        <picture class="collection-detail-header__banner">
-          <source
-            media="(min-width: 1200px)"
-            :srcset="getCollectionArtwork(1000, 1000)">
+      <picture class="collection-detail-header__banner">
+        <source
+          media="(min-width: 1200px)"
+          :srcset="getCollectionArtwork(1000, 1000)"
+        />
 
-          <source
-            media="(min-width: 900px)"
-            :srcset="getCollectionArtwork(800, 800)">
+        <source
+          media="(min-width: 900px)"
+          :srcset="getCollectionArtwork(800, 800)"
+        />
 
-          <source
-            media="(min-width: 768px)"
-            :srcset="getCollectionArtwork(540, 540)">
+        <source
+          media="(min-width: 768px)"
+          :srcset="getCollectionArtwork(540, 540)"
+        />
 
-          <img
-            class="image"
-            :src="getCollectionArtwork(400, 400)"/>
-        </picture>
+        <img class="image" :src="getCollectionArtwork(400, 400)" />
+      </picture>
     </div>
 
     <div class="content-spacing">
-       <song-list
-        :tracks="tracks"
-        :collection="collection"
-      >
-      </song-list>
+      <SongList :tracks="tracks" :collection="collection" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue, Provide } from 'vue-property-decorator';
-import { Action } from 'vuex-class';
+import { Action, Getter } from 'vuex-class';
 import { shuffle } from 'lodash';
 
 import SongList from '@/components/SongList.vue';
@@ -95,21 +105,20 @@ import { PLAY_COLLECTION_AT_INDEX, PLAY_SONGS } from '@/store/actions.type';
   components: { SongList, MediaArtwork }
 })
 export default class CollectionDetail extends Vue {
-  // Data
   private collection: Nullable<Collection> = null;
   private tracks: Song[] = [];
 
-  // Action
+  @Getter
+  isAuthenticated!: boolean;
+
   @Action
   [PLAY_COLLECTION_AT_INDEX]: PlayCollectionAtIndexAction;
   @Action
   [PLAY_SONGS]: PlaySongsAction;
 
-  // Provide/Inject
   @Provide()
   handleSongClicked: HandleSongClicked = this.playSongFromCollection;
 
-  // Computed
   get collectionName(): string {
     if (!this.collection || !this.collection.attributes) {
       return '';

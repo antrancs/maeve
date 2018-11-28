@@ -1,19 +1,17 @@
 <template>
   <div
     v-if="track && track.attributes"
-    :class="['song-item', {'song-item--playing': isActive}]"
+    :class="['song-item', { 'song-item--playing': isActive }]"
   >
     <div class="song-item__left">
-      <div v-if="showLoading" class="spinner">
-      </div>
+      <div v-if="showLoading" class="spinner"></div>
       <div v-else class="size-fit">
-        <media-artwork
+        <MediaArtwork
           v-if="!isFromAlbum"
           :artwork="track.attributes.artwork"
           :width="50"
           :height="50"
-        >
-        </media-artwork>
+        />
 
         <div
           v-if="isFromAlbum && !isActive"
@@ -22,13 +20,12 @@
           {{ track.attributes.trackNumber }}
         </div>
 
-        <media-artwork-overlay
+        <MediaArtworkOverlay
           :is-active="isActive"
           :is-playing="isPlaying"
           :show-background="!isFromAlbum"
           @playing-control-clicked="onSongClicked"
-        >
-        </media-artwork-overlay>
+        />
       </div>
     </div>
 
@@ -45,7 +42,13 @@
         />
       </div>
 
-      <div :class="['long-text-truncated', 'song-item__artist-name', { queue: isQueue }]">
+      <div
+        :class="[
+          'long-text-truncated',
+          'song-item__artist-name',
+          { queue: isQueue }
+        ]"
+      >
         {{ track.attributes.artistName }}
       </div>
       <div
@@ -58,8 +61,7 @@
 
     <div class="song-item__menu" v-if="!isQueue">
       <button class="btn btn--icon" @click.prevent.stop="handleMoreIconClicked">
-        <icon class="icon" name="ellipsis-h">
-        </icon>
+        <icon class="icon" name="ellipsis-h"></icon>
       </button>
     </div>
 

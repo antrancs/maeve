@@ -3,24 +3,22 @@
     <section class="content-spacing" v-if="featuredPlaylists.length > 0">
       <h3 class="section-title">Featured Playlists</h3>
       <div class="flex-row feature-playlists">
-        <featured-playlist
+        <FeaturedPlaylist
           v-for="playlist in featuredPlaylists"
           :key="playlist.id"
           :playlist="playlist"
-        >
-        </featured-playlist>
+        />
       </div>
     </section>
 
     <section class="content-spacing" v-if="activities.length > 0">
       <h2 class="section-title">Activities & Mood</h2>
       <div class="flex-row">
-        <activity-item
+        <ActivityItem
           v-for="activity in activities"
           :key="activity.id"
           :activity="activity"
-        >
-        </activity-item>
+        />
       </div>
     </section>
   </div>
@@ -79,5 +77,4 @@ export default class Home extends Vue {
 }
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

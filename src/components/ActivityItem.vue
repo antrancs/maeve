@@ -1,15 +1,16 @@
 <template>
   <div class="media-column">
-    <router-link :to="{ name: 'activities', params: { id: activity.id }}">
-      <media-artwork
+    <router-link :to="{ name: 'activities', params: { id: activity.id } }">
+      <MediaArtwork
         :artwork="this.activity.attributes.artwork"
         :width="300"
         :height="300"
-      >
-      </media-artwork>
+      />
     </router-link>
 
-    <div class="main-info-text activity__name">{{ activity.attributes.name }}</div>
+    <div class="main-info-text activity__name">
+      {{ activity.attributes.name }}
+    </div>
   </div>
 </template>
 

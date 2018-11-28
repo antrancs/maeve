@@ -11,17 +11,17 @@
 
     <section v-if="nonSingles.length > 0" class="content-spacing">
       <h3 class="section-title">Albums</h3>
-      <song-collection-list :collections="nonSingles"></song-collection-list>
-    </section>
-    
-    <section v-if="singles.length > 0" class="content-spacing">
-      <h3 class="section-title">Singles</h3>
-      <song-collection-list :collections="singles"></song-collection-list>
+      <SongCollectionList :collections="nonSingles" />
     </section>
 
-    <section v-if="playlists.length > 0"  class="content-spacing">
+    <section v-if="singles.length > 0" class="content-spacing">
+      <h3 class="section-title">Singles</h3>
+      <SongCollectionList :collections="singles" />
+    </section>
+
+    <section v-if="playlists.length > 0" class="content-spacing">
       <h3 class="section-title">Playlists</h3>
-      <song-collection-list :collections="playlists"></song-collection-list>
+      <SongCollectionList :collections="playlists" />
     </section>
   </div>
 </template>
@@ -38,18 +38,15 @@ import { Nullable } from '@/@types/model/model';
   components: { SongCollectionList }
 })
 export default class ArtistDetail extends Vue {
-  // Data
   private attributes: Nullable<MusicKit.ArtistAttributes> = null;
   private artworkUrl: string = '';
   private albums: MusicKit.Album[] = [];
   private playlists: MusicKit.Playlist[] = [];
 
-  // Life cycle methods
   created() {
     this.$_getArtistInfo();
   }
 
-  // Computed
   get artworkLargeScreen(): string {
     return formatArtworkUrl(this.artworkUrl, 1000, 1000);
   }
@@ -101,6 +98,7 @@ export default class ArtistDetail extends Vue {
       });
   }
 
+  // Helper methods
   private $_getArtistArtwork() {
     if (!this.attributes) {
       return;
@@ -149,4 +147,3 @@ export default class ArtistDetail extends Vue {
   width: 100%;
 }
 </style>
-

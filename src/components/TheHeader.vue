@@ -2,33 +2,19 @@
   <div class="header flex-row">
     <div class="header__left">
       <router-link to="/">
-        <img class="logo logo--desktop" src="@/assets/logo-desktop.png" alt="">
-        <img class="logo logo--mobile" src="@/assets/logo-mobile.png" alt="">
+        <img class="logo logo--desktop" src="@/assets/logo-desktop.png" alt />
+        <img class="logo logo--mobile" src="@/assets/logo-mobile.png" alt />
       </router-link>
     </div>
     <div class="header__right flex-row content-spacing">
       <div class="search-bar flex-row">
-        <input
-          type="text"
-          placeholder="Search"
-          v-model="searchText"
-        />
+        <input type="text" placeholder="Search" v-model="searchText" />
       </div>
       <div class="authButton">
-        <button
-          v-if="!isAuthenticated"
-          @click="login"
-          class="btn"
-        >
+        <button v-if="!isAuthenticated" @click="login" class="btn">
           Log in
         </button>
-        <button
-          v-else
-          class="btn"
-          @click="logout"
-        >
-          Log out
-        </button>
+        <button v-else class="btn" @click="logout">Log out</button>
       </div>
     </div>
   </div>

@@ -1,17 +1,16 @@
 <template>
   <div class="featured-playlist">
     <router-link :to="{ name: 'playlists', params: { id: playlist.id } }">
-      <div class="featured-playlist__background" :style="backgroundStyle">
-      </div>
+      <div class="featured-playlist__background" :style="backgroundStyle"></div>
 
       <div class="flex-column featured-playlist__content size-fit">
         <div class="flex-center featured-playlist__artwork-wrapper">
           <img
             v-lazy="artworkUrl"
-            alt=""
+            alt
             class="featured-playlist__artwork"
             :style="artworkStyle"
-          >
+          />
           <div class="absolute-fit flex-center featured-playlist__description">
             {{ playlistLongDescription }}
           </div>
@@ -32,11 +31,9 @@ import { getArtworkUrl } from '@/utils/utils';
 
 @Component
 export default class FeaturedPlaylist extends Vue {
-  // Props
   @Prop()
   playlist!: MusicKit.Playlist;
 
-  // Computed
   get artworkUrl(): string {
     if (
       !this.playlist ||

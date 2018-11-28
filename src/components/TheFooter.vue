@@ -1,15 +1,32 @@
 <template>
   <div class="footer">
-      <div class="separator"></div>
-      <p>Copyright © {{ new Date().getFullYear() }} — 
-        <a target="_blank" class="link link--external" href="https://github.com/antrancs">An Tran</a>
-      </p>
-      <p>Have feedback or report a bug? Submit an issue on 
-        <a target="_blank" class="link link--external" href="https://github.com/antrancs/maeve/issues">Github</a> 
-        or send an email to
-        <a target="_blank" class="link link--external" href="mailto:an.tran.cs@gmail.com">an.tran.cs@gmail.com</a>
-      </p>
-    </div>
+    <div class="separator"></div>
+    <p>
+      Copyright © {{ new Date().getFullYear() }} —
+      <a
+        target="_blank"
+        class="link link--external"
+        href="https://github.com/antrancs"
+        >An Tran</a
+      >
+    </p>
+    <p>
+      Have feedback or report a bug? Submit an issue on
+      <a
+        target="_blank"
+        class="link link--external"
+        href="https://github.com/antrancs/maeve/issues"
+        >Github</a
+      >
+      or send an email to
+      <a
+        target="_blank"
+        class="link link--external"
+        href="mailto:an.tran.cs@gmail.com"
+        >an.tran.cs@gmail.com</a
+      >
+    </p>
+  </div>
 </template>
 
 <script lang="ts">

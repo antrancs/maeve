@@ -1,7 +1,5 @@
 <template>
-  <li class="context-menu-item" @click="onClick">
-    <slot></slot>
-  </li>
+  <li class="context-menu-item" @click="onClick"><slot></slot></li>
 </template>
 
 <script lang="ts">
@@ -10,7 +8,6 @@ import { Prop, Component } from 'vue-property-decorator';
 
 @Component
 export default class ContextMenuItem extends Vue {
-  // Props
   @Prop()
   onClick!: () => void;
 }
@@ -24,4 +21,3 @@ export default class ContextMenuItem extends Vue {
   padding: 0.8rem 1.5rem;
 }
 </style>
-

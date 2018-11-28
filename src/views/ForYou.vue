@@ -1,16 +1,17 @@
 <template>
-    <div>
-      <section
-        class="content-spacing"
-        v-for="recommendation in recommendations"
-        :key="recommendation.id"
-      >
-        <h3 class="section-title">{{ recommendation.attributes.title.stringForDisplay }}</h3>
+  <div>
+    <section
+      class="content-spacing"
+      v-for="recommendation in recommendations"
+      :key="recommendation.id"
+    >
+      <h3 class="section-title">
+        {{ recommendation.attributes.title.stringForDisplay }}
+      </h3>
 
-        <song-collection-list :collections="getDataArray(recommendation)">
-        </song-collection-list>
-      </section>
-    </div>
+      <SongCollectionList :collections="getDataArray(recommendation)" />
+    </section>
+  </div>
 </template>
 
 <script lang="ts">
@@ -28,7 +29,6 @@ import { Collection } from '@/@types/model/model';
 export default class ForYou extends Vue {
   private recommendations: MusicKit.Recommendation[] = [];
 
-  // Life cycle methods
   created() {
     musicApiService
       .getRecommendations()
@@ -78,5 +78,4 @@ export default class ForYou extends Vue {
 }
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

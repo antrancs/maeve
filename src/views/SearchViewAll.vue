@@ -5,20 +5,11 @@
       <song-collection-list
         v-if="type === 'albums' || type === 'playlists'"
         :collections="data"
-      >
-      </song-collection-list>
+      ></song-collection-list>
 
-      <artist-list
-        v-else-if="type === 'artists'"
-        :artists="data"
-      >
-      </artist-list>
+      <ArtistList v-else-if="type === 'artists'" :artists="data" />
 
-      <song-list
-        v-else-if="type === 'songs'"
-        :tracks="data"
-      >
-      </song-list>
+      <SongList v-else-if="type === 'songs'" :tracks="data" />
 
       <infinite-loading @infinite="infiniteHandler" spinner="circles">
         <span slot="no-more"></span>
@@ -49,20 +40,16 @@ import { PlaySongsAction } from '@/store/types';
   }
 })
 export default class SearchViewAll extends Vue {
-  // Data
   private offset = 0;
   private fetchLimit = 20;
   private hasNext = true;
   private data: any[] = [];
   private idSet = new Set<string>();
 
-  // Action
   @Action [PLAY_SONGS]: PlaySongsAction;
 
-  // Provide/Inject
   @Provide() handleSongClicked: HandleSongClicked = this.$_playAllSongs;
 
-  // Computed
   get query(): string {
     return this.$route.query.q;
   }
@@ -71,7 +58,6 @@ export default class SearchViewAll extends Vue {
     return this.$route.params.type;
   }
 
-  // Life cycle methods
   created() {
     const typeSet = new Set(['albums', 'playlists', 'songs', 'artists']);
     if (!typeSet.has(this.type)) {
@@ -79,7 +65,6 @@ export default class SearchViewAll extends Vue {
     }
   }
 
-  // Methods
   infiniteHandler($state: any) {
     // const query = this.$route.query.q;
     const { type } = this.$route.params;
@@ -132,5 +117,4 @@ export default class SearchViewAll extends Vue {
 }
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

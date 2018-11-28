@@ -1,10 +1,6 @@
 <template>
   <div class="media-list">
-    <artist-item
-      v-for="artist in artists"
-      :key="artist.id"
-      :artist="artist">
-    </artist-item>
+    <ArtistItem v-for="artist in artists" :key="artist.id" :artist="artist" />
   </div>
 </template>
 
@@ -18,11 +14,9 @@ import ArtistItem from '@/components/ArtistItem.vue';
   components: { ArtistItem }
 })
 export default class ArtistList extends Vue {
-  // Props
   @Prop({ default: () => [] })
   artists!: Artist[];
 }
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

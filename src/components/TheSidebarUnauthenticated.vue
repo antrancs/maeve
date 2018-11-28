@@ -5,18 +5,18 @@
         <router-link to="/">
           <div class="flex-row sidebar-menu-item__wrapper">
             <div class="sidebar-menu-item__icon">
-              <icon name="home" class="icon icon--l">
-              </icon>
+              <icon name="home" class="icon icon--l"></icon>
             </div>
-            
-            <div class="sidebar-menu-item__text">
-              Home
-            </div>
+
+            <div class="sidebar-menu-item__text">Home</div>
           </div>
         </router-link>
       </li>
     </ul>
-    <p class="unauthorize-message">Log in with your Apple Music to listen to full songs and manage your playlists</p>
+    <p class="unauthorize-message">
+      Log in with your Apple Music to listen to full songs and manage your
+      playlists
+    </p>
   </div>
 </template>
 

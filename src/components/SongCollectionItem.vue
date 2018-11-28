@@ -3,25 +3,24 @@
     <router-link :to="{ name: collection.type, params: { id: collection.id } }">
       <div class="collection-artwork-wrapper">
         <!-- <img class="artwork" v-lazy="artworkUrl"> -->
-        <media-artwork
+        <MediaArtwork
           :artwork="this.collection.attributes.artwork"
           :width="300"
           :height="300"
-        >
-        </media-artwork>
+        />
+
         <div class="collection-artwork-overlay" :class="artworkOverlayClass">
           <button @click.prevent="handleIconClicked" class="btn btn--icon">
             <icon
               v-if="isCollectionBeingPlayed && musicPlayer.isPlaying"
               class="collection-artwork-overlay__icon"
               name="pause-circle"
-            >
-            </icon>
-            <icon v-else
+            ></icon>
+            <icon
+              v-else
               class="collection-artwork-overlay__icon"
               name="play-circle"
-            >
-            </icon>
+            ></icon>
           </button>
         </div>
       </div>
@@ -39,7 +38,9 @@
         />
       </div>
       <div class="media-details__subtitle long-text-truncated sub-info-text">
-        {{ collection.attributes.artistName || collection.attributes.curatorName }}
+        {{
+          collection.attributes.artistName || collection.attributes.curatorName
+        }}
       </div>
     </div>
   </div>

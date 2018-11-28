@@ -1,12 +1,11 @@
 <template>
   <div class="app-body">
-    <app-sidebar></app-sidebar>
+    <AppSidebar />
     <div class="main-content-wrapper flex-column">
       <transition name="fade" mode="out-in">
         <router-view class="main-content"></router-view>
       </transition>
-
-      <app-footer></app-footer>
+      <AppFooter />
     </div>
   </div>
 </template>

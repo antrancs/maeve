@@ -69,3 +69,7 @@ export type PlaySongsAction = (payload: PlaySongsPayload) => void;
 export interface AuthState {
   musicUserToken: string | null;
 }
+
+export interface SongQueueState {
+  visibility: boolean;
+}

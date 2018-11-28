@@ -12,3 +12,5 @@ export const SET_USER_TOKEN = 'setUserToken';
 export const SET_SHOWING_CONTEXT_MENU = 'setShowingContextMenu';
 export const SET_CONTEXT_MENU_DISPLAY_POSITION =
   'setContextMenuDisplayPosition';
+
+export const TOGGLE_QUEUE_VISIBILITY = 'toggleQueueVisibility';

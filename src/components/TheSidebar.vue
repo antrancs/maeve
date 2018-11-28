@@ -1,13 +1,13 @@
 <template>
   <div class="sidebar">
-    <sidebar-authenticated v-if="isAuthenticated"></sidebar-authenticated>
-    <sidebar-unauthenticated v-else></sidebar-unauthenticated>
+    <SidebarAuthenticated v-if="isAuthenticated" />
+    <SidebarUnauthenticated v-else />
 
     <img
       v-if="currentTrackArtwork && currentTrackArtwork.length > 0"
       class="side-bar__song-artwork"
       :src="currentTrackArtwork"
-      alt=""
+      alt
     />
   </div>
 </template>

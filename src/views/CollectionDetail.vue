@@ -103,7 +103,6 @@
 <script lang="ts">
 import { Component, Prop, Vue, Provide } from 'vue-property-decorator';
 import { Action, Getter, State } from 'vuex-class';
-import { shuffle } from 'lodash';
 
 import SongList from '@/components/SongList.vue';
 import MediaArtwork from '@/components/MediaArtwork.vue';
@@ -265,11 +264,12 @@ export default class CollectionDetail extends Vue {
    * Shuffle the collection and play
    */
   shuffleSongs() {
-    const ids = this.songs.map(({ id }) => id);
-    // this.playSongs({ songs: this.songs });
-    // this.playSongs({
-    //   ids: shuffle(ids)
-    // });
+    if (this.collection) {
+      this.playCollectionWithSong({
+        collection: this.collection,
+        shuffle: true
+      });
+    }
   }
 }
 </script>
@@ -304,32 +304,6 @@ export default class CollectionDetail extends Vue {
   z-index: 1;
 }
 
-/* .content {
-  align-items: flex-start;
-  color: white;
-  height: 100%;
-  justify-content: flex-end;
-  padding-bottom: $m-size;
-  position: relative;
-  z-index: 2;
-} */
-
-/* .content .control-buttons {
-  display: flex;
-  margin-top: $m-size;
-} */
-
-/* .content-upper {
-  align-items: center;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-
-  & .control-buttons {
-    display: none;
-  }
-} */
-
 .collection-detail-header__banner {
   position: absolute;
   top: 0;
@@ -337,10 +311,6 @@ export default class CollectionDetail extends Vue {
   height: 100%;
   overflow: hidden;
 }
-
-/* .collection-title {
-  font-size: 2rem;
-} */
 
 .collection-subtitle {
   font-size: 1.8rem;

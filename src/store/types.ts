@@ -34,6 +34,7 @@ export type AddToLibraryPayload = {
 
 export type PlayCollectionWithSongPayload = {
   collection: Collection;
+  shuffle?: boolean;
   songId?: string;
 };
 

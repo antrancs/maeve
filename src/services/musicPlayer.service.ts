@@ -59,6 +59,7 @@ const musicPlayerService = {
    */
   playCollectionWithSong(
     playParams: MusicKit.PlayParameters,
+    shuffle: boolean,
     songId?: string
   ): Promise<number> {
     if (!playParams) {
@@ -66,6 +67,7 @@ const musicPlayerService = {
     }
 
     const music = musicKit.getInstance();
+    music.player.shuffleMode = shuffle ? 1 : 0;
     return music
       .setQueue({
         [playParams.kind]: playParams.id

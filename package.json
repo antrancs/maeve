@@ -12,7 +12,6 @@
   "dependencies": {
     "axios": "^0.18.0",
     "cheerio": "^1.0.0-rc.2",
-    "lodash": "^4.17.10",
     "vue": "^2.5.18",
     "vue-class-component": "^6.2.0",
     "vue-infinite-loading": "^2.3.3",

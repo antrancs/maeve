@@ -107,7 +107,7 @@ const actions: ActionTree<MusicPlayerState, any> = {
 
   [PLAY_COLLECTION_WITH_SONG](
     { getters, dispatch, commit },
-    { collection, songId }: PlayCollectionWithSongPayload
+    { collection, songId, shuffle = false }: PlayCollectionWithSongPayload
   ) {
     if (
       !collection ||
@@ -117,7 +117,7 @@ const actions: ActionTree<MusicPlayerState, any> = {
       return;
     }
 
-    if (!songId && getters.isCollectionBeingPlayed(collection.id)) {
+    if (!songId && getters.isCollectionBeingPlayed(collection.id) && !shuffle) {
       dispatch(TOGGLE_CURRENT_TRACK);
       return;
     }
@@ -128,7 +128,7 @@ const actions: ActionTree<MusicPlayerState, any> = {
     }
 
     return musicPlayerService
-      .playCollectionWithSong(collection.attributes.playParams, songId)
+      .playCollectionWithSong(collection.attributes.playParams, shuffle, songId)
       .then(() => {
         commit(SET_SONG_QUEUE, musicPlayerService.queuedSongs);
       });

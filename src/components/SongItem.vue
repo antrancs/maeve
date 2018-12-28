@@ -1,80 +1,121 @@
 <template>
-  <div
-    v-if="track && track.attributes"
-    :class="['song-item', { 'song-item--playing': isActive }]"
-  >
-    <div class="song-item__left">
-      <div v-if="showLoading" class="spinner"></div>
-      <div v-else class="size-fit">
-        <MediaArtwork
-          v-if="!isFromAlbum"
-          :artwork="track.attributes.artwork"
-          :width="50"
-          :height="50"
-        />
+  <v-hover>
+    <v-layout
+      row
+      align-center
+      v-if="song && song.attributes"
+      :class="[
+        'song-item',
+        {
+          'song-item--playing': isActive,
+          'primary lighten-1': hover && !isQueue,
+          'secondary lighten-1': hover && isQueue
+        }
+      ]"
+      slot-scope="{ hover }"
+    >
+      <div class="song-item__left ml-2 mr-3">
+        <div v-if="showLoading" class="spinner"></div>
+        <div v-else class="size-fit">
+          <MediaArtwork
+            v-if="!isFromAlbum"
+            :artwork="song.attributes.artwork"
+            :width="50"
+            :height="50"
+          />
 
-        <div
-          v-if="isFromAlbum && !isActive"
-          class="track-number flex-center size-fit"
-        >
-          {{ track.attributes.trackNumber }}
+          <div
+            v-if="isFromAlbum && !isActive"
+            class="track-number flex-center size-fit"
+            :style="{ opacity: hover ? 0 : 1 }"
+          >
+            {{ song.attributes.trackNumber }}
+          </div>
+
+          <MediaArtworkOverlay
+            :is-active="isActive"
+            :is-playing="isPlaying"
+            :show-background="!isFromAlbum"
+            @playing-control-clicked="onSongClicked"
+          />
         </div>
-
-        <MediaArtworkOverlay
-          :is-active="isActive"
-          :is-playing="isPlaying"
-          :show-background="!isFromAlbum"
-          @playing-control-clicked="onSongClicked"
-        />
       </div>
-    </div>
 
-    <div class="song-item__middle sub-info-text">
-      <div :class="['song-item__song-name', { queue: isQueue }]">
-        <div class="long-text-truncated main-info-text">
-          {{ track.attributes.name }}
-        </div>
+      <v-flex class="song-item__middle">
+        <v-layout row wrap>
+          <v-flex xs12 class="pr-2" :class="{ 'sm6 md5': !isQueue }">
+            <v-layout>
+              <div class="long-text-truncated main-info-text">
+                {{ song.attributes.name }}
+              </div>
 
-        <icon
-          class="explitcit-icon"
-          v-if="track.attributes.contentRating === 'explicit'"
-          name="explicit"
-        />
-      </div>
+              <v-icon
+                class="ml-1"
+                small
+                v-if="song.attributes.contentRating === 'explicit'"
+                >explicit</v-icon
+              >
+            </v-layout>
+          </v-flex>
+
+          <v-flex xs12 class="pr-2" :class="{ 'md4 sm6': !isQueue }">
+            <div
+              :class="[
+                'long-text-truncated',
+                'song-item__artist-name',
+                { queue: isQueue }
+              ]"
+            >
+              {{ song.attributes.artistName }}
+            </div>
+          </v-flex>
+
+          <v-flex md3 class="hidden-sm-and-down" v-if="!isQueue">
+            <div
+              v-if="!isFromAlbum && !isQueue"
+              :class="['long-text-truncated', 'song-item__album-name']"
+            >
+              <span v-if="$vuetify.breakpoint.smAndDown"> - </span>
+              {{ song.attributes.albumName }}
+            </div>
+          </v-flex>
+        </v-layout>
+      </v-flex>
 
       <div
-        :class="[
-          'long-text-truncated',
-          'song-item__artist-name',
-          { queue: isQueue }
-        ]"
+        v-if="!isQueue"
+        class="song-actions"
+        :style="{ opacity: hover ? 1 : 0 }"
       >
-        {{ track.attributes.artistName }}
-      </div>
-      <div
-        v-if="!isFromAlbum && !isQueue"
-        :class="['long-text-truncated', 'song-item__album-name']"
-      >
-        {{ track.attributes.albumName }}
-      </div>
-    </div>
+        <v-menu bottom left>
+          <v-btn slot="activator" icon dark>
+            <v-icon @click.prevent.stop="">more_horiz</v-icon>
+          </v-btn>
 
-    <div class="song-item__menu" v-if="!isQueue">
-      <button class="btn btn--icon" @click.prevent.stop="handleMoreIconClicked">
-        <icon class="icon" name="ellipsis-h"></icon>
-      </button>
-    </div>
+          <v-list>
+            <v-list-tile @click="$emit('play-next', song)">
+              <v-list-tile-title>Play next</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile @click="$emit('add-to-queue', song)">
+              <v-list-tile-title>Add to queue</v-list-tile-title>
+            </v-list-tile>
+            <v-list-tile @click="$emit('add-to-library', song)">
+              <v-list-tile-title>Add to library</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
+      </div>
 
-    <div class="song-item__right sub-info-text">
-      {{ track.attributes.durationInMillis | formattedDuration }}
-    </div>
-  </div>
+      <div class="song-item__right sub-info-text hidden-xs-only">
+        {{ song.attributes.durationInMillis | formattedDuration }}
+      </div>
+    </v-layout>
+  </v-hover>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue, Inject, Watch } from 'vue-property-decorator';
 import { State, Action } from 'vuex-class';
-import 'vue-awesome/icons/ellipsis-h';
 
 import { MusicPlayerState } from '@/store/types';
 import { TOGGLE_CURRENT_TRACK } from '@/store/actions.type';
@@ -89,7 +130,7 @@ export default class SongItem extends Vue {
   private showLoading = false;
   // Props
   @Prop()
-  track!: MusicKit.Song;
+  song!: MusicKit.Song;
   @Prop({ default: true })
   isFromAlbum!: boolean;
   @Prop()
@@ -107,13 +148,13 @@ export default class SongItem extends Vue {
 
   // Provide/Inject
   @Inject()
-  handleSongClicked!: HandleSongClicked;
+  onSongItemClicked!: HandleSongClicked;
 
   // computed
   get isActive(): boolean {
     return (
       this.musicPlayer.currentPlaying !== null &&
-      this.musicPlayer.currentPlaying.id === this.track.id
+      this.musicPlayer.currentPlaying.id === this.song.id
     );
   }
 
@@ -128,14 +169,6 @@ export default class SongItem extends Vue {
     }
   }
 
-  // Methods
-  handleMoreIconClicked(event: MouseEvent) {
-    // @ts-ignore
-    this.$contextMenu.open('cm-song-list', event, {
-      selectedTrack: this.track
-    });
-  }
-
   /**
    * Event handler when a song row is clicked
    */
@@ -143,18 +176,19 @@ export default class SongItem extends Vue {
     // Toggle the song if it's playing
     if (
       this.musicPlayer.currentPlaying &&
-      this.musicPlayer.currentPlaying.id === this.track.id
+      this.musicPlayer.currentPlaying.id === this.song.id
     ) {
       this.toggleCurrentTrack();
       return;
     }
 
     this.showLoading = true;
+
     // Forward the song info to the provider method
-    if (!this.handleSongClicked) {
+    if (!this.onSongItemClicked) {
       return;
     }
-    this.handleSongClicked(this.index, this.track.id);
+    this.onSongItemClicked(this.index, this.song.id);
   }
 }
 </script>

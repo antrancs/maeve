@@ -1,16 +1,27 @@
 <template>
-  <div v-if="activity" class="content-spacing activity">
-    <div class="activity-header flex-column">
+  <div v-if="activity" class="activity">
+    <div class="activity-header">
       <div class="banner" :style="bannerStyle"></div>
-      <h3 class="activity-title">{{ activity.attributes.name }}</h3>
+      <v-container fluid fill-height>
+        <v-layout align-end>
+          <h3 class="activity-title">{{ activity.attributes.name }}</h3>
+        </v-layout>
+      </v-container>
     </div>
-    <div class="activity-content">
-      <div class="activity-list">
-        <h3 class="section-title">Popular playlists</h3>
+    <v-container
+      fluid
+      :class="{
+        'grid-list-lg': $vuetify.breakpoint.mdAndUp,
+        'grid-list-md': $vuetify.breakpoint.mdAndDown
+      }"
+      class="activity-content"
+    >
+      <v-layout row wrap style="z-index: 2">
+        <v-flex xs12> <h3 class="section-title">Popular playlists</h3> </v-flex>
 
-        <SongCollectionList :collections="playlists" />
-      </div>
-    </div>
+        <v-flex xs12> <SongCollectionList :collections="playlists" /> </v-flex>
+      </v-layout>
+    </v-container>
   </div>
 </template>
 
@@ -21,6 +32,7 @@ import SongCollectionList from '@/components/SongCollectionList.vue';
 import musicApiService from '@/services/musicApi.service';
 import { Nullable } from '@/@types/model/model';
 import { ActivityType } from '@/utils/constants';
+import { getArtworkUrl } from '@/utils/utils';
 
 @Component({
   components: { SongCollectionList }
@@ -29,30 +41,11 @@ export default class ActivityDetail extends Vue {
   private activity: Nullable<MusicKit.Activity> = null;
 
   get bannerImage(): string {
-    if (!this.activity) {
+    if (!this.activity || !this.activity.attributes) {
       return '';
     }
 
-    switch (this.activity.id) {
-      case ActivityType.Workout:
-        return require('./../assets/workout.jpg');
-      case ActivityType.Sad:
-        return require('./../assets/sad.jpg');
-      case ActivityType.Focus:
-        return require('./../assets/focus.jpg');
-      case ActivityType.Romance:
-        return require('./../assets/romance.jpg');
-      case ActivityType.Decade:
-        return require('./../assets/decades.jpg');
-      case ActivityType.Chill:
-        return require('./../assets/chill.jpg');
-      case ActivityType.Motivation:
-        return require('./../assets/motivation.jpg');
-      case ActivityType.Party:
-        return require('./../assets/party.jpg');
-      default:
-        return '';
-    }
+    return getArtworkUrl(this.activity.attributes.artwork.url, 1000, 1000);
   }
 
   get playlists(): MusicKit.Playlist[] {
@@ -69,8 +62,7 @@ export default class ActivityDetail extends Vue {
 
   get bannerStyle(): object {
     return {
-      'background-image': `url('${this.bannerImage}')`,
-      'background-position': '50%'
+      'background-image': `url('${this.bannerImage}')`
     };
   }
 
@@ -96,7 +88,6 @@ export default class ActivityDetail extends Vue {
 
 .activity-title {
   font-size: $xl-font;
-  margin: 0 0 $xl-size $m-size;
   position: relative;
   z-index: 2;
 }
@@ -104,11 +95,12 @@ export default class ActivityDetail extends Vue {
 .activity-content {
   position: relative;
   width: 100%;
+  z-index: 2;
 }
 
 .activity-list {
   position: relative;
-  z-index: 4;
+  z-index: 2;
 
   & h3 {
     margin-top: 0;
@@ -126,14 +118,14 @@ export default class ActivityDetail extends Vue {
   height: 6rem;
   overflow-x: hidden;
   transform: translateZ(0) skewY(-2deg);
-  z-index: 3;
+  z-index: -1;
   outline: 0.1rem solid transparent;
   top: -2.5rem;
 }
 
 @media (min-width: $bp-phone) {
   .activity-header {
-    height: 45vh;
+    height: 60vh;
   }
 }
 </style>

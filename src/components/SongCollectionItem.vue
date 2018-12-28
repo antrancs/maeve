@@ -1,8 +1,16 @@
 <template>
-  <div v-if="collection && collection.attributes" class="media-column">
+  <v-flex
+    xs6
+    sm3
+    md2
+    v-if="collection && collection.attributes"
+    :class="{
+      'pa-2': $vuetify.breakpoint.mdAndUp,
+      'pa-1': $vuetify.breakpoint.mdAndDown
+    }"
+  >
     <router-link :to="{ name: collection.type, params: { id: collection.id } }">
       <div class="collection-artwork-wrapper">
-        <!-- <img class="artwork" v-lazy="artworkUrl"> -->
         <MediaArtwork
           :artwork="this.collection.attributes.artwork"
           :width="300"
@@ -10,58 +18,52 @@
         />
 
         <div class="collection-artwork-overlay" :class="artworkOverlayClass">
-          <button @click.prevent="handleIconClicked" class="btn btn--icon">
-            <icon
+          <button @click.prevent="playCollection" class="btn btn--icon">
+            <v-icon
+              x-large
               v-if="isCollectionBeingPlayed && musicPlayer.isPlaying"
               class="collection-artwork-overlay__icon"
-              name="pause-circle"
-            ></icon>
-            <icon
-              v-else
-              class="collection-artwork-overlay__icon"
-              name="play-circle"
-            ></icon>
+              >pause_circle_filled</v-icon
+            >
+            <v-icon v-else x-large class="collection-artwork-overlay__icon"
+              >play_circle_filled</v-icon
+            >
           </button>
         </div>
       </div>
     </router-link>
 
-    <div class="media-details">
+    <div>
       <div class="media-details__title">
         <div class="long-text-truncated main-info-text">
           {{ collection.attributes.name }}
         </div>
-        <icon
-          class="explitcit-icon"
+        <v-icon
           v-if="collection.attributes.contentRating === 'explicit'"
-          name="explicit"
-        />
+          class="ml-1"
+          small
+          >explicit</v-icon
+        >
       </div>
-      <div class="media-details__subtitle long-text-truncated sub-info-text">
+      <div class="long-text-truncated sub-info-text">
         {{
           collection.attributes.artistName || collection.attributes.curatorName
         }}
       </div>
     </div>
-  </div>
+  </v-flex>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { State, Action } from 'vuex-class';
-import 'vue-awesome/icons/play-circle';
-import 'vue-awesome/icons/pause-circle';
+import { State, Action, Getter } from 'vuex-class';
 
 import MediaArtwork from '@/components/MediaArtwork.vue';
-import {
-  PlayCollectionAtIndexPayload,
-  PlayCollectionAtIndexAction
-} from '@/store/types';
 import { Collection, Nullable } from '@/@types/model/model';
-import { MusicPlayerState } from '@/store/types';
+import { MusicPlayerState, PlayCollectionWithSongAction } from '@/store/types';
 import {
-  PLAY_COLLECTION_AT_INDEX,
-  TOGGLE_CURRENT_TRACK
+  TOGGLE_CURRENT_TRACK,
+  PLAY_COLLECTION_WITH_SONG
 } from '@/store/actions.type';
 
 @Component({
@@ -70,27 +72,19 @@ import {
   }
 })
 export default class SongCollectionItem extends Vue {
-  // Props
   @Prop()
   collection!: Collection;
 
-  // State
   @State
   musicPlayer!: MusicPlayerState;
 
-  // Action
   @Action
-  [PLAY_COLLECTION_AT_INDEX]: PlayCollectionAtIndexAction;
+  [PLAY_COLLECTION_WITH_SONG]: PlayCollectionWithSongAction;
   @Action
   [TOGGLE_CURRENT_TRACK]!: () => void;
 
-  // Computed
   get isCollectionBeingPlayed(): boolean {
-    return (
-      this.musicPlayer.currentPlaying !== null &&
-      this.musicPlayer.currentPlaying.container !== undefined &&
-      this.collection.id === this.musicPlayer.currentPlaying.container.id
-    );
+    return this.$store.getters.isCollectionBeingPlayed(this.collection.id);
   }
 
   get artworkOverlayClass(): object {
@@ -99,40 +93,19 @@ export default class SongCollectionItem extends Vue {
     };
   }
 
-  // Methods
-  handleIconClicked() {
-    if (this.isCollectionBeingPlayed) {
-      this.toggleCurrentTrack();
-    } else {
-      if (
-        !this.collection ||
-        !this.collection.attributes ||
-        !this.collection.attributes.playParams
-      ) {
-        return;
-      }
-
-      this.playCollectionAtIndex({
-        playParams: this.collection.attributes.playParams,
-        index: 0
-      });
-    }
+  playCollection() {
+    this.playCollectionWithSong({
+      collection: this.collection
+    });
   }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '@/styles/components/_collection-artwork.scss';
-.media-details {
-  margin-top: $s-size;
-}
 
 .media-details__title {
   align-items: center;
   display: flex;
-}
-
-.media-details__subtitle {
-  margin-top: $xs-size;
 }
 </style>

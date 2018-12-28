@@ -1,16 +1,26 @@
 import Vue from 'vue';
+import Vuetify from 'vuetify';
+import 'vuetify/dist/vuetify.min.css';
+
+import musicKit from '@/services/musicKit';
+musicKit.init();
 
 import store from '@/store';
 import router from '@/router';
 import '@/plugins';
-import musicKit from '@/services/musicKit';
 import { connectMusicKitToStore } from '@/setup/musickit';
-import '@/setup/icons';
 import '@/filters';
 import App from './App.vue';
 
 Vue.config.productionTip = false;
-musicKit.init();
+
+Vue.use(Vuetify, {
+  theme: {
+    primary: '#062743',
+    secondary: '#113a5d',
+    accent: '#da0f47'
+  }
+});
 
 connectMusicKitToStore(musicKit.getInstance(), store);
 new Vue({

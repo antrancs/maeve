@@ -72,17 +72,17 @@ declare namespace MusicKit {
     /**
      * The current repeat mode of the music player.
      */
-    readonly repeatMode: PlayerRepeatMode;
+    repeatMode: PlayerRepeatMode;
 
     /**
      * The current shuffle mode of the music player.
      */
-    readonly shuffleMode: PlayerShuffleMode;
+    shuffleMode: PlayerShuffleMode;
 
     /**
      * A number indicating the current volume of the music player.
      */
-    readonly volume: number;
+    volume: number;
 
     /**
      * Adds an event listener as a callback for an event name.
@@ -117,7 +117,7 @@ declare namespace MusicKit {
     /**
      * Initiates playback of the current item.
      */
-    play(): Promise<void>;
+    play(): Promise<number>;
 
     /**
      * Prepares a music player for playback.
@@ -234,15 +234,15 @@ declare namespace MusicKit {
     /**
      * The current queue will be repeated.
      */
-    all = 'all',
+    all = 2,
     /**
      * No repeat mode specified.
      */
-    none = 'none',
+    none = 0,
     /**
      * The current media item will be repeated.
      */
-    one = 'one'
+    one = 1
   }
 
   /**
@@ -253,10 +253,10 @@ declare namespace MusicKit {
     /**
      * This value indicates that shuffle mode is off.
      */
-    off = 'off',
+    off = 0,
     /**
      * This value indicates that songs are being shuffled in the current queue.
      */
-    songs = 'songs'
+    songs = 1
   }
 }

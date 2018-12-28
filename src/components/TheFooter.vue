@@ -1,7 +1,10 @@
 <template>
-  <div class="footer">
-    <div class="separator"></div>
-    <p>
+  <v-footer
+    height="auto"
+    class="justify-center primary lighten-1 pt-3 px-3"
+    :class="paddingBottomClass"
+  >
+    <p class="text-xs-center ma-0 footer--content">
       Copyright © {{ new Date().getFullYear() }} —
       <a
         target="_blank"
@@ -9,8 +12,9 @@
         href="https://github.com/antrancs"
         >An Tran</a
       >
-    </p>
-    <p>
+
+      <br />
+
       Have feedback or report a bug? Submit an issue on
       <a
         target="_blank"
@@ -26,33 +30,32 @@
         >an.tran.cs@gmail.com</a
       >
     </p>
-  </div>
+  </v-footer>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { State } from 'vuex-class';
 
 @Component
-export default class AppFooter extends Vue {}
+export default class AppFooter extends Vue {
+  @State(state => state.musicPlayer.currentPlaying)
+  currentPlaying!: MusicKit.MediaItem | null;
+
+  get paddingBottomClass(): string {
+    return this.currentPlaying
+      ? 'padding-bottom--player-bar'
+      : 'padding-bottom';
+  }
+}
 </script>
 
 <style lang="scss" scoped>
-.footer {
-  color: $secondary-text-color;
-  margin-top: $l-size;
-  text-align: center;
+.padding-bottom {
+  padding-bottom: 1.6rem;
 }
 
-.footer::after {
-  background-color: $bg-color;
-  content: '';
-  display: block;
-  padding-bottom: 10rem;
-}
-
-.separator {
-  background-color: $divider-color;
-  height: 0.1rem;
-  width: 100%;
+.padding-bottom--player-bar {
+  padding-bottom: 1.6rem + $player-bar-height;
 }
 </style>

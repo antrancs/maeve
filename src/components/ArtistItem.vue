@@ -16,6 +16,9 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { getArtistArtwork } from '@/utils/utils';
 import { Artist } from '@/@types/model/model';
 import MediaArtwork from '@/components/MediaArtwork.vue';
+import { Action } from 'vuex-class';
+import { SHOW_SNACKBAR } from '@/store/actions.type';
+import { ShowSnackbarAction } from '@/store/types';
 
 @Component({
   components: {
@@ -27,6 +30,8 @@ export default class ArtistItem extends Vue {
 
   @Prop()
   artist!: MusicKit.Artist;
+
+  @Action [SHOW_SNACKBAR]: ShowSnackbarAction;
 
   created() {
     if (this.artist.attributes) {
@@ -44,8 +49,10 @@ export default class ArtistItem extends Vue {
       })
       .catch(err => {
         console.log(err);
-        // @ts-ignore
-        this.$toasted.global.error();
+
+        this.showSnackbar({
+          text: 'Something went wrong.'
+        });
       });
   }
 }

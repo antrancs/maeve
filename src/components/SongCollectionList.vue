@@ -1,11 +1,11 @@
 <template>
-  <div class="media-list">
+  <v-layout row wrap>
     <SongCollectionItem
+      :collection="collection"
       v-for="collection in collections"
       :key="collection.id"
-      :collection="collection"
     />
-  </div>
+  </v-layout>
 </template>
 
 <script lang="ts">

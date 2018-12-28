@@ -2,58 +2,76 @@
   <div class="collection-detail">
     <div class="collection-detail-header" v-if="collection">
       <div class="banner-overlay">
-        <div class="content-spacing content flex-column">
-          <!--
-            <img v-lazy="getCollectionArtwork(300, 300)" class="collection-artwork"/>
-          -->
-          <div class="group-control content-upper">
-            <MediaArtwork
-              :artwork="collection.attributes.artwork"
-              class="collection-artwork"
-              :width="300"
-              :height="300"
-              :has-shadow="true"
-            />
-            <div>
-              <h2 class="collection-title">
-                {{ collectionName }}
-                <icon
-                  v-if="collection.attributes.contentRating === 'explicit'"
-                  name="explicit"
-                />
-              </h2>
-              <div
-                class="collection-subtitle collection-artist-name sub-info-text"
-              >
-                {{ collectionArtistName }}
-              </div>
-
-              <div
-                class="collection-subtitle collection-metadata sub-info-text"
-              >
-                <span v-if="collectionType !== 'library-playlists'"
-                  >{{ releaseYear }} •</span
+        <v-container fluid fill-height>
+          <v-layout align-end row>
+            <v-flex>
+              <v-layout row wrap>
+                <v-flex
+                  shrink="true"
+                  :d-flex="$vuetify.breakpoint.xsOnly"
+                  :xs12="$vuetify.breakpoint.xsOnly"
+                  :justify-center="$vuetify.breakpoint.xsOnly"
                 >
-                {{ tracks.length }} tracks
-              </div>
-              <div class="group-control control-buttons">
-                <button @click="playCollection" class="btn">PLAY</button>
-                <button
-                  v-if="isAuthenticated"
-                  @click="shuffleSongs"
-                  class="btn"
-                >
-                  SHUFFLE
-                </button>
-              </div>
-            </div>
-          </div>
+                  <MediaArtwork
+                    :artwork="collection.attributes.artwork"
+                    :class="['collection-artwork']"
+                    :width="300"
+                    :height="300"
+                    :has-shadow="true"
+                  />
+                </v-flex>
+                <v-flex class="ml-3" :xs12="$vuetify.breakpoint.xsOnly">
+                  <v-layout
+                    column
+                    justify-end
+                    fill-height
+                    :align-center="$vuetify.breakpoint.xsOnly"
+                  >
+                    <h2>
+                      {{ collectionName }}
+                      <v-icon
+                        v-if="
+                          collection.attributes.contentRating === 'explicit'
+                        "
+                        >explicit</v-icon
+                      >
+                    </h2>
 
-          <div class="group-control control-buttons">
-            <button @click="playCollection" class="btn">PLAY</button>
-            <button v-if="isAuthenticated" class="btn">SHUFFLE</button>
-          </div>
-        </div>
+                    <div
+                      :class="['collection-subtitle', 'collection-artist-name']"
+                    >
+                      {{ collectionArtistName }}
+                    </div>
+
+                    <div class="collection-subtitle sub-info-text mb-2">
+                      <span v-if="collectionType !== 'library-playlists'"
+                        >{{ releaseYear }} •</span
+                      >
+                      {{ songs.length }} tracks
+                    </div>
+
+                    <div>
+                      <v-btn
+                        @click="playCollection"
+                        :color="this.$vuetify.theme.accent"
+                        class="ml-0"
+                      >
+                        {{ isCollectionBeingPlayed ? 'Pause' : 'Play' }}
+                      </v-btn>
+                      <v-btn
+                        v-if="isAuthenticated"
+                        @click="shuffleSongs"
+                        :color="this.$vuetify.theme.accent"
+                      >
+                        Shuffle
+                      </v-btn>
+                    </div>
+                  </v-layout>
+                </v-flex>
+              </v-layout>
+            </v-flex>
+          </v-layout>
+        </v-container>
       </div>
 
       <picture class="collection-detail-header__banner">
@@ -76,22 +94,25 @@
       </picture>
     </div>
 
-    <div class="content-spacing">
-      <SongList :tracks="tracks" :collection="collection" />
-    </div>
+    <v-container fluid>
+      <SongList :tracks="songs" :collection="collection" />
+    </v-container>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue, Provide } from 'vue-property-decorator';
-import { Action, Getter } from 'vuex-class';
+import { Action, Getter, State } from 'vuex-class';
 import { shuffle } from 'lodash';
 
 import SongList from '@/components/SongList.vue';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import { getArtworkUrl } from '@/utils/utils';
 import musicApiService from '@/services/musicApi.service';
-import { PlayCollectionAtIndexAction, PlaySongsAction } from '@/store/types';
+import {
+  PlayCollectionWithSongAction,
+  FetchCollectionAction
+} from '@/store/types';
 import {
   Collection,
   Song,
@@ -99,25 +120,40 @@ import {
   CollectionType,
   HandleSongClicked
 } from '@/@types/model/model';
-import { PLAY_COLLECTION_AT_INDEX, PLAY_SONGS } from '@/store/actions.type';
+import {
+  FETCH_COLLECTION,
+  PLAY_COLLECTION_WITH_SONG
+} from '@/store/actions.type';
 
 @Component({
   components: { SongList, MediaArtwork }
 })
 export default class CollectionDetail extends Vue {
-  private collection: Nullable<Collection> = null;
-  private tracks: Song[] = [];
+  @State(state => state.collection.collection) collection: Nullable<Collection>;
+  @State(state => state.musicPlayer.isPlaying)
+  isPlaying!: boolean;
 
+  @Getter
+  songs!: Song[];
   @Getter
   isAuthenticated!: boolean;
 
   @Action
-  [PLAY_COLLECTION_AT_INDEX]: PlayCollectionAtIndexAction;
-  @Action
-  [PLAY_SONGS]: PlaySongsAction;
+  [PLAY_COLLECTION_WITH_SONG]: PlayCollectionWithSongAction;
+  @Action [FETCH_COLLECTION]!: FetchCollectionAction;
 
   @Provide()
-  handleSongClicked: HandleSongClicked = this.playSongFromCollection;
+  onSongItemClicked: HandleSongClicked = this.handleSongItemClicked;
+
+  get isCollectionBeingPlayed(): boolean {
+    if (!this.collection) {
+      return false;
+    }
+    return (
+      this.$store.getters.isCollectionBeingPlayed(this.collection.id) &&
+      this.isPlaying
+    );
+  }
 
   get collectionName(): string {
     if (!this.collection || !this.collection.attributes) {
@@ -183,45 +219,11 @@ export default class CollectionDetail extends Vue {
     return year;
   }
 
-  // Life cycle methods
   created() {
     const collectionId = this.$route.params.id;
-    let promise: Promise<{ collection: Collection; tracks: Song[] } | null>;
-    switch (this.collectionType) {
-      case CollectionType.libraryPlaylist:
-      case CollectionType.libraryAlbum:
-        promise = musicApiService.getLibraryCollection(
-          collectionId,
-          this.collectionType
-        );
-        break;
-
-      case CollectionType.album:
-      case CollectionType.playlist:
-        promise = musicApiService.getCollection(
-          collectionId,
-          this.collectionType
-        );
-        break;
-
-      default:
-        promise = Promise.reject('Invalid collection type');
-    }
-    promise
-      .then(result => {
-        if (!result) {
-          return;
-        }
-
-        const { collection, tracks } = result;
-        this.collection = collection;
-        this.tracks = tracks;
-      })
-      // @ts-ignore
-      .catch(() => this.$toasted.global.error());
+    this.fetchCollection({ collectionId, collectionType: this.collectionType });
   }
 
-  // Methods
   getCollectionArtwork(width: number, height: number) {
     if (
       !this.collection ||
@@ -237,19 +239,12 @@ export default class CollectionDetail extends Vue {
    * Play the entire collection
    */
   playCollection() {
-    if (
-      !this.collection ||
-      !this.collection.attributes ||
-      !this.collection.attributes.playParams
-    ) {
-      return;
-    }
-
     // Start with the first song by default
-    this.playCollectionAtIndex({
-      playParams: this.collection.attributes.playParams,
-      index: 0
-    });
+    if (this.collection) {
+      this.playCollectionWithSong({
+        collection: this.collection
+      });
+    }
   }
 
   /**
@@ -257,28 +252,24 @@ export default class CollectionDetail extends Vue {
    * @param index Index of the song in the collection
    * @param songId Id of the the song
    */
-  playSongFromCollection(index: number, songId: string) {
-    if (
-      !this.collection ||
-      !this.collection.attributes ||
-      !this.collection.attributes.playParams
-    ) {
-      return;
+  handleSongItemClicked(index: number, songId: string) {
+    if (this.collection) {
+      this.playCollectionWithSong({
+        collection: this.collection,
+        songId
+      });
     }
-    this.playCollectionAtIndex({
-      playParams: this.collection.attributes.playParams,
-      index
-    });
   }
 
   /**
    * Shuffle the collection and play
    */
   shuffleSongs() {
-    const ids: string[] = this.tracks.map(({ id }) => id);
-    this.playSongs({
-      ids: shuffle(ids)
-    });
+    const ids = this.songs.map(({ id }) => id);
+    // this.playSongs({ songs: this.songs });
+    // this.playSongs({
+    //   ids: shuffle(ids)
+    // });
   }
 }
 </script>
@@ -289,10 +280,10 @@ export default class CollectionDetail extends Vue {
 }
 
 .collection-artwork {
-  max-height: 20vh;
-  max-width: 20vh;
-  width: 15rem;
-  height: 15rem;
+  max-height: 15vh;
+  max-width: 15vh;
+  width: 12rem;
+  height: 12rem;
 }
 
 .collection-detail-header {
@@ -310,25 +301,25 @@ export default class CollectionDetail extends Vue {
   );
   height: 100%;
   position: relative;
-  z-index: 40;
+  z-index: 1;
 }
 
-.content {
+/* .content {
   align-items: flex-start;
   color: white;
   height: 100%;
   justify-content: flex-end;
   padding-bottom: $m-size;
   position: relative;
-  z-index: 50;
-}
+  z-index: 2;
+} */
 
-.content .control-buttons {
+/* .content .control-buttons {
   display: flex;
   margin-top: $m-size;
-}
+} */
 
-.content-upper {
+/* .content-upper {
   align-items: center;
   display: flex;
   flex-direction: row;
@@ -337,7 +328,7 @@ export default class CollectionDetail extends Vue {
   & .control-buttons {
     display: none;
   }
-}
+} */
 
 .collection-detail-header__banner {
   position: absolute;
@@ -347,17 +338,16 @@ export default class CollectionDetail extends Vue {
   overflow: hidden;
 }
 
-.collection-title {
+/* .collection-title {
   font-size: 2rem;
-  margin: 0 0 $s-size 0;
-}
+} */
 
 .collection-subtitle {
   font-size: 1.8rem;
 }
 
 .collection-artist-name {
-  margin-bottom: $s-size;
+  font-weight: bold;
 }
 
 .image {
@@ -365,29 +355,7 @@ export default class CollectionDetail extends Vue {
   object-fit: cover;
 }
 
-.collection-metadata {
-  margin-bottom: $l-size;
-}
-
 @media (min-width: $bp-phone) {
-  .content {
-    align-items: flex-start;
-    padding-bottom: $l-size;
-  }
-
-  .content-upper {
-    align-items: flex-end;
-    justify-content: flex-start;
-  }
-
-  .content .control-buttons {
-    display: none;
-  }
-
-  .content-upper .control-buttons {
-    display: block;
-  }
-
   .collection-artwork {
     margin-bottom: 0;
     max-height: none;
@@ -404,10 +372,4 @@ export default class CollectionDetail extends Vue {
     height: 60vh;
   }
 }
-
-// @media (min-width: $bp-tablet-landscape) {
-//   .content-upper {
-//     justify-content: flex-start;
-//   }
-// }
 </style>

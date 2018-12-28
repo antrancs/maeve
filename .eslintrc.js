@@ -7,6 +7,7 @@ module.exports = {
   rules: {
     'arrow-parens': [2, 'as-needed'],
     'comma-dangle': 'off',
+    semi: 1,
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'function-paren-newline': ['error', 'consistent'],
@@ -15,7 +16,8 @@ module.exports = {
       'warn',
       {
         singleQuote: true,
-        trailingComma: 'none'
+        trailingComma: 'none',
+        semi: true
       }
     ]
   },

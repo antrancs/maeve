@@ -14,18 +14,6 @@
   // display: block;
 }
 
-.content-spacing {
-  margin: 0 auto;
-  max-width: 150rem;
-  padding: 0 $m-size;
-}
-
-@media (min-width: $bp-tablet-landscape) {
-  .content-spacing {
-    padding: 0 $l-size;
-  }
-}
-
 .absolute-fit {
   bottom: 0;
   position: absolute;
@@ -58,17 +46,15 @@
 
 .banner {
   background-color: rgba(0, 0, 0, 0.4);
+  background-position: 0% 20%;
   background-size: cover;
   height: 100%;
   width: 100%;
   position: absolute;
-  top: 0;
 }
 
 .section-title {
   font-size: $header-font-mobile;
-  margin-bottom: $m-size;
-  margin-top: $m-size;
 }
 
 @media (min-width: $bp-tablet-landscape) {

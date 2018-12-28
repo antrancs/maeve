@@ -1,13 +1,21 @@
-import { Nullable } from '@/@types/model/model';
+import {
+  Song,
+  CollectionType,
+  Collection,
+  Nullable,
+  SnackbarMode
+} from '@/@types/model/model';
+import { RepeatMode } from '@/utils/constants';
 
 // MusicPlayer module
 export interface MusicPlayerState {
   currentPlaying: MusicKit.MediaItem | null;
   isPlaying: boolean;
   playbackProgress: number;
-  queuedSongs: MusicKit.MediaItem[];
   isLoading: boolean;
   currentPlaybackTimeInMilliSeconds: number;
+  repeatMode: RepeatMode;
+  volume: number;
 }
 
 // Payload
@@ -24,13 +32,8 @@ export type AddToLibraryPayload = {
   type: string;
 };
 
-export type PlayCollectionAtIndexPayload = {
-  playParams: MusicKit.PlayParameters;
-  index: number;
-};
-
 export type PlayCollectionWithSongPayload = {
-  playParams: MusicKit.PlayParameters;
+  collection: Collection;
   songId?: string;
 };
 
@@ -39,7 +42,12 @@ export type SkipToSongAtIndexPayload = {
 };
 
 export type PlaySongsPayload = {
-  ids: string[];
+  songIds: string[];
+};
+
+export type FetchCollectionPayload = {
+  collectionId: string;
+  collectionType: CollectionType;
 };
 
 // Action
@@ -51,10 +59,6 @@ export type AppendSongsAction = (payload: AppendSongsPayload) => void;
 
 export type PrependSongsAction = (payload: PrependSongsPayload) => void;
 
-export type PlayCollectionAtIndexAction = (
-  payload: PlayCollectionAtIndexPayload
-) => void;
-
 export type PlayCollectionWithSongAction = (
   payload: PlayCollectionWithSongPayload
 ) => void;
@@ -65,11 +69,37 @@ export type SkipToSongAtIndexAction = (
 
 export type PlaySongsAction = (payload: PlaySongsPayload) => void;
 
+export type FetchCollectionAction = (payload: FetchCollectionPayload) => void;
+
+export type PlayCollectionPayload = {
+  collection: Collection;
+};
+
 // Auth module
 export interface AuthState {
   musicUserToken: string | null;
 }
 
-export interface SongQueueState {
+export interface PlayQueueState {
   visibility: boolean;
+  songs: MusicKit.MediaItem[];
+}
+
+export interface CollectionState {
+  collection: Nullable<Collection>;
+}
+
+export interface SnackbarState {
+  visibility: boolean;
+  text: string;
+  timeout: number;
+  type: string;
+}
+
+export type ShowSnackbarAction = (payload: ShowSnackbarActionPayload) => void;
+
+export interface ShowSnackbarActionPayload {
+  text: string;
+  timeout?: number;
+  type?: SnackbarMode;
 }

@@ -1,17 +1,30 @@
 <template>
-  <div>
-    <section
-      class="content-spacing"
-      v-for="recommendation in recommendations"
-      :key="recommendation.id"
-    >
-      <h3 class="section-title">
-        {{ recommendation.attributes.title.stringForDisplay }}
-      </h3>
-
-      <SongCollectionList :collections="getDataArray(recommendation)" />
-    </section>
-  </div>
+  <v-container
+    fluid
+    :class="{
+      'grid-list-lg': $vuetify.breakpoint.mdAndUp,
+      'grid-list-md': $vuetify.breakpoint.mdAndDown
+    }"
+  >
+    <v-layout row wrap>
+      <v-flex
+        xs12
+        v-for="recommendation in recommendations"
+        :key="recommendation.id"
+      >
+        <v-layout row wrap>
+          <v-flex xs12>
+            <h3 class="section-title">
+              {{ recommendation.attributes.title.stringForDisplay }}
+            </h3>
+          </v-flex>
+          <v-flex xs12>
+            <SongCollectionList :collections="getDataArray(recommendation)" />
+          </v-flex>
+        </v-layout>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script lang="ts">

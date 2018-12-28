@@ -22,5 +22,10 @@ export type Collection =
 
 export type Song = MusicKit.Song | MusicKit.LibrarySong;
 
+export enum SnackbarMode {
+  success = 'success',
+  error = 'error'
+}
+
 // Methods
 export type HandleSongClicked = (index: number, songId: string) => void;

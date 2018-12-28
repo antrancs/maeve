@@ -1,47 +1,19 @@
 .song-item {
-  align-items: center;
   border-bottom: 0.1rem solid $divider-color;
-  display: flex;
   height: 5rem;
-  justify-content: space-between;
   transition: background-color 0.25s ease-in-out;
-
-  &:hover {
-    .song-item__menu {
-      opacity: 1;
-    }
-    .track-number {
-      opacity: 0;
-    }
-    background-color: $black-color-0-5;
-  }
 }
 
 .song-item__left {
   border-radius: 0.2rem;
-  flex-basis: none;
   height: 3.2rem;
-  margin-left: $s-size;
-  margin-right: $m-size;
   overflow: hidden;
   position: relative;
   width: 3.2rem;
 }
 
-.song-item__middle {
-  align-items: flex-start;
-  display: flex;
-  flex: 1;
-  flex-wrap: wrap;
-}
-
 .song-item__right {
   flex: 0 0 5rem;
-}
-
-.song-item__menu {
-  flex: 0 0 3rem;
-  opacity: 0;
 }
 
 .index-column {
@@ -60,46 +32,24 @@
   display: none;
 }
 
-.song-item__song-name {
-  display: flex;
-  flex-basis: 38%;
-  margin-right: 2%;
+.song-item__middle {
+  flex-basis: 0;
+}
 
-  &.queue {
-    flex: 0 0 98%;
-  }
+.song-name {
+  flex: 0;
 }
 
 .song-item__artist-name {
-  flex-basis: 28%;
-  margin-right: 2%;
-
   &.queue {
     flex: 1;
   }
 }
 
 .song-item__album-name {
-  flex-basis: 28%;
-  margin-right: 2%;
-
   &.queue {
     flex: 0 0 auto;
     max-width: 40%;
-  }
-}
-
-@media (max-width: $bp-tablet-landscape) {
-  .song-item__album-name {
-    display: none;
-  }
-
-  .song-item__artist-name {
-    flex: 0 0 98%;
-  }
-
-  .song-item__song-name {
-    flex: 0 0 98%;
   }
 }
 

@@ -13,6 +13,8 @@ declare namespace MusicKit {
      */
     storefrontId: string;
 
+    userStorefrontId: string;
+
     /**
      * Fetch one or more activites using their identifiers.
      * @param ids An array of activity identifiers.

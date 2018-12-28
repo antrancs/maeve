@@ -1,11 +1,13 @@
 <template>
-  <div>
-    <section class="content-spacing">
-      <h2>All {{ this.$route.params.type }} results for '{{ query }}'</h2>
-      <song-collection-list
+  <v-container fluid>
+    <v-layout row wrap>
+      <v-flex xs12 class="px-2">
+        <h2>All {{ this.$route.params.type }} results for '{{ query }}'</h2>
+      </v-flex>
+      <SongCollectionList
         v-if="type === 'albums' || type === 'playlists'"
         :collections="data"
-      ></song-collection-list>
+      />
 
       <ArtistList v-else-if="type === 'artists'" :artists="data" />
 
@@ -14,8 +16,8 @@
       <infinite-loading @infinite="infiniteHandler" spinner="circles">
         <span slot="no-more"></span>
       </infinite-loading>
-    </section>
-  </div>
+    </v-layout>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -48,10 +50,10 @@ export default class SearchViewAll extends Vue {
 
   @Action [PLAY_SONGS]: PlaySongsAction;
 
-  @Provide() handleSongClicked: HandleSongClicked = this.$_playAllSongs;
+  @Provide() onSongItemClicked: HandleSongClicked = this.$_playAllSongs;
 
   get query(): string {
-    return this.$route.query.q;
+    return this.$route.query.q as string;
   }
 
   get type(): string {
@@ -111,10 +113,8 @@ export default class SearchViewAll extends Vue {
     ];
 
     this.playSongs({
-      ids: songIds
+      songIds
     });
   }
 }
 </script>
-
-<style lang="scss" scoped></style>

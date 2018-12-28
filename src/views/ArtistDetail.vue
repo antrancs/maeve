@@ -1,28 +1,42 @@
 <template>
-  <div v-if="attributes" class="artist-detail">
+  <div v-if="attributes" class="artist-detail" fluid>
     <div class="artist-detail-header">
       <div class="banner" :style="bannerStyle"></div>
       <div class="banner-overlay flex-column artist-banner-overlay">
-        <div class="content-spacing artist-detail__info">
-          <h2 class="artist-detail__name">{{ attributes.name }}</h2>
-        </div>
+        <v-container fluid fill-height>
+          <v-layout align-end>
+            <h2 class="artist-detail__name">{{ attributes.name }}</h2>
+          </v-layout>
+        </v-container>
       </div>
     </div>
 
-    <section v-if="nonSingles.length > 0" class="content-spacing">
-      <h3 class="section-title">Albums</h3>
-      <SongCollectionList :collections="nonSingles" />
-    </section>
+    <v-container fluid>
+      <v-layout row wrap>
+        <template v-if="nonSingles.length > 0">
+          <v-flex xs12 class="px-2 pt-4">
+            <h3 class="section-title">Albums</h3>
+          </v-flex>
 
-    <section v-if="singles.length > 0" class="content-spacing">
-      <h3 class="section-title">Singles</h3>
-      <SongCollectionList :collections="singles" />
-    </section>
+          <SongCollectionList :collections="nonSingles" />
+        </template>
 
-    <section v-if="playlists.length > 0" class="content-spacing">
-      <h3 class="section-title">Playlists</h3>
-      <SongCollectionList :collections="playlists" />
-    </section>
+        <template v-if="singles.length > 0">
+          <v-flex xs12 class="px-2 pt-4">
+            <h3 class="section-title">Singles</h3>
+          </v-flex>
+
+          <SongCollectionList :collections="singles" />
+        </template>
+
+        <template>
+          <v-flex xs12 class="px-2 pt-4">
+            <h3 class="section-title">Playlists</h3>
+          </v-flex>
+          <SongCollectionList :collections="playlists" />
+        </template>
+      </v-layout>
+    </v-container>
   </div>
 </template>
 
@@ -130,7 +144,7 @@ export default class ArtistDetail extends Vue {
   );
   height: 100%;
   position: relative;
-  z-index: 10;
+  z-index: 2;
 }
 
 .artist-banner-overlay {

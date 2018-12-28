@@ -1,28 +1,19 @@
 <template>
-  <div class="song-list">
-    <SongItem
-      :key="track.id"
-      v-for="(track, index) in tracks"
-      :track="track"
-      :index="index"
-      :is-from-album="isFromAlbum"
-      :is-queue="isQueue"
-    />
-
-    <ContextMenu
-      name="cm-song-list"
-      @before-open="beforeOpenContextMenu"
-      @before-close="beforeCloseContextMenu"
-    >
-      <ContextMenuItem :on-click="handleAddNext">Play next</ContextMenuItem>
-      <ContextMenuItem :on-click="handleAddToQueue"
-        >Add to queue</ContextMenuItem
-      >
-      <ContextMenuItem :on-click="handleAddToLibrary"
-        >Add to library</ContextMenuItem
-      >
-    </ContextMenu>
-  </div>
+  <v-layout column>
+    <v-flex xs12>
+      <SongItem
+        :key="track.id"
+        v-for="(track, index) in tracks"
+        :song="track"
+        :index="index"
+        :is-from-album="isFromAlbum"
+        :is-queue="isQueue"
+        @play-next="handleAddNext"
+        @add-to-queue="handleAddToQueue"
+        @add-to-library="handleAddToLibrary"
+      />
+    </v-flex>
+  </v-layout>
 </template>
 
 <script lang="ts">
@@ -31,31 +22,26 @@ import { Action, State } from 'vuex-class';
 
 import { Collection, Nullable, CollectionType } from '@/@types/model/model';
 import {
-  PlayCollectionAtIndexAction,
   AppendSongsPayload,
   AddToLibraryPayload,
   MusicPlayerState,
   AppendSongsAction,
   AddToLibraryAction,
-  PrependSongsAction
+  PrependSongsAction,
+  ShowSnackbarAction
 } from '@/store/types';
 import {
-  PLAY_COLLECTION_AT_INDEX,
   ADD_TO_LIBRARY,
   APPEND_SONGS,
   PREPEND_SONGS
 } from '@/store/actions.type';
 
 import SongItem from '@/components/SongItem.vue';
-import ContextMenu from '@/components/ContextMenu.vue';
-import ContextMenuItem from '@/components/ContextMenuItem.vue';
 
 @Component({
-  components: { SongItem, ContextMenu, ContextMenuItem }
+  components: { SongItem }
 })
 export default class SongList extends Vue {
-  private selectedTrack: Nullable<MusicKit.Song> = null;
-
   @Prop()
   collection!: Collection | undefined;
   @Prop()
@@ -67,13 +53,13 @@ export default class SongList extends Vue {
   musicPlayer!: MusicPlayerState;
 
   @Action
-  [PLAY_COLLECTION_AT_INDEX]: PlayCollectionAtIndexAction;
-  @Action
   [APPEND_SONGS]: AppendSongsAction;
   @Action
   [PREPEND_SONGS]: PrependSongsAction;
   @Action
   [ADD_TO_LIBRARY]: AddToLibraryAction;
+
+  @Action showSnackbar!: ShowSnackbarAction;
 
   get isFromAlbum(): boolean {
     return (
@@ -83,78 +69,72 @@ export default class SongList extends Vue {
     );
   }
 
-  beforeOpenContextMenu(event: any) {
-    this.selectedTrack = event.params.selectedTrack;
-  }
-
-  beforeCloseContextMenu() {
-    this.selectedTrack = null;
-  }
-
-  handleAddToQueue(event: MouseEvent) {
-    if (!this.selectedTrack) {
+  handleAddToQueue(song: MusicKit.Song) {
+    if (!song) {
       return;
     }
+
     const mediaItem = new MusicKit.MediaItem({
-      id: this.selectedTrack.id,
-      attributes: this.selectedTrack.attributes,
+      id: song.id,
+      attributes: song.attributes,
       type: 'song'
     });
 
     // appendSongs is synchronous
     this.appendSongs({ items: [mediaItem] });
-    // @ts-ignore
-    this.$toasted.global.notify({
-      message: 'Song added to queue'
+
+    this.showSnackbar({
+      text: 'Song added to queue'
     });
   }
 
-  handleAddNext() {
-    if (!this.selectedTrack) {
+  handleAddNext(song: MusicKit.Song) {
+    if (!song) {
       return;
     }
+
     const mediaItem = new MusicKit.MediaItem({
-      id: this.selectedTrack.id,
-      attributes: this.selectedTrack.attributes,
+      id: song.id,
+      attributes: song.attributes,
       type: 'song'
     });
 
     this.prependSongs({ items: [mediaItem] });
 
-    // @ts-ignore
-    this.$toasted.global.notify({
-      message: 'Song added next'
+    this.showSnackbar({
+      text: 'Song added next'
     });
   }
 
-  handleAddToLibrary() {
-    if (!this.selectedTrack) {
+  handleAddToLibrary(song: MusicKit.Song) {
+    if (!song) {
       return;
     }
 
     this.addToLibrary({
-      itemIds: [this.selectedTrack.id],
+      itemIds: [song.id],
       type: 'songs'
     })
-      .then(() =>
-        // @ts-ignore
-        this.$toasted.global.notify({
-          message: 'Song added to library'
-          // eslint-disable-next-line
-        }))
+      .then(() => {
+        this.showSnackbar({
+          text: 'Song added to library'
+        });
+      })
       .catch(err => {
         console.log(err);
-        // @ts-ignore
-        this.$toasted.global.error();
+
+        this.showSnackbar({
+          text: 'Something went wrong.'
+        });
       });
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.song-list {
+/* .song-list {
   width: 100%;
-}
+} */
 
 .icon-playing {
   align-items: center;
@@ -166,6 +146,6 @@ export default class SongList extends Vue {
   position: absolute;
   top: 0;
   width: 100%;
-  z-index: 50;
+  z-index: 4;
 }
 </style>

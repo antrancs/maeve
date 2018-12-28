@@ -1,8 +1,8 @@
 <template>
-  <div>
-    <div v-if="hasResults">
-      <section class="content-spacing" v-if="artists.length > 0">
-        <div class="section-header">
+  <v-container fluid>
+    <v-layout row wrap v-if="hasResults">
+      <template v-if="artists.length > 0">
+        <v-flex class="section-header pa-2" xs12>
           <h3 class="section-title">Artists</h3>
           <router-link
             v-if="artists.length > 5"
@@ -14,12 +14,12 @@
             class="section-header__view-all link"
             >View all</router-link
           >
-        </div>
+        </v-flex>
         <ArtistList :artists="getFirstNResults(artists, 5)" />
-      </section>
+      </template>
 
-      <section class="content-spacing" v-if="songs.length > 0">
-        <div class="section-header">
+      <template v-if="songs.length > 0">
+        <v-flex xs12 class="section-header px-2">
           <h3 class="section-title">Songs</h3>
           <router-link
             v-if="songs.length > 5"
@@ -31,12 +31,12 @@
             class="section-header__view-all link"
             >View all</router-link
           >
-        </div>
+        </v-flex>
         <SongList :tracks="getFirstNResults(songs, 5)" />
-      </section>
+      </template>
 
-      <section class="content-spacing" v-if="albums.length > 0">
-        <div class="section-header">
+      <template v-if="albums.length > 0">
+        <v-flex class="section-header px-2 pt-4" xs12>
           <h3 class="section-title">Albums</h3>
           <router-link
             v-if="albums.length > 10"
@@ -48,13 +48,13 @@
             class="section-header__view-all link"
             >View all</router-link
           >
-        </div>
+        </v-flex>
         <SongCollectionList :collections="getFirstNResults(albums, 10)" />
-      </section>
+      </template>
 
-      <section class="content-spacing" v-if="playlists.length > 0">
-        <div class="section-header">
-          <h3 class="section-title">Playlists</h3>
+      <template v-if="playlists.length > 0">
+        <v-flex xs12 class="section-header">
+          <h3 class="section-title px-2 pt-4">Playlists</h3>
           <router-link
             v-if="playlists.length > 10"
             :to="{
@@ -65,12 +65,12 @@
             class="section-header__view-all link"
             >View all</router-link
           >
-        </div>
+        </v-flex>
         <SongCollectionList :collections="getFirstNResults(playlists, 10)" />
-      </section>
-    </div>
-    <div v-else class="content-spacing"><h3>No results</h3></div>
-  </div>
+      </template>
+    </v-layout>
+    <div v-else><h3>No results</h3></div>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -82,9 +82,9 @@ import SongCollectionList from '@/components/SongCollectionList.vue';
 import SongList from '@/components/SongList.vue';
 import ArtistList from '@/components/ArtistList.vue';
 import musicApiService from '@/services/musicApi.service';
-import { PLAY_SONGS } from '@/store/actions.type';
+import { PLAY_SONGS, SHOW_SNACKBAR } from '@/store/actions.type';
 import { HandleSongClicked } from '@/@types/model/model';
-import { PlaySongsAction } from '@/store/types';
+import { PlaySongsAction, ShowSnackbarAction } from '@/store/types';
 
 @Component({
   components: {
@@ -94,7 +94,6 @@ import { PlaySongsAction } from '@/store/types';
   }
 })
 export default class SearchResults extends Vue {
-  // Data
   private albums: MusicKit.Album[] = [];
   private songs: MusicKit.Song[] = [];
   private artists: MusicKit.Artist[] = [];
@@ -102,24 +101,22 @@ export default class SearchResults extends Vue {
   private queryString = '';
   private hasResults = true;
 
-  // Action
   @Action
   [PLAY_SONGS]: PlaySongsAction;
+  @Action [SHOW_SNACKBAR]: ShowSnackbarAction;
 
-  // Provide/Inject
   @Provide()
-  handleSongClicked: HandleSongClicked = this.$_playAllSongs;
+  onSongItemClicked: HandleSongClicked = this.$_playAllSongs;
 
   // Watch
   @Watch('$route')
   onRouteChange(to: Route, from: Route) {
-    this.queryString = to.query.q;
+    this.queryString = to.query.q as string;
     this.$_search();
   }
 
-  // Life cycle methods
   created() {
-    this.queryString = this.$route.query.q;
+    this.queryString = this.$route.query.q as string;
     this.$_search();
   }
 
@@ -145,7 +142,7 @@ export default class SearchResults extends Vue {
     ];
 
     this.playSongs({
-      ids: songIds
+      songIds
     });
   }
 
@@ -168,8 +165,10 @@ export default class SearchResults extends Vue {
       })
       .catch(err => {
         console.log(err);
-        // @ts-ignore
-        this.$toasted.global.error();
+
+        this.showSnackbar({
+          text: 'Something went wrong.'
+        });
       });
   }
 }

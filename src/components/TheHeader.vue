@@ -1,23 +1,38 @@
 <template>
-  <div class="header flex-row">
-    <div class="header__left">
-      <router-link to="/">
-        <img class="logo logo--desktop" src="@/assets/logo-desktop.png" alt />
-        <img class="logo logo--mobile" src="@/assets/logo-mobile.png" alt />
-      </router-link>
-    </div>
-    <div class="header__right flex-row content-spacing">
-      <div class="search-bar flex-row">
-        <input type="text" placeholder="Search" v-model="searchText" />
-      </div>
-      <div class="authButton">
-        <button v-if="!isAuthenticated" @click="login" class="btn">
-          Log in
-        </button>
-        <button v-else class="btn" @click="logout">Log out</button>
-      </div>
-    </div>
-  </div>
+  <v-toolbar dark app fixed clipped-left class="secondary darken-1">
+    <v-toolbar-side-icon
+      @click.stop="$emit('toggle-sidebar')"
+    ></v-toolbar-side-icon>
+
+    <router-link :to="{ name: 'home' }">
+      <img
+        class="logo logo--desktop mr-5"
+        src="@/assets/logo-desktop.png"
+        alt="logo"
+      />
+    </router-link>
+
+    <v-text-field
+      label="Search"
+      prepend-inner-icon="search"
+      flat
+      solo-inverted
+      hide-details
+      v-model="searchText"
+    ></v-text-field>
+    <v-spacer></v-spacer>
+
+    <v-btn v-if="!isAuthenticated" @click="login" color="#da0f47">
+      Log in
+    </v-btn>
+    <v-btn
+      v-else
+      @click="logout"
+      class="custom-btn"
+      :color="this.$vuetify.theme.accent"
+      >Log out</v-btn
+    >
+  </v-toolbar>
 </template>
 
 <script lang="ts">
@@ -62,7 +77,7 @@ export default class AppHeader extends Vue {
 
 <style lang="scss" scoped>
 @import '@/styles/components/_logo.scss';
-@import '@/styles/components/_search-bar.scss';
+
 .header {
   align-items: center;
   background-color: $header-color;

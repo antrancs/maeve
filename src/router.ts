@@ -23,7 +23,8 @@ const router = new Router({
     {
       path: '/search/:type',
       name: 'searchViewAll',
-      component: () => import('./views/SearchViewAll.vue')
+      component: () => import('./views/SearchViewAll.vue'),
+      props: true
     },
     {
       path: '/albums/:id',

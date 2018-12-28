@@ -1,13 +1,11 @@
 <template>
   <div class="artwork">
-    <div class="artwork__image-wrapper">
-      <img
-        class="artwork__image"
-        v-lazy="artworkUrlForArtist || artworkUrl"
-        alt
-        :style="artworkImageStyle"
-      />
-    </div>
+    <img
+      class="artwork__image"
+      v-lazy="artworkUrlForArtist || artworkUrl"
+      alt
+      :style="artworkImageStyle"
+    />
   </div>
 </template>
 
@@ -65,7 +63,7 @@ export default class MediaArtwork extends Vue {
 .artwork__image-wrapper {
   align-items: center;
   display: flex;
-  height: 100;
+  height: 100%;
   width: 100%;
 }
 

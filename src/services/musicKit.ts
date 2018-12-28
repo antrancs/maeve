@@ -4,15 +4,6 @@ class MusicKitService {
   init() {
     if (MusicKit) {
       this.initInstance();
-      // try {
-      //   // window.MusicKit.getInstance();
-      //   this.initInstance();
-      // } catch (error) {
-      //   console.log(error.message);
-      //   // MusicKit.getInstance() throws an exception when the instance is not available
-      //   // in this case, we'll call configure() to configure the instance
-      //   this.configure();
-      // }
     } else {
       document.addEventListener('musickitloaded', () => {
         this.configure();
@@ -40,8 +31,6 @@ class MusicKitService {
           break;
       }
     }
-
-    // this.instance = window.MusicKit.getInstance();
   }
 
   getInstance(): MusicKit.MusicKitInstance {
@@ -75,4 +64,4 @@ class MusicKitService {
 }
 
 const musicKitService = new MusicKitService();
-export default musicKitService;
+export { musicKitService as default };

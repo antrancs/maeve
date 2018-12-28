@@ -1,5 +1,5 @@
 <template>
-  <div class="featured-playlist">
+  <div class="featured-playlist" :style="{ height: featurePlaylistHeight }">
     <router-link :to="{ name: 'playlists', params: { id: playlist.id } }">
       <div class="featured-playlist__background" :style="backgroundStyle"></div>
 
@@ -11,13 +11,17 @@
             class="featured-playlist__artwork"
             :style="artworkStyle"
           />
-          <div class="absolute-fit flex-center featured-playlist__description">
+          <div
+            class="absolute-fit flex-center featured-playlist__description hidden-sm-and-down"
+          >
             {{ playlistLongDescription }}
           </div>
         </div>
 
-        <div class="featured-playlist__info flex-row">
-          {{ playlist.attributes.name }}
+        <div class="featured-playlist__info text-xs-center">
+          <v-layout fill-height align-center justify-center class="ma-0">
+            {{ playlist.attributes.name }}
+          </v-layout>
         </div>
       </div>
     </router-link>
@@ -46,6 +50,15 @@ export default class FeaturedPlaylist extends Vue {
     return getArtworkUrl(this.playlist.attributes.artwork.url, 400, 400);
   }
 
+  get featurePlaylistHeight() {
+    switch (this.$vuetify.breakpoint.name) {
+      case 'xs':
+        return '20rem';
+      default:
+        return '33rem';
+    }
+  }
+
   get backgroundStyle(): object {
     return {
       'background-image': `url(${this.artworkUrl})`
@@ -56,10 +69,24 @@ export default class FeaturedPlaylist extends Vue {
     if (!this.playlist.attributes || !this.playlist.attributes.artwork) {
       return {};
     }
+
+    let maxWidth: number;
+    switch (this.$vuetify.breakpoint.name) {
+      case 'xs':
+        maxWidth = 10;
+        break;
+      case 'sm':
+        maxWidth = 13;
+        break;
+      default:
+        maxWidth = 15;
+    }
+
     return {
       'box-shadow': `0.3rem 0.3rem 1rem #${
         this.playlist.attributes.artwork.textColor1
-      }`
+      }`,
+      'max-width': `${maxWidth}rem`
     };
   }
 
@@ -74,11 +101,7 @@ export default class FeaturedPlaylist extends Vue {
 
 <style lang="scss" scoped>
 .featured-playlist {
-  flex: 0 0 getColumnWidth(2);
-  height: 20rem;
-  margin-bottom: $m-size;
-  margin-right: $margin-column;
-  max-width: getColumnWidth(2);
+  // margin-bottom: $m-size;
   overflow: hidden;
   position: relative;
 
@@ -115,15 +138,11 @@ export default class FeaturedPlaylist extends Vue {
 }
 
 .featured-playlist__info {
-  align-items: center;
   background-color: rgba(0, 0, 0, 0.4);
   color: white;
-  flex: none;
   font-weight: bold;
-  font-size: 1.4rem;
-  height: 5rem;
-  justify-content: center;
-  padding: $m-size;
+  font-size: 2rem;
+  height: 6rem;
   position: relative;
 }
 
@@ -142,51 +161,9 @@ export default class FeaturedPlaylist extends Vue {
 .featured-playlist__description {
   background-color: rgba(0, 0, 0, 0.7);
   color: white;
-  display: none;
   font-size: $regular-font;
   opacity: 0;
   padding: 1.6rem;
   transition: opacity 0.3s ease-in-out;
-}
-
-@media (min-width: $bp-phone) {
-  .featured-playlist {
-    flex: 0 0 getColumnWidth(3);
-    height: 27rem;
-    max-width: getColumnWidth(3);
-  }
-
-  .featured-playlist__info {
-    height: 8rem;
-  }
-
-  .featured-playlist__artwork {
-    max-width: 10rem;
-  }
-
-  .featured-playlist__info {
-    font-size: 2.2rem;
-  }
-}
-
-@media (min-width: $bp-desktop) {
-  .featured-playlist {
-    height: 33rem;
-  }
-}
-
-@media (min-width: $bp-tablet-landscape) {
-  .featured-playlist {
-    flex: 0 0 getColumnWidth(4);
-    max-width: getColumnWidth(4);
-  }
-
-  .featured-playlist__artwork {
-    max-width: none;
-  }
-
-  .featured-playlist__description {
-    display: flex;
-  }
 }
 </style>

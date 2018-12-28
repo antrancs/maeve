@@ -1,5 +1,13 @@
 <template>
-  <div class="media-column">
+  <v-flex
+    xs6
+    sm3
+    md2
+    :class="{
+      'pa-2': $vuetify.breakpoint.mdAndUp,
+      'pa-1': $vuetify.breakpoint.mdAndDown
+    }"
+  >
     <router-link :to="{ name: 'activities', params: { id: activity.id } }">
       <MediaArtwork
         :artwork="this.activity.attributes.artwork"
@@ -11,7 +19,7 @@
     <div class="main-info-text activity__name">
       {{ activity.attributes.name }}
     </div>
-  </div>
+  </v-flex>
 </template>
 
 <script lang="ts">
@@ -25,14 +33,7 @@ import MediaArtwork from '@/components/MediaArtwork.vue';
   }
 })
 export default class ActivityItem extends Vue {
-  // Props
   @Prop()
   activity!: MusicKit.Activity;
 }
 </script>
-
-<style lang="scss" scoped>
-.activity__name {
-  margin-top: $s-size;
-}
-</style>

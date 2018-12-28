@@ -1,11 +1,9 @@
 <template>
-  <div class="app-body">
-    <AppSidebar />
-    <div class="main-content-wrapper flex-column">
+  <div>
+    <div>
       <transition name="fade" mode="out-in">
         <router-view class="main-content"></router-view>
       </transition>
-      <AppFooter />
     </div>
   </div>
 </template>
@@ -13,11 +11,9 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import AppSidebar from '@/components/TheSidebar.vue';
 import AppFooter from '@/components/TheFooter.vue';
 @Component({
   components: {
-    AppSidebar,
     AppFooter
   }
 })

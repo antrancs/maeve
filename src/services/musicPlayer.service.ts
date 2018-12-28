@@ -1,5 +1,6 @@
 import musicKit from '@/services/musicKit';
 import { Nullable } from '@/@types/model/model';
+import { RepeatMode } from '@/utils/constants';
 
 const musicPlayerService = {
   get isPlaying(): boolean {
@@ -14,7 +15,7 @@ const musicPlayerService = {
     return musicKit.getPlayerInstance().queue.nextPlayableItem;
   },
 
-  play(): Promise<void> {
+  play(): Promise<number> {
     // play() returns a promise
     return musicKit.getPlayerInstance().play();
   },
@@ -40,25 +41,15 @@ const musicPlayerService = {
     return musicKitPlayer.skipToPreviousItem();
   },
 
-  /**
-   * Play a collection (album/playlist) at the specified index
-   * @param playParams Play parameters of the collection
-   * @param index Index of the song from collection to play
-   */
-  playCollectionAtIndex(
-    playParams: MusicKit.PlayParameters,
-    index: number = 0
-  ): Promise<void> {
-    if (!playParams) {
-      return Promise.reject('Playparams must be supplied to play');
+  toggleShuffleMode() {
+    const prevMode = musicKit.getPlayerInstance().shuffleMode;
+    if (prevMode === 0) {
+      musicKit.getPlayerInstance().shuffleMode = 1;
+    } else {
+      musicKit.getPlayerInstance().shuffleMode = 0;
     }
 
-    const music = musicKit.getInstance();
-    return music
-      .setQueue({
-        [playParams.kind]: playParams.id
-      })
-      .then(() => music.player.changeToMediaAtIndex(index));
+    console.log(musicKit.getPlayerInstance().shuffleMode);
   },
 
   /**
@@ -83,7 +74,8 @@ const musicPlayerService = {
         if (songId) {
           return music.player.changeToMediaItem(songId);
         }
-        return music.play();
+
+        return music.player.play();
       });
   },
 
@@ -118,16 +110,15 @@ const musicPlayerService = {
    * Play multiple songs
    * @param songIds Id of those songs to play
    */
-  playSongs(songIds: string[]) {
+  playSongs(songIds: string[]): Promise<number> {
     const music = musicKit.getInstance();
     return music
       .setQueue({
         songs: songIds
       })
       .then(() => {
-        return music.play();
-      })
-      .then(() => music.player.nowPlayingItem);
+        return music.player.play();
+      });
   },
 
   /**
@@ -136,6 +127,33 @@ const musicPlayerService = {
    */
   skipToSongAtIndex(index: number): Promise<void> {
     return musicKit.getPlayerInstance().changeToMediaAtIndex(index);
+  },
+
+  seekToTime(time: number): Promise<void> {
+    return musicKit.getPlayerInstance().seekToTime(time);
+  },
+
+  changeVolume(volume: number) {
+    if (volume < 0 || volume > 1) {
+      return;
+    }
+
+    musicKit.getPlayerInstance().volume = volume;
+  },
+
+  changeRepeatMode(repeatMode: number) {
+    if (repeatMode < 0 || repeatMode > 2) {
+      return;
+    }
+
+    // Repeat mode of MusicKit is 0: Off, 1: One, 2: All, so we need to switch up
+    if (repeatMode === RepeatMode.All) {
+      repeatMode = RepeatMode.One;
+    } else if (repeatMode === RepeatMode.One) {
+      repeatMode = RepeatMode.All;
+    }
+
+    musicKit.getPlayerInstance().repeatMode = repeatMode;
   }
 };
 

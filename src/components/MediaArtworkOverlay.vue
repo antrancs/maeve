@@ -5,11 +5,11 @@
       <div class="content-wrapper">
         <button
           class="playing-control btn btn--icon"
-          @mouseover="playingControlHovered = true;"
-          @mouseout="playingControlHovered = false;"
-          @click="$emit('playing-control-clicked');"
+          @mouseover="playingControlHovered = true"
+          @mouseout="playingControlHovered = false"
+          @click="$emit('playing-control-clicked')"
         >
-          <icon color="#fff" :name="contentIcon"></icon>
+          <v-icon>{{ contentIcon }}</v-icon>
         </button>
       </div>
     </div>
@@ -18,9 +18,6 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import 'vue-awesome/icons/play';
-import 'vue-awesome/icons/pause';
-import 'vue-awesome/icons/headphones';
 
 @Component
 export default class ArtworkOverlay extends Vue {
@@ -35,9 +32,9 @@ export default class ArtworkOverlay extends Vue {
 
   get contentIcon(): string {
     if (this.isPlaying && this.isActive) {
-      return this.playingControlHovered ? 'pause' : 'headphones';
+      return this.playingControlHovered ? 'pause' : 'headset';
     }
-    return 'play';
+    return 'play_arrow';
   }
 }
 </script>

@@ -6,11 +6,12 @@ export const SET_SONG_LOADING = 'setSongLoading';
 export const SET_PLAYBACK_PROGESS = 'setPlaybackProgress';
 export const SET_CURRENT_PLAYBACK_TIME = 'setCurrentPlaybackTime';
 export const SET_SONG_QUEUE = 'setSongQueue';
+export const SET_REPEAT_MODE = 'setRepeatMode';
+export const SET_VOLUME = 'setVolume';
 
 export const SET_USER_TOKEN = 'setUserToken';
 
-export const SET_SHOWING_CONTEXT_MENU = 'setShowingContextMenu';
-export const SET_CONTEXT_MENU_DISPLAY_POSITION =
-  'setContextMenuDisplayPosition';
+export const SET_QUEUE_VISIBILITY = 'setQueueVisibility';
 
-export const TOGGLE_QUEUE_VISIBILITY = 'toggleQueueVisibility';
+export const SET_SNACKBAR_VISIBILITY = 'setSnackbarVisibility';
+export const SET_SNACKBAR_TEXT = 'setSnackbarText';

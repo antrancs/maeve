@@ -1,33 +1,76 @@
 <template>
-  <div class="sidebar">
-    <SidebarAuthenticated v-if="isAuthenticated" />
-    <SidebarUnauthenticated v-else />
+  <v-navigation-drawer
+    app
+    fixed
+    clipped
+    :width="200"
+    class="primary lighten-1 elevation-10"
+    :value="showSidebar"
+  >
+    <v-layout column fill-height justify-space-between>
+      <v-list>
+        <v-list-tile
+          v-for="link in navigationLinks"
+          :key="link.pathName"
+          :to="{ name: link.pathName }"
+          active-class="accent--text"
+          exact
+          ripple
+        >
+          <v-list-tile-action>
+            <v-icon>{{ link.icon }}</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ link.name }}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
 
-    <img
-      v-if="currentTrackArtwork && currentTrackArtwork.length > 0"
-      class="side-bar__song-artwork"
-      :src="currentTrackArtwork"
-      alt
-    />
-  </div>
+        <p v-if="!isAuthenticated" class="pa-2">
+          Log in with your Apple Music to listen to full songs and manage your
+          playlists
+        </p>
+      </v-list>
+    </v-layout>
+  </v-navigation-drawer>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Vue, Prop, Component } from 'vue-property-decorator';
 import { Getter, State } from 'vuex-class';
 
-import SidebarAuthenticated from '@/components/TheSidebarAuthenticated.vue';
-import SidebarUnauthenticated from '@/components/TheSidebarUnauthenticated.vue';
 import { MusicPlayerState } from '@/store/types';
 
-@Component({
-  components: {
-    SidebarAuthenticated,
-    SidebarUnauthenticated
-  }
-})
+@Component({})
 export default class AppSidebar extends Vue {
-  @Getter currentTrackArtwork!: string;
+  private unauthenticatedLinks = [
+    {
+      name: 'Home',
+      icon: 'home',
+      pathName: 'home'
+    }
+  ];
+  private authenticatedLinks = [
+    ...this.unauthenticatedLinks,
+    {
+      name: 'For You',
+      icon: 'favorite',
+      pathName: 'forYou'
+    },
+    {
+      name: 'My Library',
+      icon: 'library_music',
+      pathName: 'myLibrary'
+    }
+  ];
+
+  @Prop() showSidebar!: boolean;
+
+  get navigationLinks(): Object[] {
+    return this.isAuthenticated
+      ? this.authenticatedLinks
+      : this.unauthenticatedLinks;
+  }
+
   @Getter isAuthenticated!: boolean;
 }
 </script>

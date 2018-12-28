@@ -12,3 +12,9 @@ export enum ActivityType {
 export const activityIds = Object.keys(ActivityType).map(
   key => ActivityType[key as any]
 );
+
+export enum RepeatMode {
+  Off = 0,
+  All = 1,
+  One = 2
+}

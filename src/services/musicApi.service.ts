@@ -167,19 +167,16 @@ class MusicApiService {
   getCollection(
     collectionId: string,
     collectionType: CollectionType
-  ): Promise<{
-    collection: Collection;
-    tracks: MusicKit.Song[];
-  } | null> {
+  ): Promise<Collection> {
     const api = musicKit.getApiInstance();
+    // api.userStorefrontId = api.storefrontId;
+
+    // console.log('API Storefront', api.storefrontId);
+
     if (collectionType === CollectionType.album) {
-      return api
-        .album(collectionId, { include: 'tracks' })
-        .then(this.extractCollectionResult);
+      return api.album(collectionId, { include: 'tracks' });
     } else {
-      return api
-        .playlist(collectionId, { include: 'tracks, artists' })
-        .then(this.extractCollectionResult);
+      return api.playlist(collectionId, { include: 'tracks, artists' });
     }
   }
 
@@ -217,42 +214,38 @@ class MusicApiService {
   getLibraryCollection(
     collectionId: string,
     collectionType: string
-  ): Promise<{
-    collection: Collection;
-    tracks: MusicKit.LibrarySong[];
-  } | null> {
+  ): Promise<MusicKit.LibraryAlbum | MusicKit.LibraryPlaylist> {
     let promise: Promise<MusicKit.LibraryAlbum | MusicKit.LibraryPlaylist>;
     const api = musicKit.getApiInstance();
     if (collectionType === CollectionType.libraryAlbum) {
-      promise = api.library.album(collectionId);
+      return api.library.album(collectionId);
     } else {
-      promise = api.library.playlist(collectionId);
+      return api.library.playlist(collectionId);
     }
 
-    return promise.then(collection => {
-      if (this.isResultEmpty(collection)) {
-        return null;
-      }
+    // return promise.then(collection => {
+    //   if (this.isResultEmpty(collection)) {
+    //     return null;
+    //   }
 
-      let tracks: MusicKit.LibrarySong[] = [];
-      if (collection.relationships && collection.relationships.tracks) {
-        tracks = collection.relationships.tracks.data;
-      }
+    //   let tracks: MusicKit.LibrarySong[] = [];
+    //   if (collection.relationships && collection.relationships.tracks) {
+    //     tracks = collection.relationships.tracks.data;
+    //   }
 
-      return {
-        collection,
-        tracks
-      };
-    });
+    //   return {
+    //     collection,
+    //     tracks
+    //   };
+    // });
   }
 
   /**
-   * Update the current user's storefront. Storefront is needed for making API request
+   * Get the current user's storefront. Storefront is needed for making API request
    */
   updateUserStorefront() {
     // By default, we use 'us' storefront to get music previews.
     if (!authService.isAuthorized) {
-      musicKit.getApiInstance().storefrontId = 'us';
       return;
     }
 
@@ -265,11 +258,18 @@ class MusicApiService {
         if (!Array.isArray(storefronts) || storefronts.length === 0) {
           return;
         }
-        musicKit.getApiInstance().storefrontId = storefronts[0].id;
+
+        this.setUserStorefront(storefronts[0].id);
       })
       .catch(err => {
         console.log(err);
       });
+  }
+
+  setUserStorefront(storefront: string) {
+    const api = musicKit.getApiInstance();
+    api.userStorefrontId = storefront;
+    api.storefrontId = storefront;
   }
 
   private get apiHeaders() {

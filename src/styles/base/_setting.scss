@@ -1,33 +1,3 @@
-// Colors
-$primary-text-color: #fff;
-$secondary-text-color: hsla(0, 0%, 100%, 0.6);
-$primary-dark-color: rgb(35, 35, 35);
-$bg-color: linear-gradient(rgb(85, 72, 68), rgb(8, 7, 7) 85%);
-$white-color: #fff;
-$black-color-0-5: lighten(black, 20);
-$player-bar-color: #113a5d;
-
-$divider-color: rgba(255, 255, 255, 0.08);
-
-// Background colors:
-$bg-color: #062743;
-$sidebar-color: #0b0e1a;
-$header-color: #1e212c;
-
-// Accent colors:
-$accent-color: #da0f47; // linear-gradient(#f82752, #da0f47);
-$accent-hover-color: darken($accent-color, 10%);
-$accent-fg-color: #e1e1e1;
-$accent-fg-hover-color: #cfd3da;
-
-// Space
-$xs-size: 0.4rem;
-$s-size: 0.8rem;
-$m-size: 1.6rem;
-$l-size: 2.4rem;
-$xl-size: 3.2rem;
-$margin-column: 1.5%;
-
 // Fonts
 $regular-font: 1.6rem;
 $large-font: 2.2rem;

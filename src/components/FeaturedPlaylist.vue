@@ -101,7 +101,6 @@ export default class FeaturedPlaylist extends Vue {
 
 <style lang="scss" scoped>
 .featured-playlist {
-  // margin-bottom: $m-size;
   overflow: hidden;
   position: relative;
 

@@ -77,27 +77,4 @@ export default class AppHeader extends Vue {
 
 <style lang="scss" scoped>
 @import '@/styles/components/_logo.scss';
-
-.header {
-  align-items: center;
-  background-color: $header-color;
-  flex: none;
-  height: $header-height;
-}
-
-.header__left {
-  flex: 0 0 $sidebar-width-collapsed;
-  padding-left: $m-size;
-}
-
-.header__right {
-  justify-content: space-between;
-  flex: 1;
-}
-
-@media (min-width: $bp-tablet-landscape) {
-  .header__left {
-    flex: 0 0 $sidebar-width;
-  }
-}
 </style>

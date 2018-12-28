@@ -98,18 +98,8 @@ export default class ActivityDetail extends Vue {
   z-index: 2;
 }
 
-.activity-list {
-  position: relative;
-  z-index: 2;
-
-  & h3 {
-    margin-top: 0;
-    padding-top: $l-size;
-  }
-}
-
 .activity-content::before {
-  background-color: $bg-color;
+  background-color: var(--v-primary-base);
   content: '';
   display: block;
   position: absolute;

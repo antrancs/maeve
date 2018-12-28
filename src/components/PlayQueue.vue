@@ -77,7 +77,7 @@ export default class PlayQueue extends Vue {
   margin-bottom: 10rem;
   max-width: 90vw;
   right: 0;
-  top: $header-height + $s-size;
+  top: $header-height + 0.8rem;
   width: 36.8rem;
   z-index: 5;
 }

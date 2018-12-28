@@ -1,7 +1,7 @@
 <template>
-  <div class="media-list">
+  <v-layout row wrap>
     <ArtistItem v-for="artist in artists" :key="artist.id" :artist="artist" />
-  </div>
+  </v-layout>
 </template>
 
 <script lang="ts">
@@ -18,5 +18,3 @@ export default class ArtistList extends Vue {
   artists!: Artist[];
 }
 </script>
-
-<style lang="scss" scoped></style>

@@ -35,12 +35,20 @@
   }
 }
 
-.collection-artwork-overlay__icon {
-  height: 5rem;
-  transition: height 0.25s ease-in-out;
-  width: auto;
-
-  &:hover {
-    height: 7rem;
-  }
+.playing-button:hover i {
+  font-size: 60px !important;
 }
+
+// .collection-artwork-overlay__icon {
+//   // height: 5rem;
+//   // transition: font-size 0.25s ease-in-out;
+//   // width: auto;
+
+//   // &:hover {
+//   //   height: 7rem;
+//   // }
+// }
+
+// .collection-artwork-overlay__icon:hover {
+//   font-size: 60px;
+// }

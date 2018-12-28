@@ -18,16 +18,13 @@
         />
 
         <div class="collection-artwork-overlay" :class="artworkOverlayClass">
-          <button @click.prevent="playCollection" class="btn btn--icon">
+          <button @click.prevent="playCollection" icon class="playing-button">
             <v-icon
-              x-large
+              size="50"
               v-if="isCollectionBeingPlayed && musicPlayer.isPlaying"
-              class="collection-artwork-overlay__icon"
               >pause_circle_filled</v-icon
             >
-            <v-icon v-else x-large class="collection-artwork-overlay__icon"
-              >play_circle_filled</v-icon
-            >
+            <v-icon v-else size="50">play_circle_filled</v-icon>
           </button>
         </div>
       </div>

@@ -54,14 +54,14 @@
                       <v-btn
                         @click="playCollection"
                         :color="this.$vuetify.theme.accent"
-                        class="ml-0"
+                        class="ml-0 mb-0"
                       >
                         {{ isCollectionBeingPlayed ? 'Pause' : 'Play' }}
                       </v-btn>
                       <v-btn
-                        v-if="isAuthenticated"
                         @click="shuffleSongs"
                         :color="this.$vuetify.theme.accent"
+                        class="mb-0"
                       >
                         Shuffle
                       </v-btn>
@@ -288,7 +288,6 @@ export default class CollectionDetail extends Vue {
 
 .collection-detail-header {
   height: 40vh;
-  margin-bottom: $xl-size;
   position: relative;
 }
 

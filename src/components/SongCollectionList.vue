@@ -25,5 +25,3 @@ export default class SongCollectionList extends Vue {
   collections!: Collection[];
 }
 </script>
-
-<style lang="scss" scoped></style>

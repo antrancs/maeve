@@ -5,7 +5,7 @@
       align-center
       v-if="song && song.attributes"
       :class="[
-        'song-item',
+        'song-item__wrapper',
         {
           'song-item--playing': isActive,
           'primary lighten-1': hover && !isQueue,
@@ -14,8 +14,12 @@
       ]"
       slot-scope="{ hover }"
     >
-      <div class="song-item__left ml-2 mr-3">
-        <div v-if="showLoading" class="spinner"></div>
+      <div :class="['ml-2', 'mr-3', $style['left-items']]">
+        <v-progress-circular
+          v-if="showLoading"
+          indeterminate
+          color="accent"
+        ></v-progress-circular>
         <div v-else class="size-fit">
           <MediaArtwork
             v-if="!isFromAlbum"
@@ -41,11 +45,14 @@
         </div>
       </div>
 
-      <v-flex class="song-item__middle">
+      <v-flex :class="$style['middle-items']">
         <v-layout row wrap>
           <v-flex xs12 class="pr-2" :class="{ 'sm6 md5': !isQueue }">
             <v-layout>
-              <div class="long-text-truncated main-info-text">
+              <div
+                class="long-text-truncated main-info-text"
+                :style="{ color: songNameColor }"
+              >
                 {{ song.attributes.name }}
               </div>
 
@@ -58,7 +65,12 @@
             </v-layout>
           </v-flex>
 
-          <v-flex xs12 class="pr-2" :class="{ 'md4 sm6': !isQueue }">
+          <v-flex
+            xs12
+            class="pr-2"
+            :class="{ 'md4 sm6': !isQueue }"
+            :style="{ color: songInfoColor }"
+          >
             <div
               :class="[
                 'long-text-truncated',
@@ -70,7 +82,12 @@
             </div>
           </v-flex>
 
-          <v-flex md3 class="hidden-sm-and-down" v-if="!isQueue">
+          <v-flex
+            md3
+            class="hidden-sm-and-down"
+            v-if="!isQueue"
+            :style="{ color: songInfoColor }"
+          >
             <div
               v-if="!isFromAlbum && !isQueue"
               :class="['long-text-truncated', 'song-item__album-name']"
@@ -82,31 +99,32 @@
         </v-layout>
       </v-flex>
 
-      <div
+      <v-menu
+        bottom
+        left
         v-if="!isQueue"
         class="song-actions"
         :style="{ opacity: hover ? 1 : 0 }"
       >
-        <v-menu bottom left>
-          <v-btn slot="activator" icon dark>
-            <v-icon @click.prevent.stop="">more_horiz</v-icon>
-          </v-btn>
+        <v-btn slot="activator" icon dark> <v-icon>more_horiz</v-icon> </v-btn>
 
-          <v-list>
-            <v-list-tile @click="$emit('play-next', song)">
-              <v-list-tile-title>Play next</v-list-tile-title>
-            </v-list-tile>
-            <v-list-tile @click="$emit('add-to-queue', song)">
-              <v-list-tile-title>Add to queue</v-list-tile-title>
-            </v-list-tile>
-            <v-list-tile @click="$emit('add-to-library', song)">
-              <v-list-tile-title>Add to library</v-list-tile-title>
-            </v-list-tile>
-          </v-list>
-        </v-menu>
-      </div>
+        <v-list class="secondary">
+          <v-list-tile @click="$emit('play-next', song)">
+            <v-list-tile-title>Play next</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="$emit('add-to-queue', song)">
+            <v-list-tile-title>Add to queue</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="$emit('add-to-library', song)">
+            <v-list-tile-title>Add to library</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
 
-      <div class="song-item__right sub-info-text hidden-xs-only">
+      <div
+        :class="['sub-info-text', 'hidden-xs-only', $style['right-items']]"
+        :style="{ color: songInfoColor }"
+      >
         {{ song.attributes.durationInMillis | formattedDuration }}
       </div>
     </v-layout>
@@ -128,7 +146,7 @@ import MediaArtworkOverlay from '@/components/MediaArtworkOverlay.vue';
 })
 export default class SongItem extends Vue {
   private showLoading = false;
-  // Props
+
   @Prop()
   song!: MusicKit.Song;
   @Prop({ default: true })
@@ -138,19 +156,15 @@ export default class SongItem extends Vue {
   @Prop({ default: false })
   isQueue!: boolean;
 
-  // State
   @State
   musicPlayer!: MusicPlayerState;
 
-  // Action
   @Action
   [TOGGLE_CURRENT_TRACK]: () => void;
 
-  // Provide/Inject
   @Inject()
   onSongItemClicked!: HandleSongClicked;
 
-  // computed
   get isActive(): boolean {
     return (
       this.musicPlayer.currentPlaying !== null &&
@@ -160,6 +174,18 @@ export default class SongItem extends Vue {
 
   get isPlaying(): boolean {
     return this.musicPlayer.isPlaying;
+  }
+
+  get songNameColor() {
+    return this.isActive
+      ? this.$vuetify.theme.accent
+      : this.$vuetify.theme.primaryText;
+  }
+
+  get songInfoColor() {
+    return this.isActive
+      ? this.$vuetify.theme.accent
+      : this.$vuetify.theme.secondaryText;
   }
 
   @Watch('musicPlayer.isLoading')
@@ -193,6 +219,28 @@ export default class SongItem extends Vue {
 }
 </script>
 
+<style lang="scss" module>
+.left-items {
+  border-radius: 0.2rem;
+  height: 3.2rem;
+  overflow: hidden;
+  position: relative;
+  width: 3.2rem;
+}
+
+.right-items {
+  flex: 0 0 5rem;
+}
+
+.middle-items {
+  flex-basis: 0;
+}
+</style>
+
 <style lang="scss" scoped>
-@import '@/styles/components/_song-item.scss';
+.song-item__wrapper {
+  border-bottom: 0.1rem solid rgba(255, 255, 255, 0.08);
+  height: 5rem;
+  transition: background-color 0.25s ease-in-out;
+}
 </style>

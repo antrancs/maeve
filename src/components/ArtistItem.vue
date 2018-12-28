@@ -1,13 +1,23 @@
 <template>
-  <div class="media-column">
+  <v-flex
+    xs6
+    sm3
+    md2
+    :class="{
+      'pa-2': $vuetify.breakpoint.mdAndUp,
+      'pa-1': $vuetify.breakpoint.mdAndDown
+    }"
+  >
     <router-link :to="{ name: 'artists', params: { id: artist.id } }">
       <MediaArtwork :artwork-url-for-artist="artistArtwork" :is-round="true" />
     </router-link>
 
-    <div class="long-text-truncated main-info-text artist-item__name">
+    <div
+      class="long-text-truncated main-info-text artist-item__name text-xs-center"
+    >
       {{ artist.attributes.name }}
     </div>
-  </div>
+  </v-flex>
 </template>
 
 <script lang="ts">
@@ -57,10 +67,3 @@ export default class ArtistItem extends Vue {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.artist-item__name {
-  margin-top: $s-size;
-  text-align: center;
-}
-</style>

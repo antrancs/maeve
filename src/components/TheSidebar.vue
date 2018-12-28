@@ -76,5 +76,5 @@ export default class AppSidebar extends Vue {
 </script>
 
 <style lang="scss">
-@import '@/styles/components/_sidebar.scss';
+/* @import '@/styles/components/_sidebar.scss'; */
 </style>

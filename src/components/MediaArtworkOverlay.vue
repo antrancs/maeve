@@ -71,7 +71,7 @@ export default class ArtworkOverlay extends Vue {
   width: 3.2rem;
 }
 
-.song-item:hover .artwork-overlay {
+.song-item__wrapper:hover .artwork-overlay {
   display: block;
 }
 

@@ -153,8 +153,6 @@ export default class ArtistDetail extends Vue {
 
 .artist-detail__name {
   font-size: $xl-font;
-  margin: 0;
-  padding-bottom: $m-size;
 }
 
 .artist-detail__info {

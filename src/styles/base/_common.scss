@@ -2,11 +2,6 @@
   margin-left: 1.6rem;
 }
 
-.explitcit-icon {
-  margin-left: $s-size;
-  flex-shrink: 0;
-}
-
 .long-text-truncated {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -68,29 +63,29 @@
 }
 
 .main-info-text {
-  color: $primary-text-color;
+  color: var(--v-primaryText-base);
   font-weight: 600;
 }
 
 .sub-info-text {
-  color: $secondary-text-color;
+  color: var(--v-secondaryText-base);
 }
 
 .link {
-  color: $secondary-text-color;
+  color: var(--v-secondaryText-base);
   text-decoration: none;
 }
 
 .link--external {
-  color: $accent-color;
+  color: var(--v-accent-base);
   text-decoration: underline;
 }
 
 a.link:hover {
-  color: $primary-text-color;
+  color: var(--v-primaryText);
   text-decoration: underline;
 }
 
 a.link--external:hover {
-  color: $accent-hover-color;
+  color: var(--v-accent-darken1);
 }

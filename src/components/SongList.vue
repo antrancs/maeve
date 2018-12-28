@@ -132,10 +132,6 @@ export default class SongList extends Vue {
 </script>
 
 <style lang="scss" scoped>
-/* .song-list {
-  width: 100%;
-} */
-
 .icon-playing {
   align-items: center;
   bottom: 0;

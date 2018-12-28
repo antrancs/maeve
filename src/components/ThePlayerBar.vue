@@ -1,5 +1,8 @@
 <template>
-  <div v-if="musicPlayer.currentPlaying" :class="[$style.wrapper]">
+  <div
+    v-if="musicPlayer.currentPlaying"
+    :class="['secondary', $style['wrapper']]"
+  >
     <v-layout row fill-height>
       <img
         v-if="currentTrackArtwork && currentTrackArtwork.length > 0"
@@ -43,32 +46,34 @@
               </v-flex>
 
               <v-flex md4>
-                <v-layout column>
-                  <v-layout row align-center justify-center>
-                    <v-btn icon @click="playPrevious">
-                      <v-icon medium dark>skip_previous</v-icon>
-                    </v-btn>
+                <v-layout row align-center justify-center>
+                  <v-btn icon @click="playPrevious">
+                    <v-icon dark medium>skip_previous</v-icon>
+                  </v-btn>
 
-                    <v-btn icon @click="toggleCurrentTrack">
-                      <v-icon dark size="50">{{ songStatusIcon }}</v-icon>
-                    </v-btn>
+                  <v-btn
+                    icon
+                    @click="toggleCurrentTrack"
+                    style="width: 5rem; height: 5rem"
+                  >
+                    <v-icon dark size="50">{{ songStatusIcon }}</v-icon>
+                  </v-btn>
 
-                    <v-btn icon @click="playNext">
-                      <v-icon medium dark>skip_next</v-icon>
-                    </v-btn>
+                  <v-btn icon @click="playNext">
+                    <v-icon medium dark>skip_next</v-icon>
+                  </v-btn>
 
-                    <v-btn icon @click="updateRepeatMode">
-                      <v-icon medium dark :color="repeatIconColor">{{
-                        repeatIcon
-                      }}</v-icon>
-                    </v-btn>
-                  </v-layout>
+                  <v-btn icon @click="updateRepeatMode">
+                    <v-icon medium dark :color="repeatIconColor">{{
+                      repeatIcon
+                    }}</v-icon>
+                  </v-btn>
                 </v-layout>
               </v-flex>
 
               <v-flex md4>
                 <v-layout row align-center justify-end>
-                  <div>
+                  <div class="sub-info-text">
                     {{
                       musicPlayer.currentPlaybackTimeInMilliSeconds
                         | formattedDuration
@@ -172,9 +177,7 @@ export default class PlayerBar extends Vue {
   }
 
   get songStatusIcon(): string {
-    return this.musicPlayer.isPlaying
-      ? 'pause_circle_filled'
-      : 'play_circle_filled';
+    return this.musicPlayer.isPlaying ? 'pause' : 'play_arrow';
   }
 
   get artistName(): string {
@@ -229,7 +232,6 @@ export default class PlayerBar extends Vue {
 
 <style lang="scss" module>
 .wrapper {
-  background-color: $player-bar-color;
   border-top: 0.1rem solid black;
   bottom: 0;
   height: $player-bar-height;
@@ -246,11 +248,6 @@ export default class PlayerBar extends Vue {
 
 .song-name {
   font-weight: bold;
-}
-
-.current-progress {
-  background-color: $accent-color;
-  height: 0.3rem;
 }
 </style>
 

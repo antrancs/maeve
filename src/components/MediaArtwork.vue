@@ -1,5 +1,5 @@
 <template>
-  <div class="artwork" :style="artworkStyle">
+  <div class="artwork">
     <img
       class="artwork__image"
       v-lazy="artworkUrlForArtist || artworkUrl"
@@ -48,13 +48,6 @@ export default class MediaArtwork extends Vue {
       return '';
     }
     return getArtworkUrl(this.artwork.url, this.width, this.height);
-  }
-
-  get artworkStyle() {
-    return {
-      width: `${this.width}px`,
-      height: `${this.height}px`
-    };
   }
 }
 </script>

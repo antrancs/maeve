@@ -1,14 +1,5 @@
 <template>
-  <v-flex
-    xs6
-    sm3
-    md2
-    v-if="collection && collection.attributes"
-    :class="{
-      'pa-2': $vuetify.breakpoint.mdAndUp,
-      'pa-1': $vuetify.breakpoint.mdAndDown
-    }"
-  >
+  <v-flex xs6 sm3 md2 v-if="collection && collection.attributes" class="pa-1">
     <router-link :to="{ name: collection.type, params: { id: collection.id } }">
       <div class="collection-artwork-wrapper">
         <MediaArtwork

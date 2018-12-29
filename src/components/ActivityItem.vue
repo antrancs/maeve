@@ -1,13 +1,5 @@
 <template>
-  <v-flex
-    xs6
-    sm3
-    md2
-    :class="{
-      'pa-2': $vuetify.breakpoint.mdAndUp,
-      'pa-1': $vuetify.breakpoint.mdAndDown
-    }"
-  >
+  <v-flex xs6 sm3 md2 class="pa-1">
     <router-link :to="{ name: 'activities', params: { id: activity.id } }">
       <MediaArtwork
         :artwork="this.activity.attributes.artwork"

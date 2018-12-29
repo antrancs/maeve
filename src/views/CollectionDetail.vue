@@ -20,7 +20,7 @@
                 <v-flex shrink="true">
                   <MediaArtwork
                     :artwork="collection.attributes.artwork"
-                    :class="['collection-artwork']"
+                    :style="artworkStyle"
                     :width="artworkSize"
                     :height="artworkSize"
                     :has-shadow="true"
@@ -212,6 +212,13 @@ export default class CollectionDetail extends Vue {
       default:
         return 200;
     }
+  }
+
+  get artworkStyle() {
+    return {
+      width: `${this.artworkSize}px`,
+      height: `${this.artworkSize}px`
+    };
   }
 
   get headerHeight(): number {

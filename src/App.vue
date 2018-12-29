@@ -51,7 +51,7 @@ export default class App extends Vue {
 @import '~normalize.css/normalize';
 @import '@/styles/styles.scss';
 
-.app-body {
+.app-body .v-content__wrap {
   -webkit-overflow-scrolling: touch;
 }
 

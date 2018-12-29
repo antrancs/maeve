@@ -1,7 +1,7 @@
 # Maeve - An (unofficial) Apple Music web player
 https://maeve.netlify.com
 
-![alt text](https://user-images.githubusercontent.com/14043840/46205967-d5519c80-c322-11e8-967e-3f493b02282b.png "Maeve screenshot")
+![alt text](https://user-images.githubusercontent.com/14043840/50537738-0af56400-0b64-11e9-94ae-2201a7d2b9d4.png "Maeve screenshot")
 
 ## Run locally
 1. [Create a MusicKit developer token ](https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens)

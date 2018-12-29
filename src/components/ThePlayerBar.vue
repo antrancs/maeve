@@ -6,7 +6,7 @@
     <v-layout row fill-height>
       <img
         v-if="currentTrackArtwork && currentTrackArtwork.length > 0"
-        :class="$style['song-artwork']"
+        :class="['hidden-sm-and-down', $style['song-artwork']]"
         :src="currentTrackArtwork"
         alt="Song artwork"
       />
@@ -36,7 +36,12 @@
 
           <v-flex style="margin-top: -20px">
             <v-layout row align-center class="mx-2">
-              <v-flex md4>
+              <v-flex
+                xs6
+                sm3
+                md4
+                :class="{ 'pr-2': $vuetify.breakpoint.xsOnly }"
+              >
                 <div
                   :class="[$style['song-name'], 'long-text-truncated', 'mb-1']"
                 >
@@ -45,8 +50,16 @@
                 <div class="long-text-truncated">{{ artistName }}</div>
               </v-flex>
 
-              <v-flex md4>
-                <v-layout row align-center justify-center>
+              <v-flex xs6 sm4 md4>
+                <v-layout
+                  row
+                  align-center
+                  justify-center
+                  :class="{
+                    [$style['btn-groups-small-device']]:
+                      $vuetify.breakpoint.xsOnly
+                  }"
+                >
                   <v-btn icon @click="playPrevious">
                     <v-icon dark medium>skip_previous</v-icon>
                   </v-btn>
@@ -68,10 +81,18 @@
                       repeatIcon
                     }}</v-icon>
                   </v-btn>
+
+                  <v-btn
+                    icon
+                    @click="toggleQueueVisibility"
+                    class="hidden-sm-and-up"
+                  >
+                    <v-icon medium>playlist_play</v-icon>
+                  </v-btn>
                 </v-layout>
               </v-flex>
 
-              <v-flex md4>
+              <v-flex sm5 md4 class="hidden-xs-only">
                 <v-layout row align-center justify-end>
                   <div class="sub-info-text">
                     {{
@@ -248,6 +269,10 @@ export default class PlayerBar extends Vue {
 
 .song-name {
   font-weight: bold;
+}
+
+.btn-groups-small-device button {
+  margin: 0;
 }
 </style>
 

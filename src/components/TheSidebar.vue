@@ -5,7 +5,7 @@
     clipped
     :width="200"
     class="primary lighten-1 elevation-10"
-    :value="showSidebar"
+    v-model="sidebar"
   >
     <v-layout column fill-height justify-space-between>
       <v-list>
@@ -64,6 +64,14 @@ export default class AppSidebar extends Vue {
   ];
 
   @Prop() showSidebar!: boolean;
+
+  get sidebar(): boolean {
+    return this.showSidebar;
+  }
+
+  set sidebar(value) {
+    this.$emit('sidebar-visibility-change', value);
+  }
 
   get navigationLinks(): Object[] {
     return this.isAuthenticated

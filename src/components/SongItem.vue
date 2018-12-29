@@ -9,7 +9,8 @@
         {
           'song-item--playing': isActive,
           'primary lighten-1': hover && !isQueue,
-          'secondary lighten-1': hover && isQueue
+          'secondary lighten-1': hover && isQueue,
+          'py-1': $vuetify.breakpoint.xsOnly
         }
       ]"
       slot-scope="{ hover }"
@@ -240,7 +241,7 @@ export default class SongItem extends Vue {
 <style lang="scss" scoped>
 .song-item__wrapper {
   border-bottom: 0.1rem solid rgba(255, 255, 255, 0.08);
-  height: 5rem;
+  // height: 5rem;
   transition: background-color 0.25s ease-in-out;
 }
 </style>

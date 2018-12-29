@@ -1,32 +1,33 @@
 <template>
-  <div class="collection-detail">
-    <div class="collection-detail-header" v-if="collection">
+  <div class="collection-detail" v-if="collection">
+    <div
+      class="collection-detail-header"
+      :style="{ height: `${headerHeight}vh` }"
+    >
       <div class="banner-overlay">
         <v-container fluid fill-height>
-          <v-layout align-end row>
-            <v-flex>
+          <v-layout
+            :class="{
+              'align-end row wrap': $vuetify.breakpoint.smAndUp,
+              'justify-end column': $vuetify.breakpoint.xsOnly
+            }"
+          >
+            <v-flex
+              xs12
+              :style="{ 'flex-basis': $vuetify.breakpoint.xsOnly ? 0 : '100%' }"
+            >
               <v-layout row wrap>
-                <v-flex
-                  shrink="true"
-                  :d-flex="$vuetify.breakpoint.xsOnly"
-                  :xs12="$vuetify.breakpoint.xsOnly"
-                  :justify-center="$vuetify.breakpoint.xsOnly"
-                >
+                <v-flex shrink="true">
                   <MediaArtwork
                     :artwork="collection.attributes.artwork"
                     :class="['collection-artwork']"
-                    :width="300"
-                    :height="300"
+                    :width="artworkSize"
+                    :height="artworkSize"
                     :has-shadow="true"
                   />
                 </v-flex>
-                <v-flex class="ml-3" :xs12="$vuetify.breakpoint.xsOnly">
-                  <v-layout
-                    column
-                    justify-end
-                    fill-height
-                    :align-center="$vuetify.breakpoint.xsOnly"
-                  >
+                <v-flex class="pl-2">
+                  <v-layout column justify-end fill-height>
                     <h2>
                       {{ collectionName }}
                       <v-icon
@@ -50,26 +51,21 @@
                       {{ songs.length }} tracks
                     </div>
 
-                    <div>
-                      <v-btn
-                        @click="playCollection"
-                        :color="this.$vuetify.theme.accent"
-                        class="ml-0 mb-0"
-                      >
-                        {{ isCollectionBeingPlayed ? 'Pause' : 'Play' }}
-                      </v-btn>
-                      <v-btn
-                        @click="shuffleSongs"
-                        :color="this.$vuetify.theme.accent"
-                        class="mb-0"
-                      >
-                        Shuffle
-                      </v-btn>
+                    <div class="hidden-xs-only">
+                      <template v-if="collection">
+                        <CollectionControls :collection="collection" />
+                      </template>
                     </div>
                   </v-layout>
                 </v-flex>
               </v-layout>
             </v-flex>
+
+            <div class="hidden-sm-and-up mt-2">
+              <template v-if="collection">
+                <CollectionControls :collection="collection" />
+              </template>
+            </div>
           </v-layout>
         </v-container>
       </div>
@@ -106,6 +102,7 @@ import { Action, Getter, State } from 'vuex-class';
 
 import SongList from '@/components/SongList.vue';
 import MediaArtwork from '@/components/MediaArtwork.vue';
+import CollectionControls from '@/components/CollectionControls.vue';
 import { getArtworkUrl } from '@/utils/utils';
 import musicApiService from '@/services/musicApi.service';
 import {
@@ -125,12 +122,10 @@ import {
 } from '@/store/actions.type';
 
 @Component({
-  components: { SongList, MediaArtwork }
+  components: { SongList, MediaArtwork, CollectionControls }
 })
 export default class CollectionDetail extends Vue {
   @State(state => state.collection.collection) collection: Nullable<Collection>;
-  @State(state => state.musicPlayer.isPlaying)
-  isPlaying!: boolean;
 
   @Getter
   songs!: Song[];
@@ -143,16 +138,6 @@ export default class CollectionDetail extends Vue {
 
   @Provide()
   onSongItemClicked: HandleSongClicked = this.handleSongItemClicked;
-
-  get isCollectionBeingPlayed(): boolean {
-    if (!this.collection) {
-      return false;
-    }
-    return (
-      this.$store.getters.isCollectionBeingPlayed(this.collection.id) &&
-      this.isPlaying
-    );
-  }
 
   get collectionName(): string {
     if (!this.collection || !this.collection.attributes) {
@@ -218,6 +203,28 @@ export default class CollectionDetail extends Vue {
     return year;
   }
 
+  get artworkSize(): number {
+    switch (this.$vuetify.breakpoint.name) {
+      case 'xs':
+        return 100;
+      case 'sm':
+        return 150;
+      default:
+        return 200;
+    }
+  }
+
+  get headerHeight(): number {
+    switch (this.$vuetify.breakpoint.name) {
+      case 'xs':
+        return 40;
+      case 'sm':
+        return 50;
+      default:
+        return 60;
+    }
+  }
+
   created() {
     const collectionId = this.$route.params.id;
     this.fetchCollection({ collectionId, collectionType: this.collectionType });
@@ -235,18 +242,6 @@ export default class CollectionDetail extends Vue {
   }
 
   /**
-   * Play the entire collection
-   */
-  playCollection() {
-    // Start with the first song by default
-    if (this.collection) {
-      this.playCollectionWithSong({
-        collection: this.collection
-      });
-    }
-  }
-
-  /**
    * Play a song based on its index or id from a collection
    * @param index Index of the song in the collection
    * @param songId Id of the the song
@@ -259,18 +254,6 @@ export default class CollectionDetail extends Vue {
       });
     }
   }
-
-  /**
-   * Shuffle the collection and play
-   */
-  shuffleSongs() {
-    if (this.collection) {
-      this.playCollectionWithSong({
-        collection: this.collection,
-        shuffle: true
-      });
-    }
-  }
 }
 </script>
 
@@ -279,15 +262,7 @@ export default class CollectionDetail extends Vue {
   width: 100%;
 }
 
-.collection-artwork {
-  max-height: 15vh;
-  max-width: 15vh;
-  width: 12rem;
-  height: 12rem;
-}
-
 .collection-detail-header {
-  height: 40vh;
   position: relative;
 }
 
@@ -322,23 +297,5 @@ export default class CollectionDetail extends Vue {
 .image {
   width: 100%;
   object-fit: cover;
-}
-
-@media (min-width: $bp-phone) {
-  .collection-artwork {
-    margin-bottom: 0;
-    max-height: none;
-    max-width: none;
-    width: 20rem;
-    height: 20rem;
-  }
-
-  .collection-title {
-    font-size: 3rem;
-  }
-
-  .collection-detail-header {
-    height: 60vh;
-  }
 }
 </style>

@@ -1,8 +1,11 @@
 <template>
   <v-app id="app" dark class="primary">
-    <AppSidebar :showSidebar="showSidebar" />
+    <AppSidebar
+      :showSidebar="showSidebar"
+      @sidebar-visibility-change="updateSidebarVisibility"
+    />
     <AppHeader @toggle-sidebar="showSidebar = !showSidebar" />
-    <v-content>
+    <v-content class="app-body">
       <transition name="fade" mode="out-in">
         <router-view></router-view>
       </transition>
@@ -19,7 +22,6 @@
 import { Component, Vue } from 'vue-property-decorator';
 
 import AppSidebar from '@/components/TheSidebar.vue';
-import AppBody from '@/components/AppBody.vue';
 import AppHeader from '@/components/TheHeader.vue';
 import PlayerBar from '@/components/ThePlayerBar.vue';
 import PlayQueue from '@/components/PlayQueue.vue';
@@ -29,7 +31,6 @@ import AppSnackbar from '@/components/TheSnackbar.vue';
 @Component({
   components: {
     AppHeader,
-    AppBody,
     PlayerBar,
     AppSidebar,
     PlayQueue,
@@ -39,6 +40,10 @@ import AppSnackbar from '@/components/TheSnackbar.vue';
 })
 export default class App extends Vue {
   private showSidebar = true;
+
+  updateSidebarVisibility(value: boolean) {
+    this.showSidebar = value;
+  }
 }
 </script>
 
@@ -46,7 +51,20 @@ export default class App extends Vue {
 @import '~normalize.css/normalize';
 @import '@/styles/styles.scss';
 
+.app-body {
+  -webkit-overflow-scrolling: touch;
+}
+
 .flex-basis-0 {
   flex-basis: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.25s ease-in-out;
+}
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
 }
 </style>

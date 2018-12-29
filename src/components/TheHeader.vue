@@ -1,5 +1,11 @@
 <template>
-  <v-toolbar dark app fixed clipped-left class="secondary darken-1">
+  <v-toolbar
+    dark
+    app
+    fixed
+    clipped-left
+    :class="['secondary darken-1', { 'py-2': $vuetify.breakpoint.smAndDown }]"
+  >
     <v-toolbar-side-icon
       @click.stop="$emit('toggle-sidebar')"
     ></v-toolbar-side-icon>

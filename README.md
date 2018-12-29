@@ -1,5 +1,5 @@
 # Maeve - An (unofficial) Apple Music web player
-https://maeve.netlify.com
+https://maevemusic.app
 
 ![alt text](https://user-images.githubusercontent.com/14043840/50537738-0af56400-0b64-11e9-94ae-2201a7d2b9d4.png "Maeve screenshot")
 

@@ -240,7 +240,7 @@ declare namespace MusicKit {
      * @param parameters A query parameters object that is serialized and passed directly to the Cloud Library API.
      * @returns An array of library song resources.
      */
-    songs(ids: string[], parameters: QueryParameters): Promise<LibrarySong[]>;
+    songs(ids?: string[], parameters?: QueryParameters): Promise<LibrarySong[]>;
   }
 
   interface Queue {

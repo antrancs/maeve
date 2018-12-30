@@ -15,3 +15,8 @@ export const SET_QUEUE_VISIBILITY = 'setQueueVisibility';
 
 export const SET_SNACKBAR_VISIBILITY = 'setSnackbarVisibility';
 export const SET_SNACKBAR_TEXT = 'setSnackbarText';
+export const SET_SNACKBAR_TYPE = 'setSnackbarMode';
+
+export const SET_LIBRARY_ALBUMS = 'setLibraryAlbums';
+export const SET_LIBRARY_PLAYLISTS = 'setLibraryPlaylists';
+export const APPEND_LIBRARY_PLAYLISTS = 'appendLibraryPlaylists';

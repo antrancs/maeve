@@ -22,13 +22,15 @@ const getters: GetterTree<AuthState, any> = {
 };
 
 const actions: ActionTree<AuthState, any> = {
-  async [LOGIN]({ commit }) {
+  async [LOGIN]({ commit, dispatch }) {
     const userToken = await authService.login();
     await apiService.updateUserStorefront();
     commit(SET_USER_TOKEN, userToken);
     commit(SET_SONG_QUEUE, []);
     commit(SET_CURRENTLY_PLAYING_SONG, null);
     commit(SET_QUEUE_VISIBILITY, false);
+
+    // dispatch('fetchLibraryPlaylists');
   },
 
   async [LOGOUT]({ commit }) {

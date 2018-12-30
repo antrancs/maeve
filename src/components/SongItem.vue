@@ -106,18 +106,56 @@
         v-if="!isQueue"
         class="song-actions"
         :style="{ opacity: hover ? 1 : 0 }"
+        v-model="songActionsMenuVisibility"
       >
         <v-btn slot="activator" icon dark> <v-icon>more_horiz</v-icon> </v-btn>
 
         <v-list class="secondary">
-          <v-list-tile @click="$emit('play-next', song)">
+          <v-list-tile v-if="!isFromLibrary" @click="onAddSongToLibrary">
+            <v-list-tile-title>Add to Library</v-list-tile-title>
+          </v-list-tile>
+
+          <v-menu offset-x left open-on-hover>
+            <v-list-tile slot="activator">
+              <v-list-tile-title>Add to Playlist</v-list-tile-title>
+              <v-list-tile-action class="justify-end small-list-tile-action">
+                <v-icon>arrow_right</v-icon>
+              </v-list-tile-action>
+            </v-list-tile>
+
+            <v-list class="secondary">
+              <v-list-tile @click="addSongToNewPlaylist">
+                <v-list-tile-content>
+                  <v-list-tile-title>New playlist</v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+
+              <v-divider></v-divider>
+              <v-list-tile
+                v-for="playlist in playlists"
+                v-if="!playlistId || playlistId !== playlist.id"
+                :key="playlist.id"
+                @click="() => onAddToPlaylistClicked(playlist.id)"
+              >
+                <v-list-tile-action
+                  class="justify-start small-list-tile-action"
+                >
+                  <v-icon>queue_music</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-title>{{
+                  playlist.attributes.name
+                }}</v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+          </v-menu>
+
+          <v-divider></v-divider>
+
+          <v-list-tile @click="onPlayNext">
             <v-list-tile-title>Play next</v-list-tile-title>
           </v-list-tile>
-          <v-list-tile @click="$emit('add-to-queue', song)">
+          <v-list-tile @click="onAddToQueue">
             <v-list-tile-title>Add to queue</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile @click="$emit('add-to-library', song)">
-            <v-list-tile-title>Add to library</v-list-tile-title>
           </v-list-tile>
         </v-list>
       </v-menu>
@@ -138,7 +176,11 @@ import { State, Action } from 'vuex-class';
 
 import { MusicPlayerState } from '@/store/types';
 import { TOGGLE_CURRENT_TRACK } from '@/store/actions.type';
-import { HandleSongClicked, Nullable } from '@/@types/model/model';
+import {
+  HandleSongClicked,
+  Nullable,
+  SnackbarMode
+} from '@/@types/model/model';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import MediaArtworkOverlay from '@/components/MediaArtworkOverlay.vue';
 
@@ -147,6 +189,7 @@ import MediaArtworkOverlay from '@/components/MediaArtworkOverlay.vue';
 })
 export default class SongItem extends Vue {
   private showLoading = false;
+  private songActionsMenuVisibility = false;
 
   @Prop()
   song!: MusicKit.Song;
@@ -156,20 +199,25 @@ export default class SongItem extends Vue {
   index!: number;
   @Prop({ default: false })
   isQueue!: boolean;
-
-  @State
-  musicPlayer!: MusicPlayerState;
+  @Prop({ default: false }) isFromLibrary!: boolean;
+  @Prop({ default: null }) playlistId: Nullable<string>; // the playlist that contains this song item
 
   @Action
   [TOGGLE_CURRENT_TRACK]: () => void;
 
-  @Inject()
-  onSongItemClicked!: HandleSongClicked;
+  @State
+  musicPlayer!: MusicPlayerState;
+  @State(state => state.library.playlists)
+  playlists!: MusicKit.LibraryPlaylist[];
 
   get isActive(): boolean {
+    if (!this.musicPlayer.currentPlaying) {
+      return false;
+    }
+
     return (
-      this.musicPlayer.currentPlaying !== null &&
-      this.musicPlayer.currentPlaying.id === this.song.id
+      this.song.id === this.musicPlayer.currentPlaying.id ||
+      this.song.id === this.musicPlayer.currentPlaying.container!.id // when a song is a library-song
     );
   }
 
@@ -210,12 +258,30 @@ export default class SongItem extends Vue {
     }
 
     this.showLoading = true;
+    this.$emit('song-item-clicked', this.song.id, this.index);
+  }
 
-    // Forward the song info to the provider method
-    if (!this.onSongItemClicked) {
-      return;
-    }
-    this.onSongItemClicked(this.index, this.song.id);
+  onAddSongToLibrary() {
+    this.$emit('add-to-library', this.song);
+  }
+
+  onPlayNext() {
+    this.$emit('play-next', this.song);
+  }
+
+  onAddToQueue() {
+    this.$emit('add-to-queue', this.song);
+  }
+
+  onAddToPlaylistClicked(playlistId: string) {
+    this.songActionsMenuVisibility = false;
+    this.$emit('add-song-to-playlist', playlistId, this.song);
+  }
+
+  addSongToNewPlaylist() {
+    this.songActionsMenuVisibility = false;
+    // @ts-ignore
+    this.$root.$newPlaylistDialog.open(this.song);
   }
 }
 </script>

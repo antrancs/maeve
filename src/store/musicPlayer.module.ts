@@ -9,7 +9,6 @@ import {
   PLAY_SONGS,
   RESUME_CURRENT_TRACK,
   TOGGLE_CURRENT_TRACK,
-  ADD_TO_LIBRARY,
   PLAY_COLLECTION_WITH_SONG,
   SKIP_TO_SONG_AT_INDEX,
   TOGGLE_SHUFFLE_MODE,
@@ -29,7 +28,6 @@ import {
 } from '@/store/mutations.type';
 import {
   MusicPlayerState,
-  AddToLibraryPayload,
   PlayCollectionWithSongPayload,
   SkipToSongAtIndexPayload,
   PlaySongsPayload
@@ -101,10 +99,6 @@ const actions: ActionTree<MusicPlayerState, any> = {
     });
   },
 
-  [ADD_TO_LIBRARY](_, { itemIds, type }: AddToLibraryPayload) {
-    return musicPlayerService.addToLibrary(itemIds, type);
-  },
-
   [PLAY_COLLECTION_WITH_SONG](
     { getters, dispatch, commit },
     { collection, songId, shuffle = false }: PlayCollectionWithSongPayload
@@ -134,8 +128,8 @@ const actions: ActionTree<MusicPlayerState, any> = {
       });
   },
 
-  [PLAY_SONGS]({ commit }, { songIds }: PlaySongsPayload) {
-    musicPlayerService.playSongs(songIds).then(() => {
+  [PLAY_SONGS]({ commit }, { songIds, startSongIndex }: PlaySongsPayload) {
+    musicPlayerService.playSongs(songIds, startSongIndex).then(() => {
       commit(SET_SONG_QUEUE, musicPlayerService.queuedSongs);
     });
   },

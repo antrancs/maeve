@@ -7,6 +7,7 @@ import auth from './auth.module';
 import router from './router.module';
 import collection from './collection.module';
 import snackbar from './snackbar.module';
+import library from './library.module';
 
 Vue.use(Vuex);
 
@@ -17,6 +18,7 @@ export default new Vuex.Store({
     router,
     playQueue,
     collection,
-    snackbar
+    snackbar,
+    library
   }
 });

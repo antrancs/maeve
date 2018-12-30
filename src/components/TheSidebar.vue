@@ -3,27 +3,98 @@
     app
     fixed
     clipped
-    :width="200"
+    :width="210"
     class="primary lighten-1 elevation-10"
     v-model="sidebar"
+    :style="sidebarStyleHeight"
   >
     <v-layout column fill-height justify-space-between>
       <v-list>
-        <v-list-tile
-          v-for="link in navigationLinks"
-          :key="link.pathName"
-          :to="{ name: link.pathName }"
-          active-class="accent--text"
-          exact
-          ripple
-        >
-          <v-list-tile-action>
-            <v-icon>{{ link.icon }}</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ link.name }}</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+        <template v-for="link in navigationLinks">
+          <v-list-tile
+            v-if="!link.subItems"
+            :key="link.pathName"
+            :to="{ name: link.pathName }"
+            active-class="accent--text"
+            exact
+            ripple
+          >
+            <v-list-tile-action>
+              <v-icon>{{ link.icon }}</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>{{ link.name }}</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
+          <v-list-group v-else :key="link.pathName" value="true">
+            <v-list-tile slot="activator">
+              <v-list-tile-title class="menu-group-title">{{
+                link.name
+              }}</v-list-tile-title>
+            </v-list-tile>
+
+            <v-list-tile
+              v-for="subItem in link.subItems"
+              :key="subItem.name"
+              :to="{
+                name: subItem.pathName,
+                params: subItem.params
+              }"
+              active-class="accent--text"
+              exact
+              ripple
+            >
+              <v-list-tile-action>
+                <v-icon>{{ subItem.icon }}</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>{{ subItem.name }}</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list-group>
+        </template>
+
+        <v-list-group v-if="isAuthenticated" value="true">
+          <v-list-tile slot="activator">
+            <v-list-tile-title class="menu-group-title"
+              >Your playlists</v-list-tile-title
+            >
+          </v-list-tile>
+
+          <v-list-tile @click="handleNewPlaylistClicked">
+            <v-list-tile-action class="small-list-tile-action">
+              <v-icon>playlist_add</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>New Playlist</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
+          <v-list-tile
+            active-class="accent--text"
+            exact
+            ripple
+            v-for="playlist in playlists"
+            :to="{
+              name: 'library-playlists',
+              params: {
+                id: playlist.id
+              }
+            }"
+            :key="playlist.id"
+            class="playlists-section pl-2"
+          >
+            <v-list-tile-action class="small-list-tile-action">
+              <v-icon>queue_music</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>{{
+                playlist.attributes.name
+              }}</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list-group>
 
         <p v-if="!isAuthenticated" class="pa-2">
           Log in with your Apple Music to listen to full songs and manage your
@@ -36,11 +107,12 @@
 
 <script lang="ts">
 import { Vue, Prop, Component } from 'vue-property-decorator';
-import { Getter, State } from 'vuex-class';
+import { Getter, State, Action } from 'vuex-class';
 
 import { MusicPlayerState } from '@/store/types';
+import { FETCH_LIBRARY_PLAYLISTS } from '@/store/actions.type';
 
-@Component({})
+@Component
 export default class AppSidebar extends Vue {
   private unauthenticatedLinks = [
     {
@@ -59,11 +131,36 @@ export default class AppSidebar extends Vue {
     {
       name: 'My Library',
       icon: 'library_music',
-      pathName: 'myLibrary'
+      pathName: 'myLibrary',
+      subItems: [
+        {
+          name: 'Songs',
+          icon: 'music_note',
+          pathName: 'myLibrary',
+          params: {
+            resource: 'songs'
+          }
+        },
+        {
+          name: 'Albums',
+          icon: 'album',
+          pathName: 'myLibrary',
+          params: {
+            resource: 'albums'
+          }
+        }
+      ]
     }
   ];
 
   @Prop() showSidebar!: boolean;
+
+  @State(state => state.library.playlists)
+  playlists!: MusicKit.LibraryPlaylist[];
+  @State(state => state.musicPlayer.currentPlaying)
+  currentPlaying!: MusicKit.MediaItem | null;
+
+  @Action [FETCH_LIBRARY_PLAYLISTS]: () => void;
 
   get sidebar(): boolean {
     return this.showSidebar;
@@ -79,10 +176,49 @@ export default class AppSidebar extends Vue {
       : this.unauthenticatedLinks;
   }
 
+  get sidebarStyleHeight() {
+    if (this.currentPlaying) {
+      return {
+        'max-height': 'calc(100% - 64px - 96px)' // minus the player bar height
+      };
+    }
+    return {};
+  }
+
   @Getter isAuthenticated!: boolean;
+
+  created() {
+    if (this.isAuthenticated) {
+      this.fetchLibraryPlaylists();
+    }
+  }
+
+  handleNewPlaylistClicked() {
+    // @ts-ignore
+    this.$root.$newPlaylistDialog.open();
+  }
 }
 </script>
 
-<style lang="scss">
-/* @import '@/styles/components/_sidebar.scss'; */
+<style lang="scss" scoped>
+.v-list__tile--active .v-list__tile__title {
+  font-weight: bold;
+}
+
+.menu-group-title {
+  color: var(--v-secondaryText-base);
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.playlists-section {
+  & .v-list__tile__title {
+    font-size: 14px;
+  }
+
+  & .v-icon {
+    font-size: 20px;
+  }
+}
 </style>

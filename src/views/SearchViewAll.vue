@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Provide } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 import InfiniteLoading from 'vue-infinite-loading';
 
@@ -49,8 +49,6 @@ export default class SearchViewAll extends Vue {
   private idSet = new Set<string>();
 
   @Action [PLAY_SONGS]: PlaySongsAction;
-
-  @Provide() onSongItemClicked: HandleSongClicked = this.$_playAllSongs;
 
   get query(): string {
     return this.$route.query.q as string;
@@ -97,24 +95,6 @@ export default class SearchViewAll extends Vue {
           $state.complete();
         }
       });
-  }
-
-  // Helper methods
-  /**
-   * Play all songs. This method is only applicable for the 'songs' detail view
-   * @param index Index of the selected song
-   * @param songId Id of the selected song
-   */
-  private $_playAllSongs(index: number, songId: string) {
-    // Make the selected song the first song in the queue
-    const songIds = [
-      songId,
-      ...this.data.filter(song => song.id !== songId).map(song => song.id)
-    ];
-
-    this.playSongs({
-      songIds
-    });
   }
 }
 </script>

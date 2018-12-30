@@ -24,11 +24,10 @@
 <script lang="ts">
 import Vue from 'vue';
 import { State, Action, Mutation } from 'vuex-class';
-import { Prop, Component, Provide } from 'vue-property-decorator';
+import { Prop, Component } from 'vue-property-decorator';
 
 import SongList from '@/components/SongList.vue';
-import { HandleSongClicked, Song } from '@/@types/model/model';
-import { SkipToSongAtIndexAction } from '@/store/types';
+import { Song } from '@/@types/model/model';
 import {
   SKIP_TO_SONG_AT_INDEX,
   TOGGLE_QUEUE_VISIBILITY
@@ -45,25 +44,7 @@ export default class PlayQueue extends Vue {
   @State(state => state.playQueue.visibility) visibility!: Boolean;
 
   @Action
-  [SKIP_TO_SONG_AT_INDEX]: SkipToSongAtIndexAction;
-  @Action
   [TOGGLE_QUEUE_VISIBILITY]: () => void;
-
-  @Provide()
-  onSongItemClicked: HandleSongClicked = this.$_playSongFromQueue;
-
-  // Helper methods
-  /**
-   * Play a specified song in the queue
-   * @param index Index of the song
-   * @param songId Id of the song
-   */
-  private $_playSongFromQueue(index: number, songId: string) {
-    // Just skip to the song in the queue. No need to re-initialize the queue
-    this.skipToSongAtIndex({
-      index
-    });
-  }
 }
 </script>
 

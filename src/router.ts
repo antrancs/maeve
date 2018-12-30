@@ -3,6 +3,7 @@ import Router from 'vue-router';
 
 import store from '@/store';
 import Home from './views/Home.vue';
+import CollectionDetail from './views/CollectionDetail.vue';
 
 Vue.use(Router);
 
@@ -29,13 +30,13 @@ const router = new Router({
     {
       path: '/albums/:id',
       name: 'albums',
-      component: () => import('./views/CollectionDetail.vue'),
+      component: CollectionDetail,
       props: true
     },
     {
       path: '/playlists/:id',
       name: 'playlists',
-      component: () => import('./views/CollectionDetail.vue'),
+      component: CollectionDetail,
       props: true
     },
     {
@@ -47,7 +48,7 @@ const router = new Router({
     {
       path: '/me/library-playlists/:id',
       name: 'library-playlists',
-      component: () => import('./views/CollectionDetail.vue'),
+      component: CollectionDetail,
       props: true,
       meta: {
         auth: true
@@ -56,7 +57,7 @@ const router = new Router({
     {
       path: '/me/library-albums/:id',
       name: 'library-albums',
-      component: () => import('./views/CollectionDetail.vue'),
+      component: CollectionDetail,
       props: true,
       meta: {
         auth: true
@@ -76,9 +77,10 @@ const router = new Router({
       }
     },
     {
-      path: '/me/library',
+      path: '/me/library/:resource',
       name: 'myLibrary',
       component: () => import('./views/MyLibrary.vue'),
+      props: true,
       meta: {
         auth: true
       }

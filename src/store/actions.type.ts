@@ -1,7 +1,5 @@
-export const ADD_TO_LIBRARY = 'addToLibrary';
 export const APPEND_SONGS = 'appendSongs';
 export const PAUSE_CURRENT_TRACK = 'pauseCurrentTrack';
-// export const PLAY_COLLECTION_AT_INDEX = 'playCollectionAtIndex';
 export const PLAY_COLLECTION_WITH_SONG = 'playCollectionWithSong';
 export const PLAY_PREVIOUS = 'playPrevious';
 export const PLAY_NEXT = 'playNext';
@@ -26,3 +24,10 @@ export const SHOW_SNACKBAR = 'showSnackbar';
 export const CLOSE_SNACKBAR = 'closeSnackbar';
 
 export const TOGGLE_QUEUE_VISIBILITY = 'toggleQueueVisibility';
+
+export const ADD_TO_LIBRARY = 'addToLibrary';
+export const ADD_SONGS_TO_PLAYLIST = 'addSongsToPlaylist';
+export const CREATE_NEW_PLAYLIST = 'createNewPlaylist';
+export const FETCH_LIBRARY_SONGS = 'fetchLibrarySongs';
+export const FETCH_LIBRARY_PLAYLISTS = 'fetchLibraryPlaylists';
+export const FETCH_LIBRARY_ALBUMS = 'fetchLibraryAlbums';

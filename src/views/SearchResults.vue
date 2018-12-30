@@ -74,7 +74,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch, Provide } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 import { Route } from 'vue-router';
 
@@ -101,12 +101,7 @@ export default class SearchResults extends Vue {
   private queryString = '';
   private hasResults = true;
 
-  @Action
-  [PLAY_SONGS]: PlaySongsAction;
   @Action [SHOW_SNACKBAR]: ShowSnackbarAction;
-
-  @Provide()
-  onSongItemClicked: HandleSongClicked = this.$_playAllSongs;
 
   // Watch
   @Watch('$route')
@@ -128,24 +123,6 @@ export default class SearchResults extends Vue {
     return collections.slice(0, count);
   }
 
-  // Helper methods
-  /**
-   * Play all songs returned from the search, starting with the selected song
-   * @param index Index of the selected song
-   * @param songId Id of the selected song
-   */
-  private $_playAllSongs(index: number, songId: string) {
-    // Make the selected song the first song in the queue
-    const songIds = [
-      songId,
-      ...this.songs.filter(song => song.id !== songId).map(song => song.id)
-    ];
-
-    this.playSongs({
-      songIds
-    });
-  }
-
   private $_search() {
     return musicApiService
       .searchAll(this.queryString)
@@ -164,8 +141,6 @@ export default class SearchResults extends Vue {
         this.playlists = playlists;
       })
       .catch(err => {
-        console.log(err);
-
         this.showSnackbar({
           text: 'Something went wrong.'
         });

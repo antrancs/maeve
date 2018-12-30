@@ -15,6 +15,7 @@
     <PlayerBar />
     <PlayQueue />
     <AppSnackbar />
+    <NewPlaylistDialog ref="newPlaylistDialog" />
   </v-app>
 </template>
 
@@ -27,6 +28,7 @@ import PlayerBar from '@/components/ThePlayerBar.vue';
 import PlayQueue from '@/components/PlayQueue.vue';
 import AppFooter from '@/components/TheFooter.vue';
 import AppSnackbar from '@/components/TheSnackbar.vue';
+import NewPlaylistDialog from '@/components/NewPlaylistDialog.vue';
 
 @Component({
   components: {
@@ -35,7 +37,8 @@ import AppSnackbar from '@/components/TheSnackbar.vue';
     AppSidebar,
     PlayQueue,
     AppFooter,
-    AppSnackbar
+    AppSnackbar,
+    NewPlaylistDialog
   }
 })
 export default class App extends Vue {
@@ -43,6 +46,11 @@ export default class App extends Vue {
 
   updateSidebarVisibility(value: boolean) {
     this.showSidebar = value;
+  }
+
+  mounted() {
+    // @ts-ignore
+    this.$root.$newPlaylistDialog = this.$refs.newPlaylistDialog;
   }
 }
 </script>
@@ -66,5 +74,9 @@ export default class App extends Vue {
 .fade-enter,
 .fade-leave-active {
   opacity: 0;
+}
+
+.small-list-tile-action {
+  min-width: 30px;
 }
 </style>

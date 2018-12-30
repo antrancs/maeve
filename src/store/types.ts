@@ -32,6 +32,17 @@ export type AddToLibraryPayload = {
   type: string;
 };
 
+export type AddSongsToPlaylistPayload = {
+  songItems: { id: string; type: string }[];
+  playlistId: string;
+};
+
+export type CreateNewPlaylistPayload = {
+  name: string;
+  description?: string;
+  items?: { id: string; type: string }[];
+};
+
 export type PlayCollectionWithSongPayload = {
   collection: Collection;
   shuffle?: boolean;
@@ -44,6 +55,7 @@ export type SkipToSongAtIndexPayload = {
 
 export type PlaySongsPayload = {
   songIds: string[];
+  startSongIndex: number;
 };
 
 export type FetchCollectionPayload = {
@@ -76,6 +88,14 @@ export type PlayCollectionPayload = {
   collection: Collection;
 };
 
+export type AddSongsToPlaylistAction = (
+  payload: AddSongsToPlaylistPayload
+) => Promise<any>;
+
+export type CreateNewPlaylistAction = (
+  payload: CreateNewPlaylistPayload
+) => Promise<any>;
+
 // Auth module
 export interface AuthState {
   musicUserToken: string | null;
@@ -88,6 +108,12 @@ export interface PlayQueueState {
 
 export interface CollectionState {
   collection: Nullable<Collection>;
+}
+
+export interface UserLibraryState {
+  albums: MusicKit.LibraryAlbum[];
+  playlists: MusicKit.LibraryPlaylist[];
+  songs: MusicKit.LibrarySong[];
 }
 
 export interface SnackbarState {

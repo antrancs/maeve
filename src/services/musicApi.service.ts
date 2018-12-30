@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
 import musicKit from '@/services/musicKit';
 import authService from '@/services/auth.service';
@@ -160,6 +160,13 @@ class MusicApiService {
   }
 
   /**
+   * Get all songs in the user's library
+   */
+  getLibrarySongs(): Promise<MusicKit.LibrarySong[]> {
+    return musicKit.getApiInstance().library.songs();
+  }
+
+  /**
    * Get a collection (album, playlist) details and its relationships
    * @param collectionId collection id
    * @param collectionType collection type
@@ -169,9 +176,6 @@ class MusicApiService {
     collectionType: CollectionType
   ): Promise<Collection> {
     const api = musicKit.getApiInstance();
-    // api.userStorefrontId = api.storefrontId;
-
-    // console.log('API Storefront', api.storefrontId);
 
     if (collectionType === CollectionType.album) {
       return api.album(collectionId, { include: 'tracks' });
@@ -215,28 +219,101 @@ class MusicApiService {
     collectionId: string,
     collectionType: string
   ): Promise<MusicKit.LibraryAlbum | MusicKit.LibraryPlaylist> {
-    let promise: Promise<MusicKit.LibraryAlbum | MusicKit.LibraryPlaylist>;
     const api = musicKit.getApiInstance();
     if (collectionType === CollectionType.libraryAlbum) {
       return api.library.album(collectionId);
     } else {
       return api.library.playlist(collectionId);
     }
+  }
 
-    // return promise.then(collection => {
-    //   if (this.isResultEmpty(collection)) {
-    //     return null;
+  /**
+   * Add multiple items to the user's library
+   * @param itemIds Ids of the items to be added
+   * @param type Type of these items
+   */
+  addToLibrary(itemIds: string[], type: string) {
+    return musicKit.getApiInstance().addToLibrary({
+      [type]: itemIds
+    });
+  }
+
+  async addSongsToPlaylist(
+    songItems: { id: string; type: string }[],
+    playlistId: string
+  ): Promise<AxiosResponse<any>> {
+    return await this.axiosInstance.post(
+      `/me/library/playlists/${playlistId}/tracks`,
+      {
+        data: songItems
+      },
+      {
+        headers: this.apiHeaders
+      }
+    );
+  }
+
+  async createNewPlaylist(
+    name: string,
+    description?: string,
+    items?: { id: string; type: string }[]
+  ): Promise<MusicKit.LibraryPlaylist> {
+    const attributes = Object.assign(
+      {},
+      { name },
+      description && { description }
+    );
+
+    const postData = {
+      attributes,
+      tracks: items ? items : undefined
+    };
+
+    console.log({ postData });
+
+    // There's something wrong with the API when passing 'tracks' relationships into the request
+    // 'Tracks' gets ignored by the API, so we have to make a separate call to add tracks to the playlist
+    const res = await this.axiosInstance.post(
+      `/me/library/playlists`,
+      postData,
+      {
+        headers: this.apiHeaders
+      }
+    );
+
+    if (res.status !== 201) {
+      throw new Error('Cannot create new playlist');
+    }
+
+    if (!Array.isArray(res.data.data) || res.data.data.length === 0) {
+      throw new Error('Cannot create new playlist');
+    }
+
+    const playlist = res.data.data[0];
+    if (!items) {
+      return playlist;
+    }
+
+    await this.addSongsToPlaylist(items, playlist.id);
+
+    return playlist;
+
+    // .then(res => {
+    //   if (res.status !== 201) {
+    //     return Promise.reject('Cannot create new playlist');
     //   }
 
-    //   let tracks: MusicKit.LibrarySong[] = [];
-    //   if (collection.relationships && collection.relationships.tracks) {
-    //     tracks = collection.relationships.tracks.data;
+    //   if (!Array.isArray(res.data.data) || res.data.data.length === 0) {
+    //     return Promise.reject('Cannot create new playlist');;
     //   }
 
-    //   return {
-    //     collection,
-    //     tracks
-    //   };
+    //   const playlist = res.data.data[0];
+
+    //   if (!items) {
+    //     return Promise.resolve(playlist);
+    //   }
+
+    //   return this.addSongsToPlaylist(items, playlist.id);
     // });
   }
 
@@ -275,7 +352,8 @@ class MusicApiService {
   private get apiHeaders() {
     return {
       'Music-User-Token': authService.userToken,
-      Authorization: `Bearer ${authService.developerToken}`
+      Authorization: `Bearer ${authService.developerToken}`,
+      'Content-Type': 'application/json'
     };
   }
 

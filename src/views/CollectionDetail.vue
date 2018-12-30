@@ -26,7 +26,7 @@
                     :has-shadow="true"
                   />
                 </v-flex>
-                <v-flex class="pl-2">
+                <v-flex class="pl-3">
                   <v-layout column justify-end fill-height>
                     <h2>
                       {{ collectionName }}
@@ -91,13 +91,17 @@
     </div>
 
     <v-container fluid>
-      <SongList :tracks="songs" :collection="collection" />
+      <SongList
+        :tracks="songs"
+        :collection="collection"
+        :playlistId="playlistId"
+      />
     </v-container>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Provide } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Action, Getter, State } from 'vuex-class';
 
 import SongList from '@/components/SongList.vue';
@@ -105,26 +109,25 @@ import MediaArtwork from '@/components/MediaArtwork.vue';
 import CollectionControls from '@/components/CollectionControls.vue';
 import { getArtworkUrl } from '@/utils/utils';
 import musicApiService from '@/services/musicApi.service';
-import {
-  PlayCollectionWithSongAction,
-  FetchCollectionAction
-} from '@/store/types';
+import { FetchCollectionAction } from '@/store/types';
 import {
   Collection,
   Song,
   Nullable,
-  CollectionType,
-  HandleSongClicked
+  CollectionType
 } from '@/@types/model/model';
 import {
   FETCH_COLLECTION,
   PLAY_COLLECTION_WITH_SONG
 } from '@/store/actions.type';
+import { Route } from 'vue-router';
 
 @Component({
   components: { SongList, MediaArtwork, CollectionControls }
 })
 export default class CollectionDetail extends Vue {
+  @Prop() id!: string;
+
   @State(state => state.collection.collection) collection: Nullable<Collection>;
 
   @Getter
@@ -132,12 +135,7 @@ export default class CollectionDetail extends Vue {
   @Getter
   isAuthenticated!: boolean;
 
-  @Action
-  [PLAY_COLLECTION_WITH_SONG]: PlayCollectionWithSongAction;
   @Action [FETCH_COLLECTION]!: FetchCollectionAction;
-
-  @Provide()
-  onSongItemClicked: HandleSongClicked = this.handleSongItemClicked;
 
   get collectionName(): string {
     if (!this.collection || !this.collection.attributes) {
@@ -175,8 +173,11 @@ export default class CollectionDetail extends Vue {
     }
   }
 
-  get collectionId(): string {
-    return this.$route.params.id;
+  get playlistId(): Nullable<string> {
+    if (this.collectionType !== CollectionType.libraryPlaylist) {
+      return null;
+    }
+    return this.id;
   }
 
   get releaseYear(): string {
@@ -232,9 +233,19 @@ export default class CollectionDetail extends Vue {
     }
   }
 
+  @Watch('$route')
+  onRouteChange(to: Route, from: Route) {
+    this.fetchCollection({
+      collectionId: this.id,
+      collectionType: this.collectionType
+    });
+  }
+
   created() {
-    const collectionId = this.$route.params.id;
-    this.fetchCollection({ collectionId, collectionType: this.collectionType });
+    this.fetchCollection({
+      collectionId: this.id,
+      collectionType: this.collectionType
+    });
   }
 
   getCollectionArtwork(width: number, height: number) {
@@ -246,20 +257,6 @@ export default class CollectionDetail extends Vue {
       return '';
     }
     return getArtworkUrl(this.collection.attributes.artwork.url, width, height);
-  }
-
-  /**
-   * Play a song based on its index or id from a collection
-   * @param index Index of the song in the collection
-   * @param songId Id of the the song
-   */
-  handleSongItemClicked(index: number, songId: string) {
-    if (this.collection) {
-      this.playCollectionWithSong({
-        collection: this.collection,
-        songId
-      });
-    }
   }
 }
 </script>

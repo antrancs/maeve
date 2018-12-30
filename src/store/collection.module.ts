@@ -53,15 +53,6 @@ const actions: ActionTree<CollectionState, any> = {
     return promise.then(collection => {
       commit('setCollection', collection);
     });
-  },
-
-  playCollection({ commit, state, rootState, rootGetters }, { collectionId }) {
-    if (rootGetters.isCollectionBeingPlayed(collectionId)) {
-      // dispatch toggle current track (from musicPlayer module)
-    } else {
-      //
-    }
-    console.log({ rootGetters });
   }
 };
 

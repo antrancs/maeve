@@ -98,29 +98,16 @@ const musicPlayerService = {
   },
 
   /**
-   * Add multiple items to the user's library
-   * @param itemIds Ids of the items to be added
-   * @param type Type of these items
-   */
-  addToLibrary(itemIds: string[], type: string) {
-    return musicKit.getApiInstance().addToLibrary({
-      [type]: itemIds
-    });
-  },
-
-  /**
    * Play multiple songs
    * @param songIds Id of those songs to play
    */
-  playSongs(songIds: string[]): Promise<number> {
+  playSongs(songIds: string[], startSongIndex: number): Promise<void> {
     const music = musicKit.getInstance();
     return music
       .setQueue({
         songs: songIds
       })
-      .then(() => {
-        return music.player.play();
-      });
+      .then(() => music.player.changeToMediaAtIndex(startSongIndex));
   },
 
   /**

@@ -111,45 +111,47 @@
         <v-btn slot="activator" icon dark> <v-icon>more_horiz</v-icon> </v-btn>
 
         <v-list class="secondary">
-          <v-list-tile v-if="!isFromLibrary" @click="onAddSongToLibrary">
-            <v-list-tile-title>Add to Library</v-list-tile-title>
-          </v-list-tile>
-
-          <v-menu offset-x left open-on-hover>
-            <v-list-tile slot="activator">
-              <v-list-tile-title>Add to Playlist</v-list-tile-title>
-              <v-list-tile-action class="justify-end small-list-tile-action">
-                <v-icon>arrow_right</v-icon>
-              </v-list-tile-action>
+          <template v-if="isAuthenticated">
+            <v-list-tile v-if="!isFromLibrary" @click="onAddSongToLibrary">
+              <v-list-tile-title>Add to Library</v-list-tile-title>
             </v-list-tile>
 
-            <v-list class="secondary">
-              <v-list-tile @click="addSongToNewPlaylist">
-                <v-list-tile-content>
-                  <v-list-tile-title>New playlist</v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
-
-              <v-divider></v-divider>
-              <v-list-tile
-                v-for="playlist in playlists"
-                v-if="!playlistId || playlistId !== playlist.id"
-                :key="playlist.id"
-                @click="() => onAddToPlaylistClicked(playlist.id)"
-              >
-                <v-list-tile-action
-                  class="justify-start small-list-tile-action"
-                >
-                  <v-icon>queue_music</v-icon>
+            <v-menu offset-x left open-on-hover>
+              <v-list-tile slot="activator">
+                <v-list-tile-title>Add to Playlist</v-list-tile-title>
+                <v-list-tile-action class="justify-end small-list-tile-action">
+                  <v-icon>arrow_right</v-icon>
                 </v-list-tile-action>
-                <v-list-tile-title>{{
-                  playlist.attributes.name
-                }}</v-list-tile-title>
               </v-list-tile>
-            </v-list>
-          </v-menu>
 
-          <v-divider></v-divider>
+              <v-list class="secondary">
+                <v-list-tile @click="addSongToNewPlaylist">
+                  <v-list-tile-content>
+                    <v-list-tile-title>New playlist</v-list-tile-title>
+                  </v-list-tile-content>
+                </v-list-tile>
+
+                <v-divider></v-divider>
+                <v-list-tile
+                  v-for="playlist in playlists"
+                  v-if="!playlistId || playlistId !== playlist.id"
+                  :key="playlist.id"
+                  @click="() => onAddToPlaylistClicked(playlist.id)"
+                >
+                  <v-list-tile-action
+                    class="justify-start small-list-tile-action"
+                  >
+                    <v-icon>queue_music</v-icon>
+                  </v-list-tile-action>
+                  <v-list-tile-title>{{
+                    playlist.attributes.name
+                  }}</v-list-tile-title>
+                </v-list-tile>
+              </v-list>
+            </v-menu>
+
+            <v-divider></v-divider>
+          </template>
 
           <v-list-tile @click="onPlayNext">
             <v-list-tile-title>Play next</v-list-tile-title>
@@ -172,7 +174,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Inject, Watch } from 'vue-property-decorator';
-import { State, Action } from 'vuex-class';
+import { State, Action, Getter } from 'vuex-class';
 
 import { MusicPlayerState } from '@/store/types';
 import { TOGGLE_CURRENT_TRACK } from '@/store/actions.type';
@@ -201,6 +203,8 @@ export default class SongItem extends Vue {
   isQueue!: boolean;
   @Prop({ default: false }) isFromLibrary!: boolean;
   @Prop({ default: null }) playlistId: Nullable<string>; // the playlist that contains this song item
+
+  @Getter isAuthenticated!: boolean;
 
   @Action
   [TOGGLE_CURRENT_TRACK]: () => void;

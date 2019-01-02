@@ -269,8 +269,6 @@ class MusicApiService {
       tracks: items ? items : undefined
     };
 
-    console.log({ postData });
-
     // There's something wrong with the API when passing 'tracks' relationships into the request
     // 'Tracks' gets ignored by the API, so we have to make a separate call to add tracks to the playlist
     const res = await this.axiosInstance.post(

@@ -29,3 +29,14 @@ export enum SnackbarMode {
 
 // Methods
 export type HandleSongClicked = (index: number, songId: string) => void;
+
+export interface ThemeOption {
+  id: string;
+  name: string;
+  primary: string;
+  secondary: string;
+  accent: string;
+  primaryText: string;
+  secondaryText: string;
+  editable: boolean;
+}

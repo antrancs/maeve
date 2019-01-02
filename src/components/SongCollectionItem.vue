@@ -1,5 +1,5 @@
 <template>
-  <v-flex xs6 sm3 md2 v-if="collection && collection.attributes" class="pa-1">
+  <v-flex xs6 sm3 md2 v-if="collection && collection.attributes" class="pa-2">
     <router-link :to="{ name: collection.type, params: { id: collection.id } }">
       <div class="collection-artwork-wrapper">
         <MediaArtwork
@@ -11,17 +11,18 @@
         <div class="collection-artwork-overlay" :class="artworkOverlayClass">
           <button @click.prevent="playCollection" icon class="playing-button">
             <v-icon
+              dark
               size="50"
               v-if="isCollectionBeingPlayed && musicPlayer.isPlaying"
               >pause_circle_filled</v-icon
             >
-            <v-icon v-else size="50">play_circle_filled</v-icon>
+            <v-icon v-else size="50" dark>play_circle_filled</v-icon>
           </button>
         </div>
       </div>
     </router-link>
 
-    <div>
+    <div class="mt-1">
       <div class="media-details__title">
         <div class="long-text-truncated main-info-text">
           {{ collection.attributes.name }}

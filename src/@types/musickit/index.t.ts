@@ -544,10 +544,13 @@ declare namespace MusicKit {
   interface MediaItemOptions {
     attributes?: any;
     id?: string;
-    type: MediaItemType;
+    type: string;
+    container: {
+      id: string;
+    };
   }
 
-  type MediaItemType = 'song';
+  type MediaItemType = 'songs';
 
   /**
    * The JSON root object contained in every response.

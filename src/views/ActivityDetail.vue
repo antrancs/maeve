@@ -2,22 +2,21 @@
   <div v-if="activity" class="activity">
     <div class="activity-header">
       <div class="banner" :style="bannerStyle"></div>
-      <v-container fluid fill-height>
+      <v-container fill-height>
         <v-layout align-end>
-          <h3 class="activity-title">{{ activity.attributes.name }}</h3>
+          <h3 class="activity-title" :style="headerOverlayTextStyle">
+            {{ activity.attributes.name }}
+          </h3>
         </v-layout>
       </v-container>
     </div>
-    <v-container
-      fluid
-      :class="{
-        'grid-list-lg': $vuetify.breakpoint.mdAndUp,
-        'grid-list-md': $vuetify.breakpoint.mdAndDown
-      }"
-      class="activity-content"
-    >
+
+    <v-container fluid class="skew-div"></v-container>
+    <v-container class="activity-content pt-0">
       <v-layout row wrap style="z-index: 2">
-        <v-flex xs12> <h3 class="section-title">Popular playlists</h3> </v-flex>
+        <v-flex xs12 class="px-2">
+          <h3 class="section-title">Popular playlists</h3>
+        </v-flex>
 
         <v-flex xs12> <SongCollectionList :collections="playlists" /> </v-flex>
       </v-layout>
@@ -33,6 +32,7 @@ import musicApiService from '@/services/musicApi.service';
 import { Nullable } from '@/@types/model/model';
 import { ActivityType } from '@/utils/constants';
 import { getArtworkUrl } from '@/utils/utils';
+import { TEXT_PRIMARY_DARK } from '@/themes';
 
 @Component({
   components: { SongCollectionList }
@@ -63,6 +63,12 @@ export default class ActivityDetail extends Vue {
   get bannerStyle(): object {
     return {
       'background-image': `url('${this.bannerImage}')`
+    };
+  }
+
+  get headerOverlayTextStyle() {
+    return {
+      color: TEXT_PRIMARY_DARK
     };
   }
 
@@ -98,7 +104,12 @@ export default class ActivityDetail extends Vue {
   z-index: 2;
 }
 
-.activity-content::before {
+.skew-div {
+  position: relative;
+  z-index: 2;
+}
+
+.skew-div::before {
   background-color: var(--v-primary-base);
   content: '';
   display: block;

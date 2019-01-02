@@ -1,19 +1,14 @@
 <template>
-  <v-container
-    fluid
-    :class="{
-      'grid-list-lg': $vuetify.breakpoint.mdAndUp,
-      'grid-list-md': $vuetify.breakpoint.mdAndDown
-    }"
-  >
+  <v-container>
     <v-layout row wrap>
       <v-flex
         xs12
         v-for="recommendation in recommendations"
         :key="recommendation.id"
+        class="mt-4"
       >
         <v-layout row wrap>
-          <v-flex xs12>
+          <v-flex xs12 class="px-2">
             <h3 class="section-title">
               {{ recommendation.attributes.title.stringForDisplay }}
             </h3>

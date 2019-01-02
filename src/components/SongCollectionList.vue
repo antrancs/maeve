@@ -1,6 +1,6 @@
 <template>
   <v-layout row wrap>
-    <SongCollectionItem
+    <CollectionItemCard
       :collection="collection"
       v-for="collection in collections"
       :key="collection.id"
@@ -14,11 +14,12 @@
  */
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import SongCollectionItem from '@/components/SongCollectionItem.vue';
+// import SongCollectionItem from '@/components/SongCollectionItem.vue';
+import CollectionItemCard from '@/components/CollectionItemCard.vue';
 import { Collection } from '@/@types/model/model';
 
 @Component({
-  components: { SongCollectionItem }
+  components: { CollectionItemCard }
 })
 export default class SongCollectionList extends Vue {
   @Prop({ default: () => [] })

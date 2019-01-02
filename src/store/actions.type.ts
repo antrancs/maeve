@@ -31,3 +31,11 @@ export const CREATE_NEW_PLAYLIST = 'createNewPlaylist';
 export const FETCH_LIBRARY_SONGS = 'fetchLibrarySongs';
 export const FETCH_LIBRARY_PLAYLISTS = 'fetchLibraryPlaylists';
 export const FETCH_LIBRARY_ALBUMS = 'fetchLibraryAlbums';
+
+export const CREATE_THEME = 'createNewTheme';
+export const UPDATE_THEME = 'updateTheme';
+export const DELETE_THEME = 'deleteTheme';
+export const LOAD_CUSTOM_THEME = 'loadCustomThemes';
+export const SELECT_THEME = 'selectTheme';
+export const LOAD_SETTINGS = 'loadSettings';
+export const SELECT_BUTTON_STYLES = 'selectButtonStyle';

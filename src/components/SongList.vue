@@ -6,17 +6,26 @@
         v-for="(track, index) in tracks"
         :song="track"
         :index="index"
-        :playlistId="playlistId"
         :is-from-album="fromAlbum"
         :is-queue="isQueue"
         :isFromLibrary="fromLibrary"
-        @play-next="handleAddNext"
-        @add-to-queue="handleAddToQueue"
-        @add-to-library="handleAddToLibrary"
         @song-item-clicked="handleSongClicked"
-        @add-song-to-playlist="handleAddSongToPlaylist"
+        @actions-icon-click="openMediaActionsMenu"
       />
     </v-flex>
+
+    <MediaActionMenu
+      :visibility="showSongActionMenu"
+      :posX="actionMenuPosX"
+      :posY="actionMenuPosY"
+      :playlistId="playlistId"
+      @action-menu-visibility-change="handleActionMenuVisibilityChange"
+      @add-to-new-playlist="handleAddSongToNewPlaylist"
+      @add-to-library="handleAddToLibrary"
+      @add-to-queue="handleAddToQueue"
+      @add-to-existing-playlist="handleAddSongToPlaylist"
+      @play-next="handleAddNext"
+    />
   </v-layout>
 </template>
 
@@ -54,11 +63,17 @@ import {
 } from '@/store/actions.type';
 
 import SongItem from '@/components/SongItem.vue';
+import MediaActionMenu from '@/components/MediaActionMenu.vue';
 
 @Component({
-  components: { SongItem }
+  components: { SongItem, MediaActionMenu }
 })
 export default class SongList extends Vue {
+  private showSongActionMenu = false;
+  private actionMenuPosX = 0;
+  private actionMenuPosY = 0;
+  private selectedSong: Nullable<Song> = null; // when clicking on actions icon
+
   @Prop()
   collection!: Collection | undefined;
   @Prop()
@@ -102,50 +117,56 @@ export default class SongList extends Vue {
     );
   }
 
-  handleAddToQueue(song: MusicKit.Song) {
-    if (!song) {
+  handleAddToQueue() {
+    if (!this.selectedSong) {
       return;
     }
 
     const mediaItem = new MusicKit.MediaItem({
-      id: song.id,
-      attributes: song.attributes,
-      type: 'song'
+      id: this.selectedSong.id,
+      attributes: this.selectedSong.attributes,
+      type: 'song',
+      container: {
+        id: this.selectedSong.id
+      }
     });
 
     // appendSongs is synchronous
     this.appendSongs({ items: [mediaItem] });
 
     this.showSnackbar({
-      text: 'Song added to queue'
+      text: 'Song is added to queue'
     });
   }
 
-  handleAddNext(song: MusicKit.Song) {
-    if (!song) {
+  handleAddNext() {
+    if (!this.selectedSong) {
       return;
     }
 
     const mediaItem = new MusicKit.MediaItem({
-      id: song.id,
-      attributes: song.attributes,
-      type: 'song'
+      id: this.selectedSong.id,
+      attributes: this.selectedSong.attributes,
+      type: 'song',
+      container: {
+        id: this.selectedSong.id
+      }
     });
 
     this.prependSongs({ items: [mediaItem] });
 
     this.showSnackbar({
-      text: 'Song added next'
+      text: 'Song is playing next'
     });
   }
 
-  handleAddToLibrary(song: MusicKit.Song) {
-    if (!song) {
+  handleAddToLibrary() {
+    if (!this.selectedSong) {
       return;
     }
 
     this.addToLibrary({
-      itemIds: [song.id],
+      itemIds: [this.selectedSong.id],
       type: 'songs'
     })
       .then(() => {
@@ -154,8 +175,6 @@ export default class SongList extends Vue {
         });
       })
       .catch(err => {
-        console.log(err);
-
         this.showSnackbar({
           text: 'Something went wrong.'
         });
@@ -175,7 +194,37 @@ export default class SongList extends Vue {
     }
   }
 
-  async handleAddSongToPlaylist(playlistId: string, { id, type }: Song) {
+  handleActionMenuVisibilityChange(value: boolean) {
+    this.showSongActionMenu = value;
+
+    if (!this.showSongActionMenu) {
+      this.selectedSong = null;
+    }
+  }
+
+  openMediaActionsMenu(song: Song, mouseX: number, mouseY: number) {
+    this.selectedSong = song;
+    this.showSongActionMenu = true;
+    this.actionMenuPosX = mouseX;
+    this.actionMenuPosY = mouseY;
+  }
+
+  handleAddSongToNewPlaylist() {
+    this.showSongActionMenu = false;
+    // @ts-ignore
+    this.$root.$newPlaylistDialog.open(this.selectedSong);
+
+    // this.selectedSong = null;
+  }
+
+  async handleAddSongToPlaylist(playlistId: string) {
+    this.showSongActionMenu = false;
+    if (!this.selectedSong) {
+      return;
+    }
+
+    const { id, type } = this.selectedSong;
+
     try {
       await this.addSongsToPlaylist({
         songItems: [

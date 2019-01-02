@@ -3,7 +3,7 @@
     <div class="artist-detail-header">
       <div class="banner" :style="bannerStyle"></div>
       <div class="banner-overlay flex-column artist-banner-overlay">
-        <v-container fluid fill-height>
+        <v-container fill-height>
           <v-layout align-end>
             <h2 class="artist-detail__name">{{ attributes.name }}</h2>
           </v-layout>
@@ -11,7 +11,7 @@
       </div>
     </div>
 
-    <v-container fluid>
+    <v-container>
       <v-layout row wrap>
         <template v-if="nonSingles.length > 0">
           <v-flex xs12 class="px-2 pt-4">
@@ -47,6 +47,7 @@ import SongCollectionList from '@/components/SongCollectionList.vue';
 import musicApiService from '@/services/musicApi.service';
 import { getArtistArtwork, formatArtworkUrl } from '@/utils/utils';
 import { Nullable } from '@/@types/model/model';
+import { TEXT_PRIMARY_DARK } from '@/themes';
 
 @Component({
   components: { SongCollectionList }
@@ -79,8 +80,13 @@ export default class ArtistDetail extends Vue {
 
   get bannerStyle(): object {
     return {
-      'background-image': `url('${this.artworkNormalScreen}')`,
-      'background-position-y': '10%'
+      'background-image': `url('${this.artworkNormalScreen}')`
+    };
+  }
+
+  get headerOverlayTextStyle() {
+    return {
+      color: TEXT_PRIMARY_DARK
     };
   }
 

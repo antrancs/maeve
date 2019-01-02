@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container>
     <v-layout row wrap>
       <template v-if="playlists">
         <v-flex xs12> <h2 class="section-title">My playlists</h2> </v-flex>

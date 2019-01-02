@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container>
     <v-layout row wrap>
       <template v-if="featuredPlaylists.length > 0">
         <v-flex xs12 class="px-2">

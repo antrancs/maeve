@@ -8,7 +8,7 @@
     v-model="sidebar"
     :style="sidebarStyleHeight"
   >
-    <v-layout column fill-height justify-space-between>
+    <v-layout column fill-height justify-space-between class="sidebar-dark">
       <v-list>
         <template v-for="link in navigationLinks">
           <v-list-tile
@@ -111,6 +111,7 @@ import { Getter, State, Action } from 'vuex-class';
 
 import { MusicPlayerState } from '@/store/types';
 import { FETCH_LIBRARY_PLAYLISTS } from '@/store/actions.type';
+import { isLight, TEXT_PRIMARY_LIGHT, TEXT_PRIMARY_DARK } from '@/themes';
 
 @Component
 export default class AppSidebar extends Vue {

@@ -21,8 +21,8 @@ a:focus {
 }
 
 @supports (scrollbar-color: red blue) {
-  body {
-    scrollbar-color: var(--v-primary-lighten1) var(--v-accent-base);
+  html {
+    scrollbar-color: var(--v-accent-base) var(--v-primary-lighten3);
     scrollbar-width: thin;
   }
 }

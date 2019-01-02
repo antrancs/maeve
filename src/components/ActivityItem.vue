@@ -38,7 +38,7 @@ export default class ActivityItem extends Vue {
 
   get wrapperStyle() {
     return {
-      '--artwork-bg-color': `#${lighten(this.artworkBackgroundColor, 32)}`
+      '--artwork-bg-color': `#${lighten(this.artworkBackgroundColor, 20)}`
     };
   }
 }
@@ -52,8 +52,9 @@ export default class ActivityItem extends Vue {
   top: 0;
   bottom: 0;
   width: 100%;
+  // background-color: rgba(0, 0, 0, 0.2);
   background: linear-gradient(
-    45deg,
+    -45deg,
     var(--artwork-bg-color),
     rgba(0, 0, 0, 0.4)
   );

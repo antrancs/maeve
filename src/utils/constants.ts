@@ -18,3 +18,8 @@ export enum RepeatMode {
   All = 1,
   One = 2
 }
+
+export enum ButtonStyle {
+  normal = 'normal',
+  round = 'round'
+}

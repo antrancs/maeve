@@ -12,7 +12,14 @@ import { connectMusicKitToStore } from '@/setup/musickit';
 import '@/filters';
 import App from './App.vue';
 
+// @ts-ignore
+import { Chrome } from 'vue-color';
+import AppButton from '@/components/AppButton.vue';
+
 Vue.config.productionTip = false;
+
+Vue.component('chrome-picker', Chrome);
+Vue.component('app-button', AppButton);
 
 Vue.use(Vuetify, {
   theme: {

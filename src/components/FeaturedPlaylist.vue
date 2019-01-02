@@ -1,5 +1,8 @@
 <template>
-  <div class="featured-playlist" :style="{ height: featurePlaylistHeight }">
+  <div
+    class="featured-playlist elevation-10"
+    :style="{ height: featurePlaylistHeight }"
+  >
     <router-link :to="{ name: 'playlists', params: { id: playlist.id } }">
       <div class="featured-playlist__background" :style="backgroundStyle"></div>
 

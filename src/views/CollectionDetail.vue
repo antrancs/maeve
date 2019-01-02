@@ -5,7 +5,7 @@
       :style="{ height: `${headerHeight}vh` }"
     >
       <div class="banner-overlay">
-        <v-container fluid fill-height>
+        <v-container fill-height>
           <v-layout
             :class="{
               'align-end row wrap': $vuetify.breakpoint.smAndUp,
@@ -28,9 +28,10 @@
                 </v-flex>
                 <v-flex class="pl-3">
                   <v-layout column justify-end fill-height>
-                    <h2>
+                    <h2 :style="headerOverlayTextStyle">
                       {{ collectionName }}
                       <v-icon
+                        dark
                         v-if="
                           collection.attributes.contentRating === 'explicit'
                         "
@@ -39,12 +40,16 @@
                     </h2>
 
                     <div
+                      :style="headerOverlayTextStyle"
                       :class="['collection-subtitle', 'collection-artist-name']"
                     >
                       {{ collectionArtistName }}
                     </div>
 
-                    <div class="collection-subtitle sub-info-text mb-2">
+                    <div
+                      class="collection-subtitle mb-2"
+                      :style="headerOverlaySecondaryTextStyle"
+                    >
                       <span v-if="collectionType !== 'library-playlists'"
                         >{{ releaseYear }} •</span
                       >
@@ -53,7 +58,16 @@
 
                     <div class="hidden-xs-only">
                       <template v-if="collection">
-                        <CollectionControls :collection="collection" />
+                        <CollectionControls
+                          :collection="collection"
+                          @add-to-library="handleAddToLibrary"
+                          @add-to-new-playlist="handleAddSongToNewPlaylist"
+                          @add-to-existing-playlist="
+                            handleAddCollectionToPlaylist
+                          "
+                          @play-next="handlePlayCollectionNext"
+                          @add-to-queue="handleAddCollectionToQueue"
+                        />
                       </template>
                     </div>
                   </v-layout>
@@ -90,7 +104,7 @@
       </picture>
     </div>
 
-    <v-container fluid>
+    <v-container>
       <SongList
         :tracks="songs"
         :collection="collection"
@@ -109,18 +123,32 @@ import MediaArtwork from '@/components/MediaArtwork.vue';
 import CollectionControls from '@/components/CollectionControls.vue';
 import { getArtworkUrl } from '@/utils/utils';
 import musicApiService from '@/services/musicApi.service';
-import { FetchCollectionAction } from '@/store/types';
+import {
+  FetchCollectionAction,
+  AddToLibraryAction,
+  ShowSnackbarAction,
+  AddSongsToPlaylistAction,
+  PrependSongsAction,
+  AppendSongsAction
+} from '@/store/types';
 import {
   Collection,
   Song,
   Nullable,
-  CollectionType
+  CollectionType,
+  SnackbarMode
 } from '@/@types/model/model';
 import {
   FETCH_COLLECTION,
-  PLAY_COLLECTION_WITH_SONG
+  PLAY_COLLECTION_WITH_SONG,
+  ADD_TO_LIBRARY,
+  SHOW_SNACKBAR,
+  ADD_SONGS_TO_PLAYLIST,
+  PREPEND_SONGS,
+  APPEND_SONGS
 } from '@/store/actions.type';
 import { Route } from 'vue-router';
+import { TEXT_PRIMARY_DARK, TEXT_SECONDARY_DARK } from '@/themes';
 
 @Component({
   components: { SongList, MediaArtwork, CollectionControls }
@@ -136,6 +164,11 @@ export default class CollectionDetail extends Vue {
   isAuthenticated!: boolean;
 
   @Action [FETCH_COLLECTION]!: FetchCollectionAction;
+  @Action [ADD_TO_LIBRARY]: AddToLibraryAction;
+  @Action [SHOW_SNACKBAR]: ShowSnackbarAction;
+  @Action [ADD_SONGS_TO_PLAYLIST]: AddSongsToPlaylistAction;
+  @Action [PREPEND_SONGS]: PrependSongsAction;
+  @Action [APPEND_SONGS]: AppendSongsAction;
 
   get collectionName(): string {
     if (!this.collection || !this.collection.attributes) {
@@ -155,6 +188,18 @@ export default class CollectionDetail extends Vue {
       (this.collection.attributes as MusicKit.PlaylistAttributes).curatorName ||
       ''
     );
+  }
+
+  get headerOverlayTextStyle() {
+    return {
+      color: TEXT_PRIMARY_DARK
+    };
+  }
+
+  get headerOverlaySecondaryTextStyle() {
+    return {
+      color: TEXT_SECONDARY_DARK
+    };
   }
 
   get collectionType(): CollectionType {
@@ -257,6 +302,111 @@ export default class CollectionDetail extends Vue {
       return '';
     }
     return getArtworkUrl(this.collection.attributes.artwork.url, width, height);
+  }
+
+  async handleAddToLibrary() {
+    if (!this.collection) {
+      return;
+    }
+
+    try {
+      await this.addToLibrary({
+        itemIds: [this.collection.id],
+        type: this.collection.type
+      });
+
+      this.showSnackbar({
+        text: 'Item has been added to library'
+      });
+    } catch (err) {
+      this.showSnackbar({
+        text: 'Cannot add item to library',
+        type: SnackbarMode.error
+      });
+    }
+  }
+
+  async handleAddCollectionToPlaylist(playlistId: string) {
+    const songs = this.songs.map(({ id, type }) => ({
+      id,
+      type
+    }));
+
+    try {
+      this.addSongsToPlaylist({
+        songItems: songs,
+        playlistId
+      });
+
+      this.showSnackbar({
+        text: 'Items have been added to playlist'
+      });
+    } catch (err) {
+      this.showSnackbar({
+        text: 'Cannot add items to playlist',
+        type: SnackbarMode.error
+      });
+    }
+  }
+
+  async handleAddSongToNewPlaylist() {
+    // @ts-ignore
+    this.$root.$newPlaylistDialog.open(this.songs);
+  }
+
+  handlePlayCollectionNext() {
+    const mediaItems = this.songs.map(
+      ({ id, attributes }) =>
+        new MusicKit.MediaItem({
+          id,
+          attributes,
+          type: 'song',
+          container: {
+            id
+          }
+        })
+    );
+
+    try {
+      this.prependSongs({
+        items: mediaItems
+      });
+      this.showSnackbar({
+        text: 'Collection is playing next'
+      });
+    } catch {
+      this.showSnackbar({
+        text: 'Something went wrong',
+        type: SnackbarMode.error
+      });
+    }
+  }
+
+  handleAddCollectionToQueue() {
+    const mediaItems = this.songs.map(
+      ({ id, attributes }) =>
+        new MusicKit.MediaItem({
+          id,
+          attributes,
+          type: 'song',
+          container: {
+            id
+          }
+        })
+    );
+
+    try {
+      // appendSongs is synchronous
+      this.appendSongs({ items: mediaItems });
+      this.showSnackbar({
+        text: 'Collection is added to queue'
+      });
+    } catch {
+      this.showSnackbar({
+        text: 'Something went wrong',
+        type: SnackbarMode.error
+      });
+    }
   }
 }
 </script>

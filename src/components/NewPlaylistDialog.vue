@@ -2,7 +2,7 @@
   <v-dialog max-width="600px" v-model="dialog" persistent>
     <slot slot="activator"></slot>
 
-    <v-card class="secondary">
+    <v-card class="primary">
       <v-card-title> <span class="headline">New Playlist</span> </v-card-title>
 
       <v-card-text>
@@ -49,7 +49,7 @@ export default class NewPlaylistDialog extends Vue {
   private form = false;
   private name = '';
   private description = '';
-  private song: Nullable<Song> = null;
+  private songs: Song[] = [];
 
   private rules = {
     name: (value: string) =>
@@ -70,14 +70,13 @@ export default class NewPlaylistDialog extends Vue {
     try {
       await this.createNewPlaylist({
         name: this.name,
-        items: this.song
-          ? [
-              {
-                id: this.song.id,
-                type: this.song.type
-              }
-            ]
-          : undefined,
+        items:
+          this.songs.length > 0
+            ? this.songs.map(({ id, type }) => ({
+                id,
+                type
+              }))
+            : undefined,
         description:
           this.description && this.description.trim().length > 0
             ? this.description
@@ -96,11 +95,11 @@ export default class NewPlaylistDialog extends Vue {
 
     this.name = '';
     this.description = '';
-    this.song = null;
+    this.songs = [];
   }
 
-  open(song?: Song) {
-    this.song = song;
+  open(songs: Song[] = []) {
+    this.songs = songs;
     this.name = '';
     this.description = '';
     this.dialog = true;

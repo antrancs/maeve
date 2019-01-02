@@ -20,3 +20,10 @@ export const SET_SNACKBAR_TYPE = 'setSnackbarMode';
 export const SET_LIBRARY_ALBUMS = 'setLibraryAlbums';
 export const SET_LIBRARY_PLAYLISTS = 'setLibraryPlaylists';
 export const APPEND_LIBRARY_PLAYLISTS = 'appendLibraryPlaylists';
+
+export const ADD_ONE_THEME = 'addOneTheme';
+export const SET_CUSTOM_THEMES = 'setCustomThemes';
+export const SET_THEME = 'setTheme';
+export const DELETE_THEME_MUTATION = 'deleteThemeMutation';
+export const SET_SELECTED_THEME = 'setSelectedTheme';
+export const SET_BUTTON_STYLE = 'setButtonStyle';

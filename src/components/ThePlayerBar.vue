@@ -41,6 +41,7 @@
                 sm3
                 md4
                 :class="{ 'pr-2': $vuetify.breakpoint.xsOnly }"
+                :style="primaryStyle"
               >
                 <div
                   :class="[$style['song-name'], 'long-text-truncated', 'mb-1']"
@@ -61,7 +62,7 @@
                   }"
                 >
                   <v-btn icon @click="playPrevious">
-                    <v-icon dark medium>skip_previous</v-icon>
+                    <v-icon medium :style="primaryStyle">skip_previous</v-icon>
                   </v-btn>
 
                   <v-btn
@@ -69,17 +70,22 @@
                     @click="toggleCurrentTrack"
                     style="width: 5rem; height: 5rem"
                   >
-                    <v-icon dark size="50">{{ songStatusIcon }}</v-icon>
+                    <v-icon size="50" :style="primaryStyle">{{
+                      songStatusIcon
+                    }}</v-icon>
                   </v-btn>
 
                   <v-btn icon @click="playNext">
-                    <v-icon medium dark>skip_next</v-icon>
+                    <v-icon medium :style="primaryStyle">skip_next</v-icon>
                   </v-btn>
 
                   <v-btn icon @click="updateRepeatMode">
-                    <v-icon medium dark :color="repeatIconColor">{{
-                      repeatIcon
-                    }}</v-icon>
+                    <v-icon
+                      medium
+                      :color="repeatIconColor"
+                      :style="primaryStyle"
+                      >{{ repeatIcon }}</v-icon
+                    >
                   </v-btn>
 
                   <v-btn
@@ -87,14 +93,14 @@
                     @click="toggleQueueVisibility"
                     class="hidden-sm-and-up"
                   >
-                    <v-icon medium>playlist_play</v-icon>
+                    <v-icon medium :style="primaryStyle">playlist_play</v-icon>
                   </v-btn>
                 </v-layout>
               </v-flex>
 
               <v-flex sm5 md4 class="hidden-xs-only">
                 <v-layout row align-center justify-end>
-                  <div class="sub-info-text">
+                  <div :style="secondaryTextStyle">
                     {{
                       musicPlayer.currentPlaybackTimeInMilliSeconds
                         | formattedDuration
@@ -103,7 +109,7 @@
                   </div>
 
                   <v-btn icon class="mr-1">
-                    <v-icon medium>volume_up</v-icon>
+                    <v-icon medium :style="primaryStyle">volume_up</v-icon>
                   </v-btn>
 
                   <div style="width: 100px">
@@ -112,13 +118,13 @@
                       max="1"
                       step="0.1"
                       v-model="volume"
-                      color="white"
+                      :color="primaryColor"
                     >
                     </v-slider>
                   </div>
 
                   <v-btn icon @click="toggleQueueVisibility">
-                    <v-icon medium>playlist_play</v-icon>
+                    <v-icon medium :style="primaryStyle">playlist_play</v-icon>
                   </v-btn>
                 </v-layout>
               </v-flex>
@@ -147,6 +153,13 @@ import {
 } from '@/store/actions.type';
 import { Nullable } from '@/@types/model/model';
 import { RepeatMode } from '@/utils/constants';
+import {
+  isLight,
+  TEXT_SECONDARY_LIGHT,
+  TEXT_SECONDARY_DARK,
+  TEXT_PRIMARY_DARK,
+  TEXT_PRIMARY_LIGHT
+} from '@/themes';
 
 @Component
 export default class PlayerBar extends Vue {
@@ -230,6 +243,26 @@ export default class PlayerBar extends Vue {
     return this.isAuthenticated
       ? this.musicPlayer.currentPlaying.playbackDuration
       : 30000; // 30 seconds
+  }
+
+  get isLight(): boolean {
+    return isLight(this.$vuetify.theme.secondary as string);
+  }
+
+  get secondaryTextStyle() {
+    return {
+      color: this.isLight ? TEXT_SECONDARY_LIGHT : TEXT_SECONDARY_DARK
+    };
+  }
+
+  get primaryStyle() {
+    return {
+      color: this.primaryColor
+    };
+  }
+
+  get primaryColor() {
+    return this.isLight ? TEXT_PRIMARY_LIGHT : TEXT_PRIMARY_DARK;
   }
 
   handleShuffleClicked() {

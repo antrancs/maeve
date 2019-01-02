@@ -1,10 +1,9 @@
 <template>
   <v-toolbar
-    dark
     app
     fixed
     clipped-left
-    :class="['secondary darken-1', { 'py-2': $vuetify.breakpoint.smAndDown }]"
+    :class="['primary lighten-1', { 'py-2': $vuetify.breakpoint.smAndDown }]"
   >
     <v-toolbar-side-icon
       @click.stop="$emit('toggle-sidebar')"
@@ -12,11 +11,21 @@
 
     <router-link :to="{ name: 'home' }">
       <img
-        class="logo logo--desktop mr-5"
-        src="@/assets/logo-desktop.png"
+        class="logo logo--desktop"
+        src="@/assets/logo-mobile.png"
         alt="logo"
       />
     </router-link>
+
+    <v-toolbar-title
+      :class="[
+        'hidden-xs-only',
+        {
+          'mr-5': $vuetify.breakpoint.mdAndUp
+        }
+      ]"
+      >Maeve</v-toolbar-title
+    >
 
     <v-text-field
       label="Search"
@@ -25,19 +34,35 @@
       solo-inverted
       hide-details
       v-model="searchText"
+      class="ml-4"
     ></v-text-field>
     <v-spacer></v-spacer>
 
-    <v-btn v-if="!isAuthenticated" @click="login" color="#da0f47">
-      Log in
-    </v-btn>
-    <v-btn
-      v-else
-      @click="logout"
-      class="custom-btn"
-      :color="this.$vuetify.theme.accent"
-      >Log out</v-btn
-    >
+    <app-button v-if="!isAuthenticated" @on-click="login">Log in</app-button>
+    <v-menu v-else offset-y transition="scale-transition" :nudge-bottom="10">
+      <v-btn icon large flat slot="activator">
+        <v-avatar color="accent" size="40px">
+          <v-icon>account_circle</v-icon>
+        </v-avatar>
+      </v-btn>
+
+      <v-list class="pa-0 primary lighten-1">
+        <v-list-tile
+          v-for="(accountAction, index) in accountActions"
+          @click="accountAction.click"
+          ripple="ripple"
+          rel="noopener"
+          :key="index"
+        >
+          <v-list-tile-action>
+            <v-icon>{{ accountAction.icon }}</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ accountAction.title }}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
+    </v-menu>
   </v-toolbar>
 </template>
 
@@ -47,6 +72,7 @@ import { Getter, Action } from 'vuex-class';
 import { debounce } from 'lodash';
 
 import { LOGOUT, LOGIN } from '@/store/actions.type';
+import { isLight } from '@/themes';
 
 @Component
 export default class AppHeader extends Vue {
@@ -55,11 +81,25 @@ export default class AppHeader extends Vue {
 
   @Getter
   isAuthenticated!: boolean;
+  @Getter darkMode!: boolean;
 
   @Action
   [LOGOUT]: () => void;
   @Action
   [LOGIN]: () => void;
+
+  private accountActions = [
+    {
+      title: 'Settings',
+      icon: 'settings',
+      click: this.onSettingsClicked
+    },
+    {
+      title: 'Log out',
+      icon: 'fullscreen_exit',
+      click: this.logout
+    }
+  ];
 
   @Watch('searchText')
   onSearchTextChanged(newVal: string, oldVal: string) {
@@ -71,6 +111,10 @@ export default class AppHeader extends Vue {
       this.handleSearchTextChanged,
       400
     );
+  }
+
+  onSettingsClicked() {
+    this.$emit('open-settings');
   }
 
   handleSearchTextChanged() {

@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container>
     <v-layout row wrap v-if="hasResults">
       <template v-if="artists.length > 0">
         <v-flex class="section-header pa-2" xs12>

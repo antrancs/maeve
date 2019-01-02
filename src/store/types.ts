@@ -3,9 +3,10 @@ import {
   CollectionType,
   Collection,
   Nullable,
-  SnackbarMode
+  SnackbarMode,
+  ThemeOption
 } from '@/@types/model/model';
-import { RepeatMode } from '@/utils/constants';
+import { RepeatMode, ButtonStyle } from '@/utils/constants';
 
 // MusicPlayer module
 export interface MusicPlayerState {
@@ -96,6 +97,14 @@ export type CreateNewPlaylistAction = (
   payload: CreateNewPlaylistPayload
 ) => Promise<any>;
 
+export type ShowSnackbarAction = (payload: ShowSnackbarActionPayload) => void;
+
+export interface ShowSnackbarActionPayload {
+  text: string;
+  timeout?: number;
+  type?: SnackbarMode;
+}
+
 // Auth module
 export interface AuthState {
   musicUserToken: string | null;
@@ -123,10 +132,39 @@ export interface SnackbarState {
   type: string;
 }
 
-export type ShowSnackbarAction = (payload: ShowSnackbarActionPayload) => void;
-
-export interface ShowSnackbarActionPayload {
-  text: string;
-  timeout?: number;
-  type?: SnackbarMode;
+export interface SettingsState {
+  defaultThemes: ThemeOption[];
+  customThemes: ThemeOption[];
+  selectedTheme: ThemeOption;
+  buttonStyle: ButtonStyle;
 }
+
+export type CreateNewThemeActionPayload = {
+  primary: string;
+  secondary: string;
+  accent: string;
+  primaryText: string;
+  secondaryText: string;
+  name: string;
+};
+
+export type CreateNewThemeAction = (
+  payload: CreateNewThemeActionPayload
+) => void;
+
+export type SetThemeMutationPayload = {
+  id: string;
+  theme: ThemeOption;
+};
+
+export type UpdateThemeActionPayload = {
+  theme: ThemeOption;
+};
+
+export type UpdateThemeAction = (payload: UpdateThemeActionPayload) => void;
+
+export type SelectThemeActionPayload = {
+  theme: ThemeOption;
+};
+
+export type SelectThemeAction = (payload: SelectThemeActionPayload) => void;

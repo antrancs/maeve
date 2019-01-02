@@ -68,6 +68,7 @@ export default class MediaArtwork extends Vue {
 }
 
 .artwork__image {
+  display: block;
   height: 100%;
   width: 100%;
 }

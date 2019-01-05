@@ -2,11 +2,7 @@
   <v-flex xs6 sm3 md2 v-if="collection && collection.attributes" class="pa-2">
     <router-link :to="{ name: collection.type, params: { id: collection.id } }">
       <v-hover>
-        <v-card
-          style="height: 100%; border-radius:10px"
-          class="secondary elevation-8"
-          slot-scope="{ hover }"
-        >
+        <v-card class="secondary elevation-8 item-card" slot-scope="{ hover }">
           <MediaArtwork :artwork="artwork" :width="300" :height="300">
             <template v-if="hover || isCollectionBeingPlayed">
               <div class="overlay"></div>
@@ -153,5 +149,10 @@ export default class CollectionItemCard extends Vue {
 .media-details__title {
   align-items: center;
   display: flex;
+}
+
+.item-card {
+  height: 100%;
+  border-radius: 10px;
 }
 </style>

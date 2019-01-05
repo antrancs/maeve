@@ -80,4 +80,9 @@ export default class MediaArtwork extends Vue {
   height: 100%;
   width: 100%;
 }
+
+.item-card .artwork__image {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
 </style>

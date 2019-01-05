@@ -12,7 +12,7 @@ const defaultThemes: ThemeOption[] = [
   {
     id: 'default-dark',
     name: 'Default dark',
-    primary: '#062743',
+    primary: '#041f35',
     secondary: '#113a5d',
     accent: '#da0f47',
     primaryText: TEXT_PRIMARY_DARK,

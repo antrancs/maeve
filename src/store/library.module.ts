@@ -1,6 +1,8 @@
-import { ActionTree, MutationTree, GetterTree } from 'vuex';
+import { ActionTree, MutationTree } from 'vuex';
 
+import musicKit from '@/services/musicKit';
 import musicApiService from '@/services/musicApi.service';
+
 import {
   UserLibraryState,
   AddToLibraryPayload,
@@ -13,7 +15,9 @@ import {
   CREATE_NEW_PLAYLIST,
   FETCH_LIBRARY_SONGS,
   FETCH_LIBRARY_PLAYLISTS,
-  FETCH_LIBRARY_ALBUMS
+  FETCH_LIBRARY_ALBUMS,
+  FETCH_ONE_ALBUM_LIBRARY,
+  FETCH_ONE_PLAYLIST_LIBRARY
 } from './actions.type';
 import {
   SET_LIBRARY_ALBUMS,
@@ -28,21 +32,37 @@ const initialState: UserLibraryState = {
 };
 
 const actions: ActionTree<UserLibraryState, any> = {
-  [FETCH_LIBRARY_ALBUMS](context): Promise<MusicKit.LibraryAlbum[]> {
-    return musicApiService.getLibraryAlbums();
+  async [FETCH_ONE_ALBUM_LIBRARY](_, id: string) {
+    return await musicKit
+      .getApiInstance()
+      .library.album(id, { include: 'tracks' });
+  },
+
+  async [FETCH_ONE_PLAYLIST_LIBRARY](_, id: string) {
+    return await musicKit.getApiInstance().library.playlist(id, {
+      include: 'tracks'
+    });
+  },
+
+  [FETCH_LIBRARY_ALBUMS](): Promise<MusicKit.LibraryAlbum[]> {
+    return musicKit.getApiInstance().library.albums();
   },
 
   async [FETCH_LIBRARY_PLAYLISTS](context) {
-    const playlists = await musicApiService.getLibraryPlaylists();
+    const playlists = await musicKit.getApiInstance().library.playlists();
     context.commit(SET_LIBRARY_PLAYLISTS, playlists);
   },
 
-  [FETCH_LIBRARY_SONGS](context): Promise<MusicKit.LibrarySong[]> {
-    return musicApiService.getLibrarySongs();
+  [FETCH_LIBRARY_SONGS](): Promise<MusicKit.LibrarySong[]> {
+    return musicKit.getApiInstance().library.songs(undefined, {
+      include: 'albums,artists'
+    });
   },
 
   [ADD_TO_LIBRARY](_, { itemIds, type }: AddToLibraryPayload) {
-    return musicApiService.addToLibrary(itemIds, type);
+    return musicKit.getApiInstance().addToLibrary({
+      [type]: itemIds
+    });
   },
 
   async [ADD_SONGS_TO_PLAYLIST](

@@ -105,6 +105,8 @@ declare namespace MusicKit {
      */
     search(term: string, parameters: QueryParameters): Promise<SearchResult>;
 
+    songs(ids: string[], parameters?: QueryParameters): Promise<Song[]>;
+
     /**
      * Fetch a storefront using its identifier.
      * @param id A storefront identifier.

@@ -1,11 +1,11 @@
 export type Nullable<T> = T | null | undefined;
 
-export interface Artist {
-  id: string;
-  name: string;
-  artwork: string;
-  url: string;
-}
+// export interface Artist {
+//   id: string;
+//   name: string;
+//   artwork: string;
+//   url: string;
+// }
 
 export enum CollectionType {
   album = 'albums',
@@ -14,13 +14,22 @@ export enum CollectionType {
   libraryAlbum = 'library-albums'
 }
 
+export type CatalogCollection = MusicKit.Album | MusicKit.Playlist;
+export type LibraryCollection =
+  | MusicKit.LibraryAlbum
+  | MusicKit.LibraryPlaylist;
+
 export type Collection =
   | MusicKit.Album
   | MusicKit.Playlist
   | MusicKit.LibraryAlbum
   | MusicKit.LibraryPlaylist;
 
+export type Album = MusicKit.Album | MusicKit.LibraryAlbum;
+
 export type Song = MusicKit.Song | MusicKit.LibrarySong;
+
+export type Artist = MusicKit.Artist | MusicKit.LibraryArtist;
 
 export enum SnackbarMode {
   success = 'success',

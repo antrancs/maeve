@@ -116,17 +116,28 @@ const actions: ActionTree<SettingsState, any> = {
   },
 
   [SELECT_THEME]({ state, commit }, { theme }: SelectThemeActionPayload) {
-    localStorage.setItem(MAEVE_SELECTED_THEME, JSON.stringify(theme));
+    localStorage.setItem(
+      MAEVE_SELECTED_THEME,
+      JSON.stringify({ id: theme.id })
+    );
 
     commit(SET_SELECTED_THEME, theme);
   },
 
-  [LOAD_SETTINGS]({ commit }) {
-    const selectedTheme = localStorage.getItem(MAEVE_SELECTED_THEME);
+  [LOAD_SETTINGS]({ commit, getters }) {
+    const selectedThemeStr = localStorage.getItem(MAEVE_SELECTED_THEME);
     const buttonStyle = localStorage.getItem(MAEVE_BUTTON_STYLE);
 
-    if (selectedTheme) {
-      commit(SET_SELECTED_THEME, JSON.parse(selectedTheme));
+    if (selectedThemeStr) {
+      const selectedThemeId =
+        JSON.parse(selectedThemeStr).id || defaultThemes[0].id;
+
+      const selectedTheme =
+        getters.themes.find(
+          (theme: ThemeOption) => theme.id === selectedThemeId
+        ) || defaultThemes[0];
+
+      commit(SET_SELECTED_THEME, selectedTheme);
     }
 
     if (buttonStyle) {

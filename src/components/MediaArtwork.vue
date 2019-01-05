@@ -1,17 +1,20 @@
 <template>
-  <div class="artwork">
+  <div class="artwork" v-if="artworkUrlForArtist || artwork">
     <img
       class="artwork__image"
       v-lazy="artworkUrlForArtist || artworkUrl"
       alt
       :style="artworkImageStyle"
     />
+
+    <slot></slot>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { getArtworkUrl } from '@/utils/utils';
+import { Nullable } from '@/@types/model/model';
 
 @Component
 export default class MediaArtwork extends Vue {
@@ -20,7 +23,7 @@ export default class MediaArtwork extends Vue {
   @Prop()
   artworkUrlForArtist!: string;
   @Prop()
-  artwork!: MusicKit.Artwork;
+  artwork!: Nullable<MusicKit.Artwork>; // In some cases, some resources don't have an Artwork property
   @Prop()
   width!: number;
   @Prop()
@@ -31,13 +34,18 @@ export default class MediaArtwork extends Vue {
   isRound!: boolean;
 
   get artworkImageStyle(): object {
+    if (!this.artwork) {
+      return {};
+    }
+
     const style: any = {};
     if (this.isRound) {
       style['border-radius'] = '50%';
     }
 
     if (this.hasShadow) {
-      style['box-shadow'] = `0.2rem 0.2rem 1rem #${this.artwork.textColor1}`;
+      const shadowColor = this.artwork.textColor1 || 'ffffff';
+      style['box-shadow'] = `0.2rem 0.2rem 1rem #${shadowColor}`;
     }
 
     return style;

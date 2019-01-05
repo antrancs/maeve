@@ -4,6 +4,7 @@ export enum ActivityType {
   Chill = '976439503',
   Romance = '976439518',
   Motivation = '1142652615',
+  Sleep = '1442122106',
   Focus = '976439521',
   Sad = '976439500',
   Decade = '1142652618'

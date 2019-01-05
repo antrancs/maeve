@@ -43,17 +43,34 @@
                       :style="headerOverlayTextStyle"
                       :class="['collection-subtitle', 'collection-artist-name']"
                     >
-                      {{ collectionArtistName }}
+                      <router-link
+                        v-if="artistId"
+                        :to="{ name: 'artists', params: { id: artistId } }"
+                      >
+                        {{ collectionArtistName }}
+                      </router-link>
+                      <template v-else>
+                        {{ collectionArtistName }}
+                      </template>
                     </div>
 
                     <div
                       class="collection-subtitle mb-2"
                       :style="headerOverlaySecondaryTextStyle"
                     >
-                      <span v-if="collectionType !== 'library-playlists'"
+                      <span
+                        v-if="
+                          collectionType !== 'library-playlists' &&
+                            collectionType !== 'library-albums'
+                        "
                         >{{ releaseYear }} •</span
                       >
-                      {{ songs.length }} tracks
+                      {{
+                        songsWithRelationships
+                          ? songsWithRelationships.length
+                          : songs.length
+                      }}
+                      tracks
                     </div>
 
                     <div class="hidden-xs-only">
@@ -106,7 +123,7 @@
 
     <v-container>
       <SongList
-        :tracks="songs"
+        :tracks="songsWithRelationships || songs"
         :collection="collection"
         :playlistId="playlistId"
       />
@@ -116,7 +133,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { Action, Getter, State } from 'vuex-class';
+import { Action, Getter, State, Mutation } from 'vuex-class';
 
 import SongList from '@/components/SongList.vue';
 import MediaArtwork from '@/components/MediaArtwork.vue';
@@ -124,28 +141,38 @@ import CollectionControls from '@/components/CollectionControls.vue';
 import { getArtworkUrl } from '@/utils/utils';
 import musicApiService from '@/services/musicApi.service';
 import {
-  FetchCollectionAction,
   AddToLibraryAction,
   ShowSnackbarAction,
   AddSongsToPlaylistAction,
   PrependSongsAction,
-  AppendSongsAction
+  AppendSongsAction,
+  FetchOneAlbumCatalogAction,
+  FetchOnePlaylistCatalogAction,
+  FetchOnePlaylistLibraryaAction,
+  FetchOneAlbumLibraryAction
 } from '@/store/types';
 import {
   Collection,
   Song,
   Nullable,
   CollectionType,
-  SnackbarMode
+  SnackbarMode,
+  Artist,
+  CatalogCollection,
+  LibraryCollection,
+  Album
 } from '@/@types/model/model';
 import {
-  FETCH_COLLECTION,
   PLAY_COLLECTION_WITH_SONG,
   ADD_TO_LIBRARY,
   SHOW_SNACKBAR,
   ADD_SONGS_TO_PLAYLIST,
   PREPEND_SONGS,
-  APPEND_SONGS
+  APPEND_SONGS,
+  FETCH_ONE_ALBUM_CATALOG,
+  FETCH_ONE_PLAYLIST_CATALOG,
+  FETCH_ONE_PLAYLIST_LIBRARY,
+  FETCH_ONE_ALBUM_LIBRARY
 } from '@/store/actions.type';
 import { Route } from 'vue-router';
 import { TEXT_PRIMARY_DARK, TEXT_SECONDARY_DARK } from '@/themes';
@@ -154,21 +181,44 @@ import { TEXT_PRIMARY_DARK, TEXT_SECONDARY_DARK } from '@/themes';
   components: { SongList, MediaArtwork, CollectionControls }
 })
 export default class CollectionDetail extends Vue {
+  private collection: Nullable<Collection> = null;
+  private songsWithRelationships: Nullable<MusicKit.Song[]> = null;
   @Prop() id!: string;
 
-  @State(state => state.collection.collection) collection: Nullable<Collection>;
-
-  @Getter
-  songs!: Song[];
   @Getter
   isAuthenticated!: boolean;
 
-  @Action [FETCH_COLLECTION]!: FetchCollectionAction;
+  @Action [FETCH_ONE_ALBUM_CATALOG]: FetchOneAlbumCatalogAction;
+  @Action [FETCH_ONE_PLAYLIST_CATALOG]: FetchOnePlaylistCatalogAction;
+  @Action [FETCH_ONE_ALBUM_LIBRARY]: FetchOneAlbumLibraryAction;
+  @Action [FETCH_ONE_PLAYLIST_LIBRARY]: FetchOnePlaylistLibraryaAction;
   @Action [ADD_TO_LIBRARY]: AddToLibraryAction;
   @Action [SHOW_SNACKBAR]: ShowSnackbarAction;
   @Action [ADD_SONGS_TO_PLAYLIST]: AddSongsToPlaylistAction;
   @Action [PREPEND_SONGS]: PrependSongsAction;
   @Action [APPEND_SONGS]: AppendSongsAction;
+  @Action fetchCatalogSongsDetails!: (
+    ids?: string[]
+  ) => Promise<MusicKit.Song[]>;
+
+  get songs(): Song[] {
+    return this.songsWithRelationships
+      ? []
+      : this.$_getSongsFromCollection(this.collection);
+  }
+
+  get artists(): Artist[] {
+    if (
+      this.collection &&
+      this.collection.type === 'albums' &&
+      this.collection.relationships &&
+      this.collection.relationships.artists
+    ) {
+      return this.collection.relationships.artists.data;
+    }
+
+    return [];
+  }
 
   get collectionName(): string {
     if (!this.collection || !this.collection.attributes) {
@@ -278,19 +328,45 @@ export default class CollectionDetail extends Vue {
     }
   }
 
+  get artistId(): Nullable<string> {
+    if (this.artists.length === 0) {
+      return null;
+    }
+    return this.artists[0].id;
+  }
+
   @Watch('$route')
   onRouteChange(to: Route, from: Route) {
-    this.fetchCollection({
-      collectionId: this.id,
-      collectionType: this.collectionType
-    });
+    this.fetchCollection();
   }
 
   created() {
-    this.fetchCollection({
-      collectionId: this.id,
-      collectionType: this.collectionType
-    });
+    this.fetchCollection();
+  }
+
+  async fetchCollection() {
+    this.collection = null;
+    this.songsWithRelationships = null;
+    switch (this.collectionType) {
+      case CollectionType.album:
+        this.collection = await this.fetchOneAlbumCatalog(this.id);
+        break;
+      case CollectionType.playlist: {
+        const collection = await this.fetchOnePlaylistCatalog(this.id);
+        const songs = this.$_getSongsFromCollection(collection);
+        const songIds = songs.map(song => song.id);
+        this.songsWithRelationships = await this.fetchCatalogSongsDetails(
+          songIds
+        );
+        this.collection = collection;
+        break;
+      }
+      case CollectionType.libraryAlbum:
+        this.collection = await this.fetchOneAlbumLibrary(this.id);
+        break;
+      case CollectionType.libraryPlaylist:
+        this.collection = await this.fetchOnePlaylistLibrary(this.id);
+    }
   }
 
   getCollectionArtwork(width: number, height: number) {
@@ -301,6 +377,7 @@ export default class CollectionDetail extends Vue {
     ) {
       return '';
     }
+
     return getArtworkUrl(this.collection.attributes.artwork.url, width, height);
   }
 
@@ -408,6 +485,18 @@ export default class CollectionDetail extends Vue {
       });
     }
   }
+
+  $_getSongsFromCollection(collection: Nullable<Collection>): Song[] {
+    if (
+      !collection ||
+      !collection.relationships ||
+      !collection.relationships.tracks
+    ) {
+      return [];
+    }
+
+    return collection.relationships.tracks.data;
+  }
 }
 </script>
 
@@ -446,6 +535,14 @@ export default class CollectionDetail extends Vue {
 
 .collection-artist-name {
   font-weight: bold;
+}
+
+.collection-artist-name a {
+  color: white;
+}
+
+.collection-artist-name a:hover {
+  text-decoration: underline;
 }
 
 .image {

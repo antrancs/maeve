@@ -4,7 +4,9 @@ import {
   Collection,
   Nullable,
   SnackbarMode,
-  ThemeOption
+  ThemeOption,
+  CatalogCollection,
+  LibraryCollection
 } from '@/@types/model/model';
 import { RepeatMode, ButtonStyle } from '@/utils/constants';
 
@@ -26,22 +28,6 @@ export type AppendSongsPayload = {
 
 export type PrependSongsPayload = {
   items: MusicKit.MediaItem[];
-};
-
-export type AddToLibraryPayload = {
-  itemIds: string[];
-  type: string;
-};
-
-export type AddSongsToPlaylistPayload = {
-  songItems: { id: string; type: string }[];
-  playlistId: string;
-};
-
-export type CreateNewPlaylistPayload = {
-  name: string;
-  description?: string;
-  items?: { id: string; type: string }[];
 };
 
 export type PlayCollectionWithSongPayload = {
@@ -83,7 +69,7 @@ export type SkipToSongAtIndexAction = (
 
 export type PlaySongsAction = (payload: PlaySongsPayload) => void;
 
-export type FetchCollectionAction = (payload: FetchCollectionPayload) => void;
+// export type FetchCollectionAction = (payload: FetchCollectionPayload) => void;
 
 export type PlayCollectionPayload = {
   collection: Collection;
@@ -117,13 +103,10 @@ export interface PlayQueueState {
 
 export interface CollectionState {
   collection: Nullable<Collection>;
+  songs: Song[];
 }
 
-export interface UserLibraryState {
-  albums: MusicKit.LibraryAlbum[];
-  playlists: MusicKit.LibraryPlaylist[];
-  songs: MusicKit.LibrarySong[];
-}
+export interface CatalogState {}
 
 export interface SnackbarState {
   visibility: boolean;
@@ -132,6 +115,9 @@ export interface SnackbarState {
   type: string;
 }
 
+/**
+ * Settings module
+ */
 export interface SettingsState {
   defaultThemes: ThemeOption[];
   customThemes: ThemeOption[];
@@ -168,3 +154,45 @@ export type SelectThemeActionPayload = {
 };
 
 export type SelectThemeAction = (payload: SelectThemeActionPayload) => void;
+
+/**
+ * Catalog module
+ */
+export type FetchOneAlbumCatalogAction = (
+  id: string
+) => Promise<MusicKit.Album>;
+export type FetchOnePlaylistCatalogAction = (
+  id: string
+) => Promise<MusicKit.Playlist>;
+
+/**
+ * Library module
+ */
+export interface UserLibraryState {
+  albums: MusicKit.LibraryAlbum[];
+  playlists: MusicKit.LibraryPlaylist[];
+  songs: MusicKit.LibrarySong[];
+}
+
+export type AddToLibraryPayload = {
+  itemIds: string[];
+  type: string;
+};
+
+export type AddSongsToPlaylistPayload = {
+  songItems: { id: string; type: string }[];
+  playlistId: string;
+};
+
+export type CreateNewPlaylistPayload = {
+  name: string;
+  description?: string;
+  items?: { id: string; type: string }[];
+};
+
+export type FetchOneAlbumLibraryAction = (
+  id: string
+) => Promise<MusicKit.LibraryAlbum>;
+export type FetchOnePlaylistLibraryaAction = (
+  id: string
+) => Promise<MusicKit.LibraryPlaylist>;

@@ -83,7 +83,7 @@
               }
             }"
             :key="playlist.id"
-            class="playlists-section pl-2"
+            class="playlists-section pl-2 small-tile"
           >
             <v-list-tile-action class="small-list-tile-action">
               <v-icon>queue_music</v-icon>
@@ -221,5 +221,11 @@ export default class AppSidebar extends Vue {
   & .v-icon {
     font-size: 20px;
   }
+}
+</style>
+
+<style lang="scss">
+.small-tile .v-list__tile {
+  height: 30px;
 }
 </style>

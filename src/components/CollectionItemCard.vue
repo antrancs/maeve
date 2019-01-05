@@ -7,7 +7,7 @@
           class="secondary elevation-8"
           slot-scope="{ hover }"
         >
-          <v-img :src="artworkUrl">
+          <MediaArtwork :artwork="artwork" :width="300" :height="300">
             <template v-if="hover || isCollectionBeingPlayed">
               <div class="overlay"></div>
 
@@ -24,7 +24,7 @@
                 <v-icon v-else>play_arrow</v-icon>
               </v-btn>
             </template>
-          </v-img>
+          </MediaArtwork>
 
           <v-card-title primary-title class="py-2 px-2">
             <div>
@@ -32,6 +32,7 @@
                 <div
                   class="long-text-truncated main-info-text"
                   :style="{ color: primaryTextSecondaryColor }"
+                  :title="collection.attributes.name"
                 >
                   {{ collection.attributes.name }}
                 </div>
@@ -45,6 +46,10 @@
               <div
                 class="long-text-truncated sub-info-text"
                 :style="{ color: secondaryTextSecondaryColor }"
+                :title="
+                  collection.attributes.artistName ||
+                    collection.attributes.curatorName
+                "
               >
                 {{
                   collection.attributes.artistName ||
@@ -70,7 +75,6 @@ import {
   TOGGLE_CURRENT_TRACK,
   PLAY_COLLECTION_WITH_SONG
 } from '@/store/actions.type';
-import { getArtworkUrl } from '@/utils/utils';
 import {
   isLight,
   TEXT_PRIMARY_LIGHT,
@@ -80,9 +84,7 @@ import {
 } from '@/themes';
 
 @Component({
-  components: {
-    MediaArtwork
-  }
+  components: { MediaArtwork }
 })
 export default class CollectionItemCard extends Vue {
   @Prop()
@@ -106,15 +108,11 @@ export default class CollectionItemCard extends Vue {
     };
   }
 
-  get artworkUrl(): string {
-    if (
-      !this.collection ||
-      !this.collection.attributes ||
-      !this.collection.attributes.artwork
-    ) {
-      return '';
+  get artwork() {
+    if (!this.collection || !this.collection.attributes) {
+      return null;
     }
-    return getArtworkUrl(this.collection.attributes.artwork.url, 300, 300);
+    return this.collection.attributes.artwork;
   }
 
   get primaryTextSecondaryColor() {

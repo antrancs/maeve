@@ -38,9 +38,11 @@
     ></v-text-field>
     <v-spacer></v-spacer>
 
-    <app-button v-if="!isAuthenticated" @on-click="login">Log in</app-button>
+    <app-button v-if="!isAuthenticated" @on-click="login" class="mr-3"
+      >Log in</app-button
+    >
     <v-menu v-else offset-y transition="scale-transition" :nudge-bottom="10">
-      <v-btn icon large flat slot="activator">
+      <v-btn icon large flat slot="activator" class="mr-1">
         <v-avatar color="accent" size="40px">
           <v-icon>account_circle</v-icon>
         </v-avatar>

@@ -9,7 +9,7 @@
         {
           'song-item--playing': isActive,
           'primary lighten-1': hover && !isQueue,
-          primary: hover && isQueue,
+          'primary lighten-2': hover && isQueue,
           'py-1': $vuetify.breakpoint.xsOnly,
           'dark-mode': darkMode
         }
@@ -54,6 +54,7 @@
               <div
                 class="long-text-truncated main-info-text"
                 :style="{ color: songNameColor }"
+                :title="song.attributes.name"
               >
                 {{ song.attributes.name }}
               </div>
@@ -67,35 +68,28 @@
             </v-layout>
           </v-flex>
 
-          <v-flex
-            xs12
-            class="pr-2"
-            :class="{ 'md4 sm6': !isQueue }"
-            :style="{ color: songInfoColor }"
-          >
-            <div
+          <v-flex xs12 class="pr-2" :class="{ 'md4 sm6': !isQueue }">
+            <ResourceLinkList
               :class="[
                 'long-text-truncated',
-                'song-item__artist-name',
+                $style['artist-name'],
                 { queue: isQueue }
               ]"
-            >
-              {{ song.attributes.artistName }}
-            </div>
+              :resources="artists"
+              :name="song.attributes.artistName"
+            />
           </v-flex>
 
-          <v-flex
-            md3
-            class="hidden-sm-and-down"
-            v-if="!isQueue"
-            :style="{ color: songInfoColor }"
-          >
+          <v-flex md3 class="hidden-sm-and-down" v-if="!isQueue">
             <div
               v-if="!isFromAlbum && !isQueue"
-              :class="['long-text-truncated', 'song-item__album-name']"
+              :class="['long-text-truncated', $style['album-name']]"
             >
               <span v-if="$vuetify.breakpoint.smAndDown"> - </span>
-              {{ song.attributes.albumName }}
+              <ResourceLinkList
+                :resources="albums"
+                :name="song.attributes.albumName"
+              />
             </div>
           </v-flex>
         </v-layout>
@@ -112,10 +106,7 @@
         <v-icon>more_horiz</v-icon>
       </v-btn>
 
-      <div
-        :class="['sub-info-text', 'hidden-xs-only', $style['right-items']]"
-        :style="{ color: songInfoColor }"
-      >
+      <div :class="['sub-info-text', 'hidden-xs-only', $style['right-items']]">
         {{ song.attributes.durationInMillis | formattedDuration }}
       </div>
     </v-layout>
@@ -131,20 +122,22 @@ import { TOGGLE_CURRENT_TRACK } from '@/store/actions.type';
 import {
   HandleSongClicked,
   Nullable,
-  SnackbarMode
+  SnackbarMode,
+  Song
 } from '@/@types/model/model';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import MediaArtworkOverlay from '@/components/MediaArtworkOverlay.vue';
+import ResourceLinkList from '@/components/ResourceLinkList.vue';
 
 @Component({
-  components: { MediaArtworkOverlay, MediaArtwork }
+  components: { MediaArtworkOverlay, MediaArtwork, ResourceLinkList }
 })
 export default class SongItem extends Vue {
   private showLoading = false;
   private songActionsMenuVisibility = false;
 
   @Prop()
-  song!: MusicKit.Song;
+  song!: Song;
   @Prop({ default: true })
   isFromAlbum!: boolean;
   @Prop()
@@ -161,18 +154,27 @@ export default class SongItem extends Vue {
 
   @State
   musicPlayer!: MusicPlayerState;
-  // @State(state => state.library.playlists)
-  // playlists!: MusicKit.LibraryPlaylist[];
 
   get isActive(): boolean {
     if (!this.musicPlayer.currentPlaying) {
       return false;
     }
 
+    const currentPlayingId = this.musicPlayer.currentPlaying.id;
+
+    const isMediaItemBeingPlayed =
+      this.musicPlayer.currentPlaying.container !== undefined &&
+      this.song.id === this.musicPlayer.currentPlaying.container.id;
+
+    const isResourceBeingPlayed =
+      this.song.attributes !== undefined &&
+      this.song.attributes.playParams !== undefined &&
+      this.song.attributes.playParams.catalogId === currentPlayingId;
+
     return (
-      this.song.id === this.musicPlayer.currentPlaying.id ||
-      (this.musicPlayer.currentPlaying.container !== undefined &&
-        this.song.id === this.musicPlayer.currentPlaying.container.id) // when a song is a library-song
+      this.song.id === currentPlayingId ||
+      isMediaItemBeingPlayed ||
+      isResourceBeingPlayed // when a song is a library-song
     );
   }
 
@@ -186,10 +188,28 @@ export default class SongItem extends Vue {
       : this.$vuetify.theme.primaryText;
   }
 
-  get songInfoColor() {
-    return this.isActive
-      ? this.$vuetify.theme.accent
-      : this.$vuetify.theme.secondaryText;
+  get artists(): Nullable<MusicKit.Artist[]> {
+    // album songs shouldn't have relationships
+    if (
+      !this.song.relationships ||
+      !this.song.relationships.artists ||
+      this.song.type !== 'songs'
+    ) {
+      return null;
+    }
+
+    return this.song.relationships.artists.data;
+  }
+
+  get albums(): Nullable<MusicKit.Album[]> {
+    if (
+      !this.song.relationships ||
+      !this.song.relationships.albums ||
+      this.song.type !== 'songs'
+    ) {
+      return null;
+    }
+    return this.song.relationships.albums.data;
   }
 
   @Watch('musicPlayer.isLoading')
@@ -220,29 +240,6 @@ export default class SongItem extends Vue {
     event.preventDefault();
     this.$emit('actions-icon-click', this.song, event.clientX, event.clientY);
   }
-
-  // onAddSongToLibrary() {
-  //   this.$emit('add-to-library', this.song);
-  // }
-
-  // onPlayNext() {
-  //   this.$emit('play-next', this.song);
-  // }
-
-  // onAddToQueue() {
-  //   this.$emit('add-to-queue', this.song);
-  // }
-
-  // onAddToPlaylistClicked(playlistId: string) {
-  //   this.songActionsMenuVisibility = false;
-  //   this.$emit('add-song-to-playlist', playlistId, this.song);
-  // }
-
-  // addSongToNewPlaylist() {
-  //   this.songActionsMenuVisibility = false;
-  //   // @ts-ignore
-  //   this.$root.$newPlaylistDialog.open(this.song);
-  // }
 }
 </script>
 
@@ -261,6 +258,22 @@ export default class SongItem extends Vue {
 
 .middle-items {
   flex-basis: 0;
+}
+
+.artist-name,
+.album-name {
+  color: var(--v-secondaryText-base);
+}
+
+.artist-name a,
+.album-name a {
+  color: var(--v-secondaryText-base);
+}
+
+.artist-name a:hover,
+.album-name a:hover {
+  color: var(--v-primaryText-base);
+  text-decoration: underline;
 }
 </style>
 

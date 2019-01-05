@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import Vuetify from 'vuetify';
 import 'vuetify/dist/vuetify.min.css';
 
 import musicKit from '@/services/musicKit';
@@ -20,20 +19,6 @@ Vue.config.productionTip = false;
 
 Vue.component('chrome-picker', Chrome);
 Vue.component('app-button', AppButton);
-
-Vue.use(Vuetify, {
-  theme: {
-    primary: '#062743',
-    secondary: '#113a5d',
-    accent: '#da0f47',
-    error: '#FF9800',
-    primaryText: '#ffffff',
-    secondaryText: '#BDBDBD'
-  },
-  options: {
-    customProperties: true
-  }
-});
 
 connectMusicKitToStore(musicKit.getInstance(), store);
 new Vue({

@@ -146,24 +146,14 @@ class MusicApiService {
   }
 
   /**
-   * Get all playlists in the user's library
-   */
-  getLibraryPlaylists(): Promise<MusicKit.LibraryPlaylist[]> {
-    return musicKit.getApiInstance().library.playlists();
-  }
-
-  /**
-   * Get all albums in the user's library
-   */
-  getLibraryAlbums(): Promise<MusicKit.LibraryAlbum[]> {
-    return musicKit.getApiInstance().library.albums();
-  }
-
-  /**
    * Get all songs in the user's library
    */
-  getLibrarySongs(): Promise<MusicKit.LibrarySong[]> {
-    return musicKit.getApiInstance().library.songs();
+  getLibrarySongs(ids?: string[]): Promise<MusicKit.LibrarySong[]> {
+    return ids
+      ? musicKit.getApiInstance().library.songs(ids, {
+          include: 'albums,artists'
+        })
+      : musicKit.getApiInstance().library.songs();
   }
 
   /**
@@ -192,6 +182,10 @@ class MusicApiService {
     return musicKit.getApiInstance().playlists(ids);
   }
 
+  getSongs(ids: string[]): Promise<MusicKit.Song[]> {
+    return musicKit.getApiInstance().songs(ids, { include: 'albums, artists' });
+  }
+
   /**
    * Get all details of one or more activities
    * @param ids Activity ids
@@ -207,34 +201,6 @@ class MusicApiService {
   getActivity(id: string): Promise<MusicKit.Activity> {
     return musicKit.getApiInstance().activity(id, {
       include: 'playlists'
-    });
-  }
-
-  /**
-   * Get a library collection (library-playlist, library-album) details and its relationship
-   * @param collectionId Library collection id
-   * @param collectionType Library collection type
-   */
-  getLibraryCollection(
-    collectionId: string,
-    collectionType: string
-  ): Promise<MusicKit.LibraryAlbum | MusicKit.LibraryPlaylist> {
-    const api = musicKit.getApiInstance();
-    if (collectionType === CollectionType.libraryAlbum) {
-      return api.library.album(collectionId);
-    } else {
-      return api.library.playlist(collectionId);
-    }
-  }
-
-  /**
-   * Add multiple items to the user's library
-   * @param itemIds Ids of the items to be added
-   * @param type Type of these items
-   */
-  addToLibrary(itemIds: string[], type: string) {
-    return musicKit.getApiInstance().addToLibrary({
-      [type]: itemIds
     });
   }
 
@@ -295,24 +261,6 @@ class MusicApiService {
     await this.addSongsToPlaylist(items, playlist.id);
 
     return playlist;
-
-    // .then(res => {
-    //   if (res.status !== 201) {
-    //     return Promise.reject('Cannot create new playlist');
-    //   }
-
-    //   if (!Array.isArray(res.data.data) || res.data.data.length === 0) {
-    //     return Promise.reject('Cannot create new playlist');;
-    //   }
-
-    //   const playlist = res.data.data[0];
-
-    //   if (!items) {
-    //     return Promise.resolve(playlist);
-    //   }
-
-    //   return this.addSongsToPlaylist(items, playlist.id);
-    // });
   }
 
   /**

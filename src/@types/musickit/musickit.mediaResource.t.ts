@@ -50,7 +50,7 @@ declare namespace MusicKit {
     /**
      * (Required) This value will always be albums.
      */
-    type: string;
+    type: 'albums';
   }
 
   /**
@@ -183,7 +183,7 @@ declare namespace MusicKit {
     /**
      * (Required) This value will always be artists.
      */
-    type: string;
+    type: 'artists';
   }
 
   /**
@@ -266,7 +266,7 @@ declare namespace MusicKit {
     /**
      * (Required) This value will always be songs.
      */
-    type: string;
+    type: 'songs';
   }
 
   /**
@@ -424,7 +424,7 @@ declare namespace MusicKit {
     /**
      * (Required) This value will always be playlists.
      */
-    type: string;
+    type: 'playlists';
   }
 
   /**
@@ -687,7 +687,7 @@ declare namespace MusicKit {
     /**
      * (Required) This value will always be libraryAlbums.
      */
-    type: string;
+    type: 'library-albums';
   }
 
   interface LibraryAlbumAttributes {
@@ -841,7 +841,7 @@ declare namespace MusicKit {
     /**
      * (Required) This value will alway be librarySongs.
      */
-    type: string;
+    type: 'library-songs';
   }
 
   /**
@@ -862,7 +862,7 @@ declare namespace MusicKit {
     /**
      * (Required) This value will alway be libraryPlaylists.
      */
-    type: string;
+    type: 'library-playlists';
   }
 
   /**
@@ -990,7 +990,7 @@ declare namespace MusicKit {
     /**
      * (Required) This value will alway be libraryArtists.
      */
-    type: string;
+    type: 'library-artists';
   }
 
   interface EditorialNotes {
@@ -1377,7 +1377,7 @@ declare namespace MusicKit {
     /**
      * (Required) Always activities.
      */
-    type: string;
+    type: 'activities';
   }
 
   /**
@@ -1394,5 +1394,7 @@ declare namespace MusicKit {
      * (Required) The kind of the content to use for playback.
      */
     kind: string;
+
+    catalogId?: string;
   }
 }

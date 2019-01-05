@@ -66,7 +66,8 @@ const router = new Router({
     {
       path: '/artists/:id',
       name: 'artists',
-      component: () => import('./views/ArtistDetail.vue')
+      component: () => import('./views/ArtistDetail.vue'),
+      props: true
     },
     {
       path: '/me/for-you',

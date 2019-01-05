@@ -103,6 +103,7 @@ const musicPlayerService = {
    */
   playSongs(songIds: string[], startSongIndex: number): Promise<void> {
     const music = musicKit.getInstance();
+    music.player.shuffleMode = 0;
     return music
       .setQueue({
         songs: songIds

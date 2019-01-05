@@ -18,7 +18,7 @@ export const CHANGE_ROUTE = 'changeRoute';
 export const LOGIN = 'login';
 export const LOGOUT = 'logout';
 
-export const FETCH_COLLECTION = 'fetchCollection';
+// export const FETCH_COLLECTION = 'fetchCollection';
 
 export const SHOW_SNACKBAR = 'showSnackbar';
 export const CLOSE_SNACKBAR = 'closeSnackbar';
@@ -39,3 +39,10 @@ export const LOAD_CUSTOM_THEME = 'loadCustomThemes';
 export const SELECT_THEME = 'selectTheme';
 export const LOAD_SETTINGS = 'loadSettings';
 export const SELECT_BUTTON_STYLES = 'selectButtonStyle';
+
+export const FETCH_ONE_ALBUM_CATALOG = 'fetchOneAlbumCatalog';
+export const FETCH_ONE_PLAYLIST_CATALOG = 'fetchOnePlaylistCatalog';
+export const FETCH_ALBUMS_CATALOG = 'fetchAlbumsCatalog';
+
+export const FETCH_ONE_ALBUM_LIBRARY = 'fetchOneAlbumLibrary';
+export const FETCH_ONE_PLAYLIST_LIBRARY = 'fetchOnePlaylistLibrary';

@@ -29,7 +29,7 @@
           <SongCollectionList :collections="singles" />
         </template>
 
-        <template>
+        <template v-if="playlists.length > 0">
           <v-flex xs12 class="px-2 pt-4">
             <h3 class="section-title">Playlists</h3>
           </v-flex>

@@ -48,8 +48,6 @@ const musicPlayerService = {
     } else {
       musicKit.getPlayerInstance().shuffleMode = 0;
     }
-
-    console.log(musicKit.getPlayerInstance().shuffleMode);
   },
 
   /**

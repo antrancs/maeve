@@ -284,9 +284,7 @@ class MusicApiService {
 
         this.setUserStorefront(storefronts[0].id);
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => {});
   }
 
   setUserStorefront(storefront: string) {

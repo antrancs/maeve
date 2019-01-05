@@ -63,7 +63,6 @@ const getArtistArtwork = (
       return formatArtworkUrl(url, width, height);
     })
     .catch(err => {
-      console.log(err);
       return '';
     });
 };

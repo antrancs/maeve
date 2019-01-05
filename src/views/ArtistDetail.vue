@@ -113,9 +113,7 @@ export default class ArtistDetail extends Vue {
         this.albums = albums;
         this.playlists = playlists;
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => err);
   }
 
   // Helper methods

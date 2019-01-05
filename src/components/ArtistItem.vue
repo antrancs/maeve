@@ -58,8 +58,6 @@ export default class ArtistItem extends Vue {
           : 'https://via.placeholder.com/300x300';
       })
       .catch(err => {
-        console.log(err);
-
         this.showSnackbar({
           text: 'Something went wrong.'
         });

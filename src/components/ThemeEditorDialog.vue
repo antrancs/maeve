@@ -229,7 +229,6 @@ export default class ThemeEditorDialog extends Vue {
   }
 
   handleSave() {
-    // console.log(this.primaryColors.hex, this.secondaryColors.hex);
     if (!this.form) {
       return;
     }

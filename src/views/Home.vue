@@ -65,18 +65,14 @@ export default class Home extends Vue {
       .then(playlists => {
         this.featuredPlaylists = playlists;
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => err);
 
     musicApiService
       .getActivities(activityIds)
       .then(activities => {
         this.activities = activities;
       })
-      .catch(err => {
-        console.log({ err });
-      });
+      .catch(err => err);
   }
 }
 </script>

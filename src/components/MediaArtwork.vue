@@ -1,10 +1,14 @@
 <template>
-  <div class="artwork" v-if="artworkUrlForArtist || artwork">
+  <div
+    class="artwork"
+    v-if="artworkUrlForArtist || artwork"
+    :style="roundStyle"
+  >
     <img
       class="artwork__image"
       v-lazy="artworkUrlForArtist || artworkUrl"
       alt
-      :style="artworkImageStyle"
+      :style="[artworkImageStyle, roundStyle]"
     />
 
     <slot></slot>
@@ -33,18 +37,27 @@ export default class MediaArtwork extends Vue {
   @Prop({ default: false })
   isRound!: boolean;
 
-  get artworkImageStyle(): object {
-    if (!this.artwork) {
-      return {};
-    }
-
-    const style: any = {};
+  get roundStyle() {
     if (this.isRound) {
-      style['border-radius'] = '50%';
+      return {
+        'border-radius': '50%'
+      };
     }
+    return {};
+  }
+
+  get artworkImageStyle(): object {
+    const style: any = {};
 
     if (this.hasShadow) {
-      const shadowColor = this.artwork.textColor1 || 'ffffff';
+      let shadowColor: string;
+
+      if (this.artwork && this.artwork.textColor1) {
+        shadowColor = this.artwork.textColor1;
+      } else {
+        shadowColor = 'ffffff';
+      }
+
       style['box-shadow'] = `0.2rem 0.2rem 1rem #${shadowColor}`;
     }
 

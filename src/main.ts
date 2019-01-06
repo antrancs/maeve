@@ -11,6 +11,15 @@ import { connectMusicKitToStore } from '@/setup/musickit';
 import '@/filters';
 import App from './App.vue';
 
+import Component from 'vue-class-component';
+
+// Register the router hooks with their names
+Component.registerHooks([
+  'beforeRouteEnter',
+  'beforeRouteLeave',
+  'beforeRouteUpdate' // for vue-router 2.2+
+]);
+
 // @ts-ignore
 import { Chrome } from 'vue-color';
 import AppButton from '@/components/AppButton.vue';

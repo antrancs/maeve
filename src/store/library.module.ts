@@ -7,7 +7,9 @@ import {
   UserLibraryState,
   AddToLibraryPayload,
   AddSongsToPlaylistPayload,
-  CreateNewPlaylistPayload
+  CreateNewPlaylistPayload,
+  FetchLibraryResult,
+  SearchParams
 } from './types';
 import {
   ADD_TO_LIBRARY,
@@ -17,7 +19,9 @@ import {
   FETCH_LIBRARY_PLAYLISTS,
   FETCH_LIBRARY_ALBUMS,
   FETCH_ONE_ALBUM_LIBRARY,
-  FETCH_ONE_PLAYLIST_LIBRARY
+  FETCH_ONE_PLAYLIST_LIBRARY,
+  FETCH_LIBRARY_ARTISTS,
+  FETCH_ONE_ARTIST_LIBRARY
 } from './actions.type';
 import {
   SET_LIBRARY_ALBUMS,
@@ -44,19 +48,89 @@ const actions: ActionTree<UserLibraryState, any> = {
     });
   },
 
-  [FETCH_LIBRARY_ALBUMS](): Promise<MusicKit.LibraryAlbum[]> {
-    return musicKit.getApiInstance().library.albums();
-  },
-
-  async [FETCH_LIBRARY_PLAYLISTS](context) {
-    const playlists = await musicKit.getApiInstance().library.playlists();
-    context.commit(SET_LIBRARY_PLAYLISTS, playlists);
-  },
-
-  [FETCH_LIBRARY_SONGS](): Promise<MusicKit.LibrarySong[]> {
-    return musicKit.getApiInstance().library.songs(undefined, {
-      include: 'albums,artists'
+  async [FETCH_ONE_ARTIST_LIBRARY](_, id: string) {
+    return await musicKit.getApiInstance().library.artist(id, {
+      include: 'albums,playlists'
     });
+  },
+
+  async [FETCH_LIBRARY_ALBUMS](
+    _,
+    { offset, limit }: SearchParams
+  ): Promise<FetchLibraryResult<MusicKit.LibraryAlbum>> {
+    const albums = await musicKit.getApiInstance().library.albums(undefined, {
+      offset,
+      limit
+    });
+
+    const hasNext = albums.length === limit;
+    const hasNoData = albums.length === 0 && offset === 0;
+
+    return {
+      data: albums,
+      hasNext,
+      hasNoData
+    };
+  },
+
+  async [FETCH_LIBRARY_PLAYLISTS](
+    { commit },
+    { offset, limit }: SearchParams
+  ): Promise<FetchLibraryResult<MusicKit.LibraryPlaylist>> {
+    const playlists = await musicKit
+      .getApiInstance()
+      .library.playlists(undefined, {
+        offset,
+        limit
+      });
+    commit(SET_LIBRARY_PLAYLISTS, playlists);
+
+    const hasNext = playlists.length === limit;
+    const hasNoData = playlists.length === 0 && offset === 0;
+
+    return {
+      data: playlists,
+      hasNext,
+      hasNoData
+    };
+  },
+
+  async [FETCH_LIBRARY_ARTISTS](
+    _,
+    { offset, limit }: SearchParams
+  ): Promise<FetchLibraryResult<MusicKit.LibraryArtist>> {
+    const artists = await musicKit.getApiInstance().library.artists(undefined, {
+      offset,
+      limit
+    });
+
+    const hasNext = artists.length === limit;
+    const hasNoData = artists.length === 0 && offset === 0;
+
+    return {
+      data: artists,
+      hasNext,
+      hasNoData
+    };
+  },
+
+  async [FETCH_LIBRARY_SONGS](
+    _,
+    { offset, limit }: SearchParams
+  ): Promise<FetchLibraryResult<MusicKit.LibrarySong>> {
+    const songs = await musicKit.getApiInstance().library.songs(undefined, {
+      offset,
+      limit
+    });
+
+    const hasNext = songs.length === limit;
+    const hasNoData = songs.length === 0 && offset === 0;
+
+    return {
+      data: songs,
+      hasNext,
+      hasNoData
+    };
   },
 
   [ADD_TO_LIBRARY](_, { itemIds, type }: AddToLibraryPayload) {
@@ -87,6 +161,14 @@ const actions: ActionTree<UserLibraryState, any> = {
     );
 
     commit(APPEND_LIBRARY_PLAYLISTS, playlist);
+  },
+
+  searchLibrary(_, searchTerm: string) {
+    return musicKit.getApiInstance().library.search(searchTerm, {
+      types: ['library-albums'],
+      limit: 25,
+      offset: 0
+    });
   }
 };
 

@@ -31,6 +31,8 @@ export type Song = MusicKit.Song | MusicKit.LibrarySong;
 
 export type Artist = MusicKit.Artist | MusicKit.LibraryArtist;
 
+export type Playlist = MusicKit.Playlist | MusicKit.LibraryPlaylist;
+
 export enum SnackbarMode {
   success = 'success',
   error = 'error'

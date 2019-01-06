@@ -121,4 +121,9 @@ export default class App extends Vue {
 .small-list-tile-action {
   min-width: 30px;
 }
+
+.item-card {
+  height: 100%;
+  border-radius: 10px;
+}
 </style>

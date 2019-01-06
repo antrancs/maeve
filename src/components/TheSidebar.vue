@@ -58,7 +58,7 @@
         <v-list-group v-if="isAuthenticated" value="true">
           <v-list-tile slot="activator">
             <v-list-tile-title class="menu-group-title"
-              >Your playlists</v-list-tile-title
+              >My playlists</v-list-tile-title
             >
           </v-list-tile>
 
@@ -109,7 +109,7 @@
 import { Vue, Prop, Component } from 'vue-property-decorator';
 import { Getter, State, Action } from 'vuex-class';
 
-import { MusicPlayerState } from '@/store/types';
+import { MusicPlayerState, FetchLibraryPlaylistsActions } from '@/store/types';
 import { FETCH_LIBRARY_PLAYLISTS } from '@/store/actions.type';
 import { isLight, TEXT_PRIMARY_LIGHT, TEXT_PRIMARY_DARK } from '@/themes';
 
@@ -135,6 +135,22 @@ export default class AppSidebar extends Vue {
       pathName: 'myLibrary',
       subItems: [
         {
+          name: 'Albums',
+          icon: 'album',
+          pathName: 'myLibrary',
+          params: {
+            resource: 'albums'
+          }
+        },
+        {
+          name: 'Playlists',
+          icon: 'queue_music',
+          pathName: 'myLibrary',
+          params: {
+            resource: 'playlists'
+          }
+        },
+        {
           name: 'Songs',
           icon: 'music_note',
           pathName: 'myLibrary',
@@ -143,11 +159,11 @@ export default class AppSidebar extends Vue {
           }
         },
         {
-          name: 'Albums',
-          icon: 'album',
+          name: 'Artists',
+          icon: 'person',
           pathName: 'myLibrary',
           params: {
-            resource: 'albums'
+            resource: 'artists'
           }
         }
       ]
@@ -161,7 +177,7 @@ export default class AppSidebar extends Vue {
   @State(state => state.musicPlayer.currentPlaying)
   currentPlaying!: MusicKit.MediaItem | null;
 
-  @Action [FETCH_LIBRARY_PLAYLISTS]: () => void;
+  @Action [FETCH_LIBRARY_PLAYLISTS]: FetchLibraryPlaylistsActions;
 
   get sidebar(): boolean {
     return this.showSidebar;
@@ -190,7 +206,10 @@ export default class AppSidebar extends Vue {
 
   created() {
     if (this.isAuthenticated) {
-      this.fetchLibraryPlaylists();
+      this.fetchLibraryPlaylists({
+        offset: 0,
+        limit: 25
+      });
     }
   }
 

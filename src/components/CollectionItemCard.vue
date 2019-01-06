@@ -150,9 +150,4 @@ export default class CollectionItemCard extends Vue {
   align-items: center;
   display: flex;
 }
-
-.item-card {
-  height: 100%;
-  border-radius: 10px;
-}
 </style>

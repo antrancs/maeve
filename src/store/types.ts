@@ -196,3 +196,29 @@ export type FetchOneAlbumLibraryAction = (
 export type FetchOnePlaylistLibraryaAction = (
   id: string
 ) => Promise<MusicKit.LibraryPlaylist>;
+
+export type SearchParams = {
+  offset: number;
+  limit: number;
+};
+
+export interface FetchLibraryResult<T> {
+  hasNext: boolean;
+  hasNoData: boolean;
+  data: T[];
+}
+export type FetchLibraryAlbumsActions = (
+  payload: SearchParams
+) => Promise<FetchLibraryResult<MusicKit.LibraryAlbum>>;
+
+export type FetchLibraryPlaylistsActions = (
+  payload: SearchParams
+) => Promise<FetchLibraryResult<MusicKit.LibraryPlaylist>>;
+
+export type FetchLibrarySongsActions = (
+  payload: SearchParams
+) => Promise<FetchLibraryResult<MusicKit.LibrarySong>>;
+
+export type FetchLibraryArtistssActions = (
+  payload: SearchParams
+) => Promise<FetchLibraryResult<MusicKit.LibraryArtist>>;

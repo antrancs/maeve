@@ -170,8 +170,8 @@ declare namespace MusicKit {
      * @returns: An array of library artist resources.
      */
     artists(
-      ids: string[],
-      parameters: QueryParameters
+      ids?: string[],
+      parameters?: QueryParameters
     ): Promise<LibraryArtist[]>;
 
     /**

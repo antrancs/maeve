@@ -24,3 +24,6 @@ export enum ButtonStyle {
   normal = 'normal',
   round = 'round'
 }
+
+export const PLACEHOLDER_IMAGE =
+  'https://user-images.githubusercontent.com/14043840/50736349-e11feb00-11bc-11e9-84d9-20dc9652ef5b.jpeg';

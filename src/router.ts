@@ -4,6 +4,7 @@ import Router from 'vue-router';
 import store from '@/store';
 import Home from './views/Home.vue';
 import CollectionDetail from './views/CollectionDetail.vue';
+import ArtistDetail from './views/ArtistDetail.vue';
 
 Vue.use(Router);
 
@@ -64,9 +65,18 @@ const router = new Router({
       }
     },
     {
+      path: '/me/library-artists/:id',
+      name: 'library-artists',
+      component: ArtistDetail,
+      props: true,
+      meta: {
+        auth: true
+      }
+    },
+    {
       path: '/artists/:id',
       name: 'artists',
-      component: () => import('./views/ArtistDetail.vue'),
+      component: ArtistDetail,
       props: true
     },
     {

@@ -47,9 +47,7 @@ export default class ForYou extends Vue {
         }
         this.recommendations = result;
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => err);
   }
 
   /**

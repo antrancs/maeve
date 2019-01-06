@@ -1,11 +1,11 @@
 <template>
-  <div v-if="attributes" class="artist-detail" fluid>
+  <div v-if="artist" class="artist-detail" fluid>
     <div class="artist-detail-header">
       <div class="banner" :style="bannerStyle"></div>
       <div class="banner-overlay flex-column artist-banner-overlay">
         <v-container fill-height>
           <v-layout align-end>
-            <h2 class="artist-detail__name">{{ attributes.name }}</h2>
+            <h2 class="artist-detail__name">{{ artist.attributes.name }}</h2>
           </v-layout>
         </v-container>
       </div>
@@ -19,6 +19,14 @@
           </v-flex>
 
           <SongCollectionList :collections="nonSingles" />
+        </template>
+
+        <template v-if="artistType === 'library-artists'">
+          <v-flex xs12 class="px-2 pt-4">
+            <h3 class="section-title">Albums</h3>
+          </v-flex>
+
+          <SongCollectionList :collections="albums" />
         </template>
 
         <template v-if="singles.length > 0">
@@ -46,17 +54,24 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import SongCollectionList from '@/components/SongCollectionList.vue';
 import musicApiService from '@/services/musicApi.service';
 import { getArtistArtwork, formatArtworkUrl } from '@/utils/utils';
-import { Nullable } from '@/@types/model/model';
+import { Nullable, Album, Artist, Playlist } from '@/@types/model/model';
 import { TEXT_PRIMARY_DARK } from '@/themes';
+import { Action } from 'vuex-class';
+import { FETCH_ONE_ARTIST_LIBRARY } from '@/store/actions.type';
 
 @Component({
   components: { SongCollectionList }
 })
 export default class ArtistDetail extends Vue {
-  private attributes: Nullable<MusicKit.ArtistAttributes> = null;
+  private artist: Nullable<Artist> = null;
+  // private attributes: Nullable<MusicKit.ArtistAttributes> = null;
   private artworkUrl: string = '';
-  private albums: MusicKit.Album[] = [];
-  private playlists: MusicKit.Playlist[] = [];
+  // private albums: Album[] = [];
+  // private playlists: MusicKit.Playlist[] = [];
+
+  @Action [FETCH_ONE_ARTIST_LIBRARY]!: (
+    id: string
+  ) => Promise<MusicKit.LibraryArtist>;
 
   created() {
     this.$_getArtistInfo();
@@ -90,39 +105,93 @@ export default class ArtistDetail extends Vue {
     };
   }
 
-  get singles(): MusicKit.Album[] {
+  get albums(): Album[] {
+    if (
+      !this.artist ||
+      !this.artist.relationships ||
+      !this.artist.relationships.albums
+    ) {
+      return [];
+    }
+    return this.artist.relationships.albums.data;
+  }
+
+  get playlists(): MusicKit.Playlist[] {
+    if (
+      !this.artist ||
+      !this.artist.relationships ||
+      !this.artist.relationships.albums
+    ) {
+      return [];
+    }
+
+    if (this.artist.type === 'library-artists') {
+      return [];
+    }
+
+    return this.artist.relationships.playlists!.data;
+  }
+
+  get singles(): Album[] {
+    if (!this.artist || this.artist.type === 'library-artists') {
+      return [];
+    }
+
     return this.albums.filter(
-      album => album.attributes && album.attributes.isSingle
+      album =>
+        album.type === 'albums' && album.attributes && album.attributes.isSingle
     );
   }
 
-  get nonSingles(): MusicKit.Album[] {
+  get nonSingles(): Album[] {
     return this.albums.filter(
-      album => album.attributes && !album.attributes.isSingle
+      album =>
+        album.type === 'albums' &&
+        album.attributes &&
+        !album.attributes.isSingle
     );
+  }
+
+  get artistType(): string {
+    const path = this.$route.path;
+    if (path.startsWith('/artists')) {
+      return 'artists';
+    }
+    return 'library-artists';
   }
 
   // Helper methods
   private $_getArtistInfo() {
     const artistId = this.$route.params.id;
-    musicApiService
-      .getArtist(artistId)
-      .then(({ attributes, albums, playlists }) => {
-        this.attributes = attributes;
-        this.$_getArtistArtwork();
-        this.albums = albums;
-        this.playlists = playlists;
-      })
-      .catch(err => err);
+    if (this.artistType === 'artists') {
+      musicApiService
+        .getArtist(artistId)
+        .then(artist => {
+          // this.attributes = attributes;
+          this.artist = artist;
+          this.$_getArtistArtwork();
+          //  this.albums = albums;
+          //  this.playlists = playlists;
+        })
+        .catch(err => err);
+    } else {
+      this.fetchOneArtistLibrary(artistId).then(artist => {
+        this.artist = artist;
+      });
+    }
   }
 
   // Helper methods
   private $_getArtistArtwork() {
-    if (!this.attributes) {
+    if (!this.artist || !this.artist.attributes) {
       return;
     }
 
-    getArtistArtwork(this.attributes.url).then(artwork => {
+    if (this.artist.type === 'library-artists') {
+      return;
+    }
+
+    getArtistArtwork(this.artist.attributes.url).then(artwork => {
       this.artworkUrl = artwork;
     });
   }

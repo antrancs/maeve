@@ -12,10 +12,6 @@
       <ArtistList v-else-if="type === 'artists'" :artists="data" />
 
       <SongList v-else-if="type === 'songs'" :tracks="data" />
-
-      <infinite-loading @infinite="infiniteHandler" spinner="circles">
-        <span slot="no-more"></span>
-      </infinite-loading>
     </v-layout>
   </v-container>
 </template>
@@ -23,7 +19,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
-import InfiniteLoading from 'vue-infinite-loading';
+// import InfiniteLoading from 'vue-infinite-loading';
 
 import SongCollectionList from '@/components/SongCollectionList.vue';
 import ArtistList from '@/components/ArtistList.vue';
@@ -36,7 +32,6 @@ import { PlaySongsAction } from '@/store/types';
 @Component({
   components: {
     SongCollectionList,
-    InfiniteLoading,
     ArtistList,
     SongList
   }

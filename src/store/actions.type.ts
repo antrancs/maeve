@@ -31,6 +31,7 @@ export const CREATE_NEW_PLAYLIST = 'createNewPlaylist';
 export const FETCH_LIBRARY_SONGS = 'fetchLibrarySongs';
 export const FETCH_LIBRARY_PLAYLISTS = 'fetchLibraryPlaylists';
 export const FETCH_LIBRARY_ALBUMS = 'fetchLibraryAlbums';
+export const FETCH_LIBRARY_ARTISTS = 'fetchLibraryArtists';
 
 export const CREATE_THEME = 'createNewTheme';
 export const UPDATE_THEME = 'updateTheme';
@@ -46,3 +47,4 @@ export const FETCH_ALBUMS_CATALOG = 'fetchAlbumsCatalog';
 
 export const FETCH_ONE_ALBUM_LIBRARY = 'fetchOneAlbumLibrary';
 export const FETCH_ONE_PLAYLIST_LIBRARY = 'fetchOnePlaylistLibrary';
+export const FETCH_ONE_ARTIST_LIBRARY = 'fetchOneArtistLibrary';

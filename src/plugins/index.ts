@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify';
 import VueLazyload from 'vue-lazyload';
+import { PLACEHOLDER_IMAGE } from '@/utils/constants';
 
 Vue.use(Vuetify, {
   theme: {
@@ -18,5 +19,6 @@ Vue.use(Vuetify, {
 
 Vue.use(VueLazyload, {
   // set observer to true
-  observer: true
+  observer: true,
+  loading: PLACEHOLDER_IMAGE
 });

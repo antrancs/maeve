@@ -108,34 +108,11 @@ class MusicApiService {
    * Get the artist's details and their relationships (albums, playlists)
    * @param artistId id of the artist
    */
-  getArtist(
-    artistId: string
-  ): Promise<{
-    attributes: Nullable<MusicKit.ArtistAttributes>;
-    albums: MusicKit.Album[];
-    playlists: MusicKit.Playlist[];
-  }> {
+  getArtist(artistId: string): Promise<MusicKit.Artist> {
     return musicKit
       .getApiInstance()
       .artist(artistId, { include: 'albums,playlists' })
-      .then(artistRes => {
-        // relationships should be there when specifing 'include' in the search parameter
-        const { relationships } = artistRes;
-        let albums: MusicKit.Album[] = [];
-        let playlists: MusicKit.Playlist[] = [];
-
-        if (relationships) {
-          albums = relationships.albums ? relationships.albums.data : [];
-          playlists = relationships.playlists
-            ? relationships.playlists.data
-            : [];
-        }
-        return {
-          attributes: artistRes.attributes,
-          albums,
-          playlists
-        };
-      });
+      .then();
   }
 
   /**

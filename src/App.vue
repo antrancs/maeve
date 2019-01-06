@@ -19,7 +19,7 @@
     <PlayQueue />
     <AppSnackbar />
     <NewPlaylistDialog ref="newPlaylistDialog" />
-
+    <MediaActionMenu ref="mediaActionMenu" />
     <v-navigation-drawer
       class="primary lighten-1"
       temporary
@@ -42,6 +42,7 @@ import PlayerBar from '@/components/ThePlayerBar.vue';
 import PlayQueue from '@/components/PlayQueue.vue';
 import AppFooter from '@/components/TheFooter.vue';
 import AppSnackbar from '@/components/TheSnackbar.vue';
+import MediaActionMenu from '@/components/MediaActionMenu.vue';
 import NewPlaylistDialog from '@/components/NewPlaylistDialog.vue';
 import ThemeSetting from '@/components/ThemeSetting.vue';
 import { State, Action, Getter } from 'vuex-class';
@@ -57,7 +58,8 @@ import { LOAD_SETTINGS } from '@/store/actions.type';
     AppFooter,
     AppSnackbar,
     NewPlaylistDialog,
-    ThemeSetting
+    ThemeSetting,
+    MediaActionMenu
   }
 })
 export default class App extends Vue {
@@ -85,6 +87,8 @@ export default class App extends Vue {
   mounted() {
     // @ts-ignore
     this.$root.$newPlaylistDialog = this.$refs.newPlaylistDialog;
+    // @ts-ignore
+    this.$root.$mediaActionMenu = this.$refs.mediaActionMenu;
   }
 
   created() {

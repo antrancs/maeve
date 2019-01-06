@@ -1,5 +1,6 @@
 import { load } from 'cheerio';
 import axios from 'axios';
+import { Collection, Song } from '@/@types/model/model';
 
 const getArtworkUrl = (
   originalUrl: string,
@@ -67,4 +68,16 @@ const getArtistArtwork = (
     });
 };
 
-export { getArtworkUrl, getArtistArtwork, formatArtworkUrl };
+const getSongsFromCollection = (collection: Collection): Song[] => {
+  if (!collection.relationships || !collection.relationships.tracks) {
+    return [];
+  }
+  return collection.relationships.tracks.data;
+};
+
+export {
+  getArtworkUrl,
+  getArtistArtwork,
+  formatArtworkUrl,
+  getSongsFromCollection
+};

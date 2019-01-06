@@ -75,16 +75,7 @@
 
                     <div class="hidden-xs-only">
                       <template v-if="collection">
-                        <CollectionControls
-                          :collection="collection"
-                          @add-to-library="handleAddToLibrary"
-                          @add-to-new-playlist="handleAddSongToNewPlaylist"
-                          @add-to-existing-playlist="
-                            handleAddCollectionToPlaylist
-                          "
-                          @play-next="handlePlayCollectionNext"
-                          @add-to-queue="handleAddCollectionToQueue"
-                        />
+                        <CollectionControls :collection="collection" />
                       </template>
                     </div>
                   </v-layout>
@@ -138,14 +129,10 @@ import { Action, Getter, State, Mutation } from 'vuex-class';
 import SongList from '@/components/SongList.vue';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import CollectionControls from '@/components/CollectionControls.vue';
-import { getArtworkUrl } from '@/utils/utils';
+import { getArtworkUrl, getSongsFromCollection } from '@/utils/utils';
 import musicApiService from '@/services/musicApi.service';
 import {
-  AddToLibraryAction,
   ShowSnackbarAction,
-  AddSongsToPlaylistAction,
-  PrependSongsAction,
-  AppendSongsAction,
   FetchOneAlbumCatalogAction,
   FetchOnePlaylistCatalogAction,
   FetchOnePlaylistLibraryaAction,
@@ -164,11 +151,7 @@ import {
 } from '@/@types/model/model';
 import {
   PLAY_COLLECTION_WITH_SONG,
-  ADD_TO_LIBRARY,
   SHOW_SNACKBAR,
-  ADD_SONGS_TO_PLAYLIST,
-  PREPEND_SONGS,
-  APPEND_SONGS,
   FETCH_ONE_ALBUM_CATALOG,
   FETCH_ONE_PLAYLIST_CATALOG,
   FETCH_ONE_PLAYLIST_LIBRARY,
@@ -192,11 +175,7 @@ export default class CollectionDetail extends Vue {
   @Action [FETCH_ONE_PLAYLIST_CATALOG]: FetchOnePlaylistCatalogAction;
   @Action [FETCH_ONE_ALBUM_LIBRARY]: FetchOneAlbumLibraryAction;
   @Action [FETCH_ONE_PLAYLIST_LIBRARY]: FetchOnePlaylistLibraryaAction;
-  @Action [ADD_TO_LIBRARY]: AddToLibraryAction;
   @Action [SHOW_SNACKBAR]: ShowSnackbarAction;
-  @Action [ADD_SONGS_TO_PLAYLIST]: AddSongsToPlaylistAction;
-  @Action [PREPEND_SONGS]: PrependSongsAction;
-  @Action [APPEND_SONGS]: AppendSongsAction;
   @Action fetchCatalogSongsDetails!: (
     ids?: string[]
   ) => Promise<MusicKit.Song[]>;
@@ -204,7 +183,9 @@ export default class CollectionDetail extends Vue {
   get songs(): Song[] {
     return this.songsWithRelationships
       ? []
-      : this.$_getSongsFromCollection(this.collection);
+      : this.collection
+      ? getSongsFromCollection(this.collection)
+      : [];
   }
 
   get artists(): Artist[] {
@@ -353,7 +334,7 @@ export default class CollectionDetail extends Vue {
         break;
       case CollectionType.playlist: {
         const collection = await this.fetchOnePlaylistCatalog(this.id);
-        const songs = this.$_getSongsFromCollection(collection);
+        const songs = getSongsFromCollection(collection);
         const songIds = songs.map(song => song.id);
         this.songsWithRelationships = await this.fetchCatalogSongsDetails(
           songIds
@@ -379,123 +360,6 @@ export default class CollectionDetail extends Vue {
     }
 
     return getArtworkUrl(this.collection.attributes.artwork.url, width, height);
-  }
-
-  async handleAddToLibrary() {
-    if (!this.collection) {
-      return;
-    }
-
-    try {
-      await this.addToLibrary({
-        itemIds: [this.collection.id],
-        type: this.collection.type
-      });
-
-      this.showSnackbar({
-        text: 'Item has been added to library'
-      });
-    } catch (err) {
-      this.showSnackbar({
-        text: 'Cannot add item to library',
-        type: SnackbarMode.error
-      });
-    }
-  }
-
-  async handleAddCollectionToPlaylist(playlistId: string) {
-    const songs = this.songs.map(({ id, type }) => ({
-      id,
-      type
-    }));
-
-    try {
-      this.addSongsToPlaylist({
-        songItems: songs,
-        playlistId
-      });
-
-      this.showSnackbar({
-        text: 'Items have been added to playlist'
-      });
-    } catch (err) {
-      this.showSnackbar({
-        text: 'Cannot add items to playlist',
-        type: SnackbarMode.error
-      });
-    }
-  }
-
-  async handleAddSongToNewPlaylist() {
-    // @ts-ignore
-    this.$root.$newPlaylistDialog.open(this.songs);
-  }
-
-  handlePlayCollectionNext() {
-    const mediaItems = this.songs.map(
-      ({ id, attributes }) =>
-        new MusicKit.MediaItem({
-          id,
-          attributes,
-          type: 'song',
-          container: {
-            id
-          }
-        })
-    );
-
-    try {
-      this.prependSongs({
-        items: mediaItems
-      });
-      this.showSnackbar({
-        text: 'Collection is playing next'
-      });
-    } catch {
-      this.showSnackbar({
-        text: 'Something went wrong',
-        type: SnackbarMode.error
-      });
-    }
-  }
-
-  handleAddCollectionToQueue() {
-    const mediaItems = this.songs.map(
-      ({ id, attributes }) =>
-        new MusicKit.MediaItem({
-          id,
-          attributes,
-          type: 'song',
-          container: {
-            id
-          }
-        })
-    );
-
-    try {
-      // appendSongs is synchronous
-      this.appendSongs({ items: mediaItems });
-      this.showSnackbar({
-        text: 'Collection is added to queue'
-      });
-    } catch {
-      this.showSnackbar({
-        text: 'Something went wrong',
-        type: SnackbarMode.error
-      });
-    }
-  }
-
-  $_getSongsFromCollection(collection: Nullable<Collection>): Song[] {
-    if (
-      !collection ||
-      !collection.relationships ||
-      !collection.relationships.tracks
-    ) {
-      return [];
-    }
-
-    return collection.relationships.tracks.data;
   }
 }
 </script>

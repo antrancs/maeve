@@ -4,21 +4,9 @@
       isCollectionBeingPlayed ? 'Pause' : 'Play'
     }}</app-button>
     <app-button class="mb-0" @on-click="shuffleSongs">Shuffle</app-button>
-    <media-action-menu
-      :isFromLibrary="fromLibrary"
-      :playlistId="fromLibrary ? collection.id : undefined"
-      @add-to-existing-playlist="
-        playlistId => $emit('add-to-existing-playlist', playlistId)
-      "
-      @add-to-new-playlist="$emit('add-to-new-playlist')"
-      @add-to-library="$emit('add-to-library')"
-      @play-next="$emit('play-next')"
-      @add-to-queue="$emit('add-to-queue')"
-    >
-      <v-btn fab dark class="accent mb-0" small>
-        <v-icon medium>more_horiz</v-icon>
-      </v-btn>
-    </media-action-menu>
+    <v-btn fab dark class="accent mb-0" small @click="showActionMenu">
+      <v-icon medium>more_horiz</v-icon>
+    </v-btn>
   </div>
 </template>
 
@@ -55,18 +43,6 @@ export default class CollectionControls extends Vue {
     );
   }
 
-  get fromLibrary(): boolean {
-    if (!this.collection) {
-      return false;
-    }
-
-    return (
-      this.collection &&
-      (this.collection.type === CollectionType.libraryAlbum ||
-        this.collection.type === CollectionType.libraryPlaylist)
-    );
-  }
-
   /**
    * Play the entire collection
    */
@@ -85,6 +61,16 @@ export default class CollectionControls extends Vue {
       collection: this.collection,
       shuffle: true
     });
+  }
+
+  showActionMenu(event: MouseEvent) {
+    // @ts-ignore
+    this.$root.$mediaActionMenu.open(
+      this.collection,
+      null,
+      event.clientX,
+      event.clientY
+    );
   }
 }
 </script>

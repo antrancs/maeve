@@ -8,24 +8,10 @@
         :index="index"
         :is-from-album="fromAlbum"
         :is-queue="isQueue"
-        :isFromLibrary="fromLibrary"
         @song-item-clicked="handleSongClicked"
-        @actions-icon-click="openMediaActionsMenu"
+        @actions-icon-click="handleActionIconClick"
       />
     </v-flex>
-
-    <MediaActionMenu
-      :visibility="showSongActionMenu"
-      :posX="actionMenuPosX"
-      :posY="actionMenuPosY"
-      :playlistId="playlistId"
-      @action-menu-visibility-change="handleActionMenuVisibilityChange"
-      @add-to-new-playlist="handleAddSongToNewPlaylist"
-      @add-to-library="handleAddToLibrary"
-      @add-to-queue="handleAddToQueue"
-      @add-to-existing-playlist="handleAddSongToPlaylist"
-      @play-next="handleAddNext"
-    />
   </v-layout>
 </template>
 
@@ -41,26 +27,11 @@ import {
   SnackbarMode
 } from '@/@types/model/model';
 import {
-  AppendSongsPayload,
-  AddToLibraryPayload,
   MusicPlayerState,
-  AppendSongsAction,
-  AddToLibraryAction,
-  PrependSongsAction,
-  ShowSnackbarAction,
   SkipToSongAtIndexAction,
-  PlaySongsAction,
-  AddSongsToPlaylistAction
+  PlaySongsAction
 } from '@/store/types';
-import {
-  ADD_TO_LIBRARY,
-  APPEND_SONGS,
-  PREPEND_SONGS,
-  SKIP_TO_SONG_AT_INDEX,
-  PLAY_SONGS,
-  ADD_SONGS_TO_PLAYLIST,
-  SHOW_SNACKBAR
-} from '@/store/actions.type';
+import { SKIP_TO_SONG_AT_INDEX, PLAY_SONGS } from '@/store/actions.type';
 
 import SongItem from '@/components/SongItem.vue';
 import MediaActionMenu from '@/components/MediaActionMenu.vue';
@@ -80,25 +51,16 @@ export default class SongList extends Vue {
   tracks!: MusicKit.Song[];
   @Prop({ default: false })
   isQueue!: boolean;
-  @Prop({ default: false }) isFromLibrary!: boolean;
+  // @Prop({ default: false }) isFromLibrary!: boolean;
   @Prop() playlistId: Nullable<string>;
 
   @State
   musicPlayer!: MusicPlayerState;
 
   @Action
-  [APPEND_SONGS]: AppendSongsAction;
-  @Action
-  [PREPEND_SONGS]: PrependSongsAction;
-  @Action
-  [ADD_TO_LIBRARY]: AddToLibraryAction;
-  @Action
   [SKIP_TO_SONG_AT_INDEX]: SkipToSongAtIndexAction;
   @Action
   [PLAY_SONGS]: PlaySongsAction;
-  @Action
-  [ADD_SONGS_TO_PLAYLIST]: AddSongsToPlaylistAction;
-  @Action [SHOW_SNACKBAR]!: ShowSnackbarAction;
 
   get fromAlbum(): boolean {
     return (
@@ -106,79 +68,6 @@ export default class SongList extends Vue {
       (this.collection.type === CollectionType.album ||
         this.collection.type === CollectionType.libraryAlbum)
     );
-  }
-
-  get fromLibrary(): boolean {
-    return (
-      this.isFromLibrary ||
-      (this.collection !== undefined &&
-        (this.collection.type === CollectionType.libraryAlbum ||
-          this.collection.type === CollectionType.libraryPlaylist))
-    );
-  }
-
-  handleAddToQueue() {
-    if (!this.selectedSong) {
-      return;
-    }
-
-    const mediaItem = new MusicKit.MediaItem({
-      id: this.selectedSong.id,
-      attributes: this.selectedSong.attributes,
-      type: 'song',
-      container: {
-        id: this.selectedSong.id
-      }
-    });
-
-    // appendSongs is synchronous
-    this.appendSongs({ items: [mediaItem] });
-
-    this.showSnackbar({
-      text: 'Song is added to queue'
-    });
-  }
-
-  handleAddNext() {
-    if (!this.selectedSong) {
-      return;
-    }
-
-    const mediaItem = new MusicKit.MediaItem({
-      id: this.selectedSong.id,
-      attributes: this.selectedSong.attributes,
-      type: 'song',
-      container: {
-        id: this.selectedSong.id
-      }
-    });
-
-    this.prependSongs({ items: [mediaItem] });
-
-    this.showSnackbar({
-      text: 'Song is playing next'
-    });
-  }
-
-  handleAddToLibrary() {
-    if (!this.selectedSong) {
-      return;
-    }
-
-    this.addToLibrary({
-      itemIds: [this.selectedSong.id],
-      type: 'songs'
-    })
-      .then(() => {
-        this.showSnackbar({
-          text: 'Song added to library'
-        });
-      })
-      .catch(err => {
-        this.showSnackbar({
-          text: 'Something went wrong.'
-        });
-      });
   }
 
   handleSongClicked(songId: string, songIndex: number) {
@@ -194,57 +83,9 @@ export default class SongList extends Vue {
     }
   }
 
-  handleActionMenuVisibilityChange(value: boolean) {
-    this.showSongActionMenu = value;
-
-    if (!this.showSongActionMenu) {
-      this.selectedSong = null;
-    }
-  }
-
-  openMediaActionsMenu(song: Song, mouseX: number, mouseY: number) {
-    this.selectedSong = song;
-    this.showSongActionMenu = true;
-    this.actionMenuPosX = mouseX;
-    this.actionMenuPosY = mouseY;
-  }
-
-  handleAddSongToNewPlaylist() {
-    this.showSongActionMenu = false;
+  handleActionIconClick(song: Song, posX: number, posY: number) {
     // @ts-ignore
-    this.$root.$newPlaylistDialog.open(this.selectedSong);
-
-    // this.selectedSong = null;
-  }
-
-  async handleAddSongToPlaylist(playlistId: string) {
-    this.showSongActionMenu = false;
-    if (!this.selectedSong) {
-      return;
-    }
-
-    const { id, type } = this.selectedSong;
-
-    try {
-      await this.addSongsToPlaylist({
-        songItems: [
-          {
-            id,
-            type
-          }
-        ],
-        playlistId
-      });
-
-      this.showSnackbar({
-        text: 'Song has been added to your playlist'
-      });
-    } catch {
-      this.showSnackbar({
-        text: 'Cannot add song to library. Please try again later',
-        type: SnackbarMode.error
-      });
-    }
+    this.$root.$mediaActionMenu.open(song, this.collection, posX, posY);
   }
 }
 </script>

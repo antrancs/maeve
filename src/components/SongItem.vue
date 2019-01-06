@@ -144,8 +144,6 @@ export default class SongItem extends Vue {
   index!: number;
   @Prop({ default: false })
   isQueue!: boolean;
-  @Prop({ default: false }) isFromLibrary!: boolean;
-  // @Prop({ default: null }) playlistId: Nullable<string>; // the playlist that contains this song item
 
   @Getter darkMode!: boolean;
 
@@ -238,6 +236,8 @@ export default class SongItem extends Vue {
 
   onActionsIconClicked(event: MouseEvent) {
     event.preventDefault();
+
+    // this.$root.$mediaActionMenu.open(this.song, event.clientX, event.clientY);
     this.$emit('actions-icon-click', this.song, event.clientX, event.clientY);
   }
 }

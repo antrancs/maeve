@@ -1,4 +1,5 @@
-import { load } from 'cheerio';
+import { parse } from 'parse5';
+
 import axios from 'axios';
 import { Collection, Song } from '@/@types/model/model';
 
@@ -22,10 +23,27 @@ const getArtworkUrl = (
 };
 
 const extractArtworkUrl = (html: string) => {
-  const $ = load(html);
-  const artwork = $('meta[property="og:image:secure_url"]').attr('content');
+  const document = parse(html) as Document;
+  if (document.childNodes.length < 2) {
+    return '';
+  }
 
-  return artwork;
+  const headNode = document.childNodes[1].childNodes[0];
+
+  for (let i = 0; i < headNode.childNodes.length; i++) {
+    const child = headNode.childNodes[i];
+    // @ts-ignore
+    if (child.nodeName !== 'meta' || child.attrs.length < 2) {
+      continue;
+    }
+
+    // @ts-ignore
+    if (child.attrs[0].value === 'og:image:secure_url') {
+      // @ts-ignore
+      return child.attrs[1].value;
+    }
+  }
+  return '';
 };
 
 const formatArtworkUrl = (

@@ -1,6 +1,8 @@
 import Vue from 'vue';
-import Vuetify from 'vuetify';
+import Vuetify from 'vuetify/lib';
 import VueLazyload from 'vue-lazyload';
+import 'vuetify/src/stylus/app.styl';
+
 import { PLACEHOLDER_IMAGE } from '@/utils/constants';
 
 Vue.use(Vuetify, {

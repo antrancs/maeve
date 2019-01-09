@@ -83,6 +83,8 @@ declare namespace MusicKit {
      */
     artist(id: string, parameters: QueryParameters): Promise<Artist>;
 
+    genre(id: string, parameters?: QueryParameters): Promise<any>;
+
     /**
      * Fetch an artist using its identifier.
      * @param id A playlist identifier.

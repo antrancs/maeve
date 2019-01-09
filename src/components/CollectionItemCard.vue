@@ -26,7 +26,7 @@
             <div>
               <div class="media-details__title">
                 <div
-                  class="long-text-truncated main-info-text"
+                  class="long-text-truncated main-info-text card-text"
                   :style="{ color: primaryTextSecondaryColor }"
                   :title="collection.attributes.name"
                 >
@@ -40,7 +40,7 @@
                 >
               </div>
               <div
-                class="long-text-truncated sub-info-text"
+                class="long-text-truncated sub-info-text card-text"
                 :style="{ color: secondaryTextSecondaryColor }"
                 :title="
                   collection.attributes.artistName ||

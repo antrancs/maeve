@@ -202,23 +202,28 @@ export type SearchParams = {
   limit: number;
 };
 
-export interface FetchLibraryResult<T> {
+export interface FetchResult<T> {
   hasNext: boolean;
   hasNoData: boolean;
   data: T[];
 }
 export type FetchLibraryAlbumsActions = (
   payload: SearchParams
-) => Promise<FetchLibraryResult<MusicKit.LibraryAlbum>>;
+) => Promise<FetchResult<MusicKit.LibraryAlbum>>;
 
 export type FetchLibraryPlaylistsActions = (
   payload: SearchParams
-) => Promise<FetchLibraryResult<MusicKit.LibraryPlaylist>>;
+) => Promise<FetchResult<MusicKit.LibraryPlaylist>>;
 
 export type FetchLibrarySongsActions = (
   payload: SearchParams
-) => Promise<FetchLibraryResult<MusicKit.LibrarySong>>;
+) => Promise<FetchResult<MusicKit.LibrarySong>>;
 
 export type FetchLibraryArtistssActions = (
   payload: SearchParams
-) => Promise<FetchLibraryResult<MusicKit.LibraryArtist>>;
+) => Promise<FetchResult<MusicKit.LibraryArtist>>;
+
+export type FetchAppleCuratorPlaylists = (
+  id: string,
+  params: SearchParams
+) => Promise<FetchResult<MusicKit.Playlist>>;

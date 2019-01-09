@@ -8,7 +8,7 @@ import {
   AddToLibraryPayload,
   AddSongsToPlaylistPayload,
   CreateNewPlaylistPayload,
-  FetchLibraryResult,
+  FetchResult,
   SearchParams
 } from './types';
 import {
@@ -57,7 +57,7 @@ const actions: ActionTree<UserLibraryState, any> = {
   async [FETCH_LIBRARY_ALBUMS](
     _,
     { offset, limit }: SearchParams
-  ): Promise<FetchLibraryResult<MusicKit.LibraryAlbum>> {
+  ): Promise<FetchResult<MusicKit.LibraryAlbum>> {
     const albums = await musicKit.getApiInstance().library.albums(undefined, {
       offset,
       limit
@@ -76,7 +76,7 @@ const actions: ActionTree<UserLibraryState, any> = {
   async [FETCH_LIBRARY_PLAYLISTS](
     { commit },
     { offset, limit }: SearchParams
-  ): Promise<FetchLibraryResult<MusicKit.LibraryPlaylist>> {
+  ): Promise<FetchResult<MusicKit.LibraryPlaylist>> {
     const playlists = await musicKit
       .getApiInstance()
       .library.playlists(undefined, {
@@ -98,7 +98,7 @@ const actions: ActionTree<UserLibraryState, any> = {
   async [FETCH_LIBRARY_ARTISTS](
     _,
     { offset, limit }: SearchParams
-  ): Promise<FetchLibraryResult<MusicKit.LibraryArtist>> {
+  ): Promise<FetchResult<MusicKit.LibraryArtist>> {
     const artists = await musicKit.getApiInstance().library.artists(undefined, {
       offset,
       limit
@@ -117,7 +117,7 @@ const actions: ActionTree<UserLibraryState, any> = {
   async [FETCH_LIBRARY_SONGS](
     _,
     { offset, limit }: SearchParams
-  ): Promise<FetchLibraryResult<MusicKit.LibrarySong>> {
+  ): Promise<FetchResult<MusicKit.LibrarySong>> {
     const songs = await musicKit.getApiInstance().library.songs(undefined, {
       offset,
       limit

@@ -30,6 +30,12 @@
           :key="activity.id"
         />
       </template>
+
+      <v-flex xs12 class="px-2 pt-4">
+        <h3 class="section-title">Genres</h3>
+      </v-flex>
+
+      <v-flex> <GenreList /> </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -39,18 +45,20 @@ import { Vue, Component } from 'vue-property-decorator';
 
 import FeaturedPlaylist from '@/components/FeaturedPlaylist.vue';
 import ActivityItem from '@/components/ActivityItem.vue';
+import GenreList from '@/components/GenreList.vue';
 import musicApiService from '@/services/musicApi.service';
 import { activityIds } from '@/utils/constants';
 
 @Component({
   components: {
     FeaturedPlaylist,
-    ActivityItem
+    ActivityItem,
+    GenreList
   }
 })
 export default class Home extends Vue {
   private featuredPlaylistIds = [
-    'pl.6ea68024aeae49ca9e81eaac6ef929cf', // Holiday pop hits
+    'pl.567c541f63414e798be5cf214e155557', // Today at Apple
     'pl.2b0e6e332fdf4b7a91164da3162127b5', // Top 100 Global
     'pl.d25f5d1181894928af76c85c967f8f31', // Best of the week
     'pl.f4d106fed2bd41149aaacabb233eb5eb' // Today hit

@@ -3,6 +3,7 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import musicKit from '@/services/musicKit';
 import authService from '@/services/auth.service';
 import { Collection, CollectionType, Nullable } from '@/@types/model/model';
+import { SearchParams, FetchResult } from '@/store/types';
 
 class MusicApiService {
   private axiosInstance: AxiosInstance;
@@ -169,6 +170,43 @@ class MusicApiService {
    */
   getActivities(ids: string[]): Promise<MusicKit.Activity[]> {
     return musicKit.getApiInstance().activities(ids);
+  }
+
+  getAppleCuratorsPlaylists(
+    id: string,
+    { limit, offset }: SearchParams
+  ): Promise<FetchResult<MusicKit.Playlist>> {
+    return this.axiosInstance
+      .get(`catalog/us/apple-curators/${id}/playlists`, {
+        headers: {
+          Authorization: `Bearer ${authService.developerToken}`,
+          'Content-Type': 'application/json'
+        },
+        params: {
+          limit,
+          offset
+        }
+      })
+      .then(res => {
+        if (!res.data) {
+          throw new Error('Error while fetching playlists');
+        }
+
+        const playlists = res.data.data as MusicKit.Playlist[];
+        const hasNext = playlists.length === limit;
+        const hasNoData = playlists.length === 0 && offset === 0;
+
+        // Video playlists are not playable
+        return {
+          data: playlists.filter(
+            playlist =>
+              playlist.attributes &&
+              !playlist.attributes.name.includes('Video Essential')
+          ),
+          hasNext,
+          hasNoData
+        };
+      });
   }
 
   /**

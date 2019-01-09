@@ -5,6 +5,7 @@ import store from '@/store';
 import Home from './views/Home.vue';
 import CollectionDetail from './views/CollectionDetail.vue';
 import ArtistDetail from './views/ArtistDetail.vue';
+import GenreDetail from './views/GenreDetail.vue';
 
 Vue.use(Router);
 
@@ -44,6 +45,12 @@ const router = new Router({
       path: '/activities/:id',
       name: 'activities',
       component: () => import('./views/ActivityDetail.vue'),
+      props: true
+    },
+    {
+      path: '/genres/:id',
+      name: 'genres',
+      component: GenreDetail,
       props: true
     },
     {

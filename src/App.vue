@@ -130,4 +130,28 @@ export default class App extends Vue {
   height: 100%;
   border-radius: 10px;
 }
+
+.card-text {
+  font-size: 1.5rem;
+}
+
+.skew-div {
+  position: relative;
+  z-index: 2;
+}
+
+.skew-div::before {
+  background-color: var(--v-primary-base);
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 6rem;
+  overflow-x: hidden;
+  transform: translateZ(0) skewY(-2deg);
+  z-index: -1;
+  outline: 0.1rem solid transparent;
+  top: -2.5rem;
+}
 </style>

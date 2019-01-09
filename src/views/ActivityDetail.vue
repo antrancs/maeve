@@ -77,7 +77,7 @@ export default class ActivityDetail extends Vue {
       const activityId = this.$route.params.id;
       musicApiService.getActivity(activityId).then(activity => {
         this.activity = activity;
-        this.$forceUpdate();
+        // this.$forceUpdate();
       });
     }
   }
@@ -102,26 +102,6 @@ export default class ActivityDetail extends Vue {
   position: relative;
   width: 100%;
   z-index: 2;
-}
-
-.skew-div {
-  position: relative;
-  z-index: 2;
-}
-
-.skew-div::before {
-  background-color: var(--v-primary-base);
-  content: '';
-  display: block;
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 6rem;
-  overflow-x: hidden;
-  transform: translateZ(0) skewY(-2deg);
-  z-index: -1;
-  outline: 0.1rem solid transparent;
-  top: -2.5rem;
 }
 
 @media (min-width: $bp-phone) {

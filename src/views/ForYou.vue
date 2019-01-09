@@ -13,9 +13,45 @@
               {{ recommendation.attributes.title.stringForDisplay }}
             </h3>
           </v-flex>
-          <v-flex xs12>
-            <SongCollectionList :collections="getDataArray(recommendation)" />
+          <v-flex xs12 v-if="!recommendation.attributes.isGroupRecommendation">
+            <SongCollectionList
+              :collections="recommendation.relationships.contents.data"
+            />
           </v-flex>
+
+          <template v-else>
+            <v-flex
+              xs12
+              row
+              wrap
+              v-for="(subRecommendation, index) in recommendation.relationships
+                .recommendations.data"
+              :key="subRecommendation.id"
+            >
+              <v-layout row wrap>
+                <v-flex xs12 sm12 md2 class="pa-2">
+                  <div
+                    class="reason-group-recommendation px-4"
+                    :style="getGroupRecommendationStyle(index)"
+                  >
+                    {{ subRecommendation.attributes.reason.stringForDisplay }}
+                  </div>
+                </v-flex>
+
+                <v-flex
+                  xs6
+                  sm3
+                  md2
+                  class="pa-2"
+                  v-for="collection in subRecommendation.relationships.contents
+                    .data"
+                  :key="collection.id"
+                >
+                  <CollectionItemCard :collection="collection" />
+                </v-flex>
+              </v-layout>
+            </v-flex>
+          </template>
         </v-layout>
       </v-flex>
     </v-layout>
@@ -26,16 +62,24 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import SongCollectionList from '@/components/SongCollectionList.vue';
+import CollectionItemCard from '@/components/CollectionItemCard.vue';
 import musicApiService from '@/services/musicApi.service';
 import { Collection } from '@/@types/model/model';
 
 @Component({
   components: {
-    SongCollectionList
+    SongCollectionList,
+    CollectionItemCard
   }
 })
 export default class ForYou extends Vue {
   private recommendations: MusicKit.Recommendation[] = [];
+  private groupRecommendationColors = [
+    ['#9796f0', '#fbc7d4'],
+    ['#5433FF', '#20BDFF', '#A5FECB'],
+    ['#DC2424', '#4A569D'],
+    ['#5f2c82', '#49a09d']
+  ];
 
   created() {
     musicApiService
@@ -50,38 +94,32 @@ export default class ForYou extends Vue {
       .catch(err => err);
   }
 
-  /**
-   * Extract all recommended collections (albums, playlists) from the recommendation
-   * @param recommendations Recommendation object
-   */
-  getDataArray(recommendation: MusicKit.Recommendation): Collection[] {
-    if (!recommendation.relationships) {
-      return [];
-    }
+  getGroupRecommendationStyle(index: number) {
+    return {
+      background: `linear-gradient(45deg, ${this.groupRecommendationColors[
+        index
+      ].join(',')})`,
+      'box-shadow': `0.2rem 0.2rem 1rem ${
+        this.groupRecommendationColors[index][0]
+      }`
+    };
+  }
 
-    // Single recommendation
-    if (recommendation.relationships.contents) {
-      return recommendation.relationships.contents.data as Collection[];
-    } else if (recommendation.relationships.recommendations) {
-      // Group recommendation
-      const recommendations = recommendation.relationships.recommendations
-        .data as MusicKit.Recommendation[];
-
-      if (!recommendations) {
-        return [];
-      }
-
-      const contents = recommendations.reduce(
-        (acc: Collection[], current: MusicKit.Recommendation) =>
-          acc.concat(this.getDataArray(current)),
-        []
-      );
-
-      return contents;
-    }
-    return [];
+  spitWords(text: string) {
+    return text.replace(/\s/g, '\n');
   }
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.reason-group-recommendation {
+  border-radius: 0.8rem;
+  display: flex;
+  font-weight: bold;
+  font-size: 2rem;
+  justify-items: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+</style>

@@ -1,10 +1,15 @@
 <template>
   <v-layout row wrap>
-    <CollectionItemCard
-      :collection="collection"
+    <v-flex
+      xs6
+      sm3
+      md2
+      class="pa-2"
       v-for="collection in collections"
       :key="collection.id"
-    />
+    >
+      <CollectionItemCard :collection="collection" />
+    </v-flex>
   </v-layout>
 </template>
 

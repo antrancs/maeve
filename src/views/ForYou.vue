@@ -116,6 +116,7 @@ export default class ForYou extends Vue {
   border-radius: 0.8rem;
   display: flex;
   font-weight: bold;
+  color: white;
   font-size: 2rem;
   justify-items: center;
   align-items: center;

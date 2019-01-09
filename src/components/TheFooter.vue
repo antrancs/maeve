@@ -14,21 +14,26 @@
       >
 
       <br />
-
-      Have feedback or report a bug? Submit an issue on
+      Feedback & bug report @
       <a
         target="_blank"
         class="link link--external"
         href="https://github.com/antrancs/maeve/issues"
         >Github</a
       >
-      or send an email to
+      or
       <a
         target="_blank"
         class="link link--external"
         href="mailto:an.tran.cs@gmail.com"
-        >an.tran.cs@gmail.com</a
-      >
+        >email</a
+      >. Like this site?
+      <a
+        class="link link--external"
+        target="_blank"
+        href="https://buymeacoff.ee/maeve"
+        >Buy me a coffee ☕️
+      </a>
     </p>
   </v-footer>
 </template>

@@ -9,7 +9,7 @@ import {
   SET_CURRENTLY_PLAYING_SONG,
   SET_QUEUE_VISIBILITY
 } from './mutations.type';
-import { LOGIN, LOGOUT, FETCH_LIBRARY_PLAYLISTS } from '@/store/actions.type';
+import { LOGIN, LOGOUT } from '@/store/actions.type';
 
 const initialState: AuthState = {
   musicUserToken: authService.userToken
@@ -29,8 +29,6 @@ const actions: ActionTree<AuthState, any> = {
     commit(SET_SONG_QUEUE, []);
     commit(SET_CURRENTLY_PLAYING_SONG, null);
     commit(SET_QUEUE_VISIBILITY, false);
-
-    dispatch(FETCH_LIBRARY_PLAYLISTS);
   },
 
   async [LOGOUT]({ commit }) {

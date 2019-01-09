@@ -106,7 +106,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Prop, Component } from 'vue-property-decorator';
+import { Vue, Prop, Component, Watch } from 'vue-property-decorator';
 import { Getter, State, Action } from 'vuex-class';
 
 import { MusicPlayerState, FetchLibraryPlaylistsActions } from '@/store/types';
@@ -172,6 +172,8 @@ export default class AppSidebar extends Vue {
 
   @Prop() showSidebar!: boolean;
 
+  @Getter isAuthenticated!: boolean;
+
   @State(state => state.library.playlists)
   playlists!: MusicKit.LibraryPlaylist[];
   @State(state => state.musicPlayer.currentPlaying)
@@ -202,13 +204,22 @@ export default class AppSidebar extends Vue {
     return {};
   }
 
-  @Getter isAuthenticated!: boolean;
+  @Watch('isAuthenticated')
+  authenticationChanged(newVal: boolean, oldVal: boolean) {
+    // fetch library playlists when user logs in
+    if (newVal) {
+      this.fetchLibraryPlaylists({
+        offset: 0,
+        limit: 20
+      });
+    }
+  }
 
   created() {
     if (this.isAuthenticated) {
       this.fetchLibraryPlaylists({
         offset: 0,
-        limit: 25
+        limit: 20
       });
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <v-layout row wrap>
-    <v-flex xs2 class="pa-2" v-for="genre in genres" :key="genre.id">
+    <v-flex xs6 sm3 md2 class="pa-2" v-for="genre in genres" :key="genre.id">
       <GenreListItem :genre="genre" />
     </v-flex>
   </v-layout>

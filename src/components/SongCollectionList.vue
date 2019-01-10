@@ -1,5 +1,5 @@
 <template>
-  <v-layout row wrap>
+  <transition-group name="list" tag="div" class="layout row wrap">
     <v-flex
       xs6
       sm3
@@ -10,7 +10,7 @@
     >
       <CollectionItemCard :collection="collection" />
     </v-flex>
-  </v-layout>
+  </transition-group>
 </template>
 
 <script lang="ts">

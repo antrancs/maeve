@@ -1,60 +1,65 @@
 <template>
   <v-container>
-    <v-layout row wrap>
-      <v-flex
-        xs12
-        v-for="recommendation in recommendations"
-        :key="recommendation.id"
-        class="mt-4"
-      >
-        <v-layout row wrap>
-          <v-flex xs12 class="px-2">
-            <h3 class="section-title">
-              {{ recommendation.attributes.title.stringForDisplay }}
-            </h3>
-          </v-flex>
-          <v-flex xs12 v-if="!recommendation.attributes.isGroupRecommendation">
-            <SongCollectionList
-              :collections="recommendation.relationships.contents.data"
-            />
-          </v-flex>
-
-          <template v-else>
+    <transition name="list">
+      <v-layout row wrap v-if="recommendations.length > 0">
+        <v-flex
+          xs12
+          v-for="recommendation in recommendations"
+          :key="recommendation.id"
+          class="mt-4"
+        >
+          <v-layout row wrap>
+            <v-flex xs12 class="px-2">
+              <h3 class="section-title">
+                {{ recommendation.attributes.title.stringForDisplay }}
+              </h3>
+            </v-flex>
             <v-flex
               xs12
-              row
-              wrap
-              v-for="(subRecommendation, index) in recommendation.relationships
-                .recommendations.data"
-              :key="subRecommendation.id"
+              v-if="!recommendation.attributes.isGroupRecommendation"
             >
-              <v-layout row wrap>
-                <v-flex xs12 sm12 md2 class="pa-2">
-                  <div
-                    class="reason-group-recommendation px-4"
-                    :style="getGroupRecommendationStyle(index)"
-                  >
-                    {{ subRecommendation.attributes.reason.stringForDisplay }}
-                  </div>
-                </v-flex>
-
-                <v-flex
-                  xs6
-                  sm3
-                  md2
-                  class="pa-2"
-                  v-for="collection in subRecommendation.relationships.contents
-                    .data"
-                  :key="collection.id"
-                >
-                  <CollectionItemCard :collection="collection" />
-                </v-flex>
-              </v-layout>
+              <SongCollectionList
+                :collections="recommendation.relationships.contents.data"
+              />
             </v-flex>
-          </template>
-        </v-layout>
-      </v-flex>
-    </v-layout>
+
+            <template v-else>
+              <v-flex
+                xs12
+                row
+                wrap
+                v-for="(subRecommendation, index) in recommendation
+                  .relationships.recommendations.data"
+                :key="`${subRecommendation.id}-${index}`"
+              >
+                <v-layout row wrap>
+                  <v-flex xs12 sm12 md2 class="pa-2">
+                    <div
+                      class="reason-group-recommendation px-4"
+                      :style="getGroupRecommendationStyle(index)"
+                    >
+                      {{ subRecommendation.attributes.reason.stringForDisplay }}
+                    </div>
+                  </v-flex>
+
+                  <v-flex
+                    xs6
+                    sm3
+                    md2
+                    class="pa-2"
+                    v-for="(collection, index) in subRecommendation
+                      .relationships.contents.data"
+                    :key="`${collection.id}-${index}`"
+                  >
+                    <CollectionItemCard :collection="collection" />
+                  </v-flex>
+                </v-layout>
+              </v-flex>
+            </template>
+          </v-layout>
+        </v-flex>
+      </v-layout>
+    </transition>
   </v-container>
 </template>
 

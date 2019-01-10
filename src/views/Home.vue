@@ -1,34 +1,44 @@
 <template>
   <v-container>
     <v-layout row wrap>
-      <template v-if="featuredPlaylists.length > 0">
-        <v-flex xs12 class="px-2">
+      <template>
+        <v-flex xs12 class="px-2" v-if="featuredPlaylists.length > 0">
           <h3 class="section-title">Featured Playlists</h3>
         </v-flex>
-        <v-flex
-          xs6
-          sm4
-          md3
-          v-for="playlist in featuredPlaylists"
-          :key="playlist.id"
-          :class="{
-            'pa-2': $vuetify.breakpoint.mdAndUp,
-            'pa-1': $vuetify.breakpoint.mdAndDown
-          }"
-        >
-          <FeaturedPlaylist :playlist="playlist" />
-        </v-flex>
+
+        <transition name="list">
+          <v-layout row wrap v-if="activities.length > 0">
+            <v-flex
+              xs6
+              sm4
+              md3
+              v-for="playlist in featuredPlaylists"
+              :key="playlist.id"
+              :class="{
+                'pa-2': $vuetify.breakpoint.mdAndUp,
+                'pa-1': $vuetify.breakpoint.mdAndDown
+              }"
+            >
+              <FeaturedPlaylist :playlist="playlist" />
+            </v-flex>
+          </v-layout>
+        </transition>
       </template>
 
-      <template v-if="activities.length > 0">
-        <v-flex xs12 class="px-2 pt-4">
+      <template>
+        <v-flex xs12 class="px-2 pt-4" v-if="activities.length > 0">
           <h3 class="section-title">Activities & Mood</h3>
         </v-flex>
-        <ActivityItem
-          :activity="activity"
-          v-for="activity in activities"
-          :key="activity.id"
-        />
+
+        <transition name="list">
+          <v-layout row wrap v-if="activities.length > 0">
+            <ActivityItem
+              :activity="activity"
+              v-for="activity in activities"
+              :key="activity.id"
+            />
+          </v-layout>
+        </transition>
       </template>
 
       <v-flex xs12 class="px-2 pt-4">

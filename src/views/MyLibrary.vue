@@ -101,7 +101,7 @@ import {
   }
 })
 export default class MyLibrary extends Vue {
-  static SEARCH_LIMIT = 100;
+  static SEARCH_LIMIT = 50;
   private playlists: MusicKit.LibraryPlaylist[] = [];
   private albums: MusicKit.LibraryAlbum[] = [];
   private songs: MusicKit.LibrarySong[] = [];

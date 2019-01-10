@@ -113,15 +113,6 @@ export default class App extends Vue {
   flex-basis: 0;
 }
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.25s ease-in-out;
-}
-.fade-enter,
-.fade-leave-active {
-  opacity: 0;
-}
-
 .small-list-tile-action {
   min-width: 30px;
 }
@@ -153,5 +144,24 @@ export default class App extends Vue {
   z-index: -1;
   outline: 0.1rem solid transparent;
   top: -2.5rem;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.25s ease-in-out;
+}
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+}
+
+.list-enter-active,
+.list-leave-active {
+  transition: all 1s;
+}
+.list-enter,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
 }
 </style>

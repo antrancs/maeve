@@ -109,6 +109,10 @@ export default class App extends Vue {
   -webkit-overflow-scrolling: touch;
 }
 
+#app .v-dialog {
+  -webkit-overflow-scrolling: touch;
+}
+
 .flex-basis-0 {
   flex-basis: 0;
 }

@@ -49,15 +49,15 @@
                     </div>
                   </v-layout>
 
-                  <div :class="['long-text-truncated', 'mb-1', 'song-name']">
+                  <v-flex :class="['long-text-truncated', 'mb-1', 'song-name']">
                     {{ musicPlayer.currentPlaying.title }}
-                  </div>
-                  <div
+                  </v-flex>
+                  <v-flex
                     :class="['long-text-truncated', 'artist-name']"
                     :style="secondaryTextStyle"
                   >
                     {{ musicPlayer.currentPlaying.artistName }}
-                  </div>
+                  </v-flex>
                 </v-layout>
 
                 <v-layout row justify-center align-center>

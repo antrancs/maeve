@@ -7,11 +7,11 @@
     <div :class="[$style['wrapper']]" ref="wrapperDiv">
       <div
         :class="$style['knob']"
-        :style="{ left: `calc(${progress.toFixed(3)}% - 6px)` }"
+        :style="{ left: `calc(${progress.toFixed(4)}% - 6px)` }"
       ></div>
       <div
         :class="$style['current-progress']"
-        :style="{ width: progress.toFixed(3) + '%' }"
+        :style="{ width: progress.toFixed(4) + '%' }"
       ></div>
 
       <!-- <v-tooltip
@@ -70,9 +70,11 @@ export default class PlayerProgressBar extends Vue {
     }
   }
 
-  @Watch('musicPlayer.currentPlaying')
-  onCurrentPlayingChanged(newValue: MusicKit.MediaItem) {
-    this.progress = 0;
+  @Watch('musicPlayer.currentPlaybackTimeInMilliSeconds')
+  onCurrentPlaybackTimeChanged(newValue: number, oldValue: number) {
+    if (newValue === 0) {
+      this.progress = 0;
+    }
   }
 
   @Watch('musicPlayer.currentPlaybackTimeAfterSkip')
@@ -83,13 +85,13 @@ export default class PlayerProgressBar extends Vue {
 
   $_setInterval() {
     this.progress = this.musicPlayer.playbackProgress * 100;
-    if (this.progress === 100) {
-      this.progress = 0;
+    if (this.progress >= 100) {
+      this.progress = this.musicPlayer.playbackProgress * 100;
     }
     this.setIntervalProgressId = setInterval(() => {
       this.progress += 100 / (this.currentPlayingDuration / 1000) / 10;
       if (this.progress >= 100) {
-        this.progress = 0;
+        this.progress = this.musicPlayer.playbackProgress * 100;
       }
     }, 100);
   }

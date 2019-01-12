@@ -2,7 +2,7 @@
   <v-btn
     :round="round"
     @click="$emit('on-click')"
-    :color="this.$vuetify.theme.accent"
+    :color="color"
     :style="buttonColorStyle"
   >
     <slot></slot>
@@ -19,6 +19,7 @@ import { ButtonStyle } from '@/utils/constants';
 
 @Component
 export default class AppButton extends Vue {
+  @Prop({ default: 'accent' }) color!: string;
   @State(state => state.settings.buttonStyle) buttonStyle!: ButtonStyle;
 
   get buttonColorStyle() {

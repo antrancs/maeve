@@ -16,7 +16,7 @@
 
     <AppFooter />
     <PlayerBar />
-    <PlayQueue />
+    <PlayQueue v-if="$vuetify.breakpoint.mdAndUp" />
     <AppSnackbar />
     <NewPlaylistDialog ref="newPlaylistDialog" />
     <MediaActionMenu ref="mediaActionMenu" />
@@ -38,7 +38,7 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 
 import AppSidebar from '@/components/TheSidebar.vue';
 import AppHeader from '@/components/TheHeader.vue';
-import PlayerBar from '@/components/ThePlayerBar.vue';
+import PlayerBar from '@/components/MusicPlayer/ThePlayerBar.vue';
 import PlayQueue from '@/components/PlayQueue.vue';
 import AppFooter from '@/components/TheFooter.vue';
 import AppSnackbar from '@/components/TheSnackbar.vue';

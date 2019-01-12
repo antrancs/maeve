@@ -19,6 +19,7 @@ export interface MusicPlayerState {
   currentPlaybackTimeInMilliSeconds: number;
   repeatMode: RepeatMode;
   volume: number;
+  currentPlaybackTimeAfterSkip: number;
 }
 
 // Payload

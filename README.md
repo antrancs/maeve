@@ -1,7 +1,7 @@
-# Maeve - An (unofficial) Apple Music web player
+# Maeve - A customizable Apple Music web player
 https://maevemusic.app
 
-![alt text](https://user-images.githubusercontent.com/14043840/50626482-d6502680-0f2e-11e9-9710-db1058a0dac2.png "Maeve screenshot")
+![alt text](https://user-images.githubusercontent.com/14043840/51078784-63c41100-16bb-11e9-8ed4-f03adc487878.png "Maeve screenshot")
 
 ## Run locally
 1. [Create a MusicKit developer token ](https://developer.apple.com/documentation/applemusicapi/getting_keys_and_creating_tokens)

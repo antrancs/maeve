@@ -2,7 +2,7 @@
   <v-layout column>
     <v-flex xs12>
       <SongItem
-        :key="track.id"
+        :key="`${track.id}-${index}`"
         v-for="(track, index) in tracks"
         :song="track"
         :index="index"

@@ -1,7 +1,6 @@
 import { GetterTree, MutationTree, ActionTree } from 'vuex';
 
 import musicPlayerService from '@/services/musicPlayer.service';
-import { getArtworkUrl } from '@/utils/utils';
 import {
   PAUSE_CURRENT_TRACK,
   PLAY_NEXT,
@@ -24,7 +23,8 @@ import {
   SET_SONG_LOADING,
   SET_CURRENT_PLAYBACK_TIME,
   SET_REPEAT_MODE,
-  SET_VOLUME
+  SET_VOLUME,
+  SET_CURRENT_PLAYBACK_TIME_AFTER_SKIP
 } from '@/store/mutations.type';
 import {
   MusicPlayerState,
@@ -33,6 +33,8 @@ import {
   PlaySongsPayload
 } from './types';
 import { RepeatMode } from '@/utils/constants';
+import { Nullable } from '@/@types/model/model';
+import { getArtworkUrl } from '@/utils/utils';
 
 const initialState: MusicPlayerState = {
   currentPlaying: null,
@@ -41,14 +43,20 @@ const initialState: MusicPlayerState = {
   isLoading: false,
   currentPlaybackTimeInMilliSeconds: 0,
   repeatMode: RepeatMode.Off,
-  volume: 1
+  volume: 1,
+  currentPlaybackTimeAfterSkip: 0
 };
 
 const getters: GetterTree<MusicPlayerState, any> = {
-  currentTrackArtwork(state): string {
-    return state.currentPlaying
-      ? getArtworkUrl(state.currentPlaying.artwork.url, 300, 300)
-      : '';
+  currentTrackArtwork({ currentPlaying }, getters): Nullable<string> {
+    if (!currentPlaying) {
+      return null;
+    }
+
+    if (getters.isAuthenticated) {
+      return currentPlaying.artwork.url.replace('2000x2000bb', '300x300bb');
+    }
+    return getArtworkUrl(currentPlaying.artwork.url, 300, 300);
   },
 
   isCollectionBeingPlayed({ currentPlaying }) {
@@ -65,8 +73,17 @@ const getters: GetterTree<MusicPlayerState, any> = {
     return (songId: string) => {
       return currentPlaying && currentPlaying.id === songId;
     };
+  },
+
+  currentPlayingDuration({ currentPlaying }, getters) {
+    if (!currentPlaying) {
+      return 0;
+    }
+    return getters.isAuthenticated ? currentPlaying!.playbackDuration : 30000; // 30 seconds
   }
 };
+
+let updateProgressIntervalId!: NodeJS.Timeout;
 
 const actions: ActionTree<MusicPlayerState, any> = {
   [PLAY_NEXT]() {
@@ -148,8 +165,9 @@ const actions: ActionTree<MusicPlayerState, any> = {
     commit(SET_REPEAT_MODE, nextRepeatMode);
   },
 
-  [SEEK_TO_TIME](context, time) {
+  [SEEK_TO_TIME]({ commit }, time) {
     musicPlayerService.seekToTime(time);
+    commit(SET_CURRENT_PLAYBACK_TIME_AFTER_SKIP, time);
   },
 
   [CHANGE_VOLUME]({ commit }, volume) {
@@ -185,6 +203,10 @@ const mutations: MutationTree<MusicPlayerState> = {
 
   [SET_VOLUME](state, volume: number) {
     state.volume = volume;
+  },
+
+  [SET_CURRENT_PLAYBACK_TIME_AFTER_SKIP](state, time: number) {
+    state.currentPlaybackTimeAfterSkip = time;
   }
 };
 

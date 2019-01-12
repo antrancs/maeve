@@ -198,7 +198,9 @@ export default class AppSidebar extends Vue {
   get sidebarStyleHeight() {
     if (this.currentPlaying) {
       return {
-        'max-height': 'calc(100% - 64px - 96px)' // minus the player bar height
+        'max-height': this.$vuetify.breakpoint.lgAndUp
+          ? 'calc(100% - 64px - 96px)'
+          : 'calc(100% - 96px)' // minus the player bar height
       };
     }
     return {};

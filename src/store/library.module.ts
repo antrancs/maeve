@@ -95,6 +95,7 @@ const actions: ActionTree<UserLibraryState, any> = {
       });
     } catch (err) {
       // force log out when forbidden
+      console.log(err);
       if (err.errors && err.errors.length > 0 && err.errors[0].status === 403) {
         await dispatch(LOGOUT);
       }

@@ -21,7 +21,8 @@ import {
   FETCH_ONE_ALBUM_LIBRARY,
   FETCH_ONE_PLAYLIST_LIBRARY,
   FETCH_LIBRARY_ARTISTS,
-  FETCH_ONE_ARTIST_LIBRARY
+  FETCH_ONE_ARTIST_LIBRARY,
+  LOGOUT
 } from './actions.type';
 import {
   SET_LIBRARY_ALBUMS,
@@ -55,13 +56,22 @@ const actions: ActionTree<UserLibraryState, any> = {
   },
 
   async [FETCH_LIBRARY_ALBUMS](
-    _,
+    { dispatch },
     { offset, limit }: SearchParams
   ): Promise<FetchResult<MusicKit.LibraryAlbum>> {
-    const albums = await musicKit.getApiInstance().library.albums(undefined, {
-      offset,
-      limit
-    });
+    let albums: MusicKit.LibraryAlbum[] = [];
+
+    try {
+      albums = await musicKit.getApiInstance().library.albums(undefined, {
+        offset,
+        limit
+      });
+    } catch (err) {
+      // force log out when forbidden
+      if (err.errors && err.errors.length > 0 && err.errors[0].status === 403) {
+        await dispatch(LOGOUT);
+      }
+    }
 
     const hasNext = albums.length === limit;
     const hasNoData = albums.length === 0 && offset === 0;
@@ -74,15 +84,22 @@ const actions: ActionTree<UserLibraryState, any> = {
   },
 
   async [FETCH_LIBRARY_PLAYLISTS](
-    { commit },
+    { commit, dispatch },
     { offset, limit }: SearchParams
   ): Promise<FetchResult<MusicKit.LibraryPlaylist>> {
-    const playlists = await musicKit
-      .getApiInstance()
-      .library.playlists(undefined, {
+    let playlists: MusicKit.LibraryPlaylist[] = [];
+    try {
+      playlists = await musicKit.getApiInstance().library.playlists(undefined, {
         offset,
         limit
       });
+    } catch (err) {
+      // force log out when forbidden
+      if (err.errors && err.errors.length > 0 && err.errors[0].status === 403) {
+        await dispatch(LOGOUT);
+      }
+    }
+
     commit(SET_LIBRARY_PLAYLISTS, playlists);
 
     const hasNext = playlists.length === limit;
@@ -96,13 +113,22 @@ const actions: ActionTree<UserLibraryState, any> = {
   },
 
   async [FETCH_LIBRARY_ARTISTS](
-    _,
+    { dispatch },
     { offset, limit }: SearchParams
   ): Promise<FetchResult<MusicKit.LibraryArtist>> {
-    const artists = await musicKit.getApiInstance().library.artists(undefined, {
-      offset,
-      limit
-    });
+    let artists: MusicKit.LibraryArtist[] = [];
+
+    try {
+      artists = await musicKit.getApiInstance().library.artists(undefined, {
+        offset,
+        limit
+      });
+    } catch (err) {
+      // force log out when forbidden
+      if (err.errors && err.errors.length > 0 && err.errors[0].status === 403) {
+        await dispatch(LOGOUT);
+      }
+    }
 
     const hasNext = artists.length === limit;
     const hasNoData = artists.length === 0 && offset === 0;
@@ -115,13 +141,22 @@ const actions: ActionTree<UserLibraryState, any> = {
   },
 
   async [FETCH_LIBRARY_SONGS](
-    _,
+    { dispatch },
     { offset, limit }: SearchParams
   ): Promise<FetchResult<MusicKit.LibrarySong>> {
-    const songs = await musicKit.getApiInstance().library.songs(undefined, {
-      offset,
-      limit
-    });
+    let songs: MusicKit.LibrarySong[] = [];
+
+    try {
+      songs = await musicKit.getApiInstance().library.songs(undefined, {
+        offset,
+        limit
+      });
+    } catch (err) {
+      // force log out when forbidden
+      if (err.errors && err.errors.length > 0 && err.errors[0].status === 403) {
+        await dispatch(LOGOUT);
+      }
+    }
 
     const hasNext = songs.length === limit;
     const hasNoData = songs.length === 0 && offset === 0;

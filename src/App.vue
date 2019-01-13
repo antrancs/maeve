@@ -63,7 +63,7 @@ import { LOAD_SETTINGS } from '@/store/actions.type';
   }
 })
 export default class App extends Vue {
-  private showSidebar = true;
+  private showSidebar = this.$vuetify.breakpoint.lgAndUp;
   private themeSetting = false;
 
   @State(state => state.settings.selectedTheme) selectedTheme!: ThemeOption;

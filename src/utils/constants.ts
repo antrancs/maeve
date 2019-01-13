@@ -25,7 +25,7 @@ export const GENRES: Genre[] = [
   {
     id: '14',
     name: 'Pop',
-    colors: ['#f7ff00', '#db36a4'],
+    colors: ['#db36a4', '#f7ff00'],
     curatorId: '976439548'
   },
   {

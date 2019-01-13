@@ -78,7 +78,22 @@ export default class ArtistItem extends Vue {
 
   // Helper functions
   private $_getArtistArtwork(url: string) {
-    getArtistArtwork(url, 300, 300)
+    let artworkSize = 0;
+    switch (this.$vuetify.breakpoint.name) {
+      case 'xs':
+        artworkSize = 50;
+        break;
+      case 'sm':
+        artworkSize = 100;
+        break;
+      case 'md':
+        artworkSize = 150;
+        break;
+      case 'lg':
+        artworkSize = 200;
+    }
+
+    getArtistArtwork(url, artworkSize, artworkSize)
       .then(artwork => {
         this.artistArtwork = artwork || PLACEHOLDER_IMAGE;
       })

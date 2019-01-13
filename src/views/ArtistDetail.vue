@@ -191,9 +191,26 @@ export default class ArtistDetail extends Vue {
       return;
     }
 
-    getArtistArtwork(this.artist.attributes.url).then(artwork => {
-      this.artworkUrl = artwork;
-    });
+    let artworkSize = 0;
+    switch (this.$vuetify.breakpoint.name) {
+      case 'xs':
+        artworkSize = 300;
+        break;
+      case 'sm':
+        artworkSize = 400;
+        break;
+      case 'md':
+        artworkSize = 600;
+        break;
+      case 'lg':
+        artworkSize = 850;
+    }
+
+    getArtistArtwork(this.artist.attributes.url, artworkSize, artworkSize).then(
+      artwork => {
+        this.artworkUrl = artwork;
+      }
+    );
   }
 }
 </script>

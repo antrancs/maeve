@@ -12,7 +12,6 @@
   "dependencies": {
     "axios": "^0.18.0",
     "lodash": "^4.17.11",
-    "parse5": "^5.1.0",
     "tinycolor2": "^1.4.1",
     "vue": "^2.5.18",
     "vue-class-component": "^6.2.0",

@@ -306,6 +306,7 @@ declare namespace MusicKit {
      */
     prepend(descriptor: QueueDescriptor): void;
 
+    remove(index: number): void;
     /**
      * Removes an event listener for a MusicKit queue by name.
      * @param name The name of the event.
@@ -538,7 +539,7 @@ declare namespace MusicKit {
     /**
      * The type of the media item.
      */
-    type: MediaItemType;
+    type: 'song';
   }
 
   interface MediaItemOptions {
@@ -550,7 +551,7 @@ declare namespace MusicKit {
     };
   }
 
-  type MediaItemType = 'songs';
+  // type MediaItemType = 'song';
 
   /**
    * The JSON root object contained in every response.

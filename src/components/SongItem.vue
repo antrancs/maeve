@@ -97,7 +97,6 @@
 
       <v-btn
         slot="activator"
-        v-if="!isQueue"
         class="song-actions"
         :style="{ opacity: hover ? 1 : 0 }"
         icon
@@ -107,7 +106,17 @@
       </v-btn>
 
       <div :class="['sub-info-text', 'hidden-xs-only', $style['right-items']]">
-        {{ song.attributes.durationInMillis | formattedDuration }}
+        <template v-if="!hover || !isQueue">
+          {{ song.attributes.durationInMillis | formattedDuration }}
+        </template>
+        <template v-else>
+          <v-icon
+            v-if="!isActive"
+            @click="$emit('remove-from-queue', index)"
+            color="red"
+            >remove_circle</v-icon
+          >
+        </template>
       </div>
     </v-layout>
   </v-hover>

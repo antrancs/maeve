@@ -44,16 +44,17 @@
             </v-list-tile>
           </v-list>
         </v-menu>
-
-        <v-divider></v-divider>
       </template>
 
-      <v-list-tile @click="onPlayNext">
-        <v-list-tile-title>Play next</v-list-tile-title>
-      </v-list-tile>
-      <v-list-tile @click="onAddToQueue">
-        <v-list-tile-title>Add to queue</v-list-tile-title>
-      </v-list-tile>
+      <template v-if="!isQueue">
+        <v-divider></v-divider>
+        <v-list-tile @click="onPlayNext">
+          <v-list-tile-title>Play next</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile @click="onAddToQueue">
+          <v-list-tile-title>Add to queue</v-list-tile-title>
+        </v-list-tile>
+      </template>
     </v-list>
   </v-menu>
 </template>
@@ -84,7 +85,9 @@ export default class MediaActionMenu extends Vue {
   private songActionsMenu = false;
   private posX = 0;
   private posY = 0;
-  private item: Nullable<Song | Collection> = null;
+  private isQueue = false;
+  // we can add songs from album/playlist OR album/playlist OR item from the play queue
+  private item: Nullable<Song | Collection | MusicKit.MediaItem> = null;
   // only songs have a container
   private container: Nullable<Collection> = null;
 
@@ -119,7 +122,6 @@ export default class MediaActionMenu extends Vue {
   }
 
   get editablePlaylists() {
-    // p.9oDKKQKhN4PaQp8
     return this.playlists.filter(playlist => {
       const containerIsCurrentPlaylist =
         this.container && this.container.id === playlist.id;
@@ -136,7 +138,6 @@ export default class MediaActionMenu extends Vue {
     if (!this.item) {
       return;
     }
-    // this.$emit('add-to-library');
 
     try {
       await this.addToLibrary({
@@ -156,18 +157,35 @@ export default class MediaActionMenu extends Vue {
   }
 
   onAddToNewPlaylist() {
-    // this.$emit('add-to-new-playlist');
-    const songsToAdd = this.$_getSongsToAdd();
+    if (!this.item) {
+      return;
+    }
+
+    let itemsToAdd: (Song | MusicKit.MediaItem)[] = [];
+    if (this.item.type === 'song') {
+      itemsToAdd = [this.item];
+    } else {
+      itemsToAdd = this.$_getSongsToAdd();
+    }
+
     // @ts-ignore
-    this.$root.$newPlaylistDialog.open(songsToAdd);
+    this.$root.$newPlaylistDialog.open(itemsToAdd);
   }
 
   async onAddToExistingPlaylist(playlistId: string) {
-    // this.$emit('add-to-existing-playlist', playlistId);
     this.songActionsMenu = false;
-    const songsToAdd = this.$_getSongsToAdd();
+    if (!this.item) {
+      return;
+    }
 
-    const songs = songsToAdd.map(({ id, type }) => ({
+    let itemsToAdd: (Song | MusicKit.MediaItem)[] = [];
+    if (this.item.type === 'song') {
+      itemsToAdd = [this.item];
+    } else {
+      itemsToAdd = this.$_getSongsToAdd();
+    }
+
+    const songs = itemsToAdd.map(({ id, type }) => ({
       id,
       type
     }));
@@ -245,17 +263,20 @@ export default class MediaActionMenu extends Vue {
     item: Collection | Song,
     container: Nullable<Collection>,
     posX: number,
-    posY: number
+    posY: number,
+    isQueue: boolean = false
   ) {
     this.item = item;
     this.songActionsMenu = true;
     this.container = container;
     this.posX = posX;
     this.posY = posY;
+    this.isQueue = isQueue;
   }
 
   $_getSongsToAdd(): Song[] {
-    if (!this.item) {
+    // song in queue
+    if (!this.item || this.item.type === 'song') {
       return [];
     }
 

@@ -83,8 +83,6 @@ const getters: GetterTree<MusicPlayerState, any> = {
   }
 };
 
-let updateProgressIntervalId!: NodeJS.Timeout;
-
 const actions: ActionTree<MusicPlayerState, any> = {
   [PLAY_NEXT]() {
     musicPlayerService.playNext();

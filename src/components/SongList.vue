@@ -10,6 +10,7 @@
         :is-queue="isQueue"
         @song-item-clicked="handleSongClicked"
         @actions-icon-click="handleActionIconClick"
+        @remove-from-queue="handleRemoveFromQueue"
       />
     </v-flex>
   </v-layout>
@@ -31,7 +32,11 @@ import {
   SkipToSongAtIndexAction,
   PlaySongsAction
 } from '@/store/types';
-import { SKIP_TO_SONG_AT_INDEX, PLAY_SONGS } from '@/store/actions.type';
+import {
+  SKIP_TO_SONG_AT_INDEX,
+  PLAY_SONGS,
+  REMOVE_SONG_FROM_QUEUE
+} from '@/store/actions.type';
 
 import SongItem from '@/components/SongItem.vue';
 import MediaActionMenu from '@/components/MediaActionMenu.vue';
@@ -61,6 +66,7 @@ export default class SongList extends Vue {
   [SKIP_TO_SONG_AT_INDEX]: SkipToSongAtIndexAction;
   @Action
   [PLAY_SONGS]: PlaySongsAction;
+  @Action [REMOVE_SONG_FROM_QUEUE]: (index: number) => void;
 
   get fromAlbum(): boolean {
     return (
@@ -85,7 +91,17 @@ export default class SongList extends Vue {
 
   handleActionIconClick(song: Song, posX: number, posY: number) {
     // @ts-ignore
-    this.$root.$mediaActionMenu.open(song, this.collection, posX, posY);
+    this.$root.$mediaActionMenu.open(
+      song,
+      this.collection,
+      posX,
+      posY,
+      this.isQueue
+    );
+  }
+
+  handleRemoveFromQueue(index: number) {
+    this.removeSongFromQueue(index);
   }
 }
 </script>

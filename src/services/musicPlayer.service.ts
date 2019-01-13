@@ -96,6 +96,14 @@ const musicPlayerService = {
   },
 
   /**
+   * Remove item from the play queue
+   * @param index index of the item
+   */
+  removeItem(index: number): void {
+    musicKit.getPlayerInstance().queue.remove(index);
+  },
+
+  /**
    * Play multiple songs
    * @param songIds Id of those songs to play
    */

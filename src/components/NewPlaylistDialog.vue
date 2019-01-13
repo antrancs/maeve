@@ -49,7 +49,7 @@ export default class NewPlaylistDialog extends Vue {
   private form = false;
   private name = '';
   private description = '';
-  private songs: Song[] = [];
+  private items: (Song | MusicKit.MediaItem)[] = [];
 
   private rules = {
     name: (value: string) =>
@@ -71,10 +71,10 @@ export default class NewPlaylistDialog extends Vue {
       await this.createNewPlaylist({
         name: this.name,
         items:
-          this.songs.length > 0
-            ? this.songs.map(({ id, type }) => ({
-                id,
-                type
+          this.items.length > 0
+            ? this.items.map(item => ({
+                id: item.id,
+                type: item.type
               }))
             : undefined,
         description:
@@ -95,11 +95,11 @@ export default class NewPlaylistDialog extends Vue {
 
     this.name = '';
     this.description = '';
-    this.songs = [];
+    this.items = [];
   }
 
-  open(songs: Song[] = []) {
-    this.songs = songs;
+  open(items: Song[] | MusicKit.MediaItem[] = []) {
+    this.items = items;
     this.name = '';
     this.description = '';
     this.dialog = true;

@@ -1,11 +1,9 @@
-export const APPEND_SONGS = 'appendSongs';
 export const PAUSE_CURRENT_TRACK = 'pauseCurrentTrack';
 export const PLAY_COLLECTION_WITH_SONG = 'playCollectionWithSong';
 export const PLAY_PREVIOUS = 'playPrevious';
 export const PLAY_NEXT = 'playNext';
 export const PLAY_SONGS = 'playSongs';
 export const TOGGLE_SHUFFLE_MODE = 'toggleShuffleMode';
-export const PREPEND_SONGS = 'prependSongs';
 export const RESUME_CURRENT_TRACK = 'resumeCurrentTrack';
 export const SKIP_TO_SONG_AT_INDEX = 'skipToSongAtIndex';
 export const TOGGLE_CURRENT_TRACK = 'toggleCurrentTrack'; // play or pause the current song
@@ -23,7 +21,10 @@ export const LOGOUT = 'logout';
 export const SHOW_SNACKBAR = 'showSnackbar';
 export const CLOSE_SNACKBAR = 'closeSnackbar';
 
+export const APPEND_SONGS = 'appendSongs';
+export const PREPEND_SONGS = 'prependSongs';
 export const TOGGLE_QUEUE_VISIBILITY = 'toggleQueueVisibility';
+export const REMOVE_SONG_FROM_QUEUE = 'removeSongFromQueue';
 
 export const ADD_TO_LIBRARY = 'addToLibrary';
 export const ADD_SONGS_TO_PLAYLIST = 'addSongsToPlaylist';

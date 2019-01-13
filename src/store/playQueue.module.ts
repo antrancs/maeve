@@ -9,7 +9,8 @@ import { MutationTree, ActionTree } from 'vuex';
 import {
   APPEND_SONGS,
   PREPEND_SONGS,
-  TOGGLE_QUEUE_VISIBILITY
+  TOGGLE_QUEUE_VISIBILITY,
+  REMOVE_SONG_FROM_QUEUE
 } from './actions.type';
 
 const initialState: PlayQueueState = {
@@ -31,6 +32,10 @@ const actions: ActionTree<PlayQueueState, any> = {
   [TOGGLE_QUEUE_VISIBILITY]({ state, commit }) {
     const visibility = !state.visibility;
     commit(SET_QUEUE_VISIBILITY, visibility);
+  },
+
+  [REMOVE_SONG_FROM_QUEUE](context, index) {
+    musicPlayerService.removeItem(index);
   }
 };
 

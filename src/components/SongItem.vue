@@ -96,6 +96,7 @@
       </v-flex>
 
       <v-btn
+        v-if="!isQueue || isAuthenticated"
         slot="activator"
         class="song-actions"
         :style="{ opacity: hover ? 1 : 0 }"
@@ -155,6 +156,7 @@ export default class SongItem extends Vue {
   isQueue!: boolean;
 
   @Getter darkMode!: boolean;
+  @Getter isAuthenticated!: boolean;
 
   @Action
   [TOGGLE_CURRENT_TRACK]: () => void;

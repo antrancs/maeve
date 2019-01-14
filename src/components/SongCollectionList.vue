@@ -19,7 +19,6 @@
  */
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-// import SongCollectionItem from '@/components/SongCollectionItem.vue';
 import CollectionItemCard from '@/components/CollectionItemCard.vue';
 import { Collection } from '@/@types/model/model';
 

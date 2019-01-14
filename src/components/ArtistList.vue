@@ -1,7 +1,7 @@
 <template>
-  <v-layout row wrap>
+  <transition-group name="list" tag="div" class="layout row wrap">
     <ArtistItem v-for="artist in artists" :key="artist.id" :artist="artist" />
-  </v-layout>
+  </transition-group>
 </template>
 
 <script lang="ts">

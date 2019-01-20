@@ -58,6 +58,12 @@ import ActivityItem from '@/components/ActivityItem.vue';
 import GenreList from '@/components/GenreList.vue';
 import musicApiService from '@/services/musicApi.service';
 import { activityIds } from '@/utils/constants';
+import { Action } from 'vuex-class';
+import {
+  FETCH_MULTIPLE_PLAYLISTS_CATALOG,
+  FETCH_RECENT_PLAYED
+} from '@/store/actions.type';
+import { FetchMultiplePlaylistsCatalogAction } from '@/store/types';
 
 @Component({
   components: {
@@ -77,9 +83,13 @@ export default class Home extends Vue {
   private featuredPlaylists: MusicKit.Playlist[] = [];
   private activities: MusicKit.Activity[] = [];
 
+  @Action
+  [FETCH_MULTIPLE_PLAYLISTS_CATALOG]: FetchMultiplePlaylistsCatalogAction;
+  @Action
+  [FETCH_RECENT_PLAYED]: () => Promise<MusicKit.Resource[]>;
+
   created() {
-    musicApiService
-      .getPlaylists(this.featuredPlaylistIds)
+    this.fetchMultiplePlaylistsCatalog(this.featuredPlaylistIds)
       .then(playlists => {
         this.featuredPlaylists = playlists;
       })
@@ -91,6 +101,10 @@ export default class Home extends Vue {
         this.activities = activities;
       })
       .catch(err => err);
+
+    this.fetchRecentPlayed().then(res => {
+      console.log('recent', res);
+    });
   }
 }
 </script>

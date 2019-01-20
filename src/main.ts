@@ -20,8 +20,7 @@ Component.registerHooks([
   'beforeRouteUpdate' // for vue-router 2.2+
 ]);
 
-// @ts-ignore
-import { Chrome } from 'vue-color';
+import Chrome from 'vue-color/src/components/Chrome.vue';
 import AppButton from '@/components/AppButton.vue';
 
 Vue.config.productionTip = false;

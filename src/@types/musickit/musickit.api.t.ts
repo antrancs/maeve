@@ -83,6 +83,11 @@ declare namespace MusicKit {
      */
     artist(id: string, parameters: QueryParameters): Promise<Artist>;
 
+    charts(
+      types: string[],
+      parameters?: QueryParameters
+    ): Promise<ChartResponse>;
+
     genre(id: string, parameters?: QueryParameters): Promise<any>;
 
     /**
@@ -99,6 +104,13 @@ declare namespace MusicKit {
      * @param parameter A query parameters object that is serialized and passed directly to the Apple Music API.
      */
     playlists(ids: string[], parameter?: QueryParameters): Promise<Playlist[]>;
+
+    /**
+     * Fetch the recently played resources for the user.
+     * https://developer.apple.com/documentation/musickitjs/musickit/api/3001453-recentplayed
+     * @param parameter A query parameters object that is serialized and passed directly to the Apple Music API.
+     */
+    recentPlayed(parameter?: QueryParameters): Promise<Resource[]>;
 
     /**
      * Search the catalog using a query.

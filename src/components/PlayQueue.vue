@@ -13,7 +13,7 @@
           </v-flex>
 
           <v-flex :class="$style['items']">
-            <SongList :tracks="queuedSongs" :is-queue="true" />
+            <SongListSmall :tracks="queuedSongs" :is-queue="true" />
           </v-flex>
         </v-layout>
       </div>
@@ -26,7 +26,7 @@ import Vue from 'vue';
 import { State, Action, Mutation } from 'vuex-class';
 import { Prop, Component } from 'vue-property-decorator';
 
-import SongList from '@/components/SongList.vue';
+import SongListSmall from '@/components/SongListSmall.vue';
 import { Song } from '@/@types/model/model';
 import {
   SKIP_TO_SONG_AT_INDEX,
@@ -35,7 +35,7 @@ import {
 
 @Component({
   components: {
-    SongList
+    SongListSmall
   }
 })
 export default class PlayQueue extends Vue {

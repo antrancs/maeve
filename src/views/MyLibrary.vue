@@ -43,7 +43,7 @@
 
       <template v-if="resource === 'songs'">
         <v-flex xs12>
-          <SongList v-if="songs" :tracks="filteredSongs" />
+          <SongListLarge v-if="songs" :tracks="filteredSongs" />
         </v-flex>
       </template>
 
@@ -66,10 +66,10 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 
 import SongCollectionList from '@/components/SongCollectionList.vue';
-import SongList from '@/components/SongList.vue';
+import SongListLarge from '@/components/SongListLarge.vue';
 import ArtistList from '@/components/ArtistList.vue';
 import scrollDirective from '@/directives/scroll';
 import musicApiService from '@/services/musicApi.service';
@@ -93,7 +93,7 @@ import {
 @Component({
   components: {
     SongCollectionList,
-    SongList,
+    SongListLarge,
     ArtistList
   },
   directives: {

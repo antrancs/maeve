@@ -161,7 +161,7 @@ export default class App extends Vue {
 
 .list-enter-active,
 .list-leave-active {
-  transition: all 1s;
+  transition: opacity 1s, transform 1s;
 }
 .list-enter,
 .list-leave-to {

@@ -16,71 +16,15 @@
               xs12
               :style="{ 'flex-basis': $vuetify.breakpoint.xsOnly ? 0 : '100%' }"
             >
-              <v-layout row wrap>
-                <v-flex shrink="true">
-                  <MediaArtwork
-                    :artwork="collection.attributes.artwork"
-                    :style="artworkStyle"
-                    :width="artworkSize"
-                    :height="artworkSize"
-                    :has-shadow="true"
-                  />
-                </v-flex>
-                <v-flex class="pl-3">
-                  <v-layout column justify-end fill-height>
-                    <h2 :style="headerOverlayTextStyle">
-                      {{ collectionName }}
-                      <v-icon
-                        dark
-                        v-if="
-                          collection.attributes.contentRating === 'explicit'
-                        "
-                        >explicit</v-icon
-                      >
-                    </h2>
-
-                    <div
-                      :style="headerOverlayTextStyle"
-                      :class="['collection-subtitle', 'collection-artist-name']"
-                    >
-                      <router-link
-                        v-if="artistId"
-                        :to="{ name: 'artists', params: { id: artistId } }"
-                      >
-                        {{ collectionArtistName }}
-                      </router-link>
-                      <template v-else>
-                        {{ collectionArtistName }}
-                      </template>
-                    </div>
-
-                    <div
-                      class="collection-subtitle mb-2"
-                      :style="headerOverlaySecondaryTextStyle"
-                    >
-                      <span
-                        v-if="
-                          collectionType !== 'library-playlists' &&
-                            collectionType !== 'library-albums'
-                        "
-                        >{{ releaseYear }} •</span
-                      >
-                      {{
-                        songsWithRelationships
-                          ? songsWithRelationships.length
-                          : songs.length
-                      }}
-                      tracks
-                    </div>
-
-                    <div class="hidden-xs-only">
-                      <template v-if="collection">
-                        <CollectionControls :collection="collection" />
-                      </template>
-                    </div>
-                  </v-layout>
-                </v-flex>
-              </v-layout>
+              <CollectionHeader
+                :collection="collection"
+                :artworkSize="artworkSize"
+                :numberOfSongs="
+                  songsWithRelationships
+                    ? songsWithRelationships.length
+                    : songs.length
+                "
+              />
             </v-flex>
 
             <div class="hidden-sm-and-up mt-2">
@@ -113,7 +57,7 @@
     </div>
 
     <v-container>
-      <SongList
+      <SongListLarge
         :tracks="songsWithRelationships || songs"
         :collection="collection"
         :playlistId="playlistId"
@@ -126,8 +70,9 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Action, Getter, State, Mutation } from 'vuex-class';
 
-import SongList from '@/components/SongList.vue';
+import SongListLarge from '@/components/SongListLarge.vue';
 import MediaArtwork from '@/components/MediaArtwork.vue';
+import CollectionHeader from '@/components/CollectionHeader.vue';
 import CollectionControls from '@/components/CollectionControls.vue';
 import { getArtworkUrl, getSongsFromCollection } from '@/utils/utils';
 import musicApiService from '@/services/musicApi.service';
@@ -161,7 +106,12 @@ import { Route } from 'vue-router';
 import { TEXT_PRIMARY_DARK, TEXT_SECONDARY_DARK } from '@/themes';
 
 @Component({
-  components: { SongList, MediaArtwork, CollectionControls }
+  components: {
+    SongListLarge,
+    MediaArtwork,
+    CollectionControls,
+    CollectionHeader
+  }
 })
 export default class CollectionDetail extends Vue {
   private collection: Nullable<Collection> = null;
@@ -186,51 +136,6 @@ export default class CollectionDetail extends Vue {
       : this.collection
       ? getSongsFromCollection(this.collection)
       : [];
-  }
-
-  get artists(): Artist[] {
-    if (
-      this.collection &&
-      this.collection.type === 'albums' &&
-      this.collection.relationships &&
-      this.collection.relationships.artists
-    ) {
-      return this.collection.relationships.artists.data;
-    }
-
-    return [];
-  }
-
-  get collectionName(): string {
-    if (!this.collection || !this.collection.attributes) {
-      return '';
-    }
-    return this.collection.attributes.name;
-  }
-
-  get collectionArtistName(): string {
-    if (!this.collection || !this.collection.attributes) {
-      return '';
-    }
-
-    // artistName is only available for album
-    return (
-      (this.collection.attributes as MusicKit.AlbumAttributes).artistName ||
-      (this.collection.attributes as MusicKit.PlaylistAttributes).curatorName ||
-      ''
-    );
-  }
-
-  get headerOverlayTextStyle() {
-    return {
-      color: TEXT_PRIMARY_DARK
-    };
-  }
-
-  get headerOverlaySecondaryTextStyle() {
-    return {
-      color: TEXT_SECONDARY_DARK
-    };
   }
 
   get collectionType(): CollectionType {
@@ -291,13 +196,6 @@ export default class CollectionDetail extends Vue {
     }
   }
 
-  get artworkStyle() {
-    return {
-      width: `${this.artworkSize}px`,
-      height: `${this.artworkSize}px`
-    };
-  }
-
   get headerHeight(): number {
     switch (this.$vuetify.breakpoint.name) {
       case 'xs':
@@ -307,13 +205,6 @@ export default class CollectionDetail extends Vue {
       default:
         return 60;
     }
-  }
-
-  get artistId(): Nullable<string> {
-    if (this.artists.length === 0) {
-      return null;
-    }
-    return this.artists[0].id;
   }
 
   @Watch('$route')
@@ -391,22 +282,6 @@ export default class CollectionDetail extends Vue {
   width: 100%;
   height: 100%;
   overflow: hidden;
-}
-
-.collection-subtitle {
-  font-size: 1.8rem;
-}
-
-.collection-artist-name {
-  font-weight: bold;
-}
-
-.collection-artist-name a {
-  color: white;
-}
-
-.collection-artist-name a:hover {
-  text-decoration: underline;
 }
 
 .image {

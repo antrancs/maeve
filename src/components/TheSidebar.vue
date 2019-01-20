@@ -120,6 +120,11 @@ export default class AppSidebar extends Vue {
       name: 'Home',
       icon: 'home',
       pathName: 'home'
+    },
+    {
+      name: 'Charts',
+      icon: 'home',
+      pathName: 'charts'
     }
   ];
   private authenticatedLinks = [

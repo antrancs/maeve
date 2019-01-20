@@ -32,7 +32,7 @@
             >View all</router-link
           > -->
         </v-flex>
-        <SongList :tracks="getFirstNResults(songs, 5)" />
+        <SongListLarge :tracks="getFirstNResults(songs, 5)" />
       </template>
 
       <template v-if="albums.length > 0">
@@ -79,7 +79,7 @@ import { Action } from 'vuex-class';
 import { Route } from 'vue-router';
 
 import SongCollectionList from '@/components/SongCollectionList.vue';
-import SongList from '@/components/SongList.vue';
+import SongListLarge from '@/components/SongListLarge.vue';
 import ArtistList from '@/components/ArtistList.vue';
 import musicApiService from '@/services/musicApi.service';
 import { PLAY_SONGS, SHOW_SNACKBAR } from '@/store/actions.type';
@@ -90,7 +90,7 @@ import { PlaySongsAction, ShowSnackbarAction } from '@/store/types';
   components: {
     SongCollectionList,
     ArtistList,
-    SongList
+    SongListLarge
   }
 })
 export default class SearchResults extends Vue {

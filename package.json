@@ -11,8 +11,11 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "d3": "^5.7.0",
+    "gsap": "^2.0.2",
     "lodash": "^4.17.11",
     "tinycolor2": "^1.4.1",
+    "topojson": "^3.0.2",
     "vue": "^2.5.18",
     "vue-class-component": "^6.2.0",
     "vue-color": "^2.7.0",
@@ -24,11 +27,12 @@
     "vuex-class": "^0.3.1"
   },
   "devDependencies": {
-    "@types/cheerio": "^0.22.9",
+    "@types/d3": "^5.7.0",
+    "@types/gsap": "^1.20.0",
     "@types/jest": "^23.3.1",
     "@types/lodash": "^4.14.116",
-    "@types/parse5": "^5.0.0",
     "@types/tinycolor2": "^1.4.1",
+    "@types/topojson": "^3.2.1",
     "@vue/cli-plugin-babel": "^3.2.0",
     "@vue/cli-plugin-eslint": "^3.2.1",
     "@vue/cli-plugin-typescript": "^3.2.0",

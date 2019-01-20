@@ -68,8 +68,13 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import SongCollectionList from '@/components/SongCollectionList.vue';
 import CollectionItemCard from '@/components/CollectionItemCard.vue';
-import musicApiService from '@/services/musicApi.service';
 import { Collection } from '@/@types/model/model';
+import { Action } from 'vuex-class';
+import {
+  FETCH_RECOMMENDATIONS,
+  FETCH_HEAVY_ROTATION
+} from '@/store/actions.type';
+import { FetchRecommendationsAction } from '@/store/types';
 
 @Component({
   components: {
@@ -86,9 +91,11 @@ export default class ForYou extends Vue {
     ['#5f2c82', '#49a09d']
   ];
 
+  @Action [FETCH_RECOMMENDATIONS]: FetchRecommendationsAction;
+  @Action [FETCH_HEAVY_ROTATION]: () => Promise<any>;
+
   created() {
-    musicApiService
-      .getRecommendations()
+    this.fetchRecommendations()
       .then(result => {
         if (!result) {
           // TODO: display no results found
@@ -97,6 +104,10 @@ export default class ForYou extends Vue {
         this.recommendations = result;
       })
       .catch(err => err);
+
+    this.fetchHeavyRotation().then(res => {
+      console.log('heavy', res);
+    });
   }
 
   getGroupRecommendationStyle(index: number) {

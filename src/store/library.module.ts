@@ -22,7 +22,10 @@ import {
   FETCH_ONE_PLAYLIST_LIBRARY,
   FETCH_LIBRARY_ARTISTS,
   FETCH_ONE_ARTIST_LIBRARY,
-  LOGOUT
+  LOGOUT,
+  FETCH_HEAVY_ROTATION,
+  FETCH_RECOMMENDATIONS,
+  FETCH_RECENT_PLAYED
 } from './actions.type';
 import {
   SET_LIBRARY_ALBUMS,
@@ -164,6 +167,18 @@ const actions: ActionTree<UserLibraryState, any> = {
     return musicKit.getApiInstance().addToLibrary({
       [type]: itemIds
     });
+  },
+
+  [FETCH_HEAVY_ROTATION](_) {
+    return musicApiService.getHeavyRotation();
+  },
+
+  [FETCH_RECOMMENDATIONS]() {
+    return musicKit.getApiInstance().recommendations();
+  },
+
+  [FETCH_RECENT_PLAYED]() {
+    return musicKit.getApiInstance().recentPlayed();
   },
 
   async [ADD_SONGS_TO_PLAYLIST](

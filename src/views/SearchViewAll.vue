@@ -11,7 +11,7 @@
 
       <ArtistList v-else-if="type === 'artists'" :artists="data" />
 
-      <SongList v-else-if="type === 'songs'" :tracks="data" />
+      <SongListLarge v-else-if="type === 'songs'" :tracks="data" />
     </v-layout>
   </v-container>
 </template>
@@ -23,7 +23,7 @@ import { Action } from 'vuex-class';
 
 import SongCollectionList from '@/components/SongCollectionList.vue';
 import ArtistList from '@/components/ArtistList.vue';
-import SongList from '@/components/SongList.vue';
+import SongListLarge from '@/components/SongListLarge.vue';
 import musicApiService from '@/services/musicApi.service';
 import { HandleSongClicked } from '@/@types/model/model';
 import { PLAY_SONGS } from '@/store/actions.type';
@@ -33,7 +33,7 @@ import { PlaySongsAction } from '@/store/types';
   components: {
     SongCollectionList,
     ArtistList,
-    SongList
+    SongListLarge
   }
 })
 export default class SearchViewAll extends Vue {

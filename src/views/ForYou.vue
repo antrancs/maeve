@@ -144,9 +144,9 @@ export default class ForYou extends Vue {
       })
       .catch(err => err);
 
-    this.fetchHeavyRotation().then(res => {
-      console.log('heavy', res);
-    });
+    // this.fetchHeavyRotation().then(res => {
+    //   console.log('heavy', res);
+    // });
   }
 
   getGroupRecommendationStyle(index: number) {

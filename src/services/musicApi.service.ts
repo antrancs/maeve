@@ -221,8 +221,7 @@ class MusicApiService {
         return {
           data: playlists.filter(
             playlist =>
-              playlist.attributes &&
-              !playlist.attributes.name.includes('Video Essential')
+              playlist.attributes && !playlist.attributes.name.includes('Video')
           ),
           hasNext,
           hasNoData

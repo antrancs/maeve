@@ -58,7 +58,7 @@ export default class ChartsByGenre extends Vue {
       id: '0',
       name: 'All'
     },
-    ...GENRES
+    ...GENRES.filter(genre => genre.id !== '100') // don't include Kpop in the genre filter
   ];
 
   private chart: Nullable<MusicKit.ChartResponse> = null;

@@ -84,11 +84,50 @@ import { FetchRecommendationsAction } from '@/store/types';
 })
 export default class ForYou extends Vue {
   private recommendations: MusicKit.Recommendation[] = [];
+  // colors for Sunday to Saturday <3
   private groupRecommendationColors = [
-    ['#9796f0', '#fbc7d4'],
-    ['#5433FF', '#20BDFF', '#A5FECB'],
-    ['#DC2424', '#4A569D'],
-    ['#5f2c82', '#49a09d']
+    [
+      ['#9796f0', '#fbc7d4'],
+      ['#5433FF', '#20BDFF', '#A5FECB'],
+      ['#DC2424', '#4A569D'],
+      ['#5f2c82', '#49a09d']
+    ],
+    [
+      ['#dd3e54', '#6be585'],
+      ['#FDC830', '#F37335'],
+      ['#8360c3', '#2ebf91'],
+      ['#642B73', '#C6426E']
+    ],
+    [
+      ['#ff9966', '#ff5e62'],
+      ['#67B26F', '#4ca2cd'],
+      ['#F3904F', '#3B4371'],
+      ['#ee0979', '#ff6a00']
+    ],
+    [
+      ['#2196f3', '#f44336'],
+      ['#833ab4', '#fd1d1d', '#fcb045'],
+      ['#EECDA3', '#EF629F'],
+      ['#004FF9', '#FFF94C']
+    ],
+    [
+      ['#FFA17F', '#00223E'],
+      ['#4DA0B0', '#D39D38'],
+      ['#FF4E50', '#F9D423'],
+      ['#C04848', '#480048']
+    ],
+    [
+      ['#4776E6', '#8E54E9'],
+      ['#FF512F', '#DD2476'],
+      ['#BBD2C5', '#536976', '#292E49'],
+      ['#FFE000', '#799F0C']
+    ],
+    [
+      ['#e65c00', '#F9D423'],
+      ['#CC95C0', '#DBD4B4', '#7AA1D2'],
+      ['#314755', '#26a0da'],
+      ['#1FA2FF', '#12D8FA', '#A6FFCB']
+    ]
   ];
 
   @Action [FETCH_RECOMMENDATIONS]: FetchRecommendationsAction;
@@ -111,12 +150,14 @@ export default class ForYou extends Vue {
   }
 
   getGroupRecommendationStyle(index: number) {
+    // get current day of the week
+    const day = new Date().getDay();
     return {
-      background: `linear-gradient(45deg, ${this.groupRecommendationColors[
+      background: `linear-gradient(45deg, ${this.groupRecommendationColors[day][
         index
       ].join(',')})`,
       'box-shadow': `0.2rem 0.2rem 1rem ${
-        this.groupRecommendationColors[index][0]
+        this.groupRecommendationColors[day][index][0]
       }`
     };
   }

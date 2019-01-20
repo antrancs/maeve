@@ -92,7 +92,7 @@ export default class GenreDetail extends Vue {
     this.shouldLoad = true;
 
     this.offset += 10;
-    if (this.offset === 50) {
+    if (this.offset === 70) {
       this.shouldLoad = false;
     }
 

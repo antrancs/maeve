@@ -49,6 +49,7 @@ export const FETCH_ONE_ALBUM_CATALOG = 'fetchOneAlbumCatalog';
 export const FETCH_ONE_PLAYLIST_CATALOG = 'fetchOnePlaylistCatalog';
 export const FETCH_ALBUMS_CATALOG = 'fetchAlbumsCatalog';
 export const FETCH_MULTIPLE_PLAYLISTS_CATALOG = 'fetchMultiplePlaylistsCatalog';
+export const FETCH_ONE_RECOMMENDATION = 'fetchOneRecommendation';
 
 export const FETCH_ONE_ALBUM_LIBRARY = 'fetchOneAlbumLibrary';
 export const FETCH_ONE_PLAYLIST_LIBRARY = 'fetchOnePlaylistLibrary';

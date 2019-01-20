@@ -175,6 +175,9 @@ export type FetchMultiplePlaylistsCatalogAction = (
 export type FetchRecommendationsAction = () => Promise<
   MusicKit.Recommendation[]
 >;
+export type FetchRecentPlayedAction = () => Promise<
+  (MusicKit.Album | MusicKit.Playlist | MusicKit.Station)[]
+>;
 
 /**
  * Library module

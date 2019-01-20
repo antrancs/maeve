@@ -41,6 +41,12 @@ export const GENRES: Genre[] = [
     curatorId: '976439535'
   },
   {
+    id: '100',
+    name: 'K-Pop',
+    colors: ['#12c2e9', '#c471ed', '#f64f59'],
+    curatorId: '988658197'
+  },
+  {
     id: '20',
     name: 'Alternative',
     colors: ['#34e89e', '#0f3443'],
@@ -51,6 +57,12 @@ export const GENRES: Genre[] = [
     name: 'Hiphop/Rap',
     colors: ['#ff6e7f', '#bfe9ff'],
     curatorId: '976439539'
+  },
+  {
+    id: '6',
+    name: 'Country',
+    colors: ['#1D976C', '#93F9B9'],
+    curatorId: '976439534'
   },
   {
     id: '21',

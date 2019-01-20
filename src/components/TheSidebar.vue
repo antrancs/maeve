@@ -123,7 +123,7 @@ export default class AppSidebar extends Vue {
     },
     {
       name: 'Charts',
-      icon: 'home',
+      icon: 'show_chart',
       pathName: 'charts'
     }
   ];

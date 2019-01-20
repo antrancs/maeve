@@ -1104,7 +1104,8 @@ declare namespace MusicKit {
    * Ref: https://developer.apple.com/documentation/applemusicapi/station?changes=_9
    */
   interface Station extends Resource {
-    attributes?: [StationAttributes];
+    attributes?: StationAttributes;
+    type: 'stations';
   }
 
   /**

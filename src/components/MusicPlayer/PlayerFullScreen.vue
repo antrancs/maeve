@@ -7,7 +7,6 @@
     transition="dialog-bottom-transition"
   >
     <slot slot="activator"></slot>
-
     <v-card class="secondary">
       <v-layout row wrap>
         <v-flex xs12>
@@ -16,12 +15,12 @@
           </v-btn>
         </v-flex>
 
-        <v-flex xs12 v-if="musicPlayer.currentPlaying">
+        <v-flex xs12 v-if="musicPlayer.currentPlaying && dialog">
           <v-container>
             <v-layout row wrap>
               <v-flex xs12 sm12 md6>
                 <v-layout column wrap align-center>
-                  <div
+                  <!-- <div
                     class="artwork-wrapper mb-3"
                     :class="{ playing: musicPlayer.isPlaying }"
                   >
@@ -32,7 +31,12 @@
                       :style="artworkStyle"
                       alt="Song artwork"
                     />
-                  </div>
+                  </div> -->
+
+                  <PlayingVisualization
+                    :artworkUrl="currentTrackArtwork"
+                    size="450"
+                  />
 
                   <PlayerProgressBar class="mt-3" />
 
@@ -89,7 +93,7 @@
                   </v-expansion-panel-content>
                 </v-expansion-panel>
                 <h2 class="my-2">Play Queue</h2>
-                <SongList :tracks="queuedSongs" :is-queue="true" />
+                <SongListSmall :tracks="queuedSongs" :is-queue="true" />
               </v-flex>
 
               <v-flex
@@ -129,11 +133,12 @@ import AppButton from '@/components/AppButton.vue';
 import PlayNextButton from './PlayNextButton.vue';
 import PlayPreviousButton from './PlayPreviousButton.vue';
 import PlayButton from './PlayButton.vue';
+import PlayingVisualization from './PlayingVisualization.vue';
 import PlayerProgressBar from './PlayerProgressBar.vue';
 import PlayerVolume from './PlayerVolume.vue';
 import PlayerBarColorMixin from '@/mixins/PlayerBarColorMixin';
 import LyricsMixin from '@/mixins/LyricsMixin';
-import SongList from '@/components/SongList.vue';
+import SongListSmall from '@/components/SongListSmall.vue';
 import { MusicPlayerState } from '@/store/types';
 import { Watch } from 'vue-property-decorator';
 import { RepeatMode } from '@/utils/constants';
@@ -149,7 +154,8 @@ import { Song, Nullable } from '@/@types/model/model';
     PlayButton,
     AppButton,
     PlayerVolume,
-    SongList
+    SongListSmall,
+    PlayingVisualization
   }
 })
 export default class PlayerFullScreen extends Mixins(
@@ -223,6 +229,10 @@ export default class PlayerFullScreen extends Mixins(
     return this.musicPlayer.repeatMode === RepeatMode.Off
       ? 'primary lighten-2'
       : 'accent';
+  }
+
+  open() {
+    this.dialog = true;
   }
 }
 </script>

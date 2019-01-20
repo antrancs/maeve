@@ -115,15 +115,16 @@ import { RepeatMode } from '@/utils/constants';
 @Component({
   components: {
     LyricsDialog,
-    PlayerFullScreen,
     PlayerProgressBar,
     PlayNextButton,
     PlayPreviousButton,
     PlayButton,
-    PlayerVolume
+    PlayerVolume,
+    PlayerFullScreen
   }
 })
 export default class PlayerBar extends Mixins(PlayerBarColorMixin) {
+  private playerFullScreenVisible = false;
   @State musicPlayer!: MusicPlayerState;
 
   @Getter currentTrackArtwork!: Nullable<string>;
@@ -161,6 +162,13 @@ export default class PlayerBar extends Mixins(PlayerBarColorMixin) {
 
   handleShuffleClicked() {
     this.toggleShuffleMode();
+  }
+
+  showPlayerFullScreen() {
+    this.playerFullScreenVisible = true;
+
+    // @ts-ignore
+    // this.$refs.playerFullScreen.open();
   }
 }
 </script>

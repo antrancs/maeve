@@ -25,6 +25,13 @@
         </transition>
       </template>
 
+      <template v-if="isAuthenticated && recentPlayed.length > 0">
+        <v-flex xs12 class="px-2 pt-4">
+          <h3 class="section-title">Recently played</h3>
+        </v-flex>
+
+        <SongCollectionList :collections="recentPlayed" />
+      </template>
       <template>
         <v-flex xs12 class="px-2 pt-4" v-if="activities.length > 0">
           <h3 class="section-title">Activities & Mood</h3>
@@ -55,15 +62,27 @@ import { Vue, Component } from 'vue-property-decorator';
 
 import FeaturedPlaylist from '@/components/FeaturedPlaylist.vue';
 import ActivityItem from '@/components/ActivityItem.vue';
+import SongCollectionList from '@/components/SongCollectionList.vue';
 import GenreList from '@/components/GenreList.vue';
 import musicApiService from '@/services/musicApi.service';
 import { activityIds } from '@/utils/constants';
+import { Action, Getter } from 'vuex-class';
+import {
+  FETCH_MULTIPLE_PLAYLISTS_CATALOG,
+  FETCH_RECENT_PLAYED,
+  FETCH_ONE_RECOMMENDATION
+} from '@/store/actions.type';
+import {
+  FetchMultiplePlaylistsCatalogAction,
+  FetchRecentPlayedAction
+} from '@/store/types';
 
 @Component({
   components: {
     FeaturedPlaylist,
     ActivityItem,
-    GenreList
+    GenreList,
+    SongCollectionList
   }
 })
 export default class Home extends Vue {
@@ -76,14 +95,34 @@ export default class Home extends Vue {
 
   private featuredPlaylists: MusicKit.Playlist[] = [];
   private activities: MusicKit.Activity[] = [];
+  private recentPlayed: (
+    | MusicKit.Playlist
+    | MusicKit.Album
+    | MusicKit.Station)[] = [];
+
+  @Getter isAuthenticated!: boolean;
+
+  @Action
+  [FETCH_MULTIPLE_PLAYLISTS_CATALOG]: FetchMultiplePlaylistsCatalogAction;
+  @Action
+  [FETCH_RECENT_PLAYED]: FetchRecentPlayedAction;
+  @Action [FETCH_ONE_RECOMMENDATION]: (
+    id: string
+  ) => Promise<MusicKit.Recommendation>;
 
   created() {
-    musicApiService
-      .getPlaylists(this.featuredPlaylistIds)
+    this.fetchMultiplePlaylistsCatalog(this.featuredPlaylistIds)
       .then(playlists => {
         this.featuredPlaylists = playlists;
       })
       .catch(err => err);
+
+    if (this.isAuthenticated) {
+      this.fetchRecentPlayed().then(result => {
+        // just exclude stations for now
+        this.recentPlayed = result.filter(result => result.type !== 'stations');
+      });
+    }
 
     musicApiService
       .getActivities(activityIds)

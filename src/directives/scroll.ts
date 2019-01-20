@@ -1,5 +1,5 @@
 import { DirectiveOptions } from 'vue';
-import { throttle } from 'lodash';
+import throttle from 'lodash/throttle';
 
 let throttledScrollHandler: (event: Event) => void;
 

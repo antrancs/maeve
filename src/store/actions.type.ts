@@ -33,6 +33,9 @@ export const FETCH_LIBRARY_SONGS = 'fetchLibrarySongs';
 export const FETCH_LIBRARY_PLAYLISTS = 'fetchLibraryPlaylists';
 export const FETCH_LIBRARY_ALBUMS = 'fetchLibraryAlbums';
 export const FETCH_LIBRARY_ARTISTS = 'fetchLibraryArtists';
+export const FETCH_HEAVY_ROTATION = 'fetchHeavyRotation';
+export const FETCH_RECOMMENDATIONS = 'fetchRecommendations';
+export const FETCH_RECENT_PLAYED = 'fetchRecentPlayed';
 
 export const CREATE_THEME = 'createNewTheme';
 export const UPDATE_THEME = 'updateTheme';
@@ -45,6 +48,8 @@ export const SELECT_BUTTON_STYLES = 'selectButtonStyle';
 export const FETCH_ONE_ALBUM_CATALOG = 'fetchOneAlbumCatalog';
 export const FETCH_ONE_PLAYLIST_CATALOG = 'fetchOnePlaylistCatalog';
 export const FETCH_ALBUMS_CATALOG = 'fetchAlbumsCatalog';
+export const FETCH_MULTIPLE_PLAYLISTS_CATALOG = 'fetchMultiplePlaylistsCatalog';
+export const FETCH_ONE_RECOMMENDATION = 'fetchOneRecommendation';
 
 export const FETCH_ONE_ALBUM_LIBRARY = 'fetchOneAlbumLibrary';
 export const FETCH_ONE_PLAYLIST_LIBRARY = 'fetchOnePlaylistLibrary';

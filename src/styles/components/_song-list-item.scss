@@ -1,0 +1,31 @@
+.left-items {
+  border-radius: 0.2rem;
+  height: 3.2rem;
+  overflow: hidden;
+  position: relative;
+  width: 3.2rem;
+}
+
+.right-items {
+  flex: 0 0 5rem;
+}
+
+.middle-items {
+  flex-basis: 0;
+}
+
+.artist-name,
+.album-name {
+  color: var(--v-secondaryText-base);
+}
+
+.artist-name a,
+.album-name a {
+  color: var(--v-secondaryText-base);
+}
+
+.artist-name a:hover,
+.album-name a:hover {
+  color: var(--v-primaryText-base);
+  text-decoration: underline;
+}

@@ -186,6 +186,11 @@ declare namespace MusicKit {
     type: 'artists';
   }
 
+  interface Chart extends Resource {
+    chart: string;
+    data: Resource[];
+  }
+
   /**
    * The attributes for an artist object.
    * Ref: https://developer.apple.com/documentation/applemusicapi/artist/attributes
@@ -1099,7 +1104,8 @@ declare namespace MusicKit {
    * Ref: https://developer.apple.com/documentation/applemusicapi/station?changes=_9
    */
   interface Station extends Resource {
-    attributes?: [StationAttributes];
+    attributes?: StationAttributes;
+    type: 'stations';
   }
 
   /**
@@ -1396,5 +1402,60 @@ declare namespace MusicKit {
     kind: string;
 
     catalogId?: string;
+  }
+
+  /**
+   * The response to a chart request.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/chartresponse
+   */
+  interface ChartResponse {
+    /**
+     * The albums returned when fetching charts.
+     */
+    albums: Chart[];
+
+    /**
+     * The songs returned when fetching charts.
+     */
+    songs: Chart[];
+
+    /**
+     * The playlists returned when fetching charts.
+     */
+    playlists: Chart[];
+  }
+
+  /**
+   * A Resource object that represents a chart, or a collection of the top songs,
+   * albums, or other types of resources.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/chart
+   */
+  interface Chart {
+    /**
+     * The chart identifier.
+     */
+    chart: string;
+
+    /**
+ * An array of the requested objects, ordered by popularity. 
+ * For example, if songs were specified as the chart type in the request, the array contains Song objects.
+href
+ */
+    data: Resource[];
+
+    /**
+     * The URL for the chart.
+     */
+    href: string;
+
+    /**
+     * The localized name for the chart.
+     */
+    name: string;
+
+    /**
+     * The URL for the next page.
+     */
+    next?: string;
   }
 }

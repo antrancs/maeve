@@ -116,6 +116,10 @@ export interface SnackbarState {
   type: string;
 }
 
+export interface LayoutState {
+  showFooter: boolean;
+}
+
 /**
  * Settings module
  */
@@ -165,6 +169,15 @@ export type FetchOneAlbumCatalogAction = (
 export type FetchOnePlaylistCatalogAction = (
   id: string
 ) => Promise<MusicKit.Playlist>;
+export type FetchMultiplePlaylistsCatalogAction = (
+  ids: string[]
+) => Promise<MusicKit.Playlist[]>;
+export type FetchRecommendationsAction = () => Promise<
+  MusicKit.Recommendation[]
+>;
+export type FetchRecentPlayedAction = () => Promise<
+  (MusicKit.Album | MusicKit.Playlist | MusicKit.Station)[]
+>;
 
 /**
  * Library module

@@ -13,7 +13,7 @@ export default class LyricsMixin extends Vue {
         this.lyrics = lyrics;
       })
       .catch(err => {
-        if (err.response.status === 404) {
+        if (!err.response || err.response.status === 404) {
           this.lyrics = 'Cannot find lyrics for the current song';
         }
       })

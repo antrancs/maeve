@@ -6,6 +6,7 @@
   >
     <img
       class="artwork__image"
+      :key="artworkUrlForArtist || artworkUrl"
       v-lazy="artworkUrlForArtist || artworkUrl"
       alt
       :style="[artworkImageStyle, roundStyle]"

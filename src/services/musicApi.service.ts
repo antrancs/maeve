@@ -119,9 +119,9 @@ class MusicApiService {
   /**
    * Get recommendations for the current user
    */
-  getRecommendations(): Promise<MusicKit.Recommendation[]> {
-    return musicKit.getApiInstance().recommendations();
-  }
+  // getRecommendations(): Promise<MusicKit.Recommendation[]> {
+  //   return musicKit.getApiInstance().recommendations();
+  // }
 
   /**
    * Get all songs in the user's library
@@ -156,9 +156,9 @@ class MusicApiService {
    * Get all details of one or more playlists
    * @param ids Playlist ids
    */
-  getPlaylists(ids: string[]): Promise<MusicKit.Playlist[]> {
-    return musicKit.getApiInstance().playlists(ids);
-  }
+  // getPlaylists(ids: string[]): Promise<MusicKit.Playlist[]> {
+  //   return musicKit.getApiInstance().playlists(ids);
+  // }
 
   getSongs(ids: string[]): Promise<MusicKit.Song[]> {
     return musicKit.getApiInstance().songs(ids, { include: 'albums, artists' });
@@ -170,6 +170,27 @@ class MusicApiService {
    */
   getActivities(ids: string[]): Promise<MusicKit.Activity[]> {
     return musicKit.getApiInstance().activities(ids);
+  }
+
+  getHeavyRotation() {
+    return this.axiosInstance.get('/me/history/heavy-rotation', {
+      headers: this.apiHeaders,
+      params: {
+        limit: 1
+      }
+    });
+  }
+
+  getCharts(types: string[], limit: number, genre?: string) {
+    const params = genre
+      ? {
+          genre,
+          limit
+        }
+      : {
+          limit
+        };
+    return musicKit.getApiInstance().charts(types, params);
   }
 
   getAppleCuratorsPlaylists(
@@ -200,8 +221,7 @@ class MusicApiService {
         return {
           data: playlists.filter(
             playlist =>
-              playlist.attributes &&
-              !playlist.attributes.name.includes('Video Essential')
+              playlist.attributes && !playlist.attributes.name.includes('Video')
           ),
           hasNext,
           hasNoData

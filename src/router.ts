@@ -2,10 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 
 import store from '@/store';
-import Home from './views/Home.vue';
-import CollectionDetail from './views/CollectionDetail.vue';
-import ArtistDetail from './views/ArtistDetail.vue';
-import GenreDetail from './views/GenreDetail.vue';
+import NotFound from './views/NotFound.vue';
 
 Vue.use(Router);
 
@@ -16,47 +13,60 @@ const router = new Router({
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: () => import(/* webpackChunkName: "home" */ './views/Home.vue')
+    },
+    {
+      path: '/charts',
+      name: 'charts',
+      component: () =>
+        import(/* webpackChunkName: "charts" */ './views/Charts.vue')
     },
     {
       path: '/search',
       name: 'search',
-      component: () => import('./views/SearchResults.vue')
+      component: () =>
+        import(/* webpackChunkName: "searchResults" */ './views/SearchResults.vue')
     },
     {
       path: '/search/:type',
       name: 'searchViewAll',
-      component: () => import('./views/SearchViewAll.vue'),
+      component: () =>
+        import(/* webpackChunkName: "searchViewAll" */ './views/SearchViewAll.vue'),
       props: true
     },
     {
       path: '/albums/:id',
       name: 'albums',
-      component: CollectionDetail,
+      component: () =>
+        import(/* webpackChunkName: "searchViewAll" */ './views/CollectionDetail.vue'),
       props: true
     },
     {
       path: '/playlists/:id',
       name: 'playlists',
-      component: CollectionDetail,
+      component: () =>
+        import(/* webpackChunkName: "searchViewAll" */ './views/CollectionDetail.vue'),
       props: true
     },
     {
       path: '/activities/:id',
       name: 'activities',
-      component: () => import('./views/ActivityDetail.vue'),
+      component: () =>
+        import(/* webpackChunkName: "activityDetail" */ './views/ActivityDetail.vue'),
       props: true
     },
     {
       path: '/genres/:id',
       name: 'genres',
-      component: GenreDetail,
+      component: () =>
+        import(/* webpackChunkName: "genreDetail" */ './views/GenreDetail.vue'),
       props: true
     },
     {
       path: '/me/library-playlists/:id',
       name: 'library-playlists',
-      component: CollectionDetail,
+      component: () =>
+        import(/* webpackChunkName: "collectionDetail" */ './views/CollectionDetail.vue'),
       props: true,
       meta: {
         auth: true
@@ -65,7 +75,8 @@ const router = new Router({
     {
       path: '/me/library-albums/:id',
       name: 'library-albums',
-      component: CollectionDetail,
+      component: () =>
+        import(/* webpackChunkName: "collectionDetail" */ './views/CollectionDetail.vue'),
       props: true,
       meta: {
         auth: true
@@ -74,7 +85,8 @@ const router = new Router({
     {
       path: '/me/library-artists/:id',
       name: 'library-artists',
-      component: ArtistDetail,
+      component: () =>
+        import(/* webpackChunkName: "artistDetail" */ './views/ArtistDetail.vue'),
       props: true,
       meta: {
         auth: true
@@ -83,13 +95,15 @@ const router = new Router({
     {
       path: '/artists/:id',
       name: 'artists',
-      component: ArtistDetail,
+      component: () =>
+        import(/* webpackChunkName: "artistDetail" */ './views/ArtistDetail.vue'),
       props: true
     },
     {
       path: '/me/for-you',
       name: 'forYou',
-      component: () => import('./views/ForYou.vue'),
+      component: () =>
+        import(/* webpackChunkName: "forYou" */ './views/ForYou.vue'),
       meta: {
         auth: true
       }
@@ -97,7 +111,8 @@ const router = new Router({
     {
       path: '/me/library/:resource',
       name: 'myLibrary',
-      component: () => import('./views/MyLibrary.vue'),
+      component: () =>
+        import(/* webpackChunkName: "myLibrary" */ './views/MyLibrary.vue'),
       props: true,
       meta: {
         auth: true
@@ -106,7 +121,7 @@ const router = new Router({
     {
       path: '/404',
       name: 'NotFound',
-      component: () => import('./views/NotFound.vue')
+      component: NotFound
     },
     {
       path: '*',

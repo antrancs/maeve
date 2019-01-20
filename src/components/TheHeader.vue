@@ -71,7 +71,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Getter, Action } from 'vuex-class';
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 
 import { LOGOUT, LOGIN } from '@/store/actions.type';
 import { isLight } from '@/themes';

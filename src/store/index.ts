@@ -9,6 +9,7 @@ import snackbar from './snackbar.module';
 import library from './library.module';
 import catalog from './catalog.module';
 import settings from './settings.module';
+import layout from './layout.module';
 
 Vue.use(Vuex);
 
@@ -21,6 +22,7 @@ export default new Vuex.Store({
     snackbar,
     library,
     catalog,
-    settings
+    settings,
+    layout
   }
 });

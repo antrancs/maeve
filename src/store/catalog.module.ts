@@ -3,7 +3,9 @@ import { ActionTree, MutationTree, GetterTree } from 'vuex';
 import musicKit from '@/services/musicKit';
 import {
   FETCH_ONE_ALBUM_CATALOG,
-  FETCH_ONE_PLAYLIST_CATALOG
+  FETCH_ONE_PLAYLIST_CATALOG,
+  FETCH_MULTIPLE_PLAYLISTS_CATALOG,
+  FETCH_ONE_RECOMMENDATION
 } from './actions.type';
 import { CatalogState } from './types';
 
@@ -18,6 +20,14 @@ const actions: ActionTree<CatalogState, any> = {
     return await musicKit.getApiInstance().playlist(id, {
       include: 'tracks,artists'
     });
+  },
+
+  [FETCH_MULTIPLE_PLAYLISTS_CATALOG](_, ids: string[]) {
+    return musicKit.getApiInstance().playlists(ids);
+  },
+
+  [FETCH_ONE_RECOMMENDATION](_, id: string) {
+    return musicKit.getApiInstance().recommendation(id);
   },
 
   async fetchCatalogSongsDetails(_, ids?: string[]) {

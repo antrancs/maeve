@@ -85,7 +85,6 @@ export default class PlayingVisualization extends Vue {
   private timeline: Nullable<TimelineLite> = null;
   private repeat = 0;
   private maxRepeat = 8;
-  private padding = 75;
   private rectRefs: (Vue | Element | Vue[] | Element[])[] = [];
   private aniData: (number[])[] = [];
   private barWidth = 10;
@@ -107,6 +106,10 @@ export default class PlayingVisualization extends Vue {
 
   get radius(): number {
     return (this.size - this.padding * 2) / 2;
+  }
+
+  get padding(): number {
+    return this.size / 6;
   }
 
   get artworkX(): number {

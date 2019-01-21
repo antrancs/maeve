@@ -35,7 +35,7 @@
 
                   <PlayingVisualization
                     :artworkUrl="currentTrackArtwork"
-                    size="450"
+                    :size="playingVisualizationSize"
                   />
 
                   <PlayerProgressBar class="mt-3" />
@@ -209,6 +209,10 @@ export default class PlayerFullScreen extends Mixins(
   //     width: this.musicPlayer.isPlaying ? '50%' : '40%'
   //   };
   // }
+
+  get playingVisualizationSize() {
+    return this.$vuetify.breakpoint.xsOnly ? 300 : 450;
+  }
 
   get artworkStyle() {
     if (!this.currentTrackArtwork) {

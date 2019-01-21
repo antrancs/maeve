@@ -1,12 +1,13 @@
 <template>
   <div>
     <div class="text-xs-center">
-      <v-item-group active-class="selected-genre" v-model="selectedGenre">
+      <v-item-group v-model="selectedGenre">
         <v-item v-for="genre in genres" :key="genre.id">
           <v-chip
             class="elevation-5"
             slot-scope="{ active, toggle }"
             :selected="active"
+            :style="active ? chipActiveStyle : {}"
             @click="toggle"
           >
             {{ genre.name }}
@@ -44,6 +45,7 @@ import SongCollectionList from '@/components/SongCollectionList.vue';
 import musicApiService from '@/services/musicApi.service';
 import { Nullable } from '@/@types/model/model';
 import { GENRES } from '@/utils/constants';
+import { isLight, TEXT_PRIMARY_LIGHT, TEXT_PRIMARY_DARK } from '@/themes';
 
 @Component({
   components: {
@@ -87,6 +89,19 @@ export default class ChartsByGenre extends Vue {
     return (this.chart.albums[0].data as MusicKit.Album[]) || [];
   }
 
+  get chipActiveStyle() {
+    return {
+      'background-color': this.$vuetify.theme.accent as string,
+      color: this.chipColorStyle
+    };
+  }
+
+  get chipColorStyle(): string {
+    return isLight(this.$vuetify.theme.accent as string)
+      ? TEXT_PRIMARY_LIGHT
+      : TEXT_PRIMARY_DARK;
+  }
+
   @Watch('selectedGenre')
   onGenreChanged(newValue: number) {
     const genreId = this.genres[newValue].id;
@@ -117,10 +132,3 @@ export default class ChartsByGenre extends Vue {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.selected-genre {
-  background-color: var(--v-accent-base);
-  color: white;
-}
-</style>

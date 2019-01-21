@@ -20,7 +20,8 @@
             <v-layout row wrap>
               <v-flex xs12 sm12 md6>
                 <v-layout column wrap align-center>
-                  <!-- <div
+                  <div
+                    v-if="$vuetify.breakpoint.mdAndDown"
                     class="artwork-wrapper mb-3"
                     :class="{ playing: musicPlayer.isPlaying }"
                   >
@@ -31,9 +32,10 @@
                       :style="artworkStyle"
                       alt="Song artwork"
                     />
-                  </div> -->
+                  </div>
 
                   <PlayingVisualization
+                    v-else
                     :artworkUrl="currentTrackArtwork"
                     :size="playingVisualizationSize"
                   />
@@ -243,7 +245,7 @@ export default class PlayerFullScreen extends Mixins(
 
 <style lang="scss" scoped>
 .artwork-wrapper {
-  height: 300px;
+  max-height: 30rem;
   /* transition: width 0.25s ease-out; */
   max-width: 30rem;
   width: 50%;

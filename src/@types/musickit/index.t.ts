@@ -391,11 +391,11 @@ declare namespace MusicKit {
   }
 
   interface SearchResult {
-    albums?: ResponseRoot;
-    playlists?: ResponseRoot;
-    songs?: ResponseRoot;
-    artists?: ResponseRoot;
-    [key: string]: ResponseRoot | undefined;
+    albums?: AlbumResponse;
+    playlists?: PlaylistResponse;
+    songs?: SongResponse;
+    artists?: ArtistResponse;
+    // [key: string]: ResponseRoot | undefined;
   }
 
   // REMOVE
@@ -628,7 +628,25 @@ declare namespace MusicKit {
     title: string;
   }
 
-  // interface ResponseRootResults {}
+  /**
+   * The response to an album request.
+   * Ref: https://developer.apple.com/documentation/applemusicapi/albumresponse
+   */
+  interface AlbumResponse extends ResponseRoot {
+    data: Album[];
+  }
+
+  interface ArtistResponse extends ResponseRoot {
+    data: Artist[];
+  }
+
+  interface PlaylistResponse extends ResponseRoot {
+    data: Playlist[];
+  }
+
+  interface SongResponse extends ResponseRoot {
+    data: Song[];
+  }
 
   /**
    * The Source object represents the source of an error.

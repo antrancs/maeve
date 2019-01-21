@@ -65,47 +65,6 @@ class MusicApiService {
   }
 
   /**
-   * Search the catalog for 1 particular resource (album/playlist/song/artist)
-   * @param query The search term
-   * @param resourceType Resource type
-   * @param limit Limit to fetch, max is 25
-   * @param offset Search offset
-   */
-  searchOneResource(
-    query: string,
-    resourceType: string,
-    limit: number,
-    offset: number
-  ): Promise<{
-    data: MusicKit.Resource[];
-    hasNext: boolean;
-    offset: number;
-  } | null> {
-    return musicKit
-      .getApiInstance()
-      .search(query, {
-        limit,
-        types: resourceType,
-        offset
-      })
-      .then(result => {
-        if (this.isResultEmpty(result) || !result[resourceType]) {
-          return null;
-        }
-        const resource = result[resourceType]!;
-        const hasNext = !!resource.next;
-
-        // We need to extract the offset from the next url for subsequent queries.
-        // Manually increasing the offset can lead to duplicates from the returned results
-        return {
-          data: resource.data || [],
-          hasNext,
-          offset: hasNext ? this.getOffsetFromNext(resource.next!) : 0
-        };
-      });
-  }
-
-  /**
    * Get the artist's details and their relationships (albums, playlists)
    * @param artistId id of the artist
    */
@@ -150,6 +109,41 @@ class MusicApiService {
     } else {
       return api.playlist(collectionId, { include: 'tracks, artists' });
     }
+  }
+
+  /**
+   * Search the catalog for
+   * @param term The search term
+   * @param types Resource type (possible values are: albums/playlists/artists/songs)
+   * @param limit Limit to fetch, max is 25
+   * @param offset Search offset
+   */
+  searchCatalog(
+    term: string,
+    types: string[],
+    limit: number,
+    offset: number
+  ): Promise<MusicKit.SearchResult> {
+    const storefrontId = musicKit.getApiInstance().storefrontId;
+    return this.axiosInstance
+      .get(`catalog/${storefrontId}/search`, {
+        headers: {
+          Authorization: `Bearer ${authService.developerToken}`,
+          'Content-Type': 'application/json'
+        },
+        params: {
+          term,
+          limit,
+          offset,
+          types: types.join(',')
+        }
+      })
+      .then(result => {
+        if (result.status === 200) {
+          return result.data.results as MusicKit.SearchResult;
+        }
+        throw new Error('Unable to search for' + term);
+      });
   }
 
   /**

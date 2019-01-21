@@ -6,28 +6,27 @@
       </v-flex>
       <SongCollectionList
         v-if="type === 'albums' || type === 'playlists'"
-        :collections="data"
+        :collections="items"
       />
 
-      <ArtistList v-else-if="type === 'artists'" :artists="data" />
+      <ArtistList v-else-if="type === 'artists'" :artists="items" />
 
-      <SongListLarge v-else-if="type === 'songs'" :tracks="data" />
+      <SongListLarge v-else-if="type === 'songs'" :tracks="items" />
     </v-layout>
   </v-container>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
-// import InfiniteLoading from 'vue-infinite-loading';
 
 import SongCollectionList from '@/components/SongCollectionList.vue';
 import ArtistList from '@/components/ArtistList.vue';
 import SongListLarge from '@/components/SongListLarge.vue';
-import musicApiService from '@/services/musicApi.service';
+import InfiniteScrollMixin from '@/mixins/InfiniteScrollMixin';
 import { HandleSongClicked } from '@/@types/model/model';
-import { PLAY_SONGS } from '@/store/actions.type';
-import { PlaySongsAction } from '@/store/types';
+import { PLAY_SONGS, SEARCH_CATALOG } from '@/store/actions.type';
+import { PlaySongsAction, SearchCatalogAction } from '@/store/types';
 
 @Component({
   components: {
@@ -36,14 +35,18 @@ import { PlaySongsAction } from '@/store/types';
     SongListLarge
   }
 })
-export default class SearchViewAll extends Vue {
+export default class SearchViewAll extends Mixins(InfiniteScrollMixin) {
   private offset = 0;
   private fetchLimit = 20;
   private hasNext = true;
-  private data: any[] = [];
-  private idSet = new Set<string>();
+  private items: (
+    | MusicKit.Song
+    | MusicKit.Artist
+    | MusicKit.Playlist
+    | MusicKit.Album)[] = [];
+  private hasNoData = false;
 
-  @Action [PLAY_SONGS]: PlaySongsAction;
+  @Action [SEARCH_CATALOG]!: SearchCatalogAction;
 
   get query(): string {
     return this.$route.query.q as string;
@@ -54,42 +57,54 @@ export default class SearchViewAll extends Vue {
   }
 
   created() {
-    const typeSet = new Set(['albums', 'playlists', 'songs', 'artists']);
-    if (!typeSet.has(this.type)) {
-      this.$router.push({ name: 'NotFound' });
-    }
+    this.$_fetchData();
   }
 
-  infiniteHandler($state: any) {
-    // const query = this.$route.query.q;
+  $_fetchData() {
     const { type } = this.$route.params;
 
-    return musicApiService
-      .searchOneResource(this.query, type, this.fetchLimit, this.offset)
-      .then(result => {
-        if (!result) {
-          $state.complete();
-          return;
-        }
+    if (
+      type !== 'albums' &&
+      type !== 'playlists' &&
+      type !== 'songs' &&
+      type !== 'artists'
+    ) {
+      this.$router.push({ name: 'NotFound' });
+      return;
+    }
 
-        const { data, hasNext, offset } = result;
+    this.shouldLoad = false;
 
-        // The api may return duplicate results even with 'offset' provided
-        // So we have to use a set to keep track of already loaded items
-        data.forEach(item => {
-          if (!this.idSet.has(item.id)) {
-            this.data.push(item);
-            this.idSet.add(item.id);
-          }
-        });
+    this.searchCatalog({
+      offset: this.offset,
+      limit: this.fetchLimit,
+      term: this.query,
+      type
+    }).then(result => {
+      const { data, hasNext, hasNoData, offset = 0 } = result;
+      if (hasNoData) {
+        this.hasNoData = true;
+        return;
+      }
 
-        this.offset = offset;
-        $state.loaded();
-        // we probably don't need to load more than 150 items
-        if (!hasNext || offset > 150) {
-          $state.complete();
-        }
-      });
+      this.noMoreData = !hasNext;
+
+      this.items.push(...data);
+
+      if (!this.noMoreData) {
+        this.shouldLoad = true;
+      }
+      this.offset = offset;
+
+      if (!hasNext || this.offset >= 150) {
+        this.shouldLoad = false;
+        this.noMoreData = true;
+      }
+    });
+  }
+
+  handleScroll() {
+    this.$_fetchData();
   }
 }
 </script>

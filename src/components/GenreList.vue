@@ -27,7 +27,7 @@ export default class GenreList extends Vue {
   created() {
     setTimeout(() => {
       this.genres = GENRES;
-    }, 100);
+    }, 10);
   }
 }
 </script>

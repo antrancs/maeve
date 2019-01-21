@@ -1,13 +1,5 @@
 <template>
-  <div
-    v-if="genre"
-    class="genre"
-    v-scroll-directive="{
-      onScroll: handleScroll,
-      shouldLoad: 'shouldLoad',
-      noMore: 'noMoreData'
-    }"
-  >
+  <div v-if="genre" class="genre">
     <div class="genre-header" :style="headerBackgroundStyle">
       <v-container fill-height>
         <v-layout align-end>
@@ -32,11 +24,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 
 import SongCollectionList from '@/components/SongCollectionList.vue';
+import InfiniteScrollMixin from '@/mixins/InfiniteScrollMixin';
 import musicApiService from '@/services/musicApi.service';
-import scrollDirective from '@/directives/scroll';
 import { Nullable } from '@/@types/model/model';
 import { Genre, GENRES } from '@/utils/constants';
 import { getArtworkUrl } from '@/utils/utils';
@@ -44,16 +36,13 @@ import { TEXT_PRIMARY_DARK } from '@/themes';
 import { Action } from 'vuex-class';
 
 @Component({
-  components: { SongCollectionList },
-  directives: {
-    scrollDirective
-  }
+  components: { SongCollectionList }
 })
-export default class GenreDetail extends Vue {
+export default class GenreDetail extends Mixins(InfiniteScrollMixin) {
   private genre: Nullable<Genre> = null;
   private playlists: MusicKit.Playlist[] = [];
-  private shouldLoad = true;
-  private noMoreData = false;
+  // private shouldLoad = true;
+  // private noMoreData = false;
   private offset = 0;
   @Prop() id!: string;
 
@@ -69,7 +58,7 @@ export default class GenreDetail extends Vue {
     this.$_fetchPlaylists();
   }
 
-  handleScroll(event: Event) {
+  handleScroll() {
     this.$_fetchPlaylists();
   }
 
@@ -92,12 +81,10 @@ export default class GenreDetail extends Vue {
     this.shouldLoad = true;
 
     this.offset += 10;
-    if (this.offset === 70) {
+    // when there's no more data or we've reached the max items (70)
+    if (!hasNext || this.offset === 70) {
       this.shouldLoad = false;
-    }
-
-    if (!hasNext) {
-      this.shouldLoad = false;
+      this.noMoreData = true;
     }
   }
 

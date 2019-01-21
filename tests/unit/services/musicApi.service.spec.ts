@@ -79,30 +79,30 @@ describe('musicApi.service', () => {
     });
   });
 
-  describe('searchOneResource', () => {
-    it('Should return proper results for a resource type', () => {
-      const offset = 27;
-      const searchResult = {
-        albums: {
-          data: albumsResource,
-          next: `/v1/catalog/us/search?offset=${offset}&term=nf&types=albums`
-        }
-      };
-      setupSearch(searchResult);
+  // describe('searchOneResource', () => {
+  //   it('Should return proper results for a resource type', () => {
+  //     const offset = 27;
+  //     const searchResult = {
+  //       albums: {
+  //         data: albumsResource,
+  //         next: `/v1/catalog/us/search?offset=${offset}&term=nf&types=albums`
+  //       }
+  //     };
+  //     setupSearch(searchResult);
 
-      return musicApi.searchOneResource('NF', 'albums', 10, 0).then(result => {
-        expect(result).toBeTruthy();
+  //     return musicApi.searchOneResource('NF', 'albums', 10, 0).then(result => {
+  //       expect(result).toBeTruthy();
 
-        const dataResult = result!.data;
-        expect(dataResult.length).toBe(albumsResource.length);
-        expect(dataResult[0]).toEqual(albumsResource[0]);
-        expect(dataResult[1]).toEqual(albumsResource[1]);
+  //       const dataResult = result!.data;
+  //       expect(dataResult.length).toBe(albumsResource.length);
+  //       expect(dataResult[0]).toEqual(albumsResource[0]);
+  //       expect(dataResult[1]).toEqual(albumsResource[1]);
 
-        expect(result!.hasNext).toBe(true);
-        expect(result!.offset).toBe(offset);
-      });
-    });
-  });
+  //       expect(result!.hasNext).toBe(true);
+  //       expect(result!.offset).toBe(offset);
+  //     });
+  //   });
+  // });
 
   describe('getCollection', () => {
     it('Should return Album collection with tracks relationships', () => {

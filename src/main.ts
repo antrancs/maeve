@@ -24,6 +24,7 @@ import Chrome from 'vue-color/src/components/Chrome.vue';
 import AppButton from '@/components/AppButton.vue';
 
 Vue.config.productionTip = false;
+// Vue.config.performance = true;
 
 Vue.component('chrome-picker', Chrome);
 Vue.component('app-button', AppButton);

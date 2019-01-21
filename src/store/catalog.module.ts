@@ -5,11 +5,29 @@ import {
   FETCH_ONE_ALBUM_CATALOG,
   FETCH_ONE_PLAYLIST_CATALOG,
   FETCH_MULTIPLE_PLAYLISTS_CATALOG,
-  FETCH_ONE_RECOMMENDATION
+  FETCH_ONE_RECOMMENDATION,
+  SEARCH_CATALOG
 } from './actions.type';
-import { CatalogState } from './types';
+import { CatalogState, SearchCatalogPayload, FetchResult } from './types';
+import musicApiService from '@/services/musicApi.service';
 
 const initialState: CatalogState = {};
+
+/**
+ * Extract the offset info from a 'next' URL returned from a search query
+ * @param next The 'next' URL
+ * @returns 0 if no match
+ */
+function getOffsetFromNext(next: string): number {
+  const matches = next.match(/search\?offset=(\d+)/);
+
+  if (!matches || matches.length < 2) {
+    return 0;
+  }
+
+  // The second item should contain the matched result
+  return +matches[1];
+}
 
 const actions: ActionTree<CatalogState, any> = {
   async [FETCH_ONE_ALBUM_CATALOG](_, id: string) {
@@ -28,6 +46,42 @@ const actions: ActionTree<CatalogState, any> = {
 
   [FETCH_ONE_RECOMMENDATION](_, id: string) {
     return musicKit.getApiInstance().recommendation(id);
+  },
+
+  async [SEARCH_CATALOG](
+    _,
+    { offset, limit, term, type }: SearchCatalogPayload
+  ): Promise<
+    FetchResult<
+      MusicKit.Album | MusicKit.Playlist | MusicKit.Song | MusicKit.Artist
+    >
+  > {
+    try {
+      const searchResult = await musicApiService.searchCatalog(
+        term,
+        [type],
+        limit,
+        offset
+      );
+      const items = searchResult[type] ? searchResult[type]!.data : [];
+
+      const hasNext = items.length === limit;
+      const hasNoData = items.length === 0 && offset === 0;
+
+      const nextOffset = getOffsetFromNext(searchResult[type]!.next || '');
+      return {
+        data: items,
+        hasNext,
+        hasNoData,
+        offset: nextOffset
+      };
+    } catch {
+      return {
+        data: [],
+        hasNext: false,
+        hasNoData: true
+      };
+    }
   },
 
   async fetchCatalogSongsDetails(_, ids?: string[]) {

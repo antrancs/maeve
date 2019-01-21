@@ -117,13 +117,15 @@ export default class WorldMap extends Vue {
         }
       });
       const countries = feature(jsonData, jsonData.objects.countries) as any;
-      this.paths = countries.features.map((feature: any) => {
-        return {
-          d: this.geoPath(feature),
-          title: this.countriesNameMap[feature.id].name,
-          country: feature
-        };
-      });
+      this.paths = Object.freeze(
+        countries.features.map((feature: any) => {
+          return {
+            d: this.geoPath(feature),
+            title: this.countriesNameMap[feature.id].name,
+            country: feature
+          };
+        })
+      );
 
       // This map is used to lookup the country code to the country geo detail
       const map: { [id: string]: any } = {};
@@ -132,7 +134,7 @@ export default class WorldMap extends Vue {
         map[countryA2Code] = feature;
       });
 
-      this.countriesGeoMap = map;
+      this.countriesGeoMap = Object.freeze(map);
     });
   }
 

@@ -28,12 +28,12 @@ import {
 import { MusicPlayerState } from '@/store/types';
 
 import SongListLargeItem from '@/components/SongListLargeItem.vue';
-import SongItemMixin from '@/mixins/SongListMixin';
+import SongListMixin from '@/mixins/SongListMixin';
 
 @Component({
   components: { SongListLargeItem }
 })
-export default class SongListLarge extends Mixins(SongItemMixin) {
+export default class SongListLarge extends Mixins(SongListMixin) {
   get fromAlbum(): boolean {
     return (
       this.collection !== undefined &&

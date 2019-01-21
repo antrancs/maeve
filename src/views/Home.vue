@@ -93,12 +93,11 @@ export default class Home extends Vue {
     'pl.f4d106fed2bd41149aaacabb233eb5eb' // Today hit
   ];
 
-  private featuredPlaylists: MusicKit.Playlist[] = [];
-  private activities: MusicKit.Activity[] = [];
-  private recentPlayed: (
-    | MusicKit.Playlist
-    | MusicKit.Album
-    | MusicKit.Station)[] = [];
+  private featuredPlaylists: ReadonlyArray<MusicKit.Playlist> = [];
+  private activities: ReadonlyArray<MusicKit.Activity> = [];
+  private recentPlayed: ReadonlyArray<
+    MusicKit.Playlist | MusicKit.Album | MusicKit.Station
+  > = [];
 
   @Getter isAuthenticated!: boolean;
 
@@ -113,21 +112,23 @@ export default class Home extends Vue {
   created() {
     this.fetchMultiplePlaylistsCatalog(this.featuredPlaylistIds)
       .then(playlists => {
-        this.featuredPlaylists = playlists;
+        this.featuredPlaylists = Object.freeze(playlists);
       })
       .catch(err => err);
 
     if (this.isAuthenticated) {
       this.fetchRecentPlayed().then(result => {
         // just exclude stations for now
-        this.recentPlayed = result.filter(result => result.type !== 'stations');
+        this.recentPlayed = Object.freeze(
+          result.filter(result => result.type !== 'stations')
+        );
       });
     }
 
     musicApiService
       .getActivities(activityIds)
       .then(activities => {
-        this.activities = activities;
+        this.activities = Object.freeze(activities);
       })
       .catch(err => err);
   }

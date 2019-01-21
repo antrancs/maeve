@@ -19,9 +19,9 @@
       </template>
 
       <template v-if="songs.length > 0">
-        <v-flex xs12 class="section-header px-2">
+        <v-flex xs12 class="section-header px-2 pt-4">
           <h3 class="section-title">Songs</h3>
-          <!-- <router-link
+          <router-link
             v-if="songs.length > 5"
             :to="{
               name: 'searchViewAll',
@@ -30,7 +30,7 @@
             }"
             class="section-header__view-all link"
             >View all</router-link
-          > -->
+          >
         </v-flex>
         <SongListLarge :tracks="getFirstNResults(songs, 5)" />
       </template>
@@ -38,7 +38,7 @@
       <template v-if="albums.length > 0">
         <v-flex class="section-header px-2 pt-4" xs12>
           <h3 class="section-title">Albums</h3>
-          <!-- <router-link
+          <router-link
             v-if="albums.length > 10"
             :to="{
               name: 'searchViewAll',
@@ -47,15 +47,15 @@
             }"
             class="section-header__view-all link"
             >View all</router-link
-          > -->
+          >
         </v-flex>
         <SongCollectionList :collections="getFirstNResults(albums, 10)" />
       </template>
 
       <template v-if="playlists.length > 0">
-        <v-flex xs12 class="section-header">
-          <h3 class="section-title px-2 pt-4">Playlists</h3>
-          <!-- <router-link
+        <v-flex xs12 class="section-header px-2 pt-4">
+          <h3 class="section-title">Playlists</h3>
+          <router-link
             v-if="playlists.length > 10"
             :to="{
               name: 'searchViewAll',
@@ -64,7 +64,7 @@
             }"
             class="section-header__view-all link"
             >View all</router-link
-          > -->
+          >
         </v-flex>
         <SongCollectionList :collections="getFirstNResults(playlists, 10)" />
       </template>
@@ -154,9 +154,5 @@ export default class SearchResults extends Vue {
   align-items: center;
   display: flex;
   justify-content: space-between;
-}
-
-.section-header__view-all {
-  margin-right: 1.5%;
 }
 </style>

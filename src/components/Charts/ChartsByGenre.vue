@@ -65,28 +65,30 @@ export default class ChartsByGenre extends Vue {
 
   private chart: Nullable<MusicKit.ChartResponse> = null;
 
-  get songs(): MusicKit.Song[] {
+  get songs(): ReadonlyArray<MusicKit.Song> {
     if (!this.chart || this.chart.songs.length === 0) {
       return [];
     }
 
-    return this.chart.songs[0].data as MusicKit.Song[];
+    return Object.freeze(this.chart.songs[0].data as MusicKit.Song[]);
   }
 
-  get playlists(): MusicKit.Playlist[] {
+  get playlists(): ReadonlyArray<MusicKit.Playlist> {
     if (!this.chart || this.chart.playlists.length === 0) {
       return [];
     }
 
-    return (this.chart.playlists[0].data as MusicKit.Playlist[]) || [];
+    return (
+      Object.freeze(this.chart.playlists[0].data as MusicKit.Playlist[]) || []
+    );
   }
 
-  get albums(): MusicKit.Album[] {
+  get albums(): ReadonlyArray<MusicKit.Album> {
     if (!this.chart || this.chart.albums.length === 0) {
       return [];
     }
 
-    return (this.chart.albums[0].data as MusicKit.Album[]) || [];
+    return Object.freeze(this.chart.albums[0].data as MusicKit.Album[]) || [];
   }
 
   get chipActiveStyle() {

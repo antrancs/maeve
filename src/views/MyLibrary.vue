@@ -1,14 +1,6 @@
 <template>
   <v-container>
-    <v-layout
-      row
-      wrap
-      v-scroll-directive="{
-        onScroll: handleScroll,
-        shouldLoad: 'shouldLoad',
-        noMore: 'noMoreData'
-      }"
-    >
+    <v-layout row wrap>
       <v-flex xs12 class="px-2">
         <v-layout row wrap fill-height align-center>
           <v-flex xs12 md6 lg8>
@@ -65,13 +57,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch, Mixins } from 'vue-property-decorator';
 import debounce from 'lodash/debounce';
 
 import SongCollectionList from '@/components/SongCollectionList.vue';
 import SongListLarge from '@/components/SongListLarge.vue';
 import ArtistList from '@/components/ArtistList.vue';
-import scrollDirective from '@/directives/scroll';
+import InfiniteScrollMixin from '@/mixins/InfiniteScrollMixin';
 import musicApiService from '@/services/musicApi.service';
 import { Action, Mutation } from 'vuex-class';
 import { Nullable } from '@/@types/model/model';
@@ -95,20 +87,15 @@ import {
     SongCollectionList,
     SongListLarge,
     ArtistList
-  },
-  directives: {
-    scrollDirective
   }
 })
-export default class MyLibrary extends Vue {
+export default class MyLibrary extends Mixins(InfiniteScrollMixin) {
   static SEARCH_LIMIT = 50;
   private playlists: MusicKit.LibraryPlaylist[] = [];
   private albums: MusicKit.LibraryAlbum[] = [];
   private songs: MusicKit.LibrarySong[] = [];
   private artists: MusicKit.LibraryArtist[] = [];
 
-  private shouldLoad = true;
-  private noMoreData = false;
   private hasNoData = false;
   private throttleScrollHandler!: (event: Event) => void;
   private offset = 0;
@@ -232,10 +219,12 @@ export default class MyLibrary extends Vue {
     this.shouldLoad = true;
     this.noMoreData = false;
     this.hasNoData = false;
+    this.unregisterScrollEvent();
+    this.registerScrollEvent();
     this.$_fetchResource();
   }
 
-  handleScroll(event: Event) {
+  handleScroll() {
     this.$_fetchResource();
   }
 
@@ -325,8 +314,9 @@ export default class MyLibrary extends Vue {
     this.offset += MyLibrary.SEARCH_LIMIT;
 
     // For now, just set the maximum items to fetch to 300
-    if (this.offset === 300) {
+    if (!hasNext || this.offset === 300) {
       this.shouldLoad = false;
+      this.noMoreData = true;
     }
   }
 

@@ -179,6 +179,18 @@ export type FetchRecentPlayedAction = () => Promise<
   (MusicKit.Album | MusicKit.Playlist | MusicKit.Station)[]
 >;
 
+export type SearchCatalogPayload = SearchParams & {
+  term: string;
+  type: 'albums' | 'playlists' | 'songs' | 'artists';
+};
+
+export type SearchCatalogAction = (
+  payload: SearchCatalogPayload
+) => Promise<
+  FetchResult<
+    MusicKit.Album | MusicKit.Playlist | MusicKit.Song | MusicKit.Artist
+  >
+>;
 /**
  * Library module
  */
@@ -220,6 +232,7 @@ export interface FetchResult<T> {
   hasNext: boolean;
   hasNoData: boolean;
   data: T[];
+  offset?: number;
 }
 export type FetchLibraryAlbumsActions = (
   payload: SearchParams

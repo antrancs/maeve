@@ -441,9 +441,7 @@ _gsScope._gsDefine(
         height = -height;
         y = 0;
       }
-      ease = ease.getRatio
-        ? ease
-        : Ease.map[ease] || console.log('No ease found: ', ease);
+      ease = ease.getRatio ? ease : Ease.map[ease];
       if (!ease.rawBezier) {
         a = ['M' + x + ',' + y];
         precision = Math.max(5, (config.precision || 1) * 200);

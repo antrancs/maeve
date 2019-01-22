@@ -94,7 +94,7 @@ export default class ArtistItem extends Vue {
       case 'md':
         artworkSize = 150;
         break;
-      case 'lg':
+      default:
         artworkSize = 200;
     }
 

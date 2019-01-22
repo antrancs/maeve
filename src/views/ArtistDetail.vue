@@ -202,7 +202,7 @@ export default class ArtistDetail extends Vue {
       case 'md':
         artworkSize = 600;
         break;
-      case 'lg':
+      default:
         artworkSize = 850;
     }
 

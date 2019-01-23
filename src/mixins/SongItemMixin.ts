@@ -110,4 +110,8 @@ export default class SongItemMixin extends Vue {
     // this.$root.$mediaActionMenu.open(this.song, event.clientX, event.clientY);
     this.$emit('actions-icon-click', this.song, event.clientX, event.clientY);
   }
+
+  handleRightClick(event: MouseEvent) {
+    this.$emit('actions-icon-click', this.song, event.clientX, event.clientY);
+  }
 }

@@ -4,6 +4,7 @@
       row
       align-center
       v-if="song && song.attributes"
+      @click.right.prevent="handleRightClick"
       :class="[
         'song-item__wrapper',
         {

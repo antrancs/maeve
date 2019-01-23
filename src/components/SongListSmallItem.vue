@@ -3,6 +3,7 @@
     <v-layout
       row
       align-center
+      @click.right.prevent="handleRightClick"
       :class="[
         'song-item__wrapper',
         {

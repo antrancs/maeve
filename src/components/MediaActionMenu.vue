@@ -4,6 +4,7 @@
     left
     offset-y
     v-model="songActionsMenu"
+    absolute
     :position-x="posX"
     :position-y="posY"
   >
@@ -266,12 +267,17 @@ export default class MediaActionMenu extends Vue {
     posY: number,
     isQueue: boolean = false
   ) {
+    this.songActionsMenu = false;
     this.item = item;
-    this.songActionsMenu = true;
+
     this.container = container;
     this.posX = posX;
     this.posY = posY;
     this.isQueue = isQueue;
+
+    this.$nextTick(() => {
+      this.songActionsMenu = true;
+    });
   }
 
   $_getSongsToAdd(): Song[] {

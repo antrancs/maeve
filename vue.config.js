@@ -14,5 +14,14 @@ module.exports = {
   configureWebpack: {
     plugins: [new VuetifyLoaderPlugin()]
   },
+  pwa: {
+    name: 'Maeve',
+    appleMobileWebAppCapable: 'yes',
+    msTileColor: '#041f35',
+    iconPaths: {
+      appleTouchIcon: 'img/icons/150.png',
+      msTileImage: 'img/icons/150.png'
+    }
+  },
   productionSourceMap: false
 };

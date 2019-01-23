@@ -1,0 +1,20 @@
+{
+  "name": "Maeve",
+  "short_name": "Maeve",
+  "icons": [
+    {
+      "src": "./img/icons/100.png",
+      "sizes": "100x100",
+      "type": "image/png"
+    },
+    {
+      "src": "./img/icons/150.png",
+      "sizes": "150x150",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#041f35",
+  "theme_color": "#da0f47"
+}

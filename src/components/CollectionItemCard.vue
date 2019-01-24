@@ -5,7 +5,7 @@
   >
     <v-hover>
       <v-card class="secondary elevation-8 item-card" slot-scope="{ hover }">
-        <MediaArtwork :artwork="artwork" :width="300" :height="300">
+        <MediaArtwork :artwork="artwork" :width="220" :height="220">
           <template v-if="hover || isCollectionBeingPlayed">
             <div class="overlay"></div>
 

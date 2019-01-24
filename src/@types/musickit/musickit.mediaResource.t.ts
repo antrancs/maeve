@@ -1301,7 +1301,7 @@ declare namespace MusicKit {
     /**
      * (Required) This value will always be curators.
      */
-    type: string;
+    type: 'curators';
   }
 
   /**

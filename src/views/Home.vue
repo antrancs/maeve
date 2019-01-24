@@ -58,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
+import { Vue, Component, Watch } from 'vue-property-decorator';
 
 import FeaturedPlaylist from '@/components/FeaturedPlaylist.vue';
 import ActivityItem from '@/components/ActivityItem.vue';
@@ -109,6 +109,13 @@ export default class Home extends Vue {
     id: string
   ) => Promise<MusicKit.Recommendation>;
 
+  @Watch('isAuthenticated')
+  onAuthenticationChanged(newValue: boolean) {
+    if (newValue) {
+      this.$_fetchRecentlyPlayed();
+    }
+  }
+
   created() {
     this.fetchMultiplePlaylistsCatalog(this.featuredPlaylistIds)
       .then(playlists => {
@@ -117,12 +124,7 @@ export default class Home extends Vue {
       .catch(err => err);
 
     if (this.isAuthenticated) {
-      this.fetchRecentPlayed().then(result => {
-        // just exclude stations for now
-        this.recentPlayed = Object.freeze(
-          result.filter(result => result.type !== 'stations')
-        );
-      });
+      this.$_fetchRecentlyPlayed();
     }
 
     musicApiService
@@ -131,6 +133,15 @@ export default class Home extends Vue {
         this.activities = Object.freeze(activities);
       })
       .catch(err => err);
+  }
+
+  $_fetchRecentlyPlayed() {
+    this.fetchRecentPlayed().then(result => {
+      // just exclude stations for now
+      this.recentPlayed = Object.freeze(
+        result.filter(result => result.type !== 'stations')
+      );
+    });
   }
 }
 </script>

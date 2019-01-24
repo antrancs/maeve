@@ -56,7 +56,7 @@ const getters: GetterTree<MusicPlayerState, any> = {
     if (getters.isAuthenticated) {
       return currentPlaying.artwork.url.replace('2000x2000bb', '300x300bb');
     }
-    return getArtworkUrl(currentPlaying.artwork.url, 300, 300);
+    return getArtworkUrl(currentPlaying.artwork.url, 120, 120);
   },
 
   isCollectionBeingPlayed({ currentPlaying }) {
@@ -110,7 +110,7 @@ const actions: ActionTree<MusicPlayerState, any> = {
 
   [RESUME_CURRENT_TRACK]() {
     return musicPlayerService.play().catch(err => {
-      console.log(err);
+      // console.log(err);
     });
   },
 

@@ -4,7 +4,15 @@
       <div class="banner" :style="bannerStyle"></div>
       <div class="banner-overlay flex-column artist-banner-overlay">
         <v-container fill-height>
-          <v-layout align-end>
+          <v-layout column align-center>
+            <MediaArtwork
+              style="width: 150px; height: 150px"
+              :artworkUrlForArtist="artworkUrl"
+              :width="150"
+              :height="150"
+              :has-shadow="true"
+              :isRound="true"
+            />
             <h2 class="artist-detail__name">{{ artist.attributes.name }}</h2>
           </v-layout>
         </v-container>
@@ -13,6 +21,38 @@
 
     <v-container>
       <v-layout row wrap>
+        <v-flex xs12 class="px-2" v-if="bio">
+          <h3 class="section-title">About {{ artist.attributes.name }}</h3>
+        </v-flex>
+        <v-flex xs12 class="px-2">
+          <v-layout row wrap>
+            <v-flex xs12 sm12 md8 v-if="bio">
+              <p :style="bioStyle" v-html="bio"></p>
+              <p class="bio-toggle" @click="bioCollapse = !bioCollapse">
+                {{ bioCollapse ? 'MORE' : 'LESS' }}
+              </p>
+            </v-flex>
+            <v-flex
+              xs12
+              sm12
+              md4
+              :class="{ 'px-4': $vuetify.breakpoint.mdAndUp }"
+            >
+              <template v-if="origin">
+                <div class="sub-info-text">HOMETOWN</div>
+
+                <div class="main-info-text">{{ origin }}</div>
+              </template>
+
+              <template v-if="birthday">
+                <div class="sub-info-text">BORN</div>
+
+                <div class="main-info-text">{{ birthday }}</div>
+              </template>
+            </v-flex>
+          </v-layout>
+        </v-flex>
+
         <template v-if="nonSingles.length > 0">
           <v-flex xs12 class="px-2 pt-4">
             <h3 class="section-title">Albums</h3>
@@ -43,59 +83,80 @@
           </v-flex>
           <SongCollectionList :collections="playlists" />
         </template>
+
+        <template v-if="relatedArtists.length > 0">
+          <v-flex xs12 class="px-2 pt-4">
+            <h3 class="section-title">Related artists</h3>
+          </v-flex>
+          <ArtistList :artists="relatedArtists" />
+        </template>
       </v-layout>
     </v-container>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import SongCollectionList from '@/components/SongCollectionList.vue';
+import ArtistList from '@/components/ArtistList.vue';
+import MediaArtwork from '@/components/MediaArtwork.vue';
 import musicApiService from '@/services/musicApi.service';
-import { getArtistArtwork, formatArtworkUrl } from '@/utils/utils';
+import {
+  getArtistArtwork,
+  formatArtworkUrl,
+  getArtistDetails
+} from '@/utils/utils';
 import { Nullable, Album, Artist, Playlist } from '@/@types/model/model';
 import { TEXT_PRIMARY_DARK } from '@/themes';
 import { Action } from 'vuex-class';
-import { FETCH_ONE_ARTIST_LIBRARY } from '@/store/actions.type';
+import {
+  FETCH_ONE_ARTIST_LIBRARY,
+  FETCH_MULTIPLE_ARTISTS_CATALOG
+} from '@/store/actions.type';
+import { PLACEHOLDER_IMAGE } from '@/utils/constants';
+import { Route } from 'vue-router';
 
 @Component({
-  components: { SongCollectionList }
+  components: { SongCollectionList, MediaArtwork, ArtistList }
 })
 export default class ArtistDetail extends Vue {
   private artist: Nullable<Artist> = null;
   // private attributes: Nullable<MusicKit.ArtistAttributes> = null;
-  private artworkUrl: string = '';
-  // private albums: Album[] = [];
-  // private playlists: MusicKit.Playlist[] = [];
+  private artworkUrl: Nullable<string> = PLACEHOLDER_IMAGE;
+  private bannerUrl: Nullable<string> = null;
+  private bio: Nullable<string> = null;
+  private birthday: Nullable<string> = null;
+  private relatedArtists: MusicKit.Artist[] = [];
+  private bioCollapse = true;
+  private origin: Nullable<string> = null;
 
   @Action [FETCH_ONE_ARTIST_LIBRARY]!: (
     id: string
   ) => Promise<MusicKit.LibraryArtist>;
 
+  @Action [FETCH_MULTIPLE_ARTISTS_CATALOG]: (
+    ids: string[]
+  ) => Promise<MusicKit.Artist[]>;
+
   created() {
     this.$_getArtistInfo();
   }
 
-  get artworkLargeScreen(): string {
-    return formatArtworkUrl(this.artworkUrl, 1000, 1000);
-  }
-
-  get artworkNormalScreen(): string {
-    return formatArtworkUrl(this.artworkUrl, 800, 800);
-  }
-
-  get artworkTablet(): string {
-    return formatArtworkUrl(this.artworkUrl, 540, 540);
-  }
-
-  get artworkPhone(): string {
-    return formatArtworkUrl(this.artworkUrl, 400, 400);
+  get bioStyle() {
+    if (this.bioCollapse) {
+      return {
+        height: '14rem',
+        overflow: 'hidden'
+      };
+    } else {
+      return {};
+    }
   }
 
   get bannerStyle(): object {
     return {
-      'background-image': `url('${this.artworkNormalScreen}')`
+      'background-image': `url('${this.bannerUrl}')`
     };
   }
 
@@ -160,6 +221,11 @@ export default class ArtistDetail extends Vue {
     return 'library-artists';
   }
 
+  @Watch('$route')
+  onRouteChange(to: Route, from: Route) {
+    this.$_getArtistInfo();
+  }
+
   // Helper methods
   private $_getArtistInfo() {
     const artistId = this.$route.params.id;
@@ -169,7 +235,7 @@ export default class ArtistDetail extends Vue {
         .then(artist => {
           // this.attributes = attributes;
           this.artist = artist;
-          this.$_getArtistArtwork();
+          this.$_getArtistDetails();
           //  this.albums = albums;
           //  this.playlists = playlists;
         })
@@ -182,7 +248,7 @@ export default class ArtistDetail extends Vue {
   }
 
   // Helper methods
-  private $_getArtistArtwork() {
+  private $_getArtistDetails() {
     if (!this.artist || !this.artist.attributes) {
       return;
     }
@@ -191,26 +257,33 @@ export default class ArtistDetail extends Vue {
       return;
     }
 
-    let artworkSize = 0;
-    switch (this.$vuetify.breakpoint.name) {
-      case 'xs':
-        artworkSize = 300;
-        break;
-      case 'sm':
-        artworkSize = 400;
-        break;
-      case 'md':
-        artworkSize = 600;
-        break;
-      default:
-        artworkSize = 850;
-    }
+    getArtistDetails(
+      this.artist.attributes.url,
+      this.artist.id,
+      this.$vuetify.breakpoint.name
+    ).then((artistDetail: any) => {
+      const {
+        bannerUrl,
+        artworkUrl,
+        bio,
+        birthday,
+        relatedArtists,
+        origin
+      } = artistDetail;
 
-    getArtistArtwork(this.artist.attributes.url, artworkSize, artworkSize).then(
-      artwork => {
-        this.artworkUrl = artwork;
+      this.bannerUrl = bannerUrl;
+      this.artworkUrl = artworkUrl;
+      this.bio = bio;
+      this.birthday = birthday;
+
+      this.origin = origin;
+
+      if (relatedArtists && relatedArtists.length > 0) {
+        this.fetchMultipleArtistsCatalog(relatedArtists).then(artists => {
+          this.relatedArtists = artists;
+        });
       }
-    );
+    });
   }
 }
 </script>
@@ -221,7 +294,7 @@ export default class ArtistDetail extends Vue {
 }
 
 .artist-detail-header {
-  height: 55vh;
+  height: 60vh;
   position: relative;
 }
 
@@ -247,5 +320,10 @@ export default class ArtistDetail extends Vue {
 
 .artist-detail__info {
   width: 100%;
+}
+
+.bio-toggle {
+  font-weight: bold;
+  cursor: pointer;
 }
 </style>

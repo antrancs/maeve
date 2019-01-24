@@ -76,13 +76,6 @@ class MusicApiService {
   }
 
   /**
-   * Get recommendations for the current user
-   */
-  // getRecommendations(): Promise<MusicKit.Recommendation[]> {
-  //   return musicKit.getApiInstance().recommendations();
-  // }
-
-  /**
    * Get all songs in the user's library
    */
   getLibrarySongs(ids?: string[]): Promise<MusicKit.LibrarySong[]> {
@@ -185,6 +178,28 @@ class MusicApiService {
           limit
         };
     return musicKit.getApiInstance().charts(types, params);
+  }
+
+  getCuratorRelationship(curatorId: string, limit: number, offset: number) {
+    const storefrontId = musicKit.getApiInstance().storefrontId;
+    return this.axiosInstance
+      .get(`catalog/${storefrontId}/curators/${curatorId}/playlists`, {
+        headers: {
+          Authorization: `Bearer ${authService.developerToken}`,
+          'Content-Type': 'application/json'
+        },
+        params: {
+          limit,
+          offset
+        }
+      })
+      .then(res => {
+        if (!res.data) {
+          throw new Error('Error while fetching curators');
+        }
+
+        return res.data;
+      });
   }
 
   getAppleCuratorsPlaylists(

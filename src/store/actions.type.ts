@@ -50,6 +50,10 @@ export const FETCH_ONE_PLAYLIST_CATALOG = 'fetchOnePlaylistCatalog';
 export const FETCH_ALBUMS_CATALOG = 'fetchAlbumsCatalog';
 export const FETCH_MULTIPLE_PLAYLISTS_CATALOG = 'fetchMultiplePlaylistsCatalog';
 export const FETCH_ONE_RECOMMENDATION = 'fetchOneRecommendation';
+export const FETCH_ONE_CURATOR = 'fetchOneCurator';
+export const FETCH_CURATOR_PLAYLISTS = 'fetchCuratorPlaylists';
+export const FETCH_MULTIPLE_CURATORS = 'fetchMultipleCurators';
+export const FETCH_MULTIPLE_ARTISTS_CATALOG = 'fetchMultipleArtistsCatalog';
 export const SEARCH_CATALOG = 'searchCatalog';
 
 export const FETCH_ONE_ALBUM_LIBRARY = 'fetchOneAlbumLibrary';

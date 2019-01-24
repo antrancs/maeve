@@ -43,17 +43,66 @@ const formatArtworkUrl = (
  */
 const getArtistArtwork = (
   itunesUrl: string,
-  width?: number,
-  height?: number
+  artistId: string,
+  size: string
 ): Promise<string> => {
   return axios
     .get(
-      'https://us-central1-maeve-music.cloudfunctions.net/getArtistArtwork',
+      'https://us-central1-maeve-music.cloudfunctions.net/getArtistArtwork-2',
       {
         params: {
           url: itunesUrl,
-          width,
-          height
+          artistId,
+          size
+        }
+      }
+    )
+    .then(res => {
+      return res.data;
+    });
+};
+
+const getArtistDetails = (url: string, artistId: string, size: string) => {
+  return axios
+    .get(
+      'https://us-central1-maeve-music.cloudfunctions.net/getArtistDetails',
+      {
+        params: {
+          url,
+          artistId,
+          size
+        }
+      }
+    )
+    .then(res => {
+      return res.data;
+    });
+};
+
+const getCuratorBanner = (url: string, curatorId: string, size: string) => {
+  return axios
+    .get(
+      'https://us-central1-maeve-music.cloudfunctions.net/getCuratorBanner',
+      {
+        params: {
+          url,
+          curatorId,
+          size
+        }
+      }
+    )
+    .then(res => {
+      return res.data;
+    });
+};
+
+const getCuratorsByGenre = (genreId: string) => {
+  return axios
+    .get(
+      'https://us-central1-maeve-music.cloudfunctions.net/getCuratorsByGenre',
+      {
+        params: {
+          genreId
         }
       }
     )
@@ -73,5 +122,8 @@ export {
   getArtworkUrl,
   getArtistArtwork,
   formatArtworkUrl,
-  getSongsFromCollection
+  getSongsFromCollection,
+  getArtistDetails,
+  getCuratorBanner,
+  getCuratorsByGenre
 };

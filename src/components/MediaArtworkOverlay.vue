@@ -9,7 +9,7 @@
           @mouseout="playingControlHovered = false"
           @click="$emit('playing-control-clicked')"
         >
-          <v-icon>{{ contentIcon }}</v-icon>
+          <v-icon color="white">{{ contentIcon }}</v-icon>
         </button>
       </div>
     </div>

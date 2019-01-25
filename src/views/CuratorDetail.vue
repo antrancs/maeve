@@ -13,10 +13,12 @@
               :has-shadow="true"
               :isRound="true"
             />
-            <h2 class="curator-name">{{ curator.attributes.name }}</h2>
+            <h2 class="curator-name white-text">
+              {{ curator.attributes.name }}
+            </h2>
 
             <p
-              class="px-4 hidden-xs-only"
+              class="px-4 hidden-xs-only white-text"
               v-html="curator.attributes.editorialNotes.standard"
             ></p>
           </v-layout>

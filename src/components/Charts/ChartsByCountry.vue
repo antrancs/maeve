@@ -11,7 +11,7 @@
         class="world-playlist-wrapper elevation-8"
         :style="worldPlaylistWrapperStyle"
       >
-        <v-btn @click="close" title="Close" class="close-btn" icon>
+        <v-btn dark @click="close" title="Close" class="close-btn" icon>
           <v-icon>close</v-icon>
         </v-btn>
         <template v-if="playlist">
@@ -25,12 +25,17 @@
             <router-link
               :to="{ name: 'playlists', params: { id: playlist.id } }"
             >
-              <v-btn title="Go to detail" class="go-to-detail-btn" icon>
+              <v-btn dark title="Go to detail" class="go-to-detail-btn" icon>
                 <v-icon>arrow_forward_ios</v-icon>
               </v-btn>
             </router-link>
           </div>
-          <SongListSmall :tracks="songs" :isQueue="false" :isChart="true" />
+          <SongListSmall
+            :tracks="songs"
+            :isQueue="false"
+            :isChart="true"
+            :textColor="textColor"
+          />
         </template>
 
         <h3 v-else-if="playlist === null" class="pa-3">
@@ -66,6 +71,7 @@ import {
 import { Nullable } from '@/@types/model/model';
 import { getSongsFromCollection } from '@/utils/utils';
 import { SET_FOOTER_VISIBILITY } from '@/store/mutations.type';
+import { TEXT_PRIMARY_DARK } from '@/themes';
 @Component({
   components: {
     WorldMap,
@@ -80,6 +86,8 @@ export default class ChartsByCountry extends Vue {
     height: 0,
     top: '100%'
   };
+  // the text is white because the background is always dark
+  private textColor = TEXT_PRIMARY_DARK;
   private countryName = '';
   private countryId: Nullable<string> = null;
   private topCountries = ['us', 'ca', 'gb', 'mx', 'kr', 'cn', 'au', 'fr'];

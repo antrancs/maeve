@@ -294,7 +294,7 @@ export default class ArtistDetail extends Vue {
 }
 
 .artist-detail-header {
-  height: 60vh;
+  height: 50vh;
   position: relative;
 }
 

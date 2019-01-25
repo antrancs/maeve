@@ -10,7 +10,7 @@
     <v-card class="secondary">
       <v-layout row wrap>
         <v-flex xs12>
-          <v-btn icon dark @click="dialog = false">
+          <v-btn icon :dark="darkMode" @click="dialog = false">
             <v-icon>close</v-icon>
           </v-btn>
         </v-flex>
@@ -76,8 +76,12 @@
 
                 <v-divider></v-divider>
                 <v-flex class="text-xs-center my-2">
-                  <app-button :color="buttonColor" @on-click="updateRepeatMode">
-                    <v-icon dark left>{{ repeatIcon }}</v-icon
+                  <app-button
+                    :color="buttonColor"
+                    @on-click="updateRepeatMode"
+                    :style="buttonTextColor"
+                  >
+                    <v-icon left>{{ repeatIcon }}</v-icon
                     >Repeat
                   </app-button>
                 </v-flex>
@@ -146,6 +150,7 @@ import { Watch } from 'vue-property-decorator';
 import { RepeatMode } from '@/utils/constants';
 import { UPDATE_REPEAT_MODE } from '@/store/actions.type';
 import { Song, Nullable } from '@/@types/model/model';
+import { TEXT_PRIMARY_DARK, TEXT_PRIMARY_LIGHT } from '@/themes';
 
 @Component({
   components: {
@@ -174,6 +179,7 @@ export default class PlayerFullScreen extends Mixins(
   @Getter currentPlayingDuration!: number;
   @Getter currentTrackArtwork!: Nullable<string>;
   @Getter isAuthenticated!: boolean;
+  @Getter darkMode!: boolean;
 
   @Action
   [UPDATE_REPEAT_MODE]: () => void;
@@ -206,12 +212,6 @@ export default class PlayerFullScreen extends Mixins(
     }
   }
 
-  // get artworkWrapperWidthStyle() {
-  //   return {
-  //     width: this.musicPlayer.isPlaying ? '50%' : '40%'
-  //   };
-  // }
-
   get playingVisualizationSize() {
     return this.$vuetify.breakpoint.xsOnly ? 300 : 450;
   }
@@ -235,6 +235,19 @@ export default class PlayerFullScreen extends Mixins(
     return this.musicPlayer.repeatMode === RepeatMode.Off
       ? 'primary lighten-2'
       : 'accent';
+  }
+
+  get buttonTextColor() {
+    let textColor: string;
+
+    if (!this.darkMode && this.musicPlayer.repeatMode === RepeatMode.Off) {
+      textColor = TEXT_PRIMARY_LIGHT;
+    } else {
+      textColor = TEXT_PRIMARY_DARK;
+    }
+    return {
+      color: textColor
+    };
   }
 
   open() {

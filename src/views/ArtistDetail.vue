@@ -223,6 +223,7 @@ export default class ArtistDetail extends Vue {
 
   @Watch('$route')
   onRouteChange(to: Route, from: Route) {
+    window.scrollTo(0, 0);
     this.$_getArtistInfo();
   }
 

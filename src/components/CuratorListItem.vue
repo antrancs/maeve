@@ -60,7 +60,30 @@ export default class CuratorListItem extends Vue {
       return PLACEHOLDER_IMAGE;
     }
 
-    return getArtworkUrl(this.curator.attributes.artwork.url, 150, 150);
+    let curatorArtwork: number;
+    switch (this.$vuetify.breakpoint.name) {
+      case 'xs':
+        curatorArtwork = 50;
+        break;
+      case 'sm':
+        curatorArtwork = 80;
+        break;
+      case 'md':
+        curatorArtwork = 120;
+        break;
+      case 'lg':
+        curatorArtwork = 170;
+        break;
+      default:
+        // 'xl'
+        curatorArtwork = 250;
+    }
+
+    return getArtworkUrl(
+      this.curator.attributes.artwork.url,
+      curatorArtwork,
+      curatorArtwork
+    );
   }
 }
 </script>

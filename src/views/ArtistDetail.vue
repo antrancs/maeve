@@ -315,6 +315,7 @@ export default class ArtistDetail extends Vue {
 }
 
 .artist-detail__name {
+  color: white;
   font-size: $xl-font;
 }
 

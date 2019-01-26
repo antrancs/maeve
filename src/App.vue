@@ -15,7 +15,7 @@
     </v-content>
 
     <AppFooter />
-    <PlayerBar />
+    <PlayerBar v-if="currentPlaying" />
     <PlayQueue v-if="$vuetify.breakpoint.mdAndUp" />
     <AppSnackbar />
     <NewPlaylistDialog ref="newPlaylistDialog" />
@@ -38,7 +38,7 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 
 import AppSidebar from '@/components/TheSidebar.vue';
 import AppHeader from '@/components/TheHeader.vue';
-import PlayerBar from '@/components/MusicPlayer/ThePlayerBar.vue';
+// import PlayerBar from '@/components/MusicPlayer/ThePlayerBar.vue';
 import PlayQueue from '@/components/PlayQueue.vue';
 import AppFooter from '@/components/TheFooter.vue';
 import AppSnackbar from '@/components/TheSnackbar.vue';
@@ -46,13 +46,13 @@ import MediaActionMenu from '@/components/MediaActionMenu.vue';
 import NewPlaylistDialog from '@/components/NewPlaylistDialog.vue';
 import ThemeSetting from '@/components/ThemeSetting.vue';
 import { State, Action, Getter } from 'vuex-class';
-import { ThemeOption } from '@/@types/model/model';
+import { ThemeOption, Nullable } from '@/@types/model/model';
 import { LOAD_SETTINGS } from '@/store/actions.type';
 
 @Component({
   components: {
     AppHeader,
-    PlayerBar,
+    PlayerBar: () => import('@/components/MusicPlayer/ThePlayerBar.vue'),
     AppSidebar,
     PlayQueue,
     AppFooter,
@@ -67,6 +67,9 @@ export default class App extends Vue {
   private themeSetting = false;
 
   @State(state => state.settings.selectedTheme) selectedTheme!: ThemeOption;
+  @State(state => state.musicPlayer.currentPlaying) currentPlaying!: Nullable<
+    MusicKit.MediaItem
+  >;
 
   @Action [LOAD_SETTINGS]: () => void;
 

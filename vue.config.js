@@ -19,11 +19,16 @@ module.exports = {
     appleMobileWebAppCapable: 'yes',
     msTileColor: '#041f35',
     iconPaths: {
-      appleTouchIcon: 'img/icons/150.png',
-      msTileImage: 'img/icons/150.png'
+      favicon32: 'img/icons/favicon-32x32.png',
+      favicon16: 'img/icons/favicon-16x16.png',
+      appleTouchIcon: 'img/icons/apple-touch-icon-150x150.png',
+      maskIcon: 'img/icons/safari-pinned-tab.svg',
+      msTileImage: 'img/icons/msapplication-icon-144x144.png'
     },
     workboxPluginMode: 'GenerateSW',
     workboxOptions: {
+      skipWaiting: true,
+      clientsClaim: true,
       runtimeCaching: [
         {
           urlPattern: /https:\/\/js-cdn.music.apple.com\/musickit/,
@@ -42,7 +47,7 @@ module.exports = {
         },
         {
           urlPattern: /ssl.mzstatic.com\/image/,
-          handler: 'cacheFirst',
+          handler: 'networkFirst',
           options: {
             cacheName: 'image-cache',
             expiration: {

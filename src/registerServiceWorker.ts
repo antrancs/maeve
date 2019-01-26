@@ -24,11 +24,12 @@ if (process.env.NODE_ENV === 'production') {
     updatefound() {
       console.log('New content is downloading.');
     },
-    updated() {
+    updated(registration) {
       // store.dispatch(SHOW_SNACKBAR, {
       //   text: 'New content is available'
       // });
       console.log('New content is available; please refresh.');
+      window.location.reload(true);
     },
     offline() {
       // store.dispatch(SHOW_SNACKBAR, {

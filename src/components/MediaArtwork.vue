@@ -10,6 +10,7 @@
       v-lazy="artworkUrlForArtist || artworkUrl"
       alt
       :style="[artworkImageStyle, roundStyle]"
+      crossorigin="anonymous"
     />
 
     <slot></slot>

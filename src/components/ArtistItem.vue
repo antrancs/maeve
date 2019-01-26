@@ -39,7 +39,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { getArtistArtwork } from '@/utils/utils';
-import { Artist } from '@/@types/model/model';
+import { Artist, SnackbarMode } from '@/@types/model/model';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import { Action } from 'vuex-class';
 import { SHOW_SNACKBAR } from '@/store/actions.type';
@@ -104,7 +104,8 @@ export default class ArtistItem extends Vue {
       })
       .catch(err => {
         this.showSnackbar({
-          text: 'Something went wrong.'
+          text: 'Something went wrong.',
+          type: SnackbarMode.error
         });
       });
   }

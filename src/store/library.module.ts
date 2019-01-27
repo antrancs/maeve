@@ -71,7 +71,7 @@ const actions: ActionTree<UserLibraryState, any> = {
       });
     } catch (err) {
       // force log out when forbidden
-      await dispatch(LOGOUT);
+      // await dispatch(LOGOUT);
     }
 
     const hasNext = albums.length === limit;
@@ -96,7 +96,7 @@ const actions: ActionTree<UserLibraryState, any> = {
       });
     } catch (err) {
       // force log out when forbidden
-      await dispatch(LOGOUT);
+      // await dispatch(LOGOUT);
     }
 
     commit(SET_LIBRARY_PLAYLISTS, playlists);
@@ -124,7 +124,7 @@ const actions: ActionTree<UserLibraryState, any> = {
       });
     } catch (err) {
       // force log out when forbidden
-      await dispatch(LOGOUT);
+      // await dispatch(LOGOUT);
     }
 
     const hasNext = artists.length === limit;
@@ -150,7 +150,7 @@ const actions: ActionTree<UserLibraryState, any> = {
       });
     } catch (err) {
       // force log out when forbidden
-      await dispatch(LOGOUT);
+      // await dispatch(LOGOUT);
     }
 
     const hasNext = songs.length === limit;

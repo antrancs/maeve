@@ -1,7 +1,7 @@
 <template>
   <div
     class="artwork"
-    v-if="artworkUrlForArtist || artwork"
+    v-if="artworkUrlForArtist || artworkUrl"
     :style="roundStyle"
   >
     <img
@@ -20,6 +20,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { getArtworkUrl } from '@/utils/utils';
 import { Nullable } from '@/@types/model/model';
+import { PLACEHOLDER_IMAGE } from '@/utils/constants';
 
 @Component
 export default class MediaArtwork extends Vue {
@@ -67,7 +68,7 @@ export default class MediaArtwork extends Vue {
 
   get artworkUrl(): string {
     if (!this.artwork) {
-      return '';
+      return PLACEHOLDER_IMAGE;
     }
     return getArtworkUrl(this.artwork.url, this.width, this.height);
   }

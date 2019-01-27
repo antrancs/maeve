@@ -6,9 +6,18 @@ import {
   FETCH_ONE_PLAYLIST_CATALOG,
   FETCH_MULTIPLE_PLAYLISTS_CATALOG,
   FETCH_ONE_RECOMMENDATION,
-  SEARCH_CATALOG
+  SEARCH_CATALOG,
+  FETCH_MULTIPLE_ARTISTS_CATALOG,
+  FETCH_ONE_CURATOR,
+  FETCH_MULTIPLE_CURATORS,
+  FETCH_CURATOR_PLAYLISTS
 } from './actions.type';
-import { CatalogState, SearchCatalogPayload, FetchResult } from './types';
+import {
+  CatalogState,
+  SearchCatalogPayload,
+  FetchResult,
+  FetchCuratorPlaylistsPayload
+} from './types';
 import musicApiService from '@/services/musicApi.service';
 
 const initialState: CatalogState = {};
@@ -44,8 +53,41 @@ const actions: ActionTree<CatalogState, any> = {
     return musicKit.getApiInstance().playlists(ids);
   },
 
+  [FETCH_MULTIPLE_ARTISTS_CATALOG](_, ids: string[]) {
+    return musicKit.getApiInstance().artists(ids);
+  },
+
   [FETCH_ONE_RECOMMENDATION](_, id: string) {
     return musicKit.getApiInstance().recommendation(id);
+  },
+
+  [FETCH_ONE_CURATOR](_, id: string) {
+    return musicKit.getApiInstance().curator(id);
+  },
+
+  async [FETCH_CURATOR_PLAYLISTS](
+    _,
+    { id, limit, offset }: FetchCuratorPlaylistsPayload
+  ): Promise<FetchResult<MusicKit.Playlist>> {
+    const result = await musicApiService.getCuratorRelationship(
+      id,
+      limit,
+      offset
+    );
+
+    const data = result.data;
+    const hasNext = data.length === limit;
+    const hasNoData = data.length === 0 && offset === 0;
+
+    return {
+      data: result.data,
+      hasNext,
+      hasNoData
+    };
+  },
+
+  [FETCH_MULTIPLE_CURATORS](_, ids: string[]) {
+    return musicKit.getApiInstance().curators(ids);
   },
 
   async [SEARCH_CATALOG](

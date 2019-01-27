@@ -8,6 +8,7 @@
         :index="index"
         :isQueue="isQueue"
         :isChart="isChart"
+        :textColor="textColor"
         @song-item-clicked="handleSongClicked"
         @actions-icon-click="handleActionIconClick"
         @remove-from-queue="handleRemoveFromQueue"
@@ -42,6 +43,7 @@ import {
 export default class SongListSmall extends Mixins(SongListMixin) {
   @Prop({ default: false })
   isQueue!: boolean;
+  @Prop() textColor!: Nullable<string>;
 
   @Action [REMOVE_SONG_FROM_QUEUE]: (index: number) => void;
   @Action

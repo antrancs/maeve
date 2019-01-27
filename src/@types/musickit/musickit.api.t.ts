@@ -83,6 +83,11 @@ declare namespace MusicKit {
      */
     artist(id: string, parameters: QueryParameters): Promise<Artist>;
 
+    artists(
+      ids: string[],
+      parameters?: QueryParameters
+    ): Promise<MusicKit.Artist[]>;
+
     charts(
       types: string[],
       parameters?: QueryParameters
@@ -151,5 +156,14 @@ declare namespace MusicKit {
       id: string,
       parameter?: QueryParameters
     ): Promise<Recommendation>;
+
+    /**
+     * https://developer.apple.com/documentation/musickitjs/musickit/api/3001443-curator
+     * @param id A curator identifier.
+     * @param parameters A query parameters object that is serialized and passed directly to the Apple Music API.
+     */
+    curator(id: string, parameters?: QueryParameters): Promise<Curator>;
+
+    curators(id: string[], parameters?: QueryParameters): Promise<Curator[]>;
   }
 }

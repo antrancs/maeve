@@ -38,14 +38,21 @@ const router = new Router({
       path: '/albums/:id',
       name: 'albums',
       component: () =>
-        import(/* webpackChunkName: "searchViewAll" */ './views/CollectionDetail.vue'),
+        import(/* webpackChunkName: "albums" */ './views/CollectionDetail.vue'),
       props: true
     },
     {
       path: '/playlists/:id',
       name: 'playlists',
       component: () =>
-        import(/* webpackChunkName: "searchViewAll" */ './views/CollectionDetail.vue'),
+        import(/* webpackChunkName: "playlists" */ './views/CollectionDetail.vue'),
+      props: true
+    },
+    {
+      path: '/curators/:id',
+      name: 'curators',
+      component: () =>
+        import(/* webpackChunkName: "curators" */ './views/CuratorDetail.vue'),
       props: true
     },
     {

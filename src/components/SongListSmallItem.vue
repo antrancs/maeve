@@ -8,7 +8,8 @@
         'song-item__wrapper',
         {
           'song-item--playing': isActive,
-          'primary lighten-2': hover,
+          'primary lighten-2': hover && !textColor && darkMode,
+          'primary darken-2': hover && !textColor && !darkMode,
           'py-1': $vuetify.breakpoint.xsOnly,
           'dark-mode': darkMode
         }
@@ -37,9 +38,7 @@
           </div>
         </div>
 
-        <div v-if="isChart" style="width: 3.2rem; font-weight: bold">
-          {{ index + 1 }}
-        </div>
+        <div v-if="isChart" :style="chartIndex">{{ index + 1 }}</div>
 
         <v-flex :class="$style['middle-items']">
           <v-layout row wrap>
@@ -56,6 +55,7 @@
                 <v-icon
                   class="ml-1"
                   small
+                  :color="textColor || ''"
                   v-if="song.attributes.contentRating === 'explicit'"
                   >explicit</v-icon
                 >
@@ -80,7 +80,7 @@
           icon
           @click.stop="onActionsIconClicked"
         >
-          <v-icon>more_horiz</v-icon>
+          <v-icon :color="textColor || undefined">more_horiz</v-icon>
         </v-btn>
 
         <div
@@ -135,6 +135,22 @@ import SongItemMixin from '@/mixins/SongItemMixin';
 export default class SongListSmallItem extends Mixins(SongItemMixin) {
   @Prop({ default: false })
   isQueue!: boolean;
+
+  @Prop() textColor!: Nullable<string>;
+
+  get songNameColor() {
+    return this.isActive
+      ? this.$vuetify.theme.accent
+      : this.textColor || this.$vuetify.theme.primaryText;
+  }
+
+  get chartIndex() {
+    return {
+      width: '3.2rem',
+      'font-weight': 'bold',
+      color: this.textColor || undefined
+    };
+  }
 }
 </script>
 

@@ -129,6 +129,10 @@ export default class App extends Vue {
   border-radius: 10px;
 }
 
+.white-text {
+  color: white;
+}
+
 .card-text {
   font-size: 1.5rem;
 }

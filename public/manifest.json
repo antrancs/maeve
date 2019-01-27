@@ -3,13 +3,13 @@
   "short_name": "Maeve",
   "icons": [
     {
-      "src": "./img/icons/100.png",
-      "sizes": "100x100",
+      "src": "./img/icons/android-chrome-192x192.png",
+      "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "./img/icons/150.png",
-      "sizes": "150x150",
+      "src": "./img/icons/android-chrome-512x512.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ],

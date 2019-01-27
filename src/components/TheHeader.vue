@@ -39,7 +39,7 @@
     <v-spacer></v-spacer>
 
     <app-button v-if="!isAuthenticated" @on-click="login" class="mr-1"
-      >Log ins</app-button
+      >Log in</app-button
     >
     <v-menu v-else offset-y transition="scale-transition" :nudge-bottom="10">
       <v-btn icon large flat slot="activator" class="mr-1">

@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import 'vuetify/dist/vuetify.min.css';
+import './registerServiceWorker';
 
 import musicKit from '@/services/musicKit';
 musicKit.init();

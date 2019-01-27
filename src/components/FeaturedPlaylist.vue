@@ -50,7 +50,7 @@ export default class FeaturedPlaylist extends Vue {
       return '';
     }
 
-    return getArtworkUrl(this.playlist.attributes.artwork.url, 400, 400);
+    return getArtworkUrl(this.playlist.attributes.artwork.url, 300, 300);
   }
 
   get featurePlaylistHeight() {

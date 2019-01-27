@@ -8,7 +8,13 @@
       v-for="collection in collections"
       :key="collection.id"
     >
-      <CollectionItemCard :collection="collection" />
+      <LinkComponent
+        v-if="collection && collection.attributes"
+        :routeName="collection.type"
+        :routeParams="{ id: collection.id }"
+      >
+        <CollectionItemCard :collection="collection" />
+      </LinkComponent>
     </v-flex>
   </transition-group>
 </template>
@@ -21,9 +27,10 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import CollectionItemCard from '@/components/CollectionItemCard.vue';
 import { Collection } from '@/@types/model/model';
+import LinkComponent from '@/components/LinkComponent.vue';
 
 @Component({
-  components: { CollectionItemCard }
+  components: { CollectionItemCard, LinkComponent }
 })
 export default class SongCollectionList extends Vue {
   @Prop({ default: () => [] })

@@ -1,9 +1,8 @@
 <template>
   <v-layout row>
-    <v-flex shrink="true">
+    <v-flex grow :style="artworkStyle">
       <MediaArtwork
         :artwork="collection.attributes.artwork"
-        :style="artworkStyle"
         :width="artworkSize"
         :height="artworkSize"
         :has-shadow="true"
@@ -120,8 +119,8 @@ export default class CollectionHeader extends Vue {
 
   get artworkStyle() {
     return {
-      width: `${this.artworkSize}px`,
-      height: `${this.artworkSize}px`
+      'max-width': `${this.artworkSize}px`,
+      'max-height': `${this.artworkSize}px`
     };
   }
 

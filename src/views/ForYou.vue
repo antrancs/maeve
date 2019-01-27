@@ -51,7 +51,13 @@
                       .relationships.contents.data"
                     :key="`${collection.id}-${index}`"
                   >
-                    <CollectionItemCard :collection="collection" />
+                    <LinkComponent
+                      v-if="collection && collection.attributes"
+                      :routeName="collection.type"
+                      :routeParams="{ id: collection.id }"
+                    >
+                      <CollectionItemCard :collection="collection" />
+                    </LinkComponent>
                   </v-flex>
                 </v-layout>
               </v-flex>
@@ -68,6 +74,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import SongCollectionList from '@/components/SongCollectionList.vue';
 import CollectionItemCard from '@/components/CollectionItemCard.vue';
+import LinkComponent from '@/components/LinkComponent.vue';
 import { Collection } from '@/@types/model/model';
 import { Action } from 'vuex-class';
 import {
@@ -79,7 +86,8 @@ import { FetchRecommendationsAction } from '@/store/types';
 @Component({
   components: {
     SongCollectionList,
-    CollectionItemCard
+    CollectionItemCard,
+    LinkComponent
   }
 })
 export default class ForYou extends Vue {

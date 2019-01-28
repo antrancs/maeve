@@ -13,7 +13,7 @@
           </v-flex>
 
           <v-flex :class="$style['items']">
-            <SongListSmall :tracks="queuedSongs" :is-queue="true" />
+            <SongListSmall :songs="queuedSongs" :is-queue="true" />
           </v-flex>
         </v-layout>
       </div>

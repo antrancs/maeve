@@ -20,7 +20,7 @@
               class="px-2 py-4"
               :collection="playlist"
               :artworkSize="150"
-              :numberOfSongs="songs.length"
+              :numberOfSongs="numberOfSongs"
             />
             <router-link
               :to="{ name: 'playlists', params: { id: playlist.id } }"
@@ -31,7 +31,7 @@
             </router-link>
           </div>
           <SongListSmall
-            :tracks="songs"
+            :collection="playlist"
             :isQueue="false"
             :isChart="true"
             :textColor="textColor"
@@ -69,9 +69,9 @@ import {
   FetchMultiplePlaylistsCatalogAction
 } from '@/store/types';
 import { Nullable } from '@/@types/model/model';
-import { getSongsFromCollection } from '@/utils/utils';
 import { SET_FOOTER_VISIBILITY } from '@/store/mutations.type';
 import { TEXT_PRIMARY_DARK } from '@/themes';
+import { getSongsFromCollection } from '@/utils/utils';
 @Component({
   components: {
     WorldMap,
@@ -103,10 +103,8 @@ export default class ChartsByCountry extends Vue {
     return this.topCountries.map(country => DAILY_TOP_100_COUNTRY_MAP[country]);
   }
 
-  get songs(): MusicKit.Song[] {
-    return this.playlist
-      ? (getSongsFromCollection(this.playlist) as MusicKit.Song[])
-      : [];
+  get numberOfSongs(): number {
+    return getSongsFromCollection(this.playlist).length;
   }
 
   get collectionName(): string {

@@ -11,7 +11,7 @@
 
       <ArtistList v-else-if="type === 'artists'" :artists="items" />
 
-      <SongListLarge v-else-if="type === 'songs'" :tracks="items" />
+      <SongListLarge v-else-if="type === 'songs'" :songs="items" />
     </v-layout>
   </v-container>
 </template>

@@ -2,13 +2,14 @@
   <v-layout column>
     <v-flex xs12>
       <SongListSmallItem
-        :key="`${track.id}-${index}`"
-        v-for="(track, index) in tracks"
-        :song="track"
+        :key="`${song.id}-${index}`"
+        v-for="(song, index) in songItems"
+        :song="song"
         :index="index"
         :isQueue="isQueue"
         :isChart="isChart"
         :textColor="textColor"
+        :is-from-album="fromAlbum"
         @song-item-clicked="handleSongClicked"
         @actions-icon-click="handleActionIconClick"
         @remove-from-queue="handleRemoveFromQueue"

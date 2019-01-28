@@ -55,6 +55,7 @@ export const FETCH_CURATOR_PLAYLISTS = 'fetchCuratorPlaylists';
 export const FETCH_MULTIPLE_CURATORS = 'fetchMultipleCurators';
 export const FETCH_MULTIPLE_ARTISTS_CATALOG = 'fetchMultipleArtistsCatalog';
 export const SEARCH_CATALOG = 'searchCatalog';
+export const FETCH_CATALOG_SONG_DETAILS = 'fetchCatalogSongsDetails';
 
 export const FETCH_ONE_ALBUM_LIBRARY = 'fetchOneAlbumLibrary';
 export const FETCH_ONE_PLAYLIST_LIBRARY = 'fetchOnePlaylistLibrary';

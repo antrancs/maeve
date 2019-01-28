@@ -7,24 +7,16 @@
         :class="[$style['column'], { 'pr-4': !albumClicked }]"
         :style="[columnStyleHeight, artistColumnStyle]"
       >
-        <div
-          :key="artist.id"
-          v-for="artist in artists"
-          :class="$style['artist-item']"
-          @click="() => handleArtistItemClicked(artist.id)"
-        >
-          <img :src="placeHolderImage" :class="$style['artist-avatar']" />
-          <div :class="[$style['artist-name-wrapper'], 'ml-2']">
-            <div :class="$style['artist-name']">
-              {{ artist.attributes ? artist.attributes.name : '' }}
-            </div>
-          </div>
-        </div>
+        <LibraryArtistList
+          v-if="artists"
+          :artists="artists"
+          @artist-item-clicked="handleArtistItemClicked"
+        />
       </v-flex>
 
       <v-flex
         md6
-        :class="($style['column'], { sm7: !albumClicked, sm4: albumClicked })"
+        :class="[$style['column'], { sm7: !albumClicked, sm5: albumClicked }]"
         :style="columnStyleHeight"
       >
         <div :class="$style['back-button']">
@@ -37,31 +29,16 @@
             <v-icon>arrow_back</v-icon>
           </v-btn>
         </div>
-
-        <template v-if="selectedArtist">
-          <h2 class="text-xs-center">
-            {{ this.selectedArtist.attributes.name }}
-          </h2>
-          <transition-group name="list" tag="div" class="layout row wrap">
-            <v-flex
-              xs6
-              sm6
-              md6
-              lg4
-              v-for="album in selectedArtistAlbums"
-              :key="album.id"
-              class="pa-2"
-              :class="$style['album-item']"
-              @click="() => handleAlbumClicked(album.id)"
-            >
-              <CollectionItemCard :collection="album" />
-            </v-flex>
-          </transition-group>
-        </template>
+        <LibraryArtistAlbums
+          v-if="selectedArtist"
+          :albumIds="selectedArtistAlbumIds"
+          :artistName="selectedArtist.attributes.name"
+          @on-album-clicked="handleAlbumClicked"
+        />
       </v-flex>
 
       <v-flex
-        sm8
+        sm7
         md6
         :style="[columnStyleHeight, albumDetailColumnStyle]"
         :class="[$style['album-detail-column'], $style['column'], 'pl-2']"
@@ -75,7 +52,7 @@
 
           <SongListSmall
             class="mt-4"
-            :tracks="selectedAlbum.relationships.tracks.data"
+            :collection="selectedAlbum"
             :isQueue="false"
           />
         </template>
@@ -89,7 +66,8 @@ import Vue from 'vue';
 import { Action, Mutation, State } from 'vuex-class';
 import Component from 'vue-class-component';
 
-import CollectionItemCard from '@/components/CollectionItemCard.vue';
+import LibraryArtistList from '@/components/Library/Artists/LibraryArtistList.vue';
+import LibraryArtistAlbums from '@/components/Library/Artists/LibraryArtistAlbums.vue';
 import CollectionHeader from '@/components/CollectionHeader.vue';
 import SongListSmall from '@/components/SongListSmall.vue';
 import {
@@ -102,21 +80,20 @@ import {
   FetchOneAlbumLibraryAction
 } from '@/store/types';
 import { Nullable } from '@/@types/model/model';
-import { PLACEHOLDER_IMAGE } from '@/utils/constants';
 import { SET_FOOTER_VISIBILITY } from '@/store/mutations.type';
 
 @Component({
   components: {
-    CollectionItemCard,
     CollectionHeader,
-    SongListSmall
+    SongListSmall,
+    LibraryArtistList,
+    LibraryArtistAlbums
   }
 })
 export default class MyLibraryArtists extends Vue {
   private artists: Nullable<MusicKit.LibraryArtist[]> = null;
   private offset = 0;
   private searchLimit = 20;
-  private placeHolderImage = PLACEHOLDER_IMAGE;
   private albumClicked = false;
   private selectedAlbum: Nullable<MusicKit.LibraryAlbum> = null;
   private selectedArtist: Nullable<MusicKit.LibraryArtist> = null;
@@ -160,13 +137,13 @@ export default class MyLibraryArtists extends Vue {
         };
   }
 
-  get selectedArtistAlbums() {
+  get selectedArtistAlbumIds(): string[] {
     if (!this.selectedArtist) {
       return [];
     }
 
     return this.selectedArtist.relationships
-      ? this.selectedArtist.relationships.albums!.data
+      ? this.selectedArtist.relationships.albums!.data.map(album => album.id)
       : [];
   }
 
@@ -187,7 +164,7 @@ export default class MyLibraryArtists extends Vue {
   }
 
   handleArtistItemClicked(artistId: string) {
-    this.selectedArtist = null;
+    // this.selectedArtist = null;
     this.fetchOneArtistLibrary(artistId).then(artist => {
       this.selectedArtist = artist;
     });
@@ -206,32 +183,6 @@ export default class MyLibraryArtists extends Vue {
 </script>
 
 <style lang="scss" module>
-.artist-item {
-  align-items: center;
-  cursor: pointer;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  height: 6rem;
-}
-
-.artist-avatar {
-  width: 4rem;
-  height: 4rem;
-}
-
-.artist-name {
-  font-size: 1.8rem;
-}
-
-.artist-name-wrapper {
-  align-items: center;
-  border-bottom: 0.5px solid var(--v-secondaryText-base);
-  display: flex;
-  height: 100%;
-  flex: 1;
-}
-
 .column {
   overflow-y: scroll;
   transition: max-width 0.2s ease;
@@ -239,10 +190,6 @@ export default class MyLibraryArtists extends Vue {
 
 .album-detail-column {
   transition: opacity 0.2s ease;
-}
-
-.album-item {
-  cursor: pointer;
 }
 
 .back-button {

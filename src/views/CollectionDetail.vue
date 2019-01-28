@@ -19,11 +19,7 @@
               <CollectionHeader
                 :collection="collection"
                 :artworkSize="artworkSize"
-                :numberOfSongs="
-                  songsWithRelationships
-                    ? songsWithRelationships.length
-                    : songs.length
-                "
+                :numberOfSongs="numberOfSongs"
               />
             </v-flex>
 
@@ -57,11 +53,7 @@
     </div>
 
     <v-container>
-      <SongListLarge
-        :tracks="songsWithRelationships || songs"
-        :collection="collection"
-        :playlistId="playlistId"
-      />
+      <SongListLarge :collection="collection" :playlistId="playlistId" />
     </v-container>
   </div>
 </template>
@@ -115,7 +107,7 @@ import { TEXT_PRIMARY_DARK, TEXT_SECONDARY_DARK } from '@/themes';
 })
 export default class CollectionDetail extends Vue {
   private collection: Nullable<Collection> = null;
-  private songsWithRelationships: Nullable<MusicKit.Song[]> = null;
+  // private songsWithRelationships: Nullable<MusicKit.Song[]> = null;
   @Prop() id!: string;
 
   @Getter
@@ -126,16 +118,9 @@ export default class CollectionDetail extends Vue {
   @Action [FETCH_ONE_ALBUM_LIBRARY]: FetchOneAlbumLibraryAction;
   @Action [FETCH_ONE_PLAYLIST_LIBRARY]: FetchOnePlaylistLibraryaAction;
   @Action [SHOW_SNACKBAR]: ShowSnackbarAction;
-  @Action fetchCatalogSongsDetails!: (
-    ids?: string[]
-  ) => Promise<MusicKit.Song[]>;
 
-  get songs(): Song[] {
-    return this.songsWithRelationships
-      ? []
-      : this.collection
-      ? getSongsFromCollection(this.collection)
-      : [];
+  get numberOfSongs(): number {
+    return getSongsFromCollection(this.collection).length;
   }
 
   get collectionType(): CollectionType {
@@ -218,21 +203,13 @@ export default class CollectionDetail extends Vue {
 
   async fetchCollection() {
     this.collection = null;
-    this.songsWithRelationships = null;
     switch (this.collectionType) {
       case CollectionType.album:
         this.collection = await this.fetchOneAlbumCatalog(this.id);
         break;
-      case CollectionType.playlist: {
-        const collection = await this.fetchOnePlaylistCatalog(this.id);
-        const songs = getSongsFromCollection(collection);
-        const songIds = songs.map(song => song.id);
-        this.songsWithRelationships = await this.fetchCatalogSongsDetails(
-          songIds
-        );
-        this.collection = collection;
+      case CollectionType.playlist:
+        this.collection = await this.fetchOnePlaylistCatalog(this.id);
         break;
-      }
       case CollectionType.libraryAlbum:
         this.collection = await this.fetchOneAlbumLibrary(this.id);
         break;

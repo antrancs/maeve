@@ -135,10 +135,7 @@ import SongItemMixin from '@/mixins/SongItemMixin';
 @Component({
   components: { MediaArtworkOverlay, MediaArtwork, ResourceLinkList }
 })
-export default class SongListLargeItem extends Mixins(SongItemMixin) {
-  @Prop({ default: true })
-  isFromAlbum!: boolean;
-}
+export default class SongListLargeItem extends Mixins(SongItemMixin) {}
 </script>
 
 <style lang="scss" module>

@@ -13,6 +13,7 @@ import {
   TOGGLE_SHUFFLE_MODE,
   SEEK_TO_TIME,
   CHANGE_VOLUME,
+  MUTE_VOLUME,
   UPDATE_REPEAT_MODE
 } from '@/store/actions.type';
 import {
@@ -24,6 +25,7 @@ import {
   SET_CURRENT_PLAYBACK_TIME,
   SET_REPEAT_MODE,
   SET_VOLUME,
+  SET_IS_MUTED,
   SET_CURRENT_PLAYBACK_TIME_AFTER_SKIP
 } from '@/store/mutations.type';
 import {
@@ -44,6 +46,7 @@ const initialState: MusicPlayerState = {
   currentPlaybackTimeInMilliSeconds: 0,
   repeatMode: RepeatMode.Off,
   volume: 1,
+  isMuted: false,
   currentPlaybackTimeAfterSkip: 0
 };
 
@@ -168,9 +171,18 @@ const actions: ActionTree<MusicPlayerState, any> = {
     commit(SET_CURRENT_PLAYBACK_TIME_AFTER_SKIP, time);
   },
 
-  [CHANGE_VOLUME]({ commit }, volume) {
+  [CHANGE_VOLUME]({ commit, state }, volume) {
     musicPlayerService.changeVolume(volume);
     commit(SET_VOLUME, volume);
+    if (state.isMuted) {
+      commit(SET_IS_MUTED)
+    }
+  },
+
+  [MUTE_VOLUME]({ state, commit }) {
+    const volume = state.isMuted ? state.volume : 0;
+    musicPlayerService.changeVolume(volume);
+    commit(SET_IS_MUTED);
   }
 };
 
@@ -201,6 +213,10 @@ const mutations: MutationTree<MusicPlayerState> = {
 
   [SET_VOLUME](state, volume: number) {
     state.volume = volume;
+  },
+
+  [SET_IS_MUTED](state) {
+    state.isMuted = !state.isMuted
   },
 
   [SET_CURRENT_PLAYBACK_TIME_AFTER_SKIP](state, time: number) {

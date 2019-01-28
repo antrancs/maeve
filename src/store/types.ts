@@ -19,6 +19,7 @@ export interface MusicPlayerState {
   currentPlaybackTimeInMilliSeconds: number;
   repeatMode: RepeatMode;
   volume: number;
+  isMuted: boolean;
   currentPlaybackTimeAfterSkip: number;
 }
 
@@ -107,7 +108,7 @@ export interface CollectionState {
   songs: Song[];
 }
 
-export interface CatalogState {}
+export interface CatalogState { }
 
 export interface SnackbarState {
   visibility: boolean;

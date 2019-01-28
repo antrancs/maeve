@@ -7,7 +7,7 @@
           class="playing-control btn btn--icon"
           @mouseover="playingControlHovered = true"
           @mouseout="playingControlHovered = false"
-          @click="$emit('playing-control-clicked')"
+          @click.stop="$emit('playing-control-clicked')"
         >
           <v-icon color="white">{{ contentIcon }}</v-icon>
         </button>

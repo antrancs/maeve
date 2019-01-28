@@ -25,14 +25,24 @@
           ></v-progress-circular>
           <div v-else class="size-fit">
             <MediaArtwork
+              v-if="!isFromAlbum"
               :artwork="song.attributes.artwork"
               :width="50"
               :height="50"
             />
 
+            <div
+              v-if="isFromAlbum && !isActive"
+              class="track-number flex-center size-fit"
+              :style="{ opacity: hover ? 0 : 1 }"
+            >
+              {{ song.attributes.trackNumber }}
+            </div>
+
             <MediaArtworkOverlay
               :is-active="isActive"
               :is-playing="isPlaying"
+              :show-background="!isFromAlbum"
               @playing-control-clicked="onSongClicked"
             />
           </div>

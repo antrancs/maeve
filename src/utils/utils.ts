@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Collection, Song } from '@/@types/model/model';
+import { Collection, Song, Nullable } from '@/@types/model/model';
 
 const getArtworkUrl = (
   originalUrl: string,
@@ -111,8 +111,12 @@ const getCuratorsByGenre = (genreId: string) => {
     });
 };
 
-const getSongsFromCollection = (collection: Collection): Song[] => {
-  if (!collection.relationships || !collection.relationships.tracks) {
+const getSongsFromCollection = (collection: Nullable<Collection>): Song[] => {
+  if (
+    !collection ||
+    !collection.relationships ||
+    !collection.relationships.tracks
+  ) {
     return [];
   }
   return collection.relationships.tracks.data;

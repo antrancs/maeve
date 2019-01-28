@@ -13,6 +13,8 @@ export default class SongItemMixin extends Vue {
   @Prop()
   index!: number;
   @Prop({ default: false }) isChart!: boolean;
+  @Prop({ default: true })
+  isFromAlbum!: boolean;
 
   @Getter darkMode!: boolean;
   @Getter isAuthenticated!: boolean;

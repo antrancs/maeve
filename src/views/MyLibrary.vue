@@ -39,12 +39,6 @@
         </v-flex>
       </template>
 
-      <template v-if="resource === 'artists'">
-        <v-flex xs12>
-          <ArtistList v-if="artists" :artists="filteredArtists" />
-        </v-flex>
-      </template>
-
       <div class="px-2" v-if="hasNoData">
         You don't have any {{ resource }} in your library
       </div>
@@ -62,7 +56,7 @@ import debounce from 'lodash/debounce';
 
 import SongCollectionList from '@/components/SongCollectionList.vue';
 import SongListLarge from '@/components/SongListLarge.vue';
-import ArtistList from '@/components/ArtistList.vue';
+// import ArtistList from '@/components/ArtistList.vue';
 import InfiniteScrollMixin from '@/mixins/InfiniteScrollMixin';
 import musicApiService from '@/services/musicApi.service';
 import { Action, Mutation } from 'vuex-class';
@@ -72,21 +66,18 @@ import { Route } from 'vue-router';
 import {
   FETCH_LIBRARY_SONGS,
   FETCH_LIBRARY_ALBUMS,
-  FETCH_LIBRARY_PLAYLISTS,
-  FETCH_LIBRARY_ARTISTS
+  FETCH_LIBRARY_PLAYLISTS
 } from '@/store/actions.type';
 import {
   FetchLibraryAlbumsActions,
   FetchLibraryPlaylistsActions,
-  FetchLibrarySongsActions,
-  FetchLibraryArtistssActions
+  FetchLibrarySongsActions
 } from '@/store/types';
 
 @Component({
   components: {
     SongCollectionList,
-    SongListLarge,
-    ArtistList
+    SongListLarge
   }
 })
 export default class MyLibrary extends Mixins(InfiniteScrollMixin) {
@@ -94,7 +85,6 @@ export default class MyLibrary extends Mixins(InfiniteScrollMixin) {
   private playlists: MusicKit.LibraryPlaylist[] = [];
   private albums: MusicKit.LibraryAlbum[] = [];
   private songs: MusicKit.LibrarySong[] = [];
-  private artists: MusicKit.LibraryArtist[] = [];
 
   private hasNoData = false;
   private throttleScrollHandler!: (event: Event) => void;
@@ -107,7 +97,6 @@ export default class MyLibrary extends Mixins(InfiniteScrollMixin) {
   @Action [FETCH_LIBRARY_ALBUMS]: FetchLibraryAlbumsActions;
   @Action [FETCH_LIBRARY_PLAYLISTS]: FetchLibraryPlaylistsActions;
   @Action [FETCH_LIBRARY_SONGS]: FetchLibrarySongsActions;
-  @Action [FETCH_LIBRARY_ARTISTS]: FetchLibraryArtistssActions;
   @Action searchLibrary!: (searchTerm: string) => Promise<any[]>;
 
   get filteredAlbums(): MusicKit.LibraryAlbum[] {
@@ -167,24 +156,6 @@ export default class MyLibrary extends Mixins(InfiniteScrollMixin) {
     );
   }
 
-  get filteredArtists(): MusicKit.LibraryArtist[] {
-    if (this.resource !== 'artists') {
-      return [];
-    }
-
-    if (!this.searchText || this.searchText.trim().length === 0) {
-      return this.artists;
-    }
-
-    const searchText = this.searchText.toLowerCase();
-
-    return this.artists.filter(
-      artist =>
-        artist.attributes &&
-        artist.attributes.name.toLowerCase().includes(searchText)
-    );
-  }
-
   get placeholderSearch(): string {
     switch (this.resource) {
       case 'albums':
@@ -214,7 +185,6 @@ export default class MyLibrary extends Mixins(InfiniteScrollMixin) {
     this.playlists = [];
     this.albums = [];
     this.songs = [];
-    this.artists = [];
     this.offset = 0;
     this.shouldLoad = true;
     this.noMoreData = false;
@@ -268,19 +238,6 @@ export default class MyLibrary extends Mixins(InfiniteScrollMixin) {
           limit: MyLibrary.SEARCH_LIMIT
         });
         this.$_processResult<MusicKit.LibrarySong>(this.songs, {
-          data,
-          hasNext,
-          hasNoData
-        });
-        break;
-      }
-
-      case 'artists': {
-        const { data, hasNext, hasNoData } = await this.fetchLibraryArtists({
-          offset: this.offset,
-          limit: MyLibrary.SEARCH_LIMIT
-        });
-        this.$_processResult<MusicKit.LibraryArtist>(this.artists, {
           data,
           hasNext,
           hasNoData

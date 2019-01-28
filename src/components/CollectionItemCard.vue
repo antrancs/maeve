@@ -1,64 +1,59 @@
 <template>
-  <router-link
-    v-if="collection && collection.attributes"
-    :to="{ name: collection.type, params: { id: collection.id } }"
-  >
-    <v-hover>
-      <v-card class="secondary elevation-8 item-card" slot-scope="{ hover }">
-        <MediaArtwork :artwork="artwork" :width="220" :height="220">
-          <template v-if="hover || isCollectionBeingPlayed">
-            <div class="overlay"></div>
+  <v-hover>
+    <v-card class="secondary elevation-8 item-card" slot-scope="{ hover }">
+      <MediaArtwork :artwork="artwork" :width="220" :height="220">
+        <template v-if="hover || isCollectionBeingPlayed">
+          <div class="overlay"></div>
 
-            <v-btn
-              icon
-              round
-              @click.prevent="playCollection"
-              color="accent elevation-5"
-              class="play-button"
+          <v-btn
+            icon
+            round
+            @click.prevent.stop="playCollection"
+            color="accent elevation-5"
+            class="play-button"
+          >
+            <v-icon v-if="isCollectionBeingPlayed && musicPlayer.isPlaying"
+              >pause</v-icon
             >
-              <v-icon v-if="isCollectionBeingPlayed && musicPlayer.isPlaying"
-                >pause</v-icon
-              >
-              <v-icon v-else>play_arrow</v-icon>
-            </v-btn>
-          </template>
-        </MediaArtwork>
+            <v-icon v-else>play_arrow</v-icon>
+          </v-btn>
+        </template>
+      </MediaArtwork>
 
-        <v-card-title primary-title class="py-2 px-2">
-          <div>
-            <div class="media-details__title">
-              <div
-                class="long-text-truncated main-info-text card-text"
-                :style="{ color: primaryTextSecondaryColor }"
-                :title="collection.attributes.name"
-              >
-                {{ collection.attributes.name }}
-              </div>
-              <v-icon
-                v-if="collection.attributes.contentRating === 'explicit'"
-                class="ml-1"
-                small
-                >explicit</v-icon
-              >
-            </div>
+      <v-card-title primary-title class="py-2 px-2">
+        <div>
+          <div class="media-details__title">
             <div
-              class="long-text-truncated sub-info-text card-text"
-              :style="{ color: secondaryTextSecondaryColor }"
-              :title="
-                collection.attributes.artistName ||
-                  collection.attributes.curatorName
-              "
+              class="long-text-truncated main-info-text card-text"
+              :style="{ color: primaryTextSecondaryColor }"
+              :title="collection.attributes.name"
             >
-              {{
-                collection.attributes.artistName ||
-                  collection.attributes.curatorName
-              }}
+              {{ collection.attributes.name }}
             </div>
+            <v-icon
+              v-if="collection.attributes.contentRating === 'explicit'"
+              class="ml-1"
+              small
+              >explicit</v-icon
+            >
           </div>
-        </v-card-title>
-      </v-card>
-    </v-hover>
-  </router-link>
+          <div
+            class="long-text-truncated sub-info-text card-text"
+            :style="{ color: secondaryTextSecondaryColor }"
+            :title="
+              collection.attributes.artistName ||
+                collection.attributes.curatorName
+            "
+          >
+            {{
+              collection.attributes.artistName ||
+                collection.attributes.curatorName
+            }}
+          </div>
+        </div>
+      </v-card-title>
+    </v-card>
+  </v-hover>
 </template>
 
 <script lang="ts">

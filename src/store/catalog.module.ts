@@ -10,7 +10,8 @@ import {
   FETCH_MULTIPLE_ARTISTS_CATALOG,
   FETCH_ONE_CURATOR,
   FETCH_MULTIPLE_CURATORS,
-  FETCH_CURATOR_PLAYLISTS
+  FETCH_CURATOR_PLAYLISTS,
+  FETCH_CATALOG_SONG_DETAILS
 } from './actions.type';
 import {
   CatalogState,
@@ -126,7 +127,7 @@ const actions: ActionTree<CatalogState, any> = {
     }
   },
 
-  async fetchCatalogSongsDetails(_, ids?: string[]) {
+  async [FETCH_CATALOG_SONG_DETAILS](_, ids?: string[]) {
     return await musicKit.getApiInstance().songs(ids || []);
   }
 };

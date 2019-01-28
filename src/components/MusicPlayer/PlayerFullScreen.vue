@@ -99,7 +99,7 @@
                   </v-expansion-panel-content>
                 </v-expansion-panel>
                 <h2 class="my-2">Play Queue</h2>
-                <SongListSmall :tracks="queuedSongs" :is-queue="true" />
+                <SongListSmall :songs="queuedSongs" :is-queue="true" />
               </v-flex>
 
               <v-flex

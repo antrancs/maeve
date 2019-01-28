@@ -166,10 +166,7 @@ export default class AppSidebar extends Vue {
         {
           name: 'Artists',
           icon: 'person',
-          pathName: 'myLibrary',
-          params: {
-            resource: 'artists'
-          }
+          pathName: 'myLibraryArtists'
         }
       ]
     }

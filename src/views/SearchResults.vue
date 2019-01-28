@@ -32,7 +32,7 @@
             >View all</router-link
           >
         </v-flex>
-        <SongListLarge :tracks="getFirstNResults(songs, 5)" />
+        <SongListLarge :songs="getFirstNResults(songs, 5)" />
       </template>
 
       <template v-if="albums.length > 0">

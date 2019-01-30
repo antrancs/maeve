@@ -9,7 +9,7 @@ export const SKIP_TO_SONG_AT_INDEX = 'skipToSongAtIndex';
 export const TOGGLE_CURRENT_TRACK = 'toggleCurrentTrack'; // play or pause the current song
 export const SEEK_TO_TIME = 'seekToTime';
 export const CHANGE_VOLUME = 'changeVolume';
-export const MUTE_VOLUME = 'muteVolume'
+export const MUTE_VOLUME = 'muteVolume';
 export const UPDATE_REPEAT_MODE = 'updateRepeatMode';
 
 export const CHANGE_ROUTE = 'changeRoute';

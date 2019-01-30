@@ -175,7 +175,7 @@ const actions: ActionTree<MusicPlayerState, any> = {
     musicPlayerService.changeVolume(volume);
     commit(SET_VOLUME, volume);
     if (state.isMuted) {
-      commit(SET_IS_MUTED)
+      commit(SET_IS_MUTED);
     }
   },
 
@@ -216,7 +216,7 @@ const mutations: MutationTree<MusicPlayerState> = {
   },
 
   [SET_IS_MUTED](state) {
-    state.isMuted = !state.isMuted
+    state.isMuted = !state.isMuted;
   },
 
   [SET_CURRENT_PLAYBACK_TIME_AFTER_SKIP](state, time: number) {

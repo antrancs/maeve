@@ -1,7 +1,9 @@
 <template>
   <v-layout row align-center shrink>
     <v-btn icon class="mr-1" @click.stop="muteVolume">
-      <v-icon medium :style="primaryStyle">{{isMuted ? 'volume_off' : 'volume_up'}}</v-icon>
+      <v-icon medium :style="primaryStyle">{{
+        isMuted ? 'volume_off' : 'volume_up'
+      }}</v-icon>
     </v-btn>
 
     <div v-if="width" :style="{ width: width + 'px' }">

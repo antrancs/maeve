@@ -35,7 +35,7 @@
 
       <template v-if="resource === 'songs'">
         <v-flex xs12>
-          <SongListLarge v-if="songs" :tracks="filteredSongs" />
+          <SongListLarge v-if="songs" :songs="filteredSongs" />
         </v-flex>
       </template>
 

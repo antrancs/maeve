@@ -8,7 +8,7 @@ export const SET_CURRENT_PLAYBACK_TIME = 'setCurrentPlaybackTime';
 export const SET_SONG_QUEUE = 'setSongQueue';
 export const SET_REPEAT_MODE = 'setRepeatMode';
 export const SET_VOLUME = 'setVolume';
-export const SET_IS_MUTED = 'setIsMuted'
+export const SET_IS_MUTED = 'setIsMuted';
 export const SET_CURRENT_PLAYBACK_TIME_AFTER_SKIP =
   'setCurrentPlaybackTimeAfterSkip';
 

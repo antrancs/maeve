@@ -46,7 +46,7 @@
             "
             >{{ releaseYear }} •</span
           >
-          {{ numberOfSongs }} {{ numberOfSongs > 1 ? 'tracks' : 'track' }}
+          {{ numberOfSongs }} tracks
         </div>
 
         <div class="hidden-xs-only">

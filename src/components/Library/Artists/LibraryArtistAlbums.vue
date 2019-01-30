@@ -8,7 +8,7 @@
       </div>
     </div>
 
-    <div class="text-xs-center my-2">
+    <div v-if="albums" class="text-xs-center my-2">
       <AppButton @on-click="playAllSongs">Play</AppButton>
       <AppButton @on-click="shuffleAllSongs">Shuffle</AppButton>
     </div>

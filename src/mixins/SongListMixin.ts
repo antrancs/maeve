@@ -46,15 +46,20 @@ export default class SongListMixin extends Vue {
     );
   }
 
-  @Watch('collection')
-  onCollectionChanged(newValue: Collection) {
-    if (newValue) {
-      this.$_updateSongItems();
-    }
-  }
+  async created() {
+    // If the collection is a playlist, we want to fetch its songs' 'artists' relationships
+    if (this.collection && this.collection.type === 'playlists') {
+      // we're sure that collection is NOT null, so tracksFromCollection is not null
+      const songIds = this.tracksFromCollection!.map(song => song.id);
+      const songsWithRelationships = await this.fetchCatalogSongsDetails(
+        songIds
+      );
 
-  created() {
-    this.$_updateSongItems();
+      this.songItems = songsWithRelationships;
+    } else {
+      // otherwise just use tracksFromCollection or songs
+      this.songItems = this.tracksFromCollection || this.songs;
+    }
   }
 
   handlePlaySongs(songId: string) {
@@ -78,21 +83,5 @@ export default class SongListMixin extends Vue {
       songIds,
       startSongIndex: songIndex
     });
-  }
-
-  async $_updateSongItems() {
-    // If the collection is a playlist, we want to fetch its songs' 'artists' relationships
-    if (this.collection && this.collection.type === 'playlists') {
-      // we're sure that collection is NOT null, so tracksFromCollection is not null
-      const songIds = this.tracksFromCollection!.map(song => song.id);
-      const songsWithRelationships = await this.fetchCatalogSongsDetails(
-        songIds
-      );
-
-      this.songItems = songsWithRelationships;
-    } else {
-      // otherwise just use tracksFromCollection or songs
-      this.songItems = this.tracksFromCollection || this.songs;
-    }
   }
 }

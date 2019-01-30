@@ -44,17 +44,7 @@
         :class="[$style['album-detail-column'], $style['column'], 'pl-2']"
       >
         <template v-if="selectedAlbum">
-          <CollectionHeader
-            :collection="selectedAlbum"
-            :artworkSize="150"
-            :numberOfSongs="10"
-          />
-
-          <SongListSmall
-            class="mt-4"
-            :collection="selectedAlbum"
-            :isQueue="false"
-          />
+          <LibraryArtistAlbumDetail :album="selectedAlbum" />
         </template>
       </v-flex>
     </v-layout>
@@ -68,8 +58,7 @@ import Component from 'vue-class-component';
 
 import LibraryArtistList from '@/components/Library/Artists/LibraryArtistList.vue';
 import LibraryArtistAlbums from '@/components/Library/Artists/LibraryArtistAlbums.vue';
-import CollectionHeader from '@/components/CollectionHeader.vue';
-import SongListSmall from '@/components/SongListSmall.vue';
+import LibraryArtistAlbumDetail from '@/components/Library/Artists/LibraryArtistAlbumDetail.vue';
 import {
   FETCH_LIBRARY_ARTISTS,
   FETCH_ONE_ARTIST_LIBRARY,
@@ -84,10 +73,9 @@ import { SET_FOOTER_VISIBILITY } from '@/store/mutations.type';
 
 @Component({
   components: {
-    CollectionHeader,
-    SongListSmall,
     LibraryArtistList,
-    LibraryArtistAlbums
+    LibraryArtistAlbums,
+    LibraryArtistAlbumDetail
   }
 })
 export default class MyLibraryArtists extends Vue {
@@ -164,7 +152,7 @@ export default class MyLibraryArtists extends Vue {
   }
 
   handleArtistItemClicked(artistId: string) {
-    // this.selectedArtist = null;
+    this.selectedArtist = null;
     this.fetchOneArtistLibrary(artistId).then(artist => {
       this.selectedArtist = artist;
     });

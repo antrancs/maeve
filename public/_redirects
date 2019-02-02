@@ -1,1 +1,2 @@
+/api/*  https://us-central1-maeve-music.cloudfunctions.net/:splat  200
 /*    /index.html   200

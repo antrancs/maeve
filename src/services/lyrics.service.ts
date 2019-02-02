@@ -6,7 +6,7 @@ function getLyrics(songName: string, artistName: string) {
   const endPos = indexOfParen === -1 ? songName.length : indexOfParen;
   const name = songName.substring(0, endPos);
   return axios
-    .get('https://us-central1-maeve-music.cloudfunctions.net/maeve-lyrics', {
+    .get('/api/maeve-lyrics', {
       params: {
         songName: name.trim(),
         artistName: artistName.trim()

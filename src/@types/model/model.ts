@@ -27,7 +27,11 @@ export type Collection =
 
 export type Album = MusicKit.Album | MusicKit.LibraryAlbum;
 
-export type Song = MusicKit.Song | MusicKit.LibrarySong;
+export type LastfmSong = MusicKit.Song & {
+  lastStream: string;
+};
+
+export type Song = MusicKit.Song | MusicKit.LibrarySong | LastfmSong;
 
 export type Artist = MusicKit.Artist | MusicKit.LibraryArtist;
 

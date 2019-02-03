@@ -32,3 +32,6 @@ export const SET_SELECTED_THEME = 'setSelectedTheme';
 export const SET_BUTTON_STYLE = 'setButtonStyle';
 
 export const SET_FOOTER_VISIBILITY = 'setFooterVisibility';
+
+// Lastfm
+export const SET_LASTFM_TOKEN = 'setLastfmToken';

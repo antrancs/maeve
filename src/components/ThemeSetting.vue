@@ -14,7 +14,7 @@
           </theme-editor-dialog>
         </v-flex>
 
-        <v-flex>
+        <v-flex class="mb-2">
           <v-layout flow wrap>
             <v-flex
               xs6
@@ -33,6 +33,8 @@
           </v-layout>
         </v-flex>
 
+        <v-divider></v-divider>
+
         <v-flex> <h2 class="mt-2">Buttons</h2> </v-flex>
 
         <v-flex>
@@ -40,6 +42,13 @@
             <v-radio label="Normal" value="normal"></v-radio>
             <v-radio label="Round" value="round"></v-radio>
           </v-radio-group>
+        </v-flex>
+
+        <v-divider></v-divider>
+        <v-flex class="mt-2">
+          <app-button @on-click="handleLastfmBtnClick" class="ml-0">{{
+            isAuthenticatedLastfm ? 'Lastfm Disconnect' : 'Lastfm Connect'
+          }}</app-button>
         </v-flex>
       </v-layout>
     </v-container>
@@ -52,14 +61,20 @@ import Component from 'vue-class-component';
 
 import ThemeOptionItem from '@/components/ThemeOptionItem.vue';
 import ThemeEditorDialog from '@/components/ThemeEditorDialog.vue';
-import { ThemeOption } from '@/@types/model/model';
+import { ThemeOption, Nullable } from '@/@types/model/model';
 import { Action, Getter, State } from 'vuex-class';
-import { SettingsState, SelectThemeAction } from '@/store/types';
+import {
+  SettingsState,
+  SelectThemeAction,
+  SaveTokenLastfmAction
+} from '@/store/types';
 import {
   DELETE_THEME,
   LOAD_CUSTOM_THEME,
   SELECT_THEME,
-  SELECT_BUTTON_STYLES
+  SELECT_BUTTON_STYLES,
+  SAVE_TOKEN_LASTFM,
+  LOGOUT_LASTFM
 } from '@/store/actions.type';
 import { Watch, Prop } from 'vue-property-decorator';
 import { ButtonStyle } from '@/utils/constants';
@@ -71,15 +86,19 @@ import { ButtonStyle } from '@/utils/constants';
   }
 })
 export default class ThemeSetting extends Vue {
-  // private buttonStyle = settings.;
+  private popup: Nullable<Window>;
 
   @Getter themes!: ThemeOption[];
+  @Getter isAuthenticatedLastfm!: boolean;
+
   @State settings!: SettingsState;
 
   @Action [LOAD_CUSTOM_THEME]: () => void;
   @Action [DELETE_THEME]: (id: string) => void;
   @Action [SELECT_THEME]: SelectThemeAction;
   @Action [SELECT_BUTTON_STYLES]: (buttonStyle: ButtonStyle) => void;
+  @Action [SAVE_TOKEN_LASTFM]: SaveTokenLastfmAction;
+  @Action [LOGOUT_LASTFM]: () => void;
 
   get buttonStyle(): string {
     return this.settings.buttonStyle;
@@ -108,6 +127,50 @@ export default class ThemeSetting extends Vue {
 
   handleDeleteTheme(theme: ThemeOption) {
     this.deleteTheme(theme.id);
+  }
+
+  handleLastfmBtnClick() {
+    if (this.isAuthenticatedLastfm) {
+      // log out
+      this.logoutLastfm();
+    } else {
+      this.openLastFmPopup();
+    }
+  }
+
+  openLastFmPopup() {
+    const width = 600;
+    const height = 600;
+    const left = window.innerWidth / 2 - width / 2;
+    const top = window.innerHeight / 2 - height / 2;
+
+    const url = '/auth/lastfm';
+
+    window.addEventListener('message', this.updateAuthInfo);
+    this.popup = window.open(
+      url,
+      '',
+      `toolbar=no, location=no, directories=no, status=no, menubar=no,
+      scrollbars=no, resizable=no, copyhistory=no, width=${width},
+      height=${height}, top=${top}, left=${left}`
+    );
+  }
+
+  updateAuthInfo(event: any) {
+    if (this.popup) {
+      const { token } = event.data;
+
+      if (token) {
+        this.saveTokenLastfm(token);
+      }
+
+      // if (token) {
+      //   localStorage.setItem('MAEVE_LASTFM_TOKEN', token);
+      // }
+
+      window.removeEventListener('message', this.updateAuthInfo);
+      this.popup.close();
+    }
   }
 }
 </script>

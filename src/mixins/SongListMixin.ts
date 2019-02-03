@@ -58,6 +58,8 @@ export default class SongListMixin extends Vue {
   }
 
   handlePlaySongs(songId: string) {
+    console.log('playing', songId);
+    console.log('songItems', this.songItems);
     // Since there might be some unavailable songs, we can't rely on their index of the array
     // as the starting index
     let songIndex = 0;
@@ -73,6 +75,9 @@ export default class SongListMixin extends Vue {
       }
       songIds.push(current.id);
     }
+
+    console.log({ songIds });
+    console.log({ songIndex });
 
     this.playSongs({
       songIds,

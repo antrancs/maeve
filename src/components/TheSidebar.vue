@@ -127,8 +127,14 @@ export default class AppSidebar extends Vue {
       pathName: 'charts'
     }
   ];
+
+  private lastfmLink = {
+    name: 'Lastfm',
+    icon: 'music_note',
+    pathName: 'lastfm'
+  };
+
   private authenticatedLinks = [
-    ...this.unauthenticatedLinks,
     {
       name: 'For You',
       icon: 'favorite',
@@ -175,6 +181,7 @@ export default class AppSidebar extends Vue {
   @Prop() showSidebar!: boolean;
 
   @Getter isAuthenticated!: boolean;
+  @Getter isAuthenticatedLastfm!: boolean;
 
   @State(state => state.library.playlists)
   playlists!: MusicKit.LibraryPlaylist[];
@@ -192,9 +199,16 @@ export default class AppSidebar extends Vue {
   }
 
   get navigationLinks(): Object[] {
-    return this.isAuthenticated
-      ? this.authenticatedLinks
-      : this.unauthenticatedLinks;
+    const links = this.unauthenticatedLinks;
+
+    if (this.isAuthenticatedLastfm) {
+      links.push(this.lastfmLink);
+    }
+    if (this.isAuthenticated) {
+      links.push(...this.authenticatedLinks);
+    }
+
+    return links;
   }
 
   get sidebarStyleHeight() {

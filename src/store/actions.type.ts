@@ -61,3 +61,10 @@ export const FETCH_CATALOG_SONG_DETAILS = 'fetchCatalogSongsDetails';
 export const FETCH_ONE_ALBUM_LIBRARY = 'fetchOneAlbumLibrary';
 export const FETCH_ONE_PLAYLIST_LIBRARY = 'fetchOnePlaylistLibrary';
 export const FETCH_ONE_ARTIST_LIBRARY = 'fetchOneArtistLibrary';
+
+export const SCROBBLE_LASTFM = 'scrobbleLastfm';
+export const SAVE_TOKEN_LASTFM = 'saveTokenLastfm';
+export const LOAD_TOKEN_LASTFM = 'loadTokenLastfm';
+export const LOGOUT_LASTFM = 'logoutLastfm';
+export const FETCH_TOP_ARTISTS_LASTFM = 'fetchTopArtistsLastFm';
+export const FETCH_RECENT_TRACKS_LASTFM = 'fetchRecentTracksLastfm';

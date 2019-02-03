@@ -108,7 +108,7 @@ export interface CollectionState {
   songs: Song[];
 }
 
-export interface CatalogState { }
+export interface CatalogState {}
 
 export interface SnackbarState {
   visibility: boolean;
@@ -263,3 +263,21 @@ export type FetchAppleCuratorPlaylists = (
   id: string,
   params: SearchParams
 ) => Promise<FetchResult<MusicKit.Playlist>>;
+
+export interface LastfmState {
+  token: Nullable<string>;
+}
+
+/**
+ * Lastfm module
+ */
+export type ScobbleLastfmActionPayload = {
+  artist: string;
+  track: string;
+};
+
+export type ScobbleLastfmAction = (
+  payload: ScobbleLastfmActionPayload
+) => Promise<void>;
+
+export type SaveTokenLastfmAction = (token: Nullable<string>) => void;

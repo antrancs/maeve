@@ -80,6 +80,11 @@ module.exports = {
   },
   devServer: {
     proxy: {
+      '/api/lastfm': {
+        target: 'https://maeve-music.appspot.com',
+        ws: true,
+        changeOrigin: true
+      },
       '/api': {
         target: 'http://localhost:3000',
         ws: true,
@@ -87,6 +92,11 @@ module.exports = {
         pathRewrite: {
           '^/api': ''
         }
+      },
+      '/auth/lastfm': {
+        target: 'https://maeve-music.appspot.com', // https://maeve-music.appspot.com
+        ws: true,
+        changeOrigin: true
       }
     }
   },

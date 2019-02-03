@@ -135,7 +135,6 @@ import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { State, Getter, Action } from 'vuex-class';
 
 import MediaArtwork from '@/components/MediaArtwork.vue';
-import AppButton from '@/components/AppButton.vue';
 import PlayNextButton from './PlayNextButton.vue';
 import PlayPreviousButton from './PlayPreviousButton.vue';
 import PlayButton from './PlayButton.vue';
@@ -159,7 +158,6 @@ import { TEXT_PRIMARY_DARK, TEXT_PRIMARY_LIGHT } from '@/themes';
     PlayNextButton,
     PlayPreviousButton,
     PlayButton,
-    AppButton,
     PlayerVolume,
     SongListSmall,
     PlayingVisualization

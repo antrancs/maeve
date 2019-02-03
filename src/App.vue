@@ -47,7 +47,7 @@ import NewPlaylistDialog from '@/components/NewPlaylistDialog.vue';
 import ThemeSetting from '@/components/ThemeSetting.vue';
 import { State, Action, Getter } from 'vuex-class';
 import { ThemeOption, Nullable } from '@/@types/model/model';
-import { LOAD_SETTINGS } from '@/store/actions.type';
+import { LOAD_SETTINGS, LOAD_TOKEN_LASTFM } from '@/store/actions.type';
 
 @Component({
   components: {
@@ -72,6 +72,7 @@ export default class App extends Vue {
   >;
 
   @Action [LOAD_SETTINGS]: () => void;
+  @Action [LOAD_TOKEN_LASTFM]: () => void;
 
   @Watch('selectedTheme', { deep: true })
   onThemeChanged(newVal: ThemeOption) {
@@ -96,6 +97,7 @@ export default class App extends Vue {
 
   created() {
     this.loadSettings();
+    this.loadTokenLastfm();
   }
 
   updateSidebarVisibility(value: boolean) {

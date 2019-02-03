@@ -10,6 +10,7 @@ import library from './library.module';
 import catalog from './catalog.module';
 import settings from './settings.module';
 import layout from './layout.module';
+import lastfm from './lastfm.module';
 
 Vue.use(Vuex);
 
@@ -23,6 +24,7 @@ export default new Vuex.Store({
     library,
     catalog,
     settings,
-    layout
+    layout,
+    lastfm
   }
 });

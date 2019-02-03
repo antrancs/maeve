@@ -32,10 +32,10 @@ import Component from 'vue-class-component';
 import { State, Getter, Action, Mutation } from 'vuex-class';
 
 import MediaArtwork from '@/components/MediaArtwork.vue';
-import { MusicPlayerState } from '@/store/types';
+import { MusicPlayerState, ScobbleLastfmAction } from '@/store/types';
 import { setInterval, clearInterval } from 'timers';
 import { Watch } from 'vue-property-decorator';
-import { SEEK_TO_TIME } from '@/store/actions.type';
+import { SEEK_TO_TIME, SCROBBLE_LASTFM } from '@/store/actions.type';
 import { Nullable } from '@/@types/model/model';
 
 @Component({
@@ -56,6 +56,7 @@ export default class PlayerProgressBar extends Vue {
   @Getter currentPlayingDuration!: number;
 
   @Action [SEEK_TO_TIME]: (time: number) => void;
+  @Action [SCROBBLE_LASTFM]: ScobbleLastfmAction;
 
   get playbackProgress(): number {
     return this.musicPlayer.playbackProgress * 100;
@@ -70,12 +71,21 @@ export default class PlayerProgressBar extends Vue {
   //   }
   // }
 
-  // @Watch('musicPlayer.currentPlaybackTimeInMilliSeconds')
-  // onCurrentPlaybackTimeChanged(newValue: number, oldValue: number) {
-  //   if (newValue === 0) {
-  //     this.progress = 0;
-  //   }
-  // }
+  @Watch('musicPlayer.playbackProgress')
+  onPlaybackProgresshanged(newValue: number, oldValue: number) {
+    // Start to scrobble when the user has listened to half of the song
+    if (newValue === 0.5) {
+      const { currentPlaying } = this.musicPlayer;
+
+      if (!currentPlaying) {
+        return;
+      }
+      this.scrobbleLastfm({
+        artist: currentPlaying.artistName,
+        track: currentPlaying.title
+      });
+    }
+  }
 
   // @Watch('musicPlayer.currentPlaybackTimeAfterSkip')
   // onCurrentPlaybackTimeAfterSkipChanged(newValue: number) {

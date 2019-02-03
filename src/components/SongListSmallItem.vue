@@ -94,10 +94,16 @@
         </v-btn>
 
         <div
+          :style="rightItemWidthStyle"
           :class="['sub-info-text', 'hidden-xs-only', $style['right-items']]"
         >
           <template v-if="!hover || !isQueue">
-            {{ song.attributes.durationInMillis | formattedDuration }}
+            <template v-if="!isLastfmSong">
+              {{ song.attributes.durationInMillis | formattedDuration }}
+            </template>
+            <template v-else>
+              {{ lastfmStreamDate }}
+            </template>
           </template>
           <template v-else>
             <v-icon
@@ -125,6 +131,7 @@ import {
   Mixins
 } from 'vue-property-decorator';
 import { State, Action, Getter } from 'vuex-class';
+import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
 
 import { MusicPlayerState } from '@/store/types';
 import { TOGGLE_CURRENT_TRACK } from '@/store/actions.type';
@@ -132,7 +139,8 @@ import {
   HandleSongClicked,
   Nullable,
   SnackbarMode,
-  Song
+  Song,
+  LastfmSong
 } from '@/@types/model/model';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import MediaArtworkOverlay from '@/components/MediaArtworkOverlay.vue';
@@ -160,6 +168,28 @@ export default class SongListSmallItem extends Mixins(SongItemMixin) {
       'font-weight': 'bold',
       color: this.textColor || undefined
     };
+  }
+
+  get rightItemWidthStyle() {
+    if (this.isLastfmSong(this.song)) {
+      return {
+        'flex-basis': '10rem'
+      };
+    }
+    return {
+      'flex-basis': '5rem'
+    };
+  }
+
+  isLastfmSong(song: Song): song is LastfmSong {
+    return (<LastfmSong>song).lastStream !== undefined;
+  }
+
+  get lastfmStreamDate(): Nullable<string> {
+    if (this.isLastfmSong(this.song)) {
+      return distanceInWordsToNow(Date.parse(this.song.lastStream + ' UTC'));
+    }
+    return null;
   }
 }
 </script>

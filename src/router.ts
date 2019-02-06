@@ -28,7 +28,7 @@ const router = new Router({
         import(/* webpackChunkName: "lastfmAuthSuccess" */ './views/LastFmAuthSuccess.vue')
     },
     {
-      path: '/lastfm',
+      path: '/lastfm-page',
       name: 'lastfm',
       component: () =>
         import(/* webpackChunkName: "lastfm" */ './views/Lastfm.vue')

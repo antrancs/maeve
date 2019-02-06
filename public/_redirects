@@ -1,4 +1,3 @@
-/lastfm/api/*  https://us-central1-maeve-lastfm.cloudfunctions.net/:splat  200
+/lastfm/*  https://us-central1-maeve-lastfm.cloudfunctions.net/lastfm/:splat  200
 /api/*  https://us-central1-maeve-music.cloudfunctions.net/:splat  200
-/lastfm/auth/*  https://us-central1-maeve-lastfm.cloudfunctions.net/:splat  200
 /*    /index.html   200

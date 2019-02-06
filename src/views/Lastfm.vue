@@ -1,13 +1,13 @@
 <template>
   <v-container>
     <v-layout row wrap>
-      <v-flex xs7 class="pr-3">
+      <v-flex xs12 sm6 md7 class="pr-3">
         <template v-if="recentTracks">
           <h2>Recent Tracks</h2>
           <SongListSmall :songs="recentTracks" />
         </template>
       </v-flex>
-      <v-flex xs5>
+      <v-flex xs12 sm6 md5>
         <template v-if="topArtists">
           <h2>Top Artists</h2>
           <ArtistListLastfm :artists="topArtists" />

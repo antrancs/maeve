@@ -40,6 +40,7 @@
             </div>
 
             <MediaArtworkOverlay
+              v-if="!isSongBlocked && !isArtistBlocked"
               :is-active="isActive"
               :is-playing="isPlaying"
               :show-background="!isFromAlbum"
@@ -98,7 +99,7 @@
           :class="['sub-info-text', 'hidden-xs-only', $style['right-items']]"
         >
           <template v-if="!hover || !isQueue">
-            <template v-if="!isLastfmSong">
+            <template v-if="!isLastfm">
               {{ song.attributes.durationInMillis | formattedDuration }}
             </template>
             <template v-else>
@@ -157,6 +158,9 @@ export default class SongListSmallItem extends Mixins(SongItemMixin) {
   @Prop() textColor!: Nullable<string>;
 
   get songNameColor() {
+    if (this.isSongBlocked || this.isArtistBlocked) {
+      return this.$vuetify.theme.secondaryText;
+    }
     return this.isActive
       ? this.$vuetify.theme.accent
       : this.textColor || this.$vuetify.theme.primaryText;
@@ -179,6 +183,10 @@ export default class SongListSmallItem extends Mixins(SongItemMixin) {
     return {
       'flex-basis': '5rem'
     };
+  }
+
+  get isLastfm() {
+    return this.isLastfmSong(this.song);
   }
 
   isLastfmSong(song: Song): song is LastfmSong {

@@ -13,7 +13,7 @@
         <template v-for="link in navigationLinks">
           <v-list-tile
             v-if="!link.subItems"
-            :key="link.pathName"
+            :key="link.name"
             :to="{ name: link.pathName }"
             active-class="accent--text"
             exact
@@ -27,7 +27,7 @@
             </v-list-tile-content>
           </v-list-tile>
 
-          <v-list-group v-else :key="link.pathName" value="true">
+          <v-list-group v-else :key="link.name" value="true">
             <v-list-tile slot="activator">
               <v-list-tile-title class="menu-group-title">{{
                 link.name
@@ -199,12 +199,13 @@ export default class AppSidebar extends Vue {
   }
 
   get navigationLinks(): Object[] {
-    const links = this.unauthenticatedLinks;
+    const links = [...this.unauthenticatedLinks];
 
-    if (this.isAuthenticatedLastfm) {
-      links.push(this.lastfmLink);
-    }
     if (this.isAuthenticated) {
+      // Only show Lastfm menu when log in
+      if (this.isAuthenticatedLastfm) {
+        links.push(this.lastfmLink);
+      }
       links.push(...this.authenticatedLinks);
     }
 

@@ -3,7 +3,7 @@ import axios from 'axios';
 function scrobble(track: string, artist: string, token: string) {
   return axios
     .post(
-      '/api/lastfm/track/scrobble',
+      '/lastfm/api/track/scrobble',
       {
         track,
         artist
@@ -17,14 +17,12 @@ function scrobble(track: string, artist: string, token: string) {
     .then(res => {
       return res.data;
     })
-    .catch(err => {
-      console.log('Err scrobbling', err);
-    });
+    .catch(err => err);
 }
 
 function getTopArtists(token: string) {
   return axios
-    .get('api/lastfm/user/topArtists', {
+    .get('/lastfm/api/user/topArtists', {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -36,7 +34,7 @@ function getTopArtists(token: string) {
 
 function getRecentTracks(token: string) {
   return axios
-    .get('api/lastfm/user/recentTracks', {
+    .get('/lastfm/api/user/recentTracks', {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -49,7 +47,7 @@ function getRecentTracks(token: string) {
 function logout(token: string) {
   return axios
     .post(
-      'auth/lastfm/logout',
+      'lastfm/auth/logout',
       {},
       {
         headers: {
@@ -58,8 +56,107 @@ function logout(token: string) {
       }
     )
     .catch(err => {
-      console.log('Err logging out', err);
+      console.log('Err logging out');
     });
 }
 
-export { scrobble, logout, getTopArtists, getRecentTracks };
+function blockSong(songId: string, token: string) {
+  return axios.post(
+    '/lastfm/api/user/blockSong',
+    {
+      songId
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+}
+
+function unblockSong(songId: string, token: string) {
+  return axios.post(
+    '/lastfm/api/user/unblockSong',
+    {
+      songId
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
+}
+
+function loadBlockedSongs(token: string) {
+  return axios
+    .get('/lastfm/api/user/blockedSongs', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    .then(res => {
+      return res.data.blockedSongs || [];
+    });
+}
+
+function loadBlockedArtists(token: string) {
+  return axios
+    .get('/lastfm/api/user/blockedArtists', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    .then(res => {
+      return res.data.blockedArtists || [];
+    });
+}
+
+function blockArtists(artistIds: string[], token: string) {
+  return axios
+    .post(
+      '/lastfm/api/user/blockArtists',
+      {
+        artists: artistIds
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+    .then(res => {
+      return res.data;
+    });
+}
+
+function unblockArtists(artistIds: string[], token: string) {
+  return axios
+    .post(
+      '/lastfm/api/user/unblockArtists',
+      {
+        artists: artistIds
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+    .then(res => {
+      return res.data;
+    });
+}
+
+export {
+  scrobble,
+  logout,
+  getTopArtists,
+  getRecentTracks,
+  blockSong,
+  unblockSong,
+  loadBlockedSongs,
+  loadBlockedArtists,
+  blockArtists,
+  unblockArtists
+};

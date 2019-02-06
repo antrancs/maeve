@@ -26,6 +26,7 @@ import MediaActionMenu from '@/components/MediaActionMenu.vue';
 })
 export default class CollectionControls extends Vue {
   @Prop() collection!: Collection;
+  @Prop() songs!: MusicKit.Song[];
 
   @State(state => state.musicPlayer.isPlaying)
   isPlaying!: boolean;
@@ -49,7 +50,8 @@ export default class CollectionControls extends Vue {
   playCollection() {
     // Start with the first song by default
     this.playCollectionWithSong({
-      collection: this.collection
+      collection: this.collection,
+      songs: this.songs
     });
   }
 
@@ -59,7 +61,8 @@ export default class CollectionControls extends Vue {
   shuffleSongs() {
     this.playCollectionWithSong({
       collection: this.collection,
-      shuffle: true
+      shuffle: true,
+      songs: this.songs
     });
   }
 

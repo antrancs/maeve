@@ -36,6 +36,7 @@ export type PlayCollectionWithSongPayload = {
   collection: Collection;
   shuffle?: boolean;
   songId?: string;
+  songs?: MusicKit.Song[];
 };
 
 export type SkipToSongAtIndexPayload = {
@@ -43,8 +44,9 @@ export type SkipToSongAtIndexPayload = {
 };
 
 export type PlaySongsPayload = {
-  songIds: string[];
+  songs: Song[];
   startSongIndex: number;
+  shuffle?: boolean;
 };
 
 export type FetchCollectionPayload = {
@@ -71,6 +73,11 @@ export type SkipToSongAtIndexAction = (
 
 export type PlaySongsAction = (payload: PlaySongsPayload) => void;
 
+export type BlockArtistsAction = (artistIds: string[]) => void;
+export type UnblockArtistsAction = (artistIds: string[]) => void;
+
+export type BlockSongAction = (songId: string) => void;
+export type UnblockSongAction = (songId: string) => void;
 // export type FetchCollectionAction = (payload: FetchCollectionPayload) => void;
 
 export type PlayCollectionPayload = {
@@ -129,6 +136,12 @@ export interface SettingsState {
   customThemes: ThemeOption[];
   selectedTheme: ThemeOption;
   buttonStyle: ButtonStyle;
+  blockedArtists: {
+    [id: string]: boolean;
+  };
+  blockedSongs: {
+    [id: string]: boolean;
+  };
 }
 
 export type CreateNewThemeActionPayload = {
@@ -265,7 +278,7 @@ export type FetchAppleCuratorPlaylists = (
 ) => Promise<FetchResult<MusicKit.Playlist>>;
 
 export interface LastfmState {
-  token: Nullable<string>;
+  token: string;
 }
 
 /**

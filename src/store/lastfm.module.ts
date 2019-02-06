@@ -21,12 +21,12 @@ import { LastfmSong } from '@/@types/model/model';
 const MAEVE_LASTFM_TOKEN = 'MAEVE_LASTFM_TOKEN';
 
 const initialState: LastfmState = {
-  token: null
+  token: ''
 };
 
 const getters: GetterTree<LastfmState, any> = {
   isAuthenticatedLastfm(state): boolean {
-    return !!state.token;
+    return state.token.length > 0;
   }
 };
 
@@ -42,7 +42,7 @@ const actions: ActionTree<LastfmState, any> = {
 
   [LOAD_TOKEN_LASTFM]({ commit }) {
     const token = localStorage.getItem(MAEVE_LASTFM_TOKEN);
-    commit(SET_LASTFM_TOKEN, token);
+    commit(SET_LASTFM_TOKEN, token || '');
   },
 
   [SAVE_TOKEN_LASTFM]({ commit }, token: string) {
@@ -126,18 +126,18 @@ const actions: ActionTree<LastfmState, any> = {
     return lastfmSongs;
   },
 
-  async [LOGOUT_LASTFM]({ commit, state }) {
+  async [LOGOUT_LASTFM]({ dispatch, state }) {
     if (!state.token) {
       return;
     }
     await logout(state.token);
 
-    commit(SET_LASTFM_TOKEN, null);
+    dispatch(SAVE_TOKEN_LASTFM, '');
   }
 };
 
 const mutations: MutationTree<LastfmState> = {
-  [SET_LASTFM_TOKEN](state, token: string | null) {
+  [SET_LASTFM_TOKEN](state, token: string) {
     state.token = token;
   }
 };

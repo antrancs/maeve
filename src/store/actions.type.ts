@@ -26,6 +26,10 @@ export const APPEND_SONGS = 'appendSongs';
 export const PREPEND_SONGS = 'prependSongs';
 export const TOGGLE_QUEUE_VISIBILITY = 'toggleQueueVisibility';
 export const REMOVE_SONG_FROM_QUEUE = 'removeSongFromQueue';
+export const BLOCK_ARTISTS = 'blockArtists';
+export const UNBLOCK_ARTISTS = 'unblockArtists';
+export const BLOCK_SONG = 'blockSong';
+export const UNBLOCK_SONG = 'unblockSong';
 
 export const ADD_TO_LIBRARY = 'addToLibrary';
 export const ADD_SONGS_TO_PLAYLIST = 'addSongsToPlaylist';
@@ -45,6 +49,7 @@ export const LOAD_CUSTOM_THEME = 'loadCustomThemes';
 export const SELECT_THEME = 'selectTheme';
 export const LOAD_SETTINGS = 'loadSettings';
 export const SELECT_BUTTON_STYLES = 'selectButtonStyle';
+export const LOAD_BLOCKED_ITEMS = 'loadBlockedItems';
 
 export const FETCH_ONE_ALBUM_CATALOG = 'fetchOneAlbumCatalog';
 export const FETCH_ONE_PLAYLIST_CATALOG = 'fetchOnePlaylistCatalog';

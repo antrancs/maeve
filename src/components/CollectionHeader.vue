@@ -46,12 +46,12 @@
             "
             >{{ releaseYear }} •</span
           >
-          {{ numberOfSongs }} {{ numberOfSongs > 1 ? 'tracks' : 'track' }}
+          {{ songs.length }} {{ songs.length > 1 ? 'tracks' : 'track' }}
         </div>
 
         <div class="hidden-xs-only">
           <template v-if="collection">
-            <CollectionControls :collection="collection" />
+            <CollectionControls :collection="collection" :songs="songs" />
           </template>
         </div>
       </v-layout>
@@ -82,8 +82,9 @@ import { TEXT_PRIMARY_DARK, TEXT_SECONDARY_DARK } from '@/themes';
 })
 export default class CollectionHeader extends Vue {
   @Prop() collection!: Nullable<Collection>;
+  @Prop() songs!: MusicKit.Song[];
+
   @Prop() artworkSize!: number;
-  @Prop() numberOfSongs!: number;
 
   get collectionName(): string {
     if (!this.collection || !this.collection.attributes) {

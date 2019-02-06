@@ -3,7 +3,7 @@
     <v-flex xs12>
       <SongListSmallItem
         :key="`${song.id}-${index}`"
-        v-for="(song, index) in songItems"
+        v-for="(song, index) in songs"
         :song="song"
         :index="index"
         :isQueue="isQueue"
@@ -54,7 +54,7 @@ export default class SongListSmall extends Mixins(SongListMixin) {
     // @ts-ignore
     this.$root.$mediaActionMenu.open(
       song,
-      this.collection,
+      this.collectionId,
       posX,
       posY,
       this.isQueue

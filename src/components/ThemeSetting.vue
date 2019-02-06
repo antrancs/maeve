@@ -144,9 +144,10 @@ export default class ThemeSetting extends Vue {
     const left = window.innerWidth / 2 - width / 2;
     const top = window.innerHeight / 2 - height / 2;
 
-    const url = '/auth/lastfm';
+    const url = '/lastfm/auth';
 
     window.addEventListener('message', this.updateAuthInfo);
+
     this.popup = window.open(
       url,
       '',
@@ -157,16 +158,12 @@ export default class ThemeSetting extends Vue {
   }
 
   updateAuthInfo(event: any) {
-    if (this.popup) {
-      const { token } = event.data;
+    if (this.popup && event.data.source === '/auth/lastfm/success') {
+      const { token } = event.data.payload;
 
       if (token) {
         this.saveTokenLastfm(token);
       }
-
-      // if (token) {
-      //   localStorage.setItem('MAEVE_LASTFM_TOKEN', token);
-      // }
 
       window.removeEventListener('message', this.updateAuthInfo);
       this.popup.close();

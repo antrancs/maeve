@@ -47,7 +47,11 @@ import NewPlaylistDialog from '@/components/NewPlaylistDialog.vue';
 import ThemeSetting from '@/components/ThemeSetting.vue';
 import { State, Action, Getter } from 'vuex-class';
 import { ThemeOption, Nullable } from '@/@types/model/model';
-import { LOAD_SETTINGS, LOAD_TOKEN_LASTFM } from '@/store/actions.type';
+import {
+  LOAD_SETTINGS,
+  LOAD_TOKEN_LASTFM,
+  LOAD_BLOCKED_ITEMS
+} from '@/store/actions.type';
 
 @Component({
   components: {
@@ -73,6 +77,10 @@ export default class App extends Vue {
 
   @Action [LOAD_SETTINGS]: () => void;
   @Action [LOAD_TOKEN_LASTFM]: () => void;
+  @Action [LOAD_BLOCKED_ITEMS]: () => void;
+
+  @Getter darkMode!: boolean;
+  @Getter isAuthenticatedLastfm!: boolean;
 
   @Watch('selectedTheme', { deep: true })
   onThemeChanged(newVal: ThemeOption) {
@@ -86,7 +94,13 @@ export default class App extends Vue {
     }
   }
 
-  @Getter darkMode!: boolean;
+  @Watch('isAuthenticatedLastfm')
+  onLastfmAuthenticationChanged(newValue: boolean) {
+    // if user has logged into Lastfm, load the block items
+    if (newValue) {
+      this.loadBlockedItems();
+    }
+  }
 
   mounted() {
     // @ts-ignore
@@ -96,8 +110,8 @@ export default class App extends Vue {
   }
 
   created() {
-    this.loadSettings();
     this.loadTokenLastfm();
+    this.loadSettings();
   }
 
   updateSidebarVisibility(value: boolean) {

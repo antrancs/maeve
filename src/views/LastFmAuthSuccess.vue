@@ -14,7 +14,15 @@ export default class LastFmAuthSuccess extends Vue {
     const token = this.$route.hash.substring('#token='.length);
 
     if (window.opener) {
-      window.opener.postMessage({ token }, 'http://localhost:8080');
+      window.opener.postMessage(
+        {
+          source: '/auth/lastfm/success',
+          payload: {
+            token
+          }
+        },
+        'http://localhost:8080'
+      );
     }
   }
 }

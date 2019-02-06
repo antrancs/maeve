@@ -1,32 +1,36 @@
 <template>
   <div>
-    <CollectionHeader
-      :collection="album"
-      :artworkSize="150"
-      :numberOfSongs="numberOfSongs"
-    />
+    <CollectionHeader :collection="album" :songs="songs" :artworkSize="150" />
 
-    <SongListSmall class="mt-4" :collection="album" :isQueue="false" />
+    <SongListSmall class="mt-4" :songs="songs" :isQueue="false" />
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import Component from 'vue-class-component';
+import { Component, Vue, Watch, Mixins } from 'vue-property-decorator';
 import { Prop } from 'vue-property-decorator';
 import CollectionHeader from '@/components/CollectionHeader.vue';
 import SongListSmall from '@/components/SongListSmall.vue';
-import { getSongsFromCollection } from '@/utils/utils';
+import CollectionSongsMixin from '@/mixins/CollectionSongsMixin';
+
 @Component({
   components: {
     CollectionHeader,
     SongListSmall
   }
 })
-export default class LibraryArtistAlbumDetail extends Vue {
+export default class LibraryArtistAlbumDetail extends Mixins(
+  CollectionSongsMixin
+) {
   @Prop() album!: MusicKit.LibraryAlbum;
-  get numberOfSongs(): number {
-    return getSongsFromCollection(this.album).length;
+
+  created() {
+    this.getSongsDetail(this.album);
+  }
+
+  @Watch('album')
+  onAlbumChanged(newValue: MusicKit.LibraryAlbum) {
+    this.getSongsDetail(newValue);
   }
 }
 </script>

@@ -18,6 +18,7 @@
             >
               <CollectionHeader
                 :collection="collection"
+                :songs="songs"
                 :artworkSize="artworkSize"
                 :numberOfSongs="numberOfSongs"
               />
@@ -25,7 +26,7 @@
 
             <div class="hidden-sm-and-up mt-2">
               <template v-if="collection">
-                <CollectionControls :collection="collection" />
+                <CollectionControls :collection="collection" :songs="songs" />
               </template>
             </div>
           </v-layout>
@@ -53,20 +54,25 @@
     </div>
 
     <v-container>
-      <SongListLarge :collection="collection" :playlistId="playlistId" />
+      <SongListLarge
+        :playlistId="playlistId"
+        :songs="songs"
+        :fromAlbum="isFromAlbum"
+      />
     </v-container>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch, Mixins } from 'vue-property-decorator';
 import { Action, Getter, State, Mutation } from 'vuex-class';
 
 import SongListLarge from '@/components/SongListLarge.vue';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import CollectionHeader from '@/components/CollectionHeader.vue';
 import CollectionControls from '@/components/CollectionControls.vue';
-import { getArtworkUrl, getSongsFromCollection } from '@/utils/utils';
+import CollectionSongsMixin from '@/mixins/CollectionSongsMixin';
+import { getArtworkUrl } from '@/utils/utils';
 import musicApiService from '@/services/musicApi.service';
 import {
   ShowSnackbarAction,
@@ -105,7 +111,7 @@ import { TEXT_PRIMARY_DARK, TEXT_SECONDARY_DARK } from '@/themes';
     CollectionHeader
   }
 })
-export default class CollectionDetail extends Vue {
+export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
   private collection: Nullable<Collection> = null;
   // private songsWithRelationships: Nullable<MusicKit.Song[]> = null;
   @Prop() id!: string;
@@ -120,7 +126,17 @@ export default class CollectionDetail extends Vue {
   @Action [SHOW_SNACKBAR]: ShowSnackbarAction;
 
   get numberOfSongs(): number {
-    return getSongsFromCollection(this.collection).length;
+    return this.songs.length;
+  }
+
+  get isFromAlbum(): boolean {
+    if (!this.collection) {
+      return false;
+    }
+    return (
+      this.collection.type === 'library-albums' ||
+      this.collection.type === 'albums'
+    );
   }
 
   get collectionType(): CollectionType {
@@ -203,6 +219,7 @@ export default class CollectionDetail extends Vue {
 
   async fetchCollection() {
     this.collection = null;
+    this.getSongsDetail(this.collection);
     switch (this.collectionType) {
       case CollectionType.album:
         this.collection = await this.fetchOneAlbumCatalog(this.id);
@@ -216,6 +233,8 @@ export default class CollectionDetail extends Vue {
       case CollectionType.libraryPlaylist:
         this.collection = await this.fetchOnePlaylistLibrary(this.id);
     }
+
+    this.getSongsDetail(this.collection);
   }
 
   getCollectionArtwork(width: number, height: number) {

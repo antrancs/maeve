@@ -21,7 +21,7 @@ export default class LastFmAuthSuccess extends Vue {
             token
           }
         },
-        'http://localhost:8080'
+        'https://maevemusic.app/'
       );
     }
   }

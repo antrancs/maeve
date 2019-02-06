@@ -1,5 +1,5 @@
 import musicKit from '@/services/musicKit';
-import { Nullable } from '@/@types/model/model';
+import { Nullable, Song } from '@/@types/model/model';
 import { RepeatMode } from '@/utils/constants';
 
 const musicPlayerService = {
@@ -103,16 +103,43 @@ const musicPlayerService = {
     musicKit.getPlayerInstance().queue.remove(index);
   },
 
-  /**
-   * Play multiple songs
-   * @param songIds Id of those songs to play
-   */
-  playSongs(songIds: string[], startSongIndex: number): Promise<void> {
+  // /**
+  //  * Play multiple songs
+  //  * @param songIds Id of those songs to play
+  //  */
+  // playSongs(songIds: string[], startSongIndex: number): Promise<void> {
+  //   const music = musicKit.getInstance();
+  //   music.player.shuffleMode = 0;
+  //   return music
+  //     .setQueue({
+  //       songs: songIds
+  //     })
+  //     .then(() => music.player.changeToMediaAtIndex(startSongIndex));
+  // },
+
+  playSongs(
+    songs: Song[],
+    startSongIndex: number,
+    shuffle: boolean,
+    collectionId?: string
+  ) {
     const music = musicKit.getInstance();
-    music.player.shuffleMode = 0;
+    music.player.shuffleMode = shuffle ? 1 : 0;
+    const mediaItems = songs.map(
+      ({ id, attributes }) =>
+        new MusicKit.MediaItem({
+          id,
+          attributes,
+          type: 'song',
+          container: {
+            id: collectionId || id
+          }
+        })
+    );
+
     return music
       .setQueue({
-        songs: songIds
+        items: mediaItems
       })
       .then(() => music.player.changeToMediaAtIndex(startSongIndex));
   },

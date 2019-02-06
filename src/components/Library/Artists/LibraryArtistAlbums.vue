@@ -4,13 +4,13 @@
       <h2>{{ artistName }}</h2>
       <div v-if="albums" class="sub-info-text">
         {{ albums.length }} {{ albums.length > 1 ? 'albums' : 'album' }},
-        {{ totalSongIds.length }} songs
+        {{ totalSongs.length }} songs
       </div>
     </div>
 
     <div v-if="albums" class="text-xs-center my-2">
-      <AppButton @on-click="playAllSongs">Play</AppButton>
-      <AppButton @on-click="shuffleAllSongs">Shuffle</AppButton>
+      <app-button @on-click="playAllSongs">Play</app-button>
+      <app-button @on-click="shuffleAllSongs">Shuffle</app-button>
     </div>
     <transition-group name="list" tag="div" class="layout row wrap">
       <template v-if="albums">
@@ -37,19 +37,17 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import shuffle from 'lodash/shuffle';
 
-import AppButton from '@/components/AppButton.vue';
 import CollectionItemCard from '@/components/CollectionItemCard.vue';
 import { Prop, Watch } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 import { FETCH_ONE_ALBUM_LIBRARY, PLAY_SONGS } from '@/store/actions.type';
 import { FetchOneAlbumLibraryAction, PlaySongsAction } from '@/store/types';
-import { Nullable } from '@/@types/model/model';
+import { Nullable, Song } from '@/@types/model/model';
 import { getSongsFromCollection } from '@/utils/utils';
 
 @Component({
   components: {
-    CollectionItemCard,
-    AppButton
+    CollectionItemCard
   }
 })
 export default class LibraryArtistAlbums extends Vue {
@@ -68,19 +66,19 @@ export default class LibraryArtistAlbums extends Vue {
   }
 
   // get all song Ids from all albums
-  get totalSongIds(): string[] {
+  get totalSongs(): Song[] {
     if (!this.albums) {
       return [];
     }
 
-    let songIds: string[] = [];
+    let allSongs: Song[] = [];
 
     this.albums.forEach(album => {
       const songs = getSongsFromCollection(album);
-      songIds.push(...songs.map(song => song.id));
+      allSongs.push(...songs);
     });
 
-    return songIds;
+    return allSongs;
   }
 
   created() {
@@ -97,16 +95,16 @@ export default class LibraryArtistAlbums extends Vue {
 
   playAllSongs() {
     this.playSongs({
-      songIds: this.totalSongIds,
+      songs: this.totalSongs,
       startSongIndex: 0
     });
   }
 
   shuffleAllSongs() {
-    const shuffleIds = shuffle(this.totalSongIds);
+    const shuffledSongs = shuffle(this.totalSongs);
 
     this.playSongs({
-      songIds: shuffleIds,
+      songs: shuffledSongs,
       startSongIndex: 0
     });
   }

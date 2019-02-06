@@ -22,6 +22,18 @@ const router = new Router({
         import(/* webpackChunkName: "charts" */ './views/Charts.vue')
     },
     {
+      path: '/auth/lastfm/success',
+      name: 'lastfmAuthSuccess',
+      component: () =>
+        import(/* webpackChunkName: "lastfmAuthSuccess" */ './views/LastFmAuthSuccess.vue')
+    },
+    {
+      path: '/lastfm',
+      name: 'lastfm',
+      component: () =>
+        import(/* webpackChunkName: "lastfm" */ './views/Lastfm.vue')
+    },
+    {
       path: '/search',
       name: 'search',
       component: () =>

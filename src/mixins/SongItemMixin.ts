@@ -16,6 +16,13 @@ export default class SongItemMixin extends Vue {
   @Prop({ default: true })
   isFromAlbum!: boolean;
 
+  @State(state => state.settings.blockedSongs) blockedSongs!: {
+    [id: string]: boolean;
+  };
+  @State(state => state.settings.blockedArtists) blockedArtists!: {
+    [id: string]: boolean;
+  };
+
   @Getter darkMode!: boolean;
   @Getter isAuthenticated!: boolean;
 
@@ -53,6 +60,9 @@ export default class SongItemMixin extends Vue {
   }
 
   get songNameColor() {
+    if (this.isSongBlocked || this.isArtistBlocked) {
+      return this.$vuetify.theme.secondaryText;
+    }
     return this.isActive
       ? this.$vuetify.theme.accent
       : this.$vuetify.theme.primaryText;
@@ -80,6 +90,22 @@ export default class SongItemMixin extends Vue {
       return null;
     }
     return this.song.relationships.albums.data;
+  }
+
+  get isSongBlocked(): boolean {
+    return this.blockedSongs[this.song.id] !== undefined;
+  }
+
+  get isArtistBlocked(): boolean {
+    if (this.song.relationships && this.song.relationships.artists) {
+      for (const artist of this.song.relationships.artists.data) {
+        if (!this.blockedArtists[artist.id]) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
   }
 
   @Watch('musicPlayer.isLoading')

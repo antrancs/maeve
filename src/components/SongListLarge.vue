@@ -3,7 +3,7 @@
     <v-flex xs12>
       <SongListLargeItem
         :key="`${song.id}-${index}`"
-        v-for="(song, index) in songItems"
+        v-for="(song, index) in songs"
         :song="song"
         :index="index"
         :is-from-album="fromAlbum"

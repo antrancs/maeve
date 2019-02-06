@@ -24,11 +24,20 @@ export const SET_LIBRARY_ALBUMS = 'setLibraryAlbums';
 export const SET_LIBRARY_PLAYLISTS = 'setLibraryPlaylists';
 export const APPEND_LIBRARY_PLAYLISTS = 'appendLibraryPlaylists';
 
+// Settings
 export const ADD_ONE_THEME = 'addOneTheme';
 export const SET_CUSTOM_THEMES = 'setCustomThemes';
 export const SET_THEME = 'setTheme';
 export const DELETE_THEME_MUTATION = 'deleteThemeMutation';
 export const SET_SELECTED_THEME = 'setSelectedTheme';
 export const SET_BUTTON_STYLE = 'setButtonStyle';
-
+export const ADD_BLOCKED_ARTISTS = 'addBlockedArtist';
+export const REMOVE_BLOCKED_ARTISTS = 'removeBlockedArtists';
+export const SET_BLOCKED_ARTISTS = 'setBlockedArtists';
+export const ADD_BLOCKED_SONG = 'addBlockedSong';
+export const REMOVE_BLOCKED_SONG = 'removeBlockedSong';
+export const SET_BLOCKED_SONGS = 'setBlockedSongs';
 export const SET_FOOTER_VISIBILITY = 'setFooterVisibility';
+
+// Lastfm
+export const SET_LASTFM_TOKEN = 'setLastfmToken';

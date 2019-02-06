@@ -117,9 +117,14 @@ const actions: ActionTree<MusicPlayerState, any> = {
     });
   },
 
-  [PLAY_COLLECTION_WITH_SONG](
-    { getters, dispatch, commit },
-    { collection, songId, shuffle = false }: PlayCollectionWithSongPayload
+  async [PLAY_COLLECTION_WITH_SONG](
+    { getters, dispatch, commit, rootState },
+    {
+      collection,
+      songId,
+      shuffle = false,
+      songs
+    }: PlayCollectionWithSongPayload
   ) {
     if (
       !collection ||
@@ -139,15 +144,57 @@ const actions: ActionTree<MusicPlayerState, any> = {
       return;
     }
 
-    return musicPlayerService
-      .playCollectionWithSong(collection.attributes.playParams, shuffle, songId)
-      .then(() => {
-        commit(SET_SONG_QUEUE, musicPlayerService.queuedSongs);
-      });
+    if (songs) {
+      // filter out blocked songs
+      const songsToPlay = songs
+        .filter(song => {
+          let artists: MusicKit.Artist[] = [];
+          if (song.relationships && song.relationships.artists) {
+            artists = song.relationships.artists.data;
+            for (const artist of artists) {
+              if (rootState.settings.blockedArtists[artist.id]) {
+                return false;
+              }
+            }
+          }
+          return true;
+        })
+        .filter(song => !rootState.settings.blockedSongs[song.id]);
+
+      musicPlayerService
+        .playSongs(songsToPlay, 0, shuffle, collection.id)
+        .then(() => {
+          commit(SET_SONG_QUEUE, musicPlayerService.queuedSongs);
+        });
+    } else {
+      if (collection.attributes) {
+        musicPlayerService
+          .playCollectionWithSong(
+            collection.attributes.playParams!,
+            shuffle,
+            songId
+          )
+          .then(() => {
+            commit(SET_SONG_QUEUE, musicPlayerService.queuedSongs);
+          });
+      }
+    }
+
+    // if (collection.type === 'playlists') {
+    //   if (!collection.relationships) {
+    //     collection = (await dispatch(
+    //       FETCH_ONE_PLAYLIST_CATALOG,
+    //       collection.id
+    //     )) as MusicKit.Playlist;
+    //   }
+    // }
   },
 
-  [PLAY_SONGS]({ commit }, { songIds, startSongIndex }: PlaySongsPayload) {
-    musicPlayerService.playSongs(songIds, startSongIndex).then(() => {
+  [PLAY_SONGS](
+    { commit },
+    { songs, startSongIndex, shuffle = false }: PlaySongsPayload
+  ) {
+    musicPlayerService.playSongs(songs, startSongIndex, shuffle).then(() => {
       commit(SET_SONG_QUEUE, musicPlayerService.queuedSongs);
     });
   },

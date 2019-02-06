@@ -7,7 +7,9 @@
 }
 
 .right-items {
-  flex: 0 0 5rem;
+  // flex: 0 0 5rem;
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 
 .middle-items {

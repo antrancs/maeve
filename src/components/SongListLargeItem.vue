@@ -39,6 +39,7 @@
           </div>
 
           <MediaArtworkOverlay
+            v-if="!isSongBlocked && !isArtistBlocked"
             :is-active="isActive"
             :is-playing="isPlaying"
             :show-background="!isFromAlbum"

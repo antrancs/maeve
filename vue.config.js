@@ -81,7 +81,7 @@ module.exports = {
   devServer: {
     proxy: {
       '/lastfm/api/': {
-        target: 'https://us-central1-maeve-lastfm.cloudfunctions.net',
+        target: 'http://localhost:3000',
         ws: true,
         changeOrigin: true
       },
@@ -94,7 +94,7 @@ module.exports = {
         }
       },
       '/lastfm/auth': {
-        target: 'https://us-central1-maeve-lastfm.cloudfunctions.net', // https://maeve-music.appspot.com
+        target: 'http://localhost:3000', // https://maeve-music.appspot.com
         ws: true,
         changeOrigin: true
       }

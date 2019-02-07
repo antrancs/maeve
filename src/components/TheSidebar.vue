@@ -20,7 +20,8 @@
             ripple
           >
             <v-list-tile-action>
-              <v-icon>{{ link.icon }}</v-icon>
+              <v-icon v-if="link.icon">{{ link.icon }}</v-icon>
+              <SvgIcon v-else :iconName="link.customSvgIcon" />
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>{{ link.name }}</v-list-tile-title>
@@ -109,11 +110,16 @@
 import { Vue, Prop, Component, Watch } from 'vue-property-decorator';
 import { Getter, State, Action } from 'vuex-class';
 
+import SvgIcon from '@/components/SvgIcon.vue';
 import { MusicPlayerState, FetchLibraryPlaylistsActions } from '@/store/types';
 import { FETCH_LIBRARY_PLAYLISTS } from '@/store/actions.type';
 import { isLight, TEXT_PRIMARY_LIGHT, TEXT_PRIMARY_DARK } from '@/themes';
 
-@Component
+@Component({
+  components: {
+    SvgIcon
+  }
+})
 export default class AppSidebar extends Vue {
   private unauthenticatedLinks = [
     {
@@ -130,7 +136,7 @@ export default class AppSidebar extends Vue {
 
   private lastfmLink = {
     name: 'Lastfm',
-    icon: 'music_note',
+    customSvgIcon: 'lastfm-icon',
     pathName: 'lastfm'
   };
 
@@ -199,7 +205,12 @@ export default class AppSidebar extends Vue {
   }
 
   get navigationLinks(): Object[] {
-    const links = [...this.unauthenticatedLinks];
+    const links: {
+      name: string;
+      icon?: string;
+      pathName: string;
+      customSvgIcon?: string;
+    }[] = [...this.unauthenticatedLinks];
 
     if (this.isAuthenticated) {
       // Only show Lastfm menu when log in
@@ -270,6 +281,18 @@ export default class AppSidebar extends Vue {
   & .v-icon {
     font-size: 20px;
   }
+}
+
+.v-list__tile--active.v-list__tile.v-list__tile--link svg {
+  fill: var(--v-accent-base);
+}
+
+.v-list__tile--link.theme--light svg {
+  fill: rgba(0, 0, 0, 0.54);
+}
+
+.v-list__tile--link svg {
+  fill: white;
 }
 </style>
 

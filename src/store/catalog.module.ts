@@ -11,7 +11,9 @@ import {
   FETCH_ONE_CURATOR,
   FETCH_MULTIPLE_CURATORS,
   FETCH_CURATOR_PLAYLISTS,
-  FETCH_CATALOG_SONG_DETAILS
+  FETCH_CATALOG_SONG_DETAILS,
+  FETCH_MULTIPLE_SONGS_CATALOG,
+  FETCH_ONE_SONG_CATALOG
 } from './actions.type';
 import {
   CatalogState,
@@ -52,6 +54,14 @@ const actions: ActionTree<CatalogState, any> = {
 
   [FETCH_MULTIPLE_PLAYLISTS_CATALOG](_, ids: string[]) {
     return musicKit.getApiInstance().playlists(ids);
+  },
+
+  [FETCH_MULTIPLE_SONGS_CATALOG](_, ids: string[]) {
+    return musicKit.getApiInstance().songs(ids);
+  },
+
+  [FETCH_ONE_SONG_CATALOG](_, id: string) {
+    return musicKit.getApiInstance().song(id);
   },
 
   [FETCH_MULTIPLE_ARTISTS_CATALOG](_, ids: string[]) {

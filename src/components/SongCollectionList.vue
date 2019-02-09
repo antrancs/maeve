@@ -3,7 +3,8 @@
     <v-flex
       xs6
       sm3
-      md2
+      md3
+      lg2
       class="pa-2"
       v-for="collection in collections"
       :key="collection.id"

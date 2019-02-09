@@ -128,6 +128,8 @@ declare namespace MusicKit {
 
     songs(ids: string[], parameters?: QueryParameters): Promise<Song[]>;
 
+    song(id: string, parameters?: QueryParameters): Promise<Song>;
+
     /**
      * Fetch a storefront using its identifier.
      * @param id A storefront identifier.

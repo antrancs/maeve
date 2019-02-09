@@ -213,6 +213,14 @@ export type SearchCatalogAction = (
     MusicKit.Album | MusicKit.Playlist | MusicKit.Song | MusicKit.Artist
   >
 >;
+
+export type FetchMultipleArtitsCatalogAction = (
+  ids: string[]
+) => Promise<MusicKit.Artist[]>;
+
+export type FetchMultipleSongsCatalogAction = (
+  ids: string[]
+) => Promise<MusicKit.Song[]>;
 /**
  * Library module
  */

@@ -249,9 +249,14 @@ export type CreateNewPlaylistPayload = {
 export type FetchOneAlbumLibraryAction = (
   id: string
 ) => Promise<MusicKit.LibraryAlbum>;
+
 export type FetchOnePlaylistLibraryaAction = (
   id: string
 ) => Promise<MusicKit.LibraryPlaylist>;
+
+export type FetchMultipleAlbumsCatalogAction = (
+  ids: string[]
+) => Promise<MusicKit.Album[]>;
 
 export type SearchParams = {
   offset: number;

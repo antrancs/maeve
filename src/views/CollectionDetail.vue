@@ -59,6 +59,13 @@
         :songs="songs"
         :fromAlbum="isFromAlbum"
       />
+
+      <template v-if="relatedAlbums.length > 0">
+        <div class="mt-3">
+          <h2 class="px-2">Albums You May Also Like</h2>
+          <SongCollectionList :collections="relatedAlbums" />
+        </div>
+      </template>
     </v-container>
   </div>
 </template>
@@ -72,6 +79,7 @@ import MediaArtwork from '@/components/MediaArtwork.vue';
 import CollectionHeader from '@/components/CollectionHeader.vue';
 import CollectionControls from '@/components/CollectionControls.vue';
 import CollectionSongsMixin from '@/mixins/CollectionSongsMixin';
+import SongCollectionList from '@/components/SongCollectionList.vue';
 import { getArtworkUrl } from '@/utils/utils';
 import musicApiService from '@/services/musicApi.service';
 import {
@@ -79,7 +87,8 @@ import {
   FetchOneAlbumCatalogAction,
   FetchOnePlaylistCatalogAction,
   FetchOnePlaylistLibraryaAction,
-  FetchOneAlbumLibraryAction
+  FetchOneAlbumLibraryAction,
+  FetchMultipleAlbumsCatalogAction
 } from '@/store/types';
 import {
   Collection,
@@ -98,7 +107,9 @@ import {
   FETCH_ONE_ALBUM_CATALOG,
   FETCH_ONE_PLAYLIST_CATALOG,
   FETCH_ONE_PLAYLIST_LIBRARY,
-  FETCH_ONE_ALBUM_LIBRARY
+  FETCH_ONE_ALBUM_LIBRARY,
+  FETCH_ALBUM_EXTRA_INFO_CATALOG,
+  FETCH_MULTILE_ALBUMS_CATALOG
 } from '@/store/actions.type';
 import { Route } from 'vue-router';
 import { TEXT_PRIMARY_DARK, TEXT_SECONDARY_DARK } from '@/themes';
@@ -108,11 +119,13 @@ import { TEXT_PRIMARY_DARK, TEXT_SECONDARY_DARK } from '@/themes';
     SongListLarge,
     MediaArtwork,
     CollectionControls,
-    CollectionHeader
+    CollectionHeader,
+    SongCollectionList
   }
 })
 export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
   private collection: Nullable<Collection> = null;
+  private relatedAlbums: MusicKit.Album[] = [];
   // private songsWithRelationships: Nullable<MusicKit.Song[]> = null;
   @Prop() id!: string;
 
@@ -124,6 +137,8 @@ export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
   @Action [FETCH_ONE_ALBUM_LIBRARY]: FetchOneAlbumLibraryAction;
   @Action [FETCH_ONE_PLAYLIST_LIBRARY]: FetchOnePlaylistLibraryaAction;
   @Action [SHOW_SNACKBAR]: ShowSnackbarAction;
+  @Action [FETCH_MULTILE_ALBUMS_CATALOG]: FetchMultipleAlbumsCatalogAction;
+  @Action [FETCH_ALBUM_EXTRA_INFO_CATALOG]: (url: string) => Promise<any>;
 
   get numberOfSongs(): number {
     return this.songs.length;
@@ -210,6 +225,7 @@ export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
 
   @Watch('$route')
   onRouteChange(to: Route, from: Route) {
+    this.relatedAlbums = [];
     this.fetchCollection();
   }
 
@@ -235,6 +251,24 @@ export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
     }
 
     this.getSongsDetail(this.collection);
+
+    // fetch extra info after gettings songs details so it doesnt have to wait
+    if (
+      this.collection &&
+      this.collection.type === 'albums' &&
+      this.collection.attributes
+    ) {
+      const info = await this.fetchAlbumExtraInfoCatalog(
+        this.collection.attributes.url
+      );
+
+      if (info.relatedAlbums && info.relatedAlbums.length > 0) {
+        const albums = await this.fetchMultipleAlbumsCatalog(
+          info.relatedAlbums
+        );
+        this.relatedAlbums = albums;
+      }
+    }
   }
 
   getCollectionArtwork(width: number, height: number) {

@@ -13,7 +13,9 @@ import {
   FETCH_CURATOR_PLAYLISTS,
   FETCH_CATALOG_SONG_DETAILS,
   FETCH_MULTIPLE_SONGS_CATALOG,
-  FETCH_ONE_SONG_CATALOG
+  FETCH_ONE_SONG_CATALOG,
+  FETCH_ALBUM_EXTRA_INFO_CATALOG,
+  FETCH_MULTILE_ALBUMS_CATALOG
 } from './actions.type';
 import {
   CatalogState,
@@ -22,6 +24,7 @@ import {
   FetchCuratorPlaylistsPayload
 } from './types';
 import musicApiService from '@/services/musicApi.service';
+import { getAlbumExtraInfo } from '@/utils/utils';
 
 const initialState: CatalogState = {};
 
@@ -54,6 +57,10 @@ const actions: ActionTree<CatalogState, any> = {
 
   [FETCH_MULTIPLE_PLAYLISTS_CATALOG](_, ids: string[]) {
     return musicKit.getApiInstance().playlists(ids);
+  },
+
+  [FETCH_MULTILE_ALBUMS_CATALOG](_, ids: string[]) {
+    return musicKit.getApiInstance().albums(ids);
   },
 
   [FETCH_MULTIPLE_SONGS_CATALOG](_, ids: string[]) {
@@ -139,6 +146,10 @@ const actions: ActionTree<CatalogState, any> = {
 
   async [FETCH_CATALOG_SONG_DETAILS](_, ids?: string[]) {
     return await musicKit.getApiInstance().songs(ids || []);
+  },
+
+  [FETCH_ALBUM_EXTRA_INFO_CATALOG](_, url: string) {
+    return getAlbumExtraInfo(url);
   }
 };
 

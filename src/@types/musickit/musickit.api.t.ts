@@ -54,7 +54,7 @@ declare namespace MusicKit {
      * @param parameters A query parameters object that is serialized and passed directly to the Apple Music API
      * @returns An array of album resources.
      */
-    albums(ids: string[], parameters: QueryParameters): Promise<Album[]>;
+    albums(ids: string[], parameters?: QueryParameters): Promise<Album[]>;
 
     /**
      * Fetch an Apple curator using its identifier.

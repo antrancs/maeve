@@ -87,10 +87,11 @@ import {
 })
 export default class Home extends Vue {
   private featuredPlaylistIds = [
+    'pl.33c5def02b6047fd8c5eb3ae0009793f', // grammy
     'pl.567c541f63414e798be5cf214e155557', // Today at Apple
     'pl.2b0e6e332fdf4b7a91164da3162127b5', // Top 100 Global
-    'pl.d25f5d1181894928af76c85c967f8f31', // Best of the week
-    'pl.f4d106fed2bd41149aaacabb233eb5eb' // Today hit
+    'pl.d25f5d1181894928af76c85c967f8f31' // Best of the week
+    // 'pl.f4d106fed2bd41149aaacabb233eb5eb' // Today hit
   ];
 
   private featuredPlaylists: ReadonlyArray<MusicKit.Playlist> = [];

@@ -18,6 +18,8 @@
           />
         </div>
 
+        <div class="top-icon pa-1"><slot></slot></div>
+
         <v-card-title primary-title class="py-2 px-2">
           <v-layout column wrap>
             <div
@@ -97,3 +99,11 @@ export default class ArtistItem extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.top-icon {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+</style>

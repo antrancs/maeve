@@ -111,6 +111,18 @@ const getAlbumExtraInfo = (iTunesUrl: string) => {
     });
 };
 
+const getGrammyResults = () => {
+  return axios
+    .get('/api/grammyResults', {
+      params: {
+        storefront: MusicKit.getInstance().storefrontId
+      }
+    })
+    .then(res => {
+      return res.data;
+    });
+};
+
 const getSongsFromCollection = (collection: Nullable<Collection>): Song[] => {
   if (
     !collection ||
@@ -130,5 +142,6 @@ export {
   getArtistDetails,
   getCuratorBanner,
   getCuratorsByGenre,
-  getAlbumExtraInfo
+  getAlbumExtraInfo,
+  getGrammyResults
 };

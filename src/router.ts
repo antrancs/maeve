@@ -22,6 +22,12 @@ const router = new Router({
         import(/* webpackChunkName: "charts" */ './views/Charts.vue')
     },
     {
+      path: '/grammy',
+      name: 'grammy',
+      component: () =>
+        import(/* webpackChunkName: "grammy" */ './views/Grammy.vue')
+    },
+    {
       path: '/auth/lastfm/success',
       name: 'lastfmAuthSuccess',
       component: () =>

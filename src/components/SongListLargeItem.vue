@@ -48,6 +48,8 @@
         </div>
       </div>
 
+      <slot></slot>
+
       <v-flex :class="$style['middle-items']">
         <v-layout row wrap>
           <v-flex xs12 sm6 md5 class="pr-2">

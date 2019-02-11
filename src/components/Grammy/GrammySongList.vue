@@ -2,14 +2,18 @@
   <v-layout column>
     <v-flex xs12>
       <SongListLargeItem
-        :key="`${song.id}-${index}`"
+        :key="`${index}`"
         v-for="(song, index) in songs"
         :song="song"
         :index="index"
         :is-from-album="fromAlbum"
         @song-item-clicked="handleSongClicked"
         @actions-icon-click="handleActionIconClick"
-      />
+      >
+        <div style="width: 3.2rem">
+          <v-icon v-if="winners.includes(song.id)" title="Winner">stars</v-icon>
+        </div>
+      </SongListLargeItem>
     </v-flex>
   </v-layout>
 </template>
@@ -18,25 +22,19 @@
 import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { Action, State } from 'vuex-class';
 
-import { Collection, Nullable, Song, SnackbarMode } from '@/@types/model/model';
-import { MusicPlayerState } from '@/store/types';
-
 import SongListLargeItem from '@/components/SongListLargeItem.vue';
 import SongListMixin from '@/mixins/SongListMixin';
+import { Song } from '@/@types/model/model';
 
 @Component({
   components: { SongListLargeItem }
 })
-export default class SongListLarge extends Mixins(SongListMixin) {
+export default class GrammySongList extends Mixins(SongListMixin) {
+  @Prop() winners!: string[];
+
   handleActionIconClick(song: Song, posX: number, posY: number) {
     // @ts-ignore
-    this.$root.$mediaActionMenu.open(
-      song,
-      this.collectionId,
-      posX,
-      posY,
-      false
-    );
+    this.$root.$mediaActionMenu.open(song, this.collection, posX, posY, false);
   }
 
   handleSongClicked(songId: string, songIndex: number) {
@@ -44,18 +42,3 @@ export default class SongListLarge extends Mixins(SongListMixin) {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.icon-playing {
-  align-items: center;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  left: 0;
-  opacity: 0;
-  position: absolute;
-  top: 0;
-  width: 100%;
-  z-index: 4;
-}
-</style>

@@ -16,6 +16,10 @@ const router = new Router({
       component: () => import(/* webpackChunkName: "home" */ './views/Home.vue')
     },
     {
+      path: '/index.html',
+      redirect: { name: 'home' }
+    },
+    {
       path: '/charts',
       name: 'charts',
       component: () =>
@@ -157,10 +161,6 @@ const router = new Router({
       path: '/404',
       name: 'NotFound',
       component: NotFound
-    },
-    {
-      path: '*',
-      redirect: '/404'
     }
   ]
 });

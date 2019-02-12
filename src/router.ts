@@ -161,6 +161,10 @@ const router = new Router({
       path: '/404',
       name: 'NotFound',
       component: NotFound
+    },
+    {
+      path: '*',
+      redirect: '/404'
     }
   ]
 });

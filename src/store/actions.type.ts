@@ -1,6 +1,6 @@
 export const PAUSE_CURRENT_TRACK = 'pauseCurrentTrack';
-export const PLAY_COLLECTION_WITH_SONG = 'playCollectionWithSong';
 export const PLAY_PREVIOUS = 'playPrevious';
+export const PLAY_CURRENT_SONG = 'playCurrentSong';
 export const PLAY_NEXT = 'playNext';
 export const PLAY_SONGS = 'playSongs';
 export const TOGGLE_SHUFFLE_MODE = 'toggleShuffleMode';
@@ -22,10 +22,15 @@ export const LOGOUT = 'logout';
 export const SHOW_SNACKBAR = 'showSnackbar';
 export const CLOSE_SNACKBAR = 'closeSnackbar';
 
-export const APPEND_SONGS = 'appendSongs';
-export const PREPEND_SONGS = 'prependSongs';
+export const APPEND_SONGS_TO_QUEUE = 'appendSongsToQueue';
+export const PREPEND_SONGS_TO_QUEUE = 'prependSongsToQueue';
 export const TOGGLE_QUEUE_VISIBILITY = 'toggleQueueVisibility';
 export const REMOVE_SONG_FROM_QUEUE = 'removeSongFromQueue';
+export const MOVE_NEXT_PLAY_QUEUE = 'updateQueuePosition';
+export const MOVE_BACK_PLAY_QUEUE = 'moveBackPlayQueue';
+export const REMOVE_FROM_UP_NEXT = 'removeFromUpNext';
+export const REMOVE_FROM_HISTORY = 'removeFromHistory';
+
 export const BLOCK_ARTISTS = 'blockArtists';
 export const UNBLOCK_ARTISTS = 'unblockArtists';
 export const BLOCK_SONG = 'blockSong';

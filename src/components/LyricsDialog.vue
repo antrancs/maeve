@@ -50,7 +50,7 @@ export default class LyricsDialog extends Mixins(LyricsMixin) {
   onDialogVisibilityChanged(newValue: boolean, oldValue: boolean) {
     if (newValue) {
       this.loadingLyrics = true;
-      this.$_fetchLyrics(
+      this.fetchLyrics(
         this.currentPlaying.title,
         this.currentPlaying.artistName
       );
@@ -66,7 +66,7 @@ export default class LyricsDialog extends Mixins(LyricsMixin) {
   ) {
     if (newValue && this.dialog) {
       this.lyrics = '';
-      this.$_fetchLyrics(
+      this.fetchLyrics(
         this.currentPlaying.title,
         this.currentPlaying.artistName
       );

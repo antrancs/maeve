@@ -1,6 +1,7 @@
 import { GetterTree, MutationTree, ActionTree } from 'vuex';
 
 import musicPlayerService from '@/services/musicPlayer.service';
+import musicKit from '@/services/musicKit';
 import {
   PAUSE_CURRENT_TRACK,
   PLAY_NEXT,
@@ -8,38 +9,45 @@ import {
   PLAY_SONGS,
   RESUME_CURRENT_TRACK,
   TOGGLE_CURRENT_TRACK,
-  PLAY_COLLECTION_WITH_SONG,
   SKIP_TO_SONG_AT_INDEX,
   TOGGLE_SHUFFLE_MODE,
   SEEK_TO_TIME,
   CHANGE_VOLUME,
   MUTE_VOLUME,
-  UPDATE_REPEAT_MODE
+  UPDATE_REPEAT_MODE,
+  PLAY_CURRENT_SONG,
+  MOVE_NEXT_PLAY_QUEUE,
+  MOVE_BACK_PLAY_QUEUE
 } from '@/store/actions.type';
 import {
   SET_CURRENTLY_PLAYING_SONG,
   SET_IS_PLAYING,
   SET_PLAYBACK_PROGESS,
-  SET_SONG_QUEUE,
   SET_SONG_LOADING,
   SET_CURRENT_PLAYBACK_TIME,
   SET_REPEAT_MODE,
   SET_VOLUME,
   SET_IS_MUTED,
-  SET_CURRENT_PLAYBACK_TIME_AFTER_SKIP
+  SET_CURRENT_PLAYBACK_TIME_AFTER_SKIP,
+  SET_MAIN_SONGS,
+  SET_CURRENT_COLLECTION_ID,
+  SET_CURRENTLY_PLAYING_SOURCE,
+  SET_MAIN_SONGS_SOURCE,
+  SET_MAIN_SONGS_INDEX
 } from '@/store/mutations.type';
 import {
   MusicPlayerState,
-  PlayCollectionWithSongPayload,
   SkipToSongAtIndexPayload,
   PlaySongsPayload
 } from './types';
 import { RepeatMode } from '@/utils/constants';
-import { Nullable } from '@/@types/model/model';
+import { Nullable, PlayQueueSong, Song, Artist } from '@/@types/model/model';
 import { getArtworkUrl } from '@/utils/utils';
 
 const initialState: MusicPlayerState = {
   currentPlaying: null,
+  currentPlayingSource: '',
+  currentCollectionId: null,
   isPlaying: false,
   playbackProgress: 0,
   isLoading: false,
@@ -52,24 +60,11 @@ const initialState: MusicPlayerState = {
 
 const getters: GetterTree<MusicPlayerState, any> = {
   currentTrackArtwork({ currentPlaying }, getters): Nullable<string> {
-    if (!currentPlaying) {
+    if (!currentPlaying || !currentPlaying.attributes) {
       return null;
     }
 
-    if (getters.isAuthenticated) {
-      return currentPlaying.artwork.url.replace('2000x2000bb', '300x300bb');
-    }
-    return getArtworkUrl(currentPlaying.artwork.url, 120, 120);
-  },
-
-  isCollectionBeingPlayed({ currentPlaying }) {
-    return (collectionId: string) => {
-      return (
-        currentPlaying &&
-        currentPlaying.container &&
-        currentPlaying.container.id === collectionId
-      );
-    };
+    return getArtworkUrl(currentPlaying.attributes.artwork.url, 120, 120);
   },
 
   isSongBeingPlayed({ currentPlaying }) {
@@ -79,20 +74,37 @@ const getters: GetterTree<MusicPlayerState, any> = {
   },
 
   currentPlayingDuration({ currentPlaying }, getters) {
-    if (!currentPlaying) {
+    if (!currentPlaying || !currentPlaying.attributes) {
       return 0;
     }
-    return getters.isAuthenticated ? currentPlaying!.playbackDuration : 30000; // 30 seconds
+
+    return getters.isAuthenticated
+      ? currentPlaying.attributes.durationInMillis
+      : 30000; // 30 seconds
   }
 };
 
 const actions: ActionTree<MusicPlayerState, any> = {
-  [PLAY_NEXT]() {
-    musicPlayerService.playNext();
+  async [PLAY_NEXT]({ rootState, dispatch, commit }) {
+    dispatch(MOVE_NEXT_PLAY_QUEUE);
+    const songToPlay = rootState.playQueue.nextSongToPlay;
+
+    if (songToPlay) {
+      commit(SET_CURRENTLY_PLAYING_SONG, songToPlay.song);
+      commit(SET_CURRENTLY_PLAYING_SOURCE, songToPlay.source);
+      await dispatch(PLAY_CURRENT_SONG, songToPlay.song);
+    }
   },
 
-  [PLAY_PREVIOUS]() {
-    musicPlayerService.playPrevious();
+  async [PLAY_PREVIOUS]({ rootState, dispatch, commit }) {
+    dispatch(MOVE_BACK_PLAY_QUEUE);
+    const songToPlay = rootState.playQueue.nextSongToPlay;
+
+    if (songToPlay) {
+      commit(SET_CURRENTLY_PLAYING_SONG, songToPlay.song);
+      commit(SET_CURRENTLY_PLAYING_SOURCE, songToPlay.source);
+      await dispatch(PLAY_CURRENT_SONG, songToPlay.song);
+    }
   },
 
   [TOGGLE_SHUFFLE_MODE]() {
@@ -117,86 +129,65 @@ const actions: ActionTree<MusicPlayerState, any> = {
     });
   },
 
-  async [PLAY_COLLECTION_WITH_SONG](
-    { getters, dispatch, commit, rootState },
+  async [PLAY_SONGS](
+    { dispatch, commit, rootState },
     {
-      collection,
-      songId,
+      collectionId,
+      startSongIndex = 0,
       shuffle = false,
-      songs
-    }: PlayCollectionWithSongPayload
+      songs,
+      songsSourceName
+    }: PlaySongsPayload
   ) {
-    if (
-      !collection ||
-      !collection.attributes ||
-      !collection.attributes.playParams
-    ) {
-      return;
-    }
-
-    if (!songId && getters.isCollectionBeingPlayed(collection.id) && !shuffle) {
-      dispatch(TOGGLE_CURRENT_TRACK);
-      return;
-    }
-
-    if (songId && getters.isSongBeingPlayed(songId)) {
-      dispatch(TOGGLE_CURRENT_TRACK);
-      return;
-    }
-
-    if (songs) {
-      // filter out blocked songs
-      const songsToPlay = songs
-        .filter(song => {
-          let artists: MusicKit.Artist[] = [];
-          if (song.relationships && song.relationships.artists) {
-            artists = song.relationships.artists.data;
-            for (const artist of artists) {
-              if (rootState.settings.blockedArtists[artist.id]) {
-                return false;
-              }
+    // filter out blocked songs & songs from blocked artists
+    const songsToPlay = songs
+      .filter(song => {
+        let artists: Artist[] = [];
+        if (song.relationships && song.relationships.artists) {
+          artists = song.relationships.artists.data;
+          for (const artist of artists) {
+            if (rootState.settings.blockedArtists[artist.id]) {
+              return false;
             }
           }
-          return true;
-        })
-        .filter(song => !rootState.settings.blockedSongs[song.id]);
+        }
+        return true;
+      })
+      .filter(song => !rootState.settings.blockedSongs[song.id])
+      .filter(song => song.attributes); // song without attributes are not playable
 
-      musicPlayerService
-        .playSongs(songsToPlay, 0, shuffle, collection.id)
-        .then(() => {
-          commit(SET_SONG_QUEUE, musicPlayerService.queuedSongs);
-        });
-    } else {
-      if (collection.attributes) {
-        musicPlayerService
-          .playCollectionWithSong(
-            collection.attributes.playParams!,
-            shuffle,
-            songId
-          )
-          .then(() => {
-            commit(SET_SONG_QUEUE, musicPlayerService.queuedSongs);
-          });
-      }
-    }
+    const playQueueSongs: PlayQueueSong[] = songsToPlay.map((song, index) => ({
+      qId: `${song.id}-${index}`,
+      ...song
+    }));
 
-    // if (collection.type === 'playlists') {
-    //   if (!collection.relationships) {
-    //     collection = (await dispatch(
-    //       FETCH_ONE_PLAYLIST_CATALOG,
-    //       collection.id
-    //     )) as MusicKit.Playlist;
-    //   }
-    // }
+    commit(SET_MAIN_SONGS, playQueueSongs);
+    commit(SET_MAIN_SONGS_SOURCE, songsSourceName);
+    commit(SET_CURRENT_COLLECTION_ID, collectionId);
+    commit(SET_MAIN_SONGS_INDEX, startSongIndex - 1);
+    dispatch(PLAY_NEXT);
   },
 
-  [PLAY_SONGS](
-    { commit },
-    { songs, startSongIndex, shuffle = false }: PlaySongsPayload
-  ) {
-    musicPlayerService.playSongs(songs, startSongIndex, shuffle).then(() => {
-      commit(SET_SONG_QUEUE, musicPlayerService.queuedSongs);
+  [PLAY_CURRENT_SONG](_, song: PlayQueueSong) {
+    const mediaItems = new MusicKit.MediaItem({
+      id: song.id,
+      attributes: song.attributes,
+      type: 'song',
+      container: {
+        id: song.id
+      }
     });
+
+    const music = musicKit.getInstance();
+
+    return music
+      .setQueue({
+        items: [mediaItems]
+      })
+      .then(() => music.player.play())
+      .catch(err => {
+        console.log(err);
+      });
   },
 
   [SKIP_TO_SONG_AT_INDEX](_, { index }: SkipToSongAtIndexPayload) {
@@ -234,8 +225,16 @@ const actions: ActionTree<MusicPlayerState, any> = {
 };
 
 const mutations: MutationTree<MusicPlayerState> = {
-  [SET_CURRENTLY_PLAYING_SONG](state, track: MusicKit.MediaItem) {
-    state.currentPlaying = track;
+  [SET_CURRENTLY_PLAYING_SONG](state, song: PlayQueueSong) {
+    state.currentPlaying = song;
+  },
+
+  [SET_CURRENTLY_PLAYING_SOURCE](state, sourceName: string) {
+    state.currentPlayingSource = sourceName;
+  },
+
+  [SET_CURRENT_COLLECTION_ID](state, id: string | null) {
+    state.currentCollectionId = id;
   },
 
   [SET_IS_PLAYING](state, isPlaying: boolean) {

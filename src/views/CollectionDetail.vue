@@ -93,7 +93,6 @@ import {
   Album
 } from '@/@types/model/model';
 import {
-  PLAY_COLLECTION_WITH_SONG,
   SHOW_SNACKBAR,
   FETCH_ONE_ALBUM_CATALOG,
   FETCH_ONE_PLAYLIST_CATALOG,

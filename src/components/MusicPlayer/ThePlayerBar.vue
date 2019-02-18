@@ -139,15 +139,23 @@ export default class PlayerBar extends Mixins(PlayerBarColorMixin) {
   [TOGGLE_QUEUE_VISIBILITY]: () => void;
 
   get artistName(): string {
-    return this.musicPlayer.currentPlaying
-      ? this.musicPlayer.currentPlaying.artistName
-      : '';
+    if (
+      !this.musicPlayer.currentPlaying ||
+      !this.musicPlayer.currentPlaying.attributes
+    ) {
+      return '';
+    }
+    return this.musicPlayer.currentPlaying.attributes.artistName;
   }
 
   get songName(): string {
-    return this.musicPlayer.currentPlaying
-      ? this.musicPlayer.currentPlaying.title
-      : '';
+    if (
+      !this.musicPlayer.currentPlaying ||
+      !this.musicPlayer.currentPlaying.attributes
+    ) {
+      return '';
+    }
+    return this.musicPlayer.currentPlaying.attributes.name;
   }
 
   get repeatIcon(): string {

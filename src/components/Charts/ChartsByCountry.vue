@@ -32,7 +32,6 @@
           </div>
           <SongListSmall
             :songs="songs"
-            :isQueue="false"
             :isChart="true"
             :textColor="textColor"
           />

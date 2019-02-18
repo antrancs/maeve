@@ -67,8 +67,18 @@ export default class SongListMixin extends Vue {
 
     this.playSongs({
       songs,
+      songsSourceName: '',
       startSongIndex: songIndex
     });
+  }
+
+  handleActionIconClick(song: Song, posX: number, posY: number) {
+    // @ts-ignore
+    this.$root.$mediaActionMenu.open(song, this.collection, posX, posY, false);
+  }
+
+  handleSongClicked(songId: string, songIndex: number) {
+    this.handlePlaySongs(songId);
   }
 
   // async $_updateSongItems() {

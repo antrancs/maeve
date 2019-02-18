@@ -7,7 +7,7 @@ export default class LyricsMixin extends Vue {
   lyrics: string = '';
   loadingLyrics = false;
 
-  $_fetchLyrics(title: string, artistName: string) {
+  fetchLyrics(title: string, artistName: string) {
     getLyrics(title, artistName)
       .then(lyrics => {
         this.lyrics = lyrics;

@@ -8,8 +8,8 @@
         'song-item__wrapper',
         {
           'song-item--playing': isActive,
-          'primary lighten-2': hover && !textColor && darkMode,
-          'primary darken-2': hover && !textColor && !darkMode,
+          'primary lighten-2': hover && darkMode,
+          'primary darken-2': hover && !darkMode,
           'py-1': $vuetify.breakpoint.xsOnly,
           'dark-mode': darkMode
         }
@@ -25,31 +25,19 @@
           ></v-progress-circular>
           <div v-else class="size-fit">
             <MediaArtwork
-              v-if="!isFromAlbum"
               :artwork="song.attributes.artwork"
               :width="50"
               :height="50"
             />
 
-            <div
-              v-if="isFromAlbum && !isActive"
-              class="track-number flex-center size-fit"
-              :style="{ opacity: hover ? 0 : 1 }"
-            >
-              {{ song.attributes.trackNumber }}
-            </div>
-
             <MediaArtworkOverlay
               v-if="!isSongBlocked && !isArtistBlocked"
-              :is-active="isActive"
               :is-playing="isPlaying"
-              :show-background="!isFromAlbum"
+              :is-active="isActive && isNowPlaying"
               @playing-control-clicked="onSongClicked"
             />
           </div>
         </div>
-
-        <div v-if="isChart" :style="chartIndex">{{ index + 1 }}</div>
 
         <v-flex :class="$style['middle-items']">
           <v-layout row wrap>
@@ -66,7 +54,6 @@
                 <v-icon
                   class="ml-1"
                   small
-                  :color="textColor || ''"
                   v-if="song.attributes.contentRating === 'explicit'"
                   >explicit</v-icon
                 >
@@ -84,24 +71,33 @@
         </v-flex>
 
         <v-btn
+          v-if="isAuthenticated"
           slot="activator"
           class="song-actions"
           :style="{ opacity: hover ? 1 : 0 }"
           icon
           @click.stop="onActionsIconClicked"
         >
-          <v-icon :color="textColor || undefined">more_horiz</v-icon>
+          <v-icon>more_horiz</v-icon>
         </v-btn>
 
         <div
-          :style="rightItemWidthStyle"
-          :class="['sub-info-text', 'hidden-xs-only', $style['right-items']]"
+          :class="[
+            'sub-info-text pr-2',
+            'hidden-xs-only',
+            $style['right-items']
+          ]"
         >
-          <template v-if="!isLastfm">
+          <template v-if="!hover">
             {{ song.attributes.durationInMillis | formattedDuration }}
           </template>
           <template v-else>
-            {{ lastfmStreamDate }}
+            <v-icon
+              v-if="!isNowPlaying"
+              @click="$emit('remove-from-queue', index)"
+              color="red"
+              >remove_circle</v-icon
+            >
           </template>
         </div>
       </template>
@@ -112,25 +108,12 @@
 </template>
 
 <script lang="ts">
-import {
-  Component,
-  Prop,
-  Vue,
-  Inject,
-  Watch,
-  Mixins
-} from 'vue-property-decorator';
+import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { State, Action, Getter } from 'vuex-class';
-import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
 
 import { MusicPlayerState } from '@/store/types';
 import { TOGGLE_CURRENT_TRACK } from '@/store/actions.type';
-import {
-  HandleSongClicked,
-  Nullable,
-  Song,
-  LastfmSong
-} from '@/@types/model/model';
+import { HandleSongClicked, Song } from '@/@types/model/model';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import MediaArtworkOverlay from '@/components/MediaArtworkOverlay.vue';
 import ResourceLinkList from '@/components/ResourceLinkList.vue';
@@ -139,50 +122,47 @@ import SongItemMixin from '@/mixins/SongItemMixin';
 @Component({
   components: { MediaArtworkOverlay, MediaArtwork, ResourceLinkList }
 })
-export default class SongListSmallItem extends Mixins(SongItemMixin) {
-  @Prop() textColor!: Nullable<string>;
+export default class PlayQueueSongItem extends Mixins(SongItemMixin) {
+  @Prop({ default: false }) isHistory!: boolean;
+  @Prop({ default: false }) isNowPlaying!: boolean;
+  @Prop() index!: number;
 
   get songNameColor() {
-    if (this.isSongBlocked || this.isArtistBlocked) {
+    if (this.isHistory) {
       return this.$vuetify.theme.secondaryText;
     }
-    return this.isActive
-      ? this.$vuetify.theme.accent
-      : this.textColor || this.$vuetify.theme.primaryText;
-  }
 
-  get chartIndex() {
-    return {
-      width: '3.2rem',
-      'font-weight': 'bold',
-      color: this.textColor || undefined
-    };
-  }
-
-  get rightItemWidthStyle() {
-    if (this.isLastfmSong(this.song)) {
-      return {
-        'flex-basis': '10rem'
-      };
+    if (this.isNowPlaying) {
+      return this.$vuetify.theme.accent;
     }
-    return {
-      'flex-basis': '5rem'
-    };
+
+    return this.$vuetify.theme.primaryText;
   }
 
-  get isLastfm() {
-    return this.isLastfmSong(this.song);
+  onActionsIconClicked(event: MouseEvent) {
+    event.preventDefault();
+
+    // @ts-ignore
+    this.$root.$mediaActionMenu.open(
+      this.song,
+      null,
+      event.clientX,
+      event.clientY,
+      true
+    );
   }
 
-  isLastfmSong(song: Song): song is LastfmSong {
-    return (<LastfmSong>song).lastStream !== undefined;
-  }
+  handleRightClick(event: MouseEvent) {
+    event.preventDefault();
 
-  get lastfmStreamDate(): Nullable<string> {
-    if (this.isLastfmSong(this.song)) {
-      return distanceInWordsToNow(Date.parse(this.song.lastStream + ' UTC'));
-    }
-    return null;
+    // @ts-ignore
+    this.$root.$mediaActionMenu.open(
+      this.song,
+      null,
+      event.clientX,
+      event.clientY,
+      true
+    );
   }
 }
 </script>

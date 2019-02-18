@@ -61,11 +61,18 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { State, Action, Getter } from 'vuex-class';
 
 import MediaArtwork from '@/components/MediaArtwork.vue';
-import { Collection, Nullable } from '@/@types/model/model';
-import { MusicPlayerState, PlayCollectionWithSongAction } from '@/store/types';
+import { Collection, Nullable, Song } from '@/@types/model/model';
+import {
+  MusicPlayerState,
+  FetchOneAlbumCatalogAction,
+  FetchOnePlaylistCatalogAction,
+  PlaySongsAction
+} from '@/store/types';
 import {
   TOGGLE_CURRENT_TRACK,
-  PLAY_COLLECTION_WITH_SONG
+  FETCH_ONE_ALBUM_CATALOG,
+  FETCH_ONE_PLAYLIST_CATALOG,
+  PLAY_SONGS
 } from '@/store/actions.type';
 import {
   isLight,
@@ -86,12 +93,17 @@ export default class CollectionItemCard extends Vue {
   musicPlayer!: MusicPlayerState;
 
   @Action
-  [PLAY_COLLECTION_WITH_SONG]: PlayCollectionWithSongAction;
+  [PLAY_SONGS]: PlaySongsAction;
   @Action
   [TOGGLE_CURRENT_TRACK]!: () => void;
+  @Action [FETCH_ONE_ALBUM_CATALOG]: FetchOneAlbumCatalogAction;
+  @Action [FETCH_ONE_PLAYLIST_CATALOG]: FetchOnePlaylistCatalogAction;
 
   get isCollectionBeingPlayed(): boolean {
-    return this.$store.getters.isCollectionBeingPlayed(this.collection.id);
+    if (!this.musicPlayer.currentCollectionId) {
+      return false;
+    }
+    return this.musicPlayer.currentCollectionId === this.collection.id;
   }
 
   get artworkOverlayClass(): object {
@@ -119,10 +131,45 @@ export default class CollectionItemCard extends Vue {
       : TEXT_SECONDARY_DARK;
   }
 
-  playCollection() {
-    this.playCollectionWithSong({
-      collection: this.collection
-    });
+  async playCollection() {
+    if (this.isCollectionBeingPlayed) {
+      this.toggleCurrentTrack();
+      return;
+    }
+
+    // if this collection already has a 'tracks' relationship, just play it
+    if (
+      this.collection &&
+      this.collection.relationships &&
+      this.collection.relationships.tracks
+    ) {
+      this.$_playTracksFromCollection(this.collection);
+      return;
+    }
+
+    // fetch 'tracks' relationships of the current collection to play
+    let songs: Song[] = [];
+    let collection: Nullable<Collection> = null;
+    switch (this.collection.type) {
+      case 'albums':
+        collection = await this.fetchOneAlbumCatalog(this.collection.id);
+        break;
+      case 'playlists':
+        collection = await this.fetchOnePlaylistCatalog(this.collection.id);
+        break;
+    }
+
+    this.$_playTracksFromCollection(collection!);
+  }
+
+  $_playTracksFromCollection(collection: Collection) {
+    if (collection.relationships && collection.relationships.tracks) {
+      this.playSongs({
+        collectionId: this.collection.id,
+        songs: collection.relationships.tracks.data,
+        songsSourceName: collection.attributes ? collection.attributes.name : ''
+      });
+    }
   }
 }
 </script>

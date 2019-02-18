@@ -5,14 +5,19 @@ import {
   Nullable,
   SnackbarMode,
   ThemeOption,
-  CatalogCollection,
-  LibraryCollection
+  PlayQueueSong,
+  PlayQueueNextSongToPlay
 } from '@/@types/model/model';
 import { RepeatMode, ButtonStyle } from '@/utils/constants';
 
 // MusicPlayer module
 export interface MusicPlayerState {
-  currentPlaying: MusicKit.MediaItem | null;
+  currentPlaying: PlayQueueSong | null;
+  // name of the source where the currentPlaying is from (Your Queue or name of the album/playlists)
+  currentPlayingSource: string;
+  // currentCollectionId is the id of the collection to which currentPlaying belongs
+  // currentCollectionId is null when currentPlaying is from a list of songs (for eg, top songs of an artist)
+  currentCollectionId: string | null;
   isPlaying: boolean;
   playbackProgress: number;
   isLoading: boolean;
@@ -24,29 +29,42 @@ export interface MusicPlayerState {
 }
 
 // Payload
+// export type AppendSongsPayload = {
+//   items: MusicKit.MediaItem[];
+// };
 export type AppendSongsPayload = {
-  items: MusicKit.MediaItem[];
+  items: PlayQueueSong[];
 };
 
+// export type PrependSongsPayload = {
+//   items: MusicKit.MediaItem[];
+// };
 export type PrependSongsPayload = {
-  items: MusicKit.MediaItem[];
+  items: PlayQueueSong[];
 };
 
-export type PlayCollectionWithSongPayload = {
-  collection: Collection;
-  shuffle?: boolean;
-  songId?: string;
-  songs?: MusicKit.Song[];
-};
+// export type PlayCollectionWithSongPayload = {
+//   shuffle?: boolean;
+//   songs: Song[];
+//   // id of the starting song
+//   songId?: string;
+//   // id of the collection from which 'songs' are from
+//   collectionId?: string;
+// };
 
 export type SkipToSongAtIndexPayload = {
   index: number;
 };
 
 export type PlaySongsPayload = {
-  songs: Song[];
-  startSongIndex: number;
   shuffle?: boolean;
+  songs: Song[];
+  // name of the source where the songs are from (name of the album/playlist, Artist's top tracks...)
+  songsSourceName: string;
+  // id of the starting song
+  startSongIndex?: number;
+  // id of the collection from which 'songs' are from
+  collectionId?: string;
 };
 
 export type FetchCollectionPayload = {
@@ -63,9 +81,9 @@ export type AppendSongsAction = (payload: AppendSongsPayload) => void;
 
 export type PrependSongsAction = (payload: PrependSongsPayload) => void;
 
-export type PlayCollectionWithSongAction = (
-  payload: PlayCollectionWithSongPayload
-) => void;
+// export type PlayCollectionWithSongAction = (
+//   payload: PlayCollectionWithSongPayload
+// ) => void;
 
 export type SkipToSongAtIndexAction = (
   payload: SkipToSongAtIndexPayload
@@ -108,6 +126,21 @@ export interface AuthState {
 export interface PlayQueueState {
   visibility: boolean;
   songs: MusicKit.MediaItem[];
+}
+
+export interface NewPlayQueueState {
+  visibility: boolean;
+  // mainSongs are songs that we originally add to the play queue
+  // (songs from an album/playlist/multiple individual songs)
+  mainSongs: PlayQueueSong[];
+  // name of the source where 'mainSongs' are from (name of an album/playlist, Artist's top tracks...)
+  mainSongsSource: string;
+  mainSongsIndex: number;
+  nextSongToPlay: PlayQueueNextSongToPlay | undefined;
+  shuffledSongs: PlayQueueSong[];
+  shuffleSongIndex: number;
+  queue: PlayQueueSong[];
+  queueIndex: number;
 }
 
 export interface CollectionState {

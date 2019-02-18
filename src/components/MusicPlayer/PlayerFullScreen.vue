@@ -184,29 +184,15 @@ export default class PlayerFullScreen extends Mixins(
 
   @Watch('dialog')
   onDialogVisibilityChanged(newValue: boolean) {
-    if (newValue && this.musicPlayer.currentPlaying) {
-      this.lyrics = '';
-
-      if (this.isAuthenticated) {
-        this.$_fetchLyrics(
-          this.musicPlayer.currentPlaying.title,
-          this.musicPlayer.currentPlaying.artistName
-        );
-      }
+    if (newValue) {
+      this.$_fetchLyrics();
     }
   }
 
   @Watch('musicPlayer.currentPlaying')
   onCurrentPlayingChanged(newValue: MusicKit.MediaItem) {
-    if (newValue && this.dialog && this.musicPlayer.currentPlaying) {
-      this.lyrics = '';
-
-      if (this.isAuthenticated) {
-        this.$_fetchLyrics(
-          this.musicPlayer.currentPlaying.title,
-          this.musicPlayer.currentPlaying.artistName
-        );
-      }
+    if (newValue && this.dialog) {
+      this.$_fetchLyrics();
     }
   }
 
@@ -250,6 +236,17 @@ export default class PlayerFullScreen extends Mixins(
 
   open() {
     this.dialog = true;
+  }
+
+  $_fetchLyrics() {
+    this.lyrics = '';
+
+    if (this.isAuthenticated && this.musicPlayer.currentPlaying) {
+      this.fetchLyrics(
+        this.musicPlayer.currentPlaying.attributes!.name,
+        this.musicPlayer.currentPlaying.attributes!.artistName
+      );
+    }
   }
 }
 </script>

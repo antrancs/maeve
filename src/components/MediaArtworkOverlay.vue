@@ -24,11 +24,11 @@ export default class ArtworkOverlay extends Vue {
   private playingControlHovered: boolean = false;
 
   @Prop({ default: true })
-  private showBackground!: boolean;
+  showBackground!: boolean;
   @Prop({ default: false })
-  private isActive!: boolean;
+  isActive!: boolean;
   @Prop({ default: false })
-  private isPlaying!: boolean;
+  isPlaying!: boolean;
 
   get contentIcon(): string {
     if (this.isPlaying && this.isActive) {

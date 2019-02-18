@@ -2,7 +2,7 @@
   <div>
     <CollectionHeader :collection="album" :songs="songs" :artworkSize="150" />
 
-    <SongListSmall class="mt-4" :songs="songs" :isQueue="false" />
+    <SongListSmall class="mt-4" :songs="songs" />
   </div>
 </template>
 

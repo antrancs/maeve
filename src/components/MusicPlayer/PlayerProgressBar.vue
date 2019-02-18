@@ -77,12 +77,12 @@ export default class PlayerProgressBar extends Vue {
     if (newValue === 0.5) {
       const { currentPlaying } = this.musicPlayer;
 
-      if (!currentPlaying) {
+      if (!currentPlaying || !currentPlaying.attributes) {
         return;
       }
       this.scrobbleLastfm({
-        artist: currentPlaying.artistName,
-        track: currentPlaying.title
+        artist: currentPlaying.attributes.artistName,
+        track: currentPlaying.attributes.name
       });
     }
   }

@@ -7,7 +7,6 @@ export const SET_IS_PLAYING = 'setIsPlaying';
 export const SET_SONG_LOADING = 'setSongLoading';
 export const SET_PLAYBACK_PROGESS = 'setPlaybackProgress';
 export const SET_CURRENT_PLAYBACK_TIME = 'setCurrentPlaybackTime';
-export const SET_SONG_QUEUE = 'setSongQueue';
 export const SET_REPEAT_MODE = 'setRepeatMode';
 export const SET_SHUFFLE_MODE = 'setShuffleMode';
 export const SET_VOLUME = 'setVolume';
@@ -29,6 +28,7 @@ export const REMOVE_FROM_SHUFFLED_MAIN_SONGS = 'removeFromShuffledMainSongs';
 export const SET_SHUFFLED_SONGS = 'setShuffledMainSongs';
 export const SET_SHUFFLED_SONGS_INDEX = 'setShuffledSongsIndex';
 export const SET_YOUR_QUEUE = 'setYourQueue';
+export const SET_YOUR_QUEUE_INDEX = 'setYourQueueIndex';
 
 export const SET_SNACKBAR_VISIBILITY = 'setSnackbarVisibility';
 export const SET_SNACKBAR_TEXT = 'setSnackbarText';

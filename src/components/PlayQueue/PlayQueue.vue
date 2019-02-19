@@ -12,43 +12,10 @@
         </v-flex>
 
         <v-flex :class="$style['items']">
-          <template v-if="history.length > 0">
-            <PlayQueueSongItem
-              v-for="(song, index) in history"
-              :key="song.qId"
-              :song="song"
-              :index="index"
-              :isHistory="true"
-              @remove-from-queue="handleRemoveFromHistory"
-              @song-item-clicked="handleHistoryItemClicked"
-            />
-          </template>
-
-          <h4 class="mx-2 mt-3">Playing from: {{ currentPlayingSource }}</h4>
-          <PlayQueueSongItem :song="currentPlaying" :isNowPlaying="true" />
-
-          <template v-if="queuedSongs.length > 0">
-            <h4 class="mx-2 mt-3">Your Queue</h4>
-            <PlayQueueSongItem
-              v-for="(song, index) in queuedSongs"
-              :key="song.qId"
-              :song="song"
-              :index="index"
-              @remove-from-queue="removeFromYourQueue"
-            />
-          </template>
-
-          <template v-if="upNext.length > 0">
-            <h4 class="mx-2 mt-3">Up Next from: {{ mainSongsSource }}</h4>
-            <PlayQueueSongItem
-              v-for="(song, index) in upNext"
-              :key="song.qId"
-              :index="index"
-              :song="song"
-              @remove-from-queue="handleRemoveFromUpNext"
-              @song-item-clicked="handleUpNextItemClicked"
-            />
-          </template>
+          <PlayQueueHistory />
+          <CurrentPlaying />
+          <YourQueue />
+          <PlayQueueUpNext />
         </v-flex>
       </v-layout>
     </div>
@@ -60,70 +27,25 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { State, Action, Getter, Mutation } from 'vuex-class';
 
-import { PlayQueueSong } from '@/@types/model/model';
-import PlayQueueSongItem from './PlayQueueSongItem.vue';
-import {
-  TOGGLE_QUEUE_VISIBILITY,
-  REMOVE_FROM_UP_NEXT,
-  REMOVE_FROM_HISTORY,
-  CHANGE_TO_INDEX_IN_UP_NEXT,
-  CHANGE_TO_INDEX_IN_HISTORY
-} from '@/store/actions.type';
-import { REMOVE_FROM_YOUR_QUEUE } from '@/store/mutations.type';
-import { RemoveFromMainSongsAction, ChangeToIndexAction } from '@/store/types';
+import PlayQueueHistory from './PlayQueueHistory.vue';
+import PlayQueueUpNext from './PlayQueueUpNext.vue';
+import CurrentPlaying from './CurrentPlaying.vue';
+import YourQueue from './YourQueue.vue';
+import { TOGGLE_QUEUE_VISIBILITY } from '@/store/actions.type';
 
 @Component({
   components: {
-    PlayQueueSongItem
+    PlayQueueHistory,
+    PlayQueueUpNext,
+    CurrentPlaying,
+    YourQueue
   }
 })
 export default class PlayQueue extends Vue {
-  @State(state => state.playQueue.queue)
-  queuedSongs!: PlayQueueSong[];
   @State(state => state.playQueue.visibility) visibility!: boolean;
-  @State(state => state.playQueue.mainSongsSource) mainSongsSource!: boolean;
-  @State(state => state.musicPlayer.currentPlaying)
-  currentPlaying!: string;
-  @State(state => state.musicPlayer.currentPlayingSource)
-  currentPlayingSource!: string;
-
-  @Getter upNext!: PlayQueueSong[];
-  @Getter history!: PlayQueueSong[];
 
   @Action
   [TOGGLE_QUEUE_VISIBILITY]: () => void;
-  @Action [REMOVE_FROM_UP_NEXT]: RemoveFromMainSongsAction;
-  @Action [REMOVE_FROM_HISTORY]: RemoveFromMainSongsAction;
-  @Action [CHANGE_TO_INDEX_IN_UP_NEXT]: ChangeToIndexAction;
-  @Action [CHANGE_TO_INDEX_IN_HISTORY]: ChangeToIndexAction;
-
-  @Mutation [REMOVE_FROM_YOUR_QUEUE]!: (index: number) => void;
-
-  handleUpNextItemClicked(songId: string, index: number) {
-    this.changeToIndexInUpNext({
-      index
-    });
-  }
-
-  handleHistoryItemClicked(songId: string, index: number) {
-    this.changeToIndexInHistory({
-      index
-    });
-  }
-
-  handleRemoveFromUpNext(index: number) {
-    this.removeFromUpNext({
-      index,
-      qId: this.upNext[index].qId
-    });
-  }
-
-  handleRemoveFromHistory(index: number) {
-    this.removeFromHistory({
-      index,
-      qId: this.history[index].qId
-    });
-  }
 }
 </script>
 

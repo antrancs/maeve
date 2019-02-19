@@ -1,6 +1,9 @@
 <template>
   <span>
-    <router-link :to="{ name: resourceType, params: { id: resourceId } }">
+    <router-link
+      :to="{ name: resourceType, params: { id: resourceId } }"
+      @click.native="$event.stopImmediatePropagation()"
+    >
       {{ text }}
     </router-link>
   </span>

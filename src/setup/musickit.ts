@@ -23,6 +23,8 @@ export function connectMusicKitToStore(
   function onPlaybackStateDidChange(event: any) {
     switch (musicKitInstance.player.playbackState) {
       case MusicKit.PlaybackStates.stopped:
+        store.commit(SET_IS_PLAYING, false);
+        break;
       case MusicKit.PlaybackStates.paused:
         store.commit(SET_IS_PLAYING, false);
         break;

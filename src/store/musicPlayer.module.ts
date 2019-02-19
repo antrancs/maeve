@@ -43,12 +43,11 @@ import {
 } from './types';
 import { RepeatMode } from '@/utils/constants';
 import {
-  Nullable,
   PlayQueueSong,
   Artist,
-  ShuffleMode
+  ShuffleMode,
+  Nullable
 } from '@/@types/model/model';
-import { getArtworkUrl } from '@/utils/utils';
 
 const initialState: MusicPlayerState = {
   currentPlaying: null,
@@ -227,7 +226,7 @@ const actions: ActionTree<MusicPlayerState, any> = {
 };
 
 const mutations: MutationTree<MusicPlayerState> = {
-  [SET_CURRENTLY_PLAYING_SONG](state, song: PlayQueueSong) {
+  [SET_CURRENTLY_PLAYING_SONG](state, song: PlayQueueSong | null) {
     state.currentPlaying = song;
   },
 

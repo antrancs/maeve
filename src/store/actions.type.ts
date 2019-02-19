@@ -32,6 +32,8 @@ export const REMOVE_FROM_UP_NEXT = 'removeFromUpNext';
 export const REMOVE_FROM_HISTORY = 'removeFromHistory';
 export const CHANGE_TO_INDEX_IN_HISTORY = 'changeToIndexInHistory';
 export const CHANGE_TO_INDEX_IN_UP_NEXT = 'changeToIndexInUpNext';
+export const CHANGE_TO_INDEX_IN_YOUR_QUEUE = 'changeToIndexInYourQueue';
+export const RESET_QUEUE = 'resetQueue';
 
 export const BLOCK_ARTISTS = 'blockArtists';
 export const UNBLOCK_ARTISTS = 'unblockArtists';

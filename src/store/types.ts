@@ -114,7 +114,6 @@ export interface PlayQueueState {
   shuffledMainSongs: PlayQueueSong[];
   shuffleSongIndex: number;
   queue: PlayQueueSong[];
-  queueIndex: number;
 }
 
 export interface CollectionState {

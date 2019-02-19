@@ -5,8 +5,8 @@
     <v-card class="primary">
       <v-card-title>
         <span class="headline"
-          >Lyrics for {{ this.currentPlaying.title }} by
-          {{ this.currentPlaying.artistName }}</span
+          >Lyrics for {{ this.currentPlaying.attributes.name }} by
+          {{ this.currentPlaying.attributes.artistName }}</span
         >
       </v-card-title>
 
@@ -37,22 +37,22 @@ import { State } from 'vuex-class';
 import LyricsMixin from '@/mixins/LyricsMixin';
 import { getLyrics } from '@/services/lyrics.service';
 import { Watch } from 'vue-property-decorator';
-import { Nullable } from '@/@types/model/model';
+import { Nullable, PlayQueueSong } from '@/@types/model/model';
 
 @Component
 export default class LyricsDialog extends Mixins(LyricsMixin) {
   private dialog = false;
 
   @State(state => state.musicPlayer.currentPlaying)
-  currentPlaying!: MusicKit.MediaItem;
+  currentPlaying!: PlayQueueSong;
 
   @Watch('dialog')
   onDialogVisibilityChanged(newValue: boolean, oldValue: boolean) {
-    if (newValue) {
+    if (newValue && this.currentPlaying.attributes) {
       this.loadingLyrics = true;
       this.fetchLyrics(
-        this.currentPlaying.title,
-        this.currentPlaying.artistName
+        this.currentPlaying.attributes.name,
+        this.currentPlaying.attributes.artistName
       );
     } else {
       this.lyrics = '';
@@ -64,11 +64,11 @@ export default class LyricsDialog extends Mixins(LyricsMixin) {
     newValue: Nullable<MusicKit.MediaItem>,
     oldValue: Nullable<MusicKit.MediaItem>
   ) {
-    if (newValue && this.dialog) {
+    if (newValue && this.dialog && this.currentPlaying.attributes) {
       this.lyrics = '';
       this.fetchLyrics(
-        this.currentPlaying.title,
-        this.currentPlaying.artistName
+        this.currentPlaying.attributes.name,
+        this.currentPlaying.attributes.artistName
       );
     }
   }

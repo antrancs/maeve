@@ -22,7 +22,9 @@ import {
   MOVE_BACK_PLAY_QUEUE,
   PLAY_NEXT,
   CHANGE_TO_INDEX_IN_UP_NEXT,
-  CHANGE_TO_INDEX_IN_HISTORY
+  CHANGE_TO_INDEX_IN_HISTORY,
+  CHANGE_TO_INDEX_IN_YOUR_QUEUE,
+  RESET_QUEUE
 } from './actions.type';
 import {
   SET_QUEUE_VISIBILITY,
@@ -35,7 +37,8 @@ import {
   SET_SHUFFLED_SONGS_INDEX,
   SET_YOUR_QUEUE,
   SET_SHUFFLED_SONGS,
-  REMOVE_FROM_SHUFFLED_MAIN_SONGS
+  REMOVE_FROM_SHUFFLED_MAIN_SONGS,
+  SET_YOUR_QUEUE_INDEX
 } from './mutations.type';
 import { RepeatMode } from '@/utils/constants';
 
@@ -47,8 +50,7 @@ const initialState: PlayQueueState = {
   nextSongToPlay: undefined,
   shuffledMainSongs: [],
   shuffleSongIndex: -1,
-  queue: [],
-  queueIndex: 0
+  queue: []
 };
 
 const getters: GetterTree<PlayQueueState, any> = {
@@ -59,7 +61,7 @@ const getters: GetterTree<PlayQueueState, any> = {
     return state.shuffledMainSongs.slice(state.shuffleSongIndex + 1);
   },
 
-  history(state, getters, rootState) {
+  history(state, _, rootState) {
     const index =
       rootState.musicPlayer.shuffleMode === ShuffleMode.Off
         ? state.mainSongsIndex
@@ -134,8 +136,6 @@ const actions: ActionTree<PlayQueueState, any> = {
   },
 
   [MOVE_NEXT_PLAY_QUEUE]({ state, commit, rootState }) {
-    // console.log(state.mainSongsIndex, state.mainSongs.length);
-
     // When queue is empty, pick the next item in mainSongs/shuffledMainSongs to play
     if (state.queue.length === 0) {
       if (rootState.musicPlayer.shuffleMode === ShuffleMode.Off) {
@@ -174,8 +174,6 @@ const actions: ActionTree<PlayQueueState, any> = {
           }
         }
 
-        console.log('shuffle next', nextIndex);
-
         commit(SET_SHUFFLED_SONGS_INDEX, nextIndex);
         commit(SET_NEXT_SONG_TO_PLAY, {
           song: state.shuffledMainSongs[state.shuffleSongIndex],
@@ -196,9 +194,15 @@ const actions: ActionTree<PlayQueueState, any> = {
       return;
     }
 
+    let isPlayingYourQueue =
+      rootState.musicPlayer.currentPlayingSource === 'Your Queue';
     // work on mainSongs list
     if (rootState.musicPlayer.shuffleMode === ShuffleMode.Off) {
-      const prevIndex = state.mainSongsIndex - 1;
+      // if we're playing a song from 'Your Queue', the previous item is the current item in the main queue
+      // otherwise, decrease the index
+      const prevIndex = isPlayingYourQueue
+        ? state.mainSongsIndex
+        : state.mainSongsIndex - 1;
       commit(SET_MAIN_SONGS_INDEX, prevIndex);
       commit(SET_NEXT_SONG_TO_PLAY, {
         song: state.mainSongs[state.mainSongsIndex],
@@ -206,7 +210,11 @@ const actions: ActionTree<PlayQueueState, any> = {
       });
     } else {
       // work on shuffledMainSongs list
-      const prevIndex = state.shuffleSongIndex - 1;
+      // if we're playing a song from 'Your Queue', the previous item is the current item in the main queue
+      // otherwise, decrease the index
+      const prevIndex = isPlayingYourQueue
+        ? state.shuffleSongIndex
+        : state.shuffleSongIndex - 1;
       commit(SET_SHUFFLED_SONGS_INDEX, prevIndex);
       commit(SET_NEXT_SONG_TO_PLAY, {
         song: state.shuffledMainSongs[state.shuffleSongIndex],
@@ -278,6 +286,23 @@ const actions: ActionTree<PlayQueueState, any> = {
     }
 
     dispatch(PLAY_NEXT);
+  },
+
+  [CHANGE_TO_INDEX_IN_YOUR_QUEUE](
+    { dispatch, commit },
+    { index }: ChangeToIndexActionPayload
+  ) {
+    commit(SET_YOUR_QUEUE_INDEX, index);
+    dispatch(PLAY_NEXT);
+  },
+
+  [RESET_QUEUE]({ commit }) {
+    commit(SET_MAIN_SONGS, []);
+    commit(SET_MAIN_SONGS_INDEX, -1);
+    commit(SET_SHUFFLED_SONGS, []);
+    commit(SET_SHUFFLED_SONGS_INDEX, -1);
+    commit(SET_YOUR_QUEUE, []);
+    commit(SET_NEXT_SONG_TO_PLAY, undefined);
   }
 };
 
@@ -333,6 +358,11 @@ const mutations: MutationTree<PlayQueueState> = {
 
   [SET_YOUR_QUEUE](state, items: PlayQueueSong[]) {
     state.queue = items;
+  },
+
+  // 'move' to the specified index of 'Your Queue'
+  [SET_YOUR_QUEUE_INDEX](state, index: number) {
+    state.queue = state.queue.slice(index);
   }
 };
 

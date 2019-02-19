@@ -27,7 +27,11 @@
                 >
                   {{ songName }}
                 </div>
-                <div class="long-text-truncated">{{ artistName }}</div>
+                <ResourceLinkList
+                  :class="['long-text-truncated', $style['link-item']]"
+                  :resources="artists"
+                  :name="artistName"
+                />
               </v-flex>
 
               <v-flex xs4 sm4 md4>
@@ -108,6 +112,7 @@ import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { State, Action, Getter, Mutation } from 'vuex-class';
 
 import LyricsDialog from '@/components/LyricsDialog.vue';
+import ResourceLinkList from '@/components/ResourceLinkList.vue';
 import PlayerProgressBar from './PlayerProgressBar.vue';
 import PlayerFullScreen from './PlayerFullScreen.vue';
 import PlayNextButton from './PlayNextButton.vue';
@@ -121,7 +126,7 @@ import {
   UPDATE_REPEAT_MODE,
   TOGGLE_SHUFFLE_MODE
 } from '@/store/actions.type';
-import { Nullable, ShuffleMode } from '@/@types/model/model';
+import { Nullable, ShuffleMode, Artist } from '@/@types/model/model';
 import { RepeatMode, PLACEHOLDER_IMAGE } from '@/utils/constants';
 import { getArtworkUrl } from '@/utils/utils';
 
@@ -133,7 +138,8 @@ import { getArtworkUrl } from '@/utils/utils';
     PlayPreviousButton,
     PlayButton,
     PlayerVolume,
-    PlayerFullScreen
+    PlayerFullScreen,
+    ResourceLinkList
   }
 })
 export default class PlayerBar extends Mixins(PlayerBarColorMixin) {
@@ -158,6 +164,19 @@ export default class PlayerBar extends Mixins(PlayerBarColorMixin) {
       return '';
     }
     return this.musicPlayer.currentPlaying.attributes.artistName;
+  }
+
+  get artists(): Nullable<Artist[]> {
+    const { currentPlaying } = this.musicPlayer;
+    if (
+      !currentPlaying ||
+      !currentPlaying.relationships ||
+      !currentPlaying.relationships.artists
+    ) {
+      return null;
+    }
+
+    return currentPlaying.relationships.artists.data;
   }
 
   get songName(): string {
@@ -202,17 +221,11 @@ export default class PlayerBar extends Mixins(PlayerBarColorMixin) {
   handleShuffleClicked() {
     this.toggleShuffleMode();
   }
-
-  showPlayerFullScreen() {
-    this.playerFullScreenVisible = true;
-
-    // @ts-ignore
-    // this.$refs.playerFullScreen.open();
-  }
 }
 </script>
 
 <style lang="scss" module>
+@import '@/styles/components/_link-item.scss';
 .wrapper {
   border-top: 0.1rem solid black;
   bottom: 0;

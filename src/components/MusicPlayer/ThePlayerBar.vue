@@ -49,6 +49,7 @@
                     v-if="$vuetify.breakpoint.mdAndUp"
                     icon
                     @click.stop="handleShuffleClicked"
+                    title="Shuffle"
                   >
                     <v-icon
                       medium
@@ -65,6 +66,7 @@
                     v-if="$vuetify.breakpoint.mdAndUp"
                     icon
                     @click.stop="updateRepeatMode"
+                    title="Repeat"
                   >
                     <v-icon
                       medium

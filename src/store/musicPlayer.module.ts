@@ -17,7 +17,9 @@ import {
   PLAY_CURRENT_SONG,
   MOVE_NEXT_PLAY_QUEUE,
   MOVE_BACK_PLAY_QUEUE,
-  TOGGLE_SHUFFLE_MODE
+  TOGGLE_SHUFFLE_MODE,
+  TOGGLE_SHUFFLE,
+  SHUFFLE_MAIN_SONGS
 } from '@/store/actions.type';
 import {
   SET_CURRENTLY_PLAYING_SONG,
@@ -83,7 +85,7 @@ const getters: GetterTree<MusicPlayerState, any> = {
 };
 
 const actions: ActionTree<MusicPlayerState, any> = {
-  async [PLAY_NEXT]({ state, rootState, dispatch, commit }) {
+  async [PLAY_NEXT]({ rootState, dispatch, commit, rootGetters }) {
     dispatch(MOVE_NEXT_PLAY_QUEUE);
     const songToPlay = rootState.playQueue.nextSongToPlay;
 
@@ -94,7 +96,7 @@ const actions: ActionTree<MusicPlayerState, any> = {
     }
   },
 
-  async [PLAY_PREVIOUS]({ rootState, dispatch, commit }) {
+  async [PLAY_PREVIOUS]({ rootState, dispatch, commit, rootGetters }) {
     dispatch(MOVE_BACK_PLAY_QUEUE);
     const songToPlay = rootState.playQueue.nextSongToPlay;
 
@@ -159,6 +161,9 @@ const actions: ActionTree<MusicPlayerState, any> = {
     commit(SET_MAIN_SONGS_SOURCE, songsSourceName);
     commit(SET_CURRENT_COLLECTION_ID, collectionId);
     commit(SET_MAIN_SONGS_INDEX, startSongIndex - 1);
+    commit(SET_SHUFFLE_MODE, +shuffle);
+
+    dispatch(SHUFFLE_MAIN_SONGS);
     dispatch(PLAY_NEXT);
   },
 
@@ -199,10 +204,12 @@ const actions: ActionTree<MusicPlayerState, any> = {
     commit(SET_REPEAT_MODE, nextRepeatMode);
   },
 
+  // toggleShuffleMode sets the mode to musicPlayer's state
+  // while toggleShuffle shuffles/unshuffles the mainSongs in playQueue module
   [TOGGLE_SHUFFLE_MODE]({ state, commit, dispatch }) {
     const newMode = +!state.shuffleMode;
     commit(SET_SHUFFLE_MODE, newMode);
-    dispatch('updateShuffledSongsIndex');
+    dispatch(TOGGLE_SHUFFLE);
   },
 
   [SEEK_TO_TIME]({ commit }, time) {

@@ -1,6 +1,7 @@
 <template>
   <v-btn
     icon
+    title="Play"
     @click.stop="toggleCurrentTrack"
     :style="{ width: `${size}px`, height: `${size}px` }"
   >

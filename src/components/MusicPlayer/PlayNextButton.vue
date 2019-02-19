@@ -1,10 +1,15 @@
 <template>
   <v-btn
     icon
-    @click.stop="playNext"
+    title="Next"
+    @click.stop="handlePlayNext"
     :style="{ width: `${size}px`, height: `${size}px` }"
   >
-    <v-icon :medium="!size" :style="primaryStyle" :size="size"
+    <v-icon
+      :medium="!size"
+      :style="primaryStyle"
+      :size="size"
+      :color="buttonColor"
       >skip_next</v-icon
     >
   </v-btn>
@@ -12,7 +17,7 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator';
-import { Action } from 'vuex-class';
+import { Action, Getter } from 'vuex-class';
 
 import PlayerBarColorMixin from '@/mixins/PlayerBarColorMixin';
 import { PLAY_NEXT } from '@/store/actions.type';
@@ -23,5 +28,17 @@ export default class PlayNextButton extends Mixins(PlayerBarColorMixin) {
 
   @Action
   [PLAY_NEXT]: () => void;
+
+  @Getter canGoNext!: boolean;
+
+  get buttonColor() {
+    return this.canGoNext ? 'primaryText' : 'secondaryText';
+  }
+
+  handlePlayNext() {
+    if (this.canGoNext) {
+      this.playNext();
+    }
+  }
 }
 </script>

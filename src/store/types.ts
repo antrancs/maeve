@@ -227,6 +227,15 @@ export type FetchMultipleArtitsCatalogAction = (
 export type FetchMultipleSongsCatalogAction = (
   ids: string[]
 ) => Promise<MusicKit.Song[]>;
+
+export type FetchActivityPlaylistsPayload = SearchParams & {
+  id: string;
+};
+
+export type FetchActivityPlaylistsAction = (
+  payload: FetchActivityPlaylistsPayload
+) => Promise<FetchResult<MusicKit.Playlist>>;
+
 /**
  * Library module
  */

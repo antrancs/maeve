@@ -76,6 +76,8 @@ export const FETCH_CATALOG_SONG_DETAILS = 'fetchCatalogSongsDetails';
 export const FETCH_MULTIPLE_SONGS_CATALOG = 'fetchMultipleSongsCatalog';
 export const FETCH_ONE_SONG_CATALOG = 'fetchOneSongCatalog';
 export const FETCH_ALBUM_EXTRA_INFO_CATALOG = 'fetchAlbumExtraInfoCatalog';
+export const FETCH_ONE_ACTIVITY_CATALOG = 'fetchOneActivityCatalog';
+export const FETCH_ACTIVITY_PLAYLISTS = 'fetchActivityPlaylists';
 
 export const FETCH_ONE_ALBUM_LIBRARY = 'fetchOneAlbumLibrary';
 export const FETCH_ONE_PLAYLIST_LIBRARY = 'fetchOnePlaylistLibrary';

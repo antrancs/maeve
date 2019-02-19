@@ -238,14 +238,26 @@ class MusicApiService {
       });
   }
 
-  /**
-   * Get all details of one activity
-   * @param id Id of the activity
-   */
-  getActivity(id: string): Promise<MusicKit.Activity> {
-    return musicKit.getApiInstance().activity(id, {
-      include: 'playlists'
-    });
+  getActivityPlaylists(activityId: string, limit: number, offset: number) {
+    const storefrontId = musicKit.getApiInstance().storefrontId;
+    return this.axiosInstance
+      .get(`catalog/${storefrontId}/activities/${activityId}/playlists`, {
+        headers: {
+          Authorization: `Bearer ${authService.developerToken}`,
+          'Content-Type': 'application/json'
+        },
+        params: {
+          limit,
+          offset
+        }
+      })
+      .then(res => {
+        if (!res.data) {
+          throw new Error('Error while fetching curators');
+        }
+
+        return res.data;
+      });
   }
 
   async addSongsToPlaylist(

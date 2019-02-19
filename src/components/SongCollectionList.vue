@@ -6,8 +6,8 @@
       md3
       lg2
       class="pa-2"
-      v-for="collection in collections"
-      :key="collection.id"
+      v-for="(collection, index) in collections"
+      :key="`${collection.id}-${index}`"
     >
       <LinkComponent
         v-if="collection && collection.attributes"

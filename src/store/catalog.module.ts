@@ -15,13 +15,16 @@ import {
   FETCH_MULTIPLE_SONGS_CATALOG,
   FETCH_ONE_SONG_CATALOG,
   FETCH_ALBUM_EXTRA_INFO_CATALOG,
-  FETCH_MULTILE_ALBUMS_CATALOG
+  FETCH_MULTILE_ALBUMS_CATALOG,
+  FETCH_ONE_ACTIVITY_CATALOG,
+  FETCH_ACTIVITY_PLAYLISTS
 } from './actions.type';
 import {
   CatalogState,
   SearchCatalogPayload,
   FetchResult,
-  FetchCuratorPlaylistsPayload
+  FetchCuratorPlaylistsPayload,
+  FetchActivityPlaylistsPayload
 } from './types';
 import musicApiService from '@/services/musicApi.service';
 import { getAlbumExtraInfo } from '@/utils/utils';
@@ -150,6 +153,33 @@ const actions: ActionTree<CatalogState, any> = {
 
   [FETCH_ALBUM_EXTRA_INFO_CATALOG](_, url: string) {
     return getAlbumExtraInfo(url);
+  },
+
+  [FETCH_ONE_ACTIVITY_CATALOG](_, id: string): Promise<MusicKit.Activity> {
+    return musicKit.getApiInstance().activity(id, {
+      include: 'playlists'
+    });
+  },
+
+  async [FETCH_ACTIVITY_PLAYLISTS](
+    _,
+    { id, limit, offset }: FetchActivityPlaylistsPayload
+  ) {
+    const result = await musicApiService.getActivityPlaylists(
+      id,
+      limit,
+      offset
+    );
+
+    const data = result.data;
+    const hasNext = data.length === limit;
+    const hasNoData = data.length === 0 && offset === 0;
+
+    return {
+      data: result.data,
+      hasNext,
+      hasNoData
+    };
   }
 };
 

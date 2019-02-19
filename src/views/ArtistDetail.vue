@@ -19,25 +19,46 @@
       </div>
     </div>
 
+    <v-container
+      class="pb-0 latest-release"
+      v-if="$vuetify.breakpoint.smAndUp && latestRelease"
+    >
+      <v-layout row wrap>
+        <v-flex class="px-2 latest-release__title" xs12>
+          <h2>Latest release</h2>
+        </v-flex>
+
+        <v-flex xs6 sm3 md3 lg2 class="pa-2 latest-release__content">
+          <LinkComponent
+            :routeName="latestRelease.type"
+            :routeParams="{ id: latestRelease.id }"
+          >
+            <CollectionItemCard :collection="latestRelease" />
+          </LinkComponent>
+        </v-flex>
+      </v-layout>
+    </v-container>
+
     <v-container>
       <v-layout row wrap>
-        <v-flex xs12 class="px-2" v-if="bio">
+        <v-flex xs12 class="px-2" v-if="bio || origin || birthday">
           <h3 class="section-title">About {{ artist.attributes.name }}</h3>
         </v-flex>
         <v-flex xs12 class="px-2">
           <v-layout row wrap>
-            <v-flex xs12 sm12 md8 v-if="bio">
+            <v-flex
+              xs12
+              sm12
+              md8
+              v-if="bio"
+              :class="{ 'pr-4': $vuetify.breakpoint.mdAndUp }"
+            >
               <p :style="bioStyle" v-html="bio"></p>
               <p class="bio-toggle" @click="bioCollapse = !bioCollapse">
                 {{ bioCollapse ? 'MORE' : 'LESS' }}
               </p>
             </v-flex>
-            <v-flex
-              xs12
-              sm12
-              md4
-              :class="{ 'px-4': $vuetify.breakpoint.mdAndUp }"
-            >
+            <v-flex xs12 sm12 md4>
               <template v-if="origin">
                 <div class="sub-info-text">HOMETOWN</div>
 
@@ -45,13 +66,23 @@
               </template>
 
               <template v-if="birthday">
-                <div class="sub-info-text">BORN</div>
+                <div class="sub-info-text">
+                  {{ birthday.length > 4 ? 'BORN' : 'FORMED' }}
+                </div>
 
                 <div class="main-info-text">{{ birthday }}</div>
               </template>
             </v-flex>
           </v-layout>
         </v-flex>
+
+        <template v-if="topSongs.length > 0">
+          <v-flex xs12 class="px-2 pt-4">
+            <h3 class="section-title">Top Songs</h3>
+          </v-flex>
+
+          <SongListLarge :songs="topSongs" />
+        </template>
 
         <template v-if="nonSingles.length > 0">
           <v-flex xs12 class="px-2 pt-4">
@@ -77,11 +108,12 @@
           <SongCollectionList :collections="singles" />
         </template>
 
-        <template v-if="playlists.length > 0">
+        <template v-if="artistPlaylists.length > 0">
           <v-flex xs12 class="px-2 pt-4">
             <h3 class="section-title">Playlists</h3>
           </v-flex>
-          <SongCollectionList :collections="playlists" />
+
+          <SongCollectionList :collections="artistPlaylists" />
         </template>
 
         <template v-if="relatedArtists.length > 0">
@@ -98,7 +130,10 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
+import SongListLarge from '@/components/SongListLarge.vue';
+import CollectionItemCard from '@/components/CollectionItemCard.vue';
 import SongCollectionList from '@/components/SongCollectionList.vue';
+import LinkComponent from '@/components/LinkComponent.vue';
 import ArtistList from '@/components/ArtistList.vue';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import musicApiService from '@/services/musicApi.service';
@@ -107,18 +142,41 @@ import {
   formatArtworkUrl,
   getArtistDetails
 } from '@/utils/utils';
-import { Nullable, Album, Artist, Playlist } from '@/@types/model/model';
+import {
+  Nullable,
+  Album,
+  Artist,
+  Playlist,
+  Collection
+} from '@/@types/model/model';
 import { TEXT_PRIMARY_DARK } from '@/themes';
 import { Action } from 'vuex-class';
 import {
   FETCH_ONE_ARTIST_LIBRARY,
-  FETCH_MULTIPLE_ARTISTS_CATALOG
+  FETCH_MULTIPLE_ARTISTS_CATALOG,
+  FETCH_MULTIPLE_SONGS_CATALOG,
+  FETCH_MULTIPLE_PLAYLISTS_CATALOG,
+  FETCH_ONE_ALBUM_CATALOG,
+  FETCH_ONE_SONG_CATALOG
 } from '@/store/actions.type';
 import { PLACEHOLDER_IMAGE } from '@/utils/constants';
 import { Route } from 'vue-router';
+import {
+  FetchMultipleArtitsCatalogAction,
+  FetchMultipleSongsCatalogAction,
+  FetchMultiplePlaylistsCatalogAction,
+  FetchOneAlbumCatalogAction
+} from '@/store/types';
 
 @Component({
-  components: { SongCollectionList, MediaArtwork, ArtistList }
+  components: {
+    SongCollectionList,
+    MediaArtwork,
+    ArtistList,
+    CollectionItemCard,
+    SongListLarge,
+    LinkComponent
+  }
 })
 export default class ArtistDetail extends Vue {
   private artist: Nullable<Artist> = null;
@@ -130,14 +188,19 @@ export default class ArtistDetail extends Vue {
   private relatedArtists: MusicKit.Artist[] = [];
   private bioCollapse = true;
   private origin: Nullable<string> = null;
+  private topSongs: MusicKit.Song[] = [];
+  private featureRelease: Nullable<Collection> = null;
+  private artistPlaylists: MusicKit.Playlist[] = [];
+  private latestRelease: Nullable<MusicKit.Album> = null;
 
   @Action [FETCH_ONE_ARTIST_LIBRARY]!: (
     id: string
   ) => Promise<MusicKit.LibraryArtist>;
-
-  @Action [FETCH_MULTIPLE_ARTISTS_CATALOG]: (
-    ids: string[]
-  ) => Promise<MusicKit.Artist[]>;
+  @Action [FETCH_MULTIPLE_ARTISTS_CATALOG]: FetchMultipleArtitsCatalogAction;
+  @Action [FETCH_MULTIPLE_SONGS_CATALOG]: FetchMultipleSongsCatalogAction;
+  @Action
+  [FETCH_MULTIPLE_PLAYLISTS_CATALOG]: FetchMultiplePlaylistsCatalogAction;
+  @Action [FETCH_ONE_ALBUM_CATALOG]: FetchOneAlbumCatalogAction;
 
   created() {
     this.$_getArtistInfo();
@@ -223,6 +286,14 @@ export default class ArtistDetail extends Vue {
 
   @Watch('$route')
   onRouteChange(to: Route, from: Route) {
+    this.artist = null;
+    this.latestRelease = null;
+    this.bannerUrl = PLACEHOLDER_IMAGE;
+    this.artistPlaylists = [];
+    this.topSongs = [];
+    this.bio = null;
+    this.birthday = null;
+    this.origin = null;
     window.scrollTo(0, 0);
     this.$_getArtistInfo();
   }
@@ -234,11 +305,8 @@ export default class ArtistDetail extends Vue {
       musicApiService
         .getArtist(artistId)
         .then(artist => {
-          // this.attributes = attributes;
           this.artist = artist;
           this.$_getArtistDetails();
-          //  this.albums = albums;
-          //  this.playlists = playlists;
         })
         .catch(err => err);
     } else {
@@ -269,7 +337,10 @@ export default class ArtistDetail extends Vue {
         bio,
         birthday,
         relatedArtists,
-        origin
+        origin,
+        topSongIds,
+        artistPlaylists,
+        feature
       } = artistDetail;
 
       this.bannerUrl = bannerUrl;
@@ -284,6 +355,25 @@ export default class ArtistDetail extends Vue {
           this.relatedArtists = artists;
         });
       }
+
+      if (topSongIds) {
+        this.fetchMultipleSongsCatalog(topSongIds).then(songs => {
+          // just get the first 5 songs
+          this.topSongs = songs.slice(0, 5);
+        });
+      }
+
+      if (artistPlaylists && artistPlaylists.length > 0) {
+        this.fetchMultiplePlaylistsCatalog(artistPlaylists).then(playlists => {
+          this.artistPlaylists = playlists;
+        });
+      }
+
+      if (feature && feature.id) {
+        this.fetchOneAlbumCatalog(feature.id).then(album => {
+          this.latestRelease = album;
+        });
+      }
     });
   }
 }
@@ -295,7 +385,7 @@ export default class ArtistDetail extends Vue {
 }
 
 .artist-detail-header {
-  height: 50vh;
+  height: 55vh;
   position: relative;
 }
 
@@ -327,5 +417,14 @@ export default class ArtistDetail extends Vue {
 .bio-toggle {
   font-weight: bold;
   cursor: pointer;
+}
+
+.latest-release {
+  margin-top: -25vh;
+}
+
+.latest-release__title,
+.latest-release__content {
+  z-index: 2;
 }
 </style>

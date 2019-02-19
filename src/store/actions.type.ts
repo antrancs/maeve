@@ -64,7 +64,7 @@ export const LOAD_BLOCKED_ITEMS = 'loadBlockedItems';
 
 export const FETCH_ONE_ALBUM_CATALOG = 'fetchOneAlbumCatalog';
 export const FETCH_ONE_PLAYLIST_CATALOG = 'fetchOnePlaylistCatalog';
-export const FETCH_ALBUMS_CATALOG = 'fetchAlbumsCatalog';
+export const FETCH_MULTILE_ALBUMS_CATALOG = 'fetchMultipleAlbumsCatalog';
 export const FETCH_MULTIPLE_PLAYLISTS_CATALOG = 'fetchMultiplePlaylistsCatalog';
 export const FETCH_ONE_RECOMMENDATION = 'fetchOneRecommendation';
 export const FETCH_ONE_CURATOR = 'fetchOneCurator';
@@ -73,6 +73,9 @@ export const FETCH_MULTIPLE_CURATORS = 'fetchMultipleCurators';
 export const FETCH_MULTIPLE_ARTISTS_CATALOG = 'fetchMultipleArtistsCatalog';
 export const SEARCH_CATALOG = 'searchCatalog';
 export const FETCH_CATALOG_SONG_DETAILS = 'fetchCatalogSongsDetails';
+export const FETCH_MULTIPLE_SONGS_CATALOG = 'fetchMultipleSongsCatalog';
+export const FETCH_ONE_SONG_CATALOG = 'fetchOneSongCatalog';
+export const FETCH_ALBUM_EXTRA_INFO_CATALOG = 'fetchAlbumExtraInfoCatalog';
 
 export const FETCH_ONE_ALBUM_LIBRARY = 'fetchOneAlbumLibrary';
 export const FETCH_ONE_PLAYLIST_LIBRARY = 'fetchOnePlaylistLibrary';

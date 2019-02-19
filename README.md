@@ -1,4 +1,4 @@
-# Maeve - A customizable Apple Music web player
+# Maeve - A customizable Apple Music web player with Last.fm support
 https://maevemusic.app
 
 ![alt text](https://user-images.githubusercontent.com/14043840/51078784-63c41100-16bb-11e9-8ed4-f03adc487878.png "Maeve screenshot")

@@ -219,6 +219,14 @@ export type SearchCatalogAction = (
     MusicKit.Album | MusicKit.Playlist | MusicKit.Song | MusicKit.Artist
   >
 >;
+
+export type FetchMultipleArtitsCatalogAction = (
+  ids: string[]
+) => Promise<MusicKit.Artist[]>;
+
+export type FetchMultipleSongsCatalogAction = (
+  ids: string[]
+) => Promise<MusicKit.Song[]>;
 /**
  * Library module
  */
@@ -247,9 +255,14 @@ export type CreateNewPlaylistPayload = {
 export type FetchOneAlbumLibraryAction = (
   id: string
 ) => Promise<MusicKit.LibraryAlbum>;
+
 export type FetchOnePlaylistLibraryaAction = (
   id: string
 ) => Promise<MusicKit.LibraryPlaylist>;
+
+export type FetchMultipleAlbumsCatalogAction = (
+  ids: string[]
+) => Promise<MusicKit.Album[]>;
 
 export type SearchParams = {
   offset: number;

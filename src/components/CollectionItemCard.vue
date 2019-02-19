@@ -4,7 +4,6 @@
       <MediaArtwork :artwork="artwork" :width="220" :height="220">
         <template v-if="hover || isCollectionBeingPlayed">
           <div class="overlay"></div>
-
           <v-btn
             icon
             round
@@ -18,6 +17,7 @@
             <v-icon v-else>play_arrow</v-icon>
           </v-btn>
         </template>
+        <div class="top-icon pa-2"><slot></slot></div>
       </MediaArtwork>
 
       <v-card-title primary-title class="py-2 px-2">
@@ -192,5 +192,11 @@ export default class CollectionItemCard extends Vue {
 .media-details__title {
   align-items: center;
   display: flex;
+}
+
+.top-icon {
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 </style>

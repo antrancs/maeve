@@ -99,6 +99,30 @@ const getCuratorsByGenre = (genreId: string) => {
     });
 };
 
+const getAlbumExtraInfo = (iTunesUrl: string) => {
+  return axios
+    .get('/api/albumExtraInfo', {
+      params: {
+        url: iTunesUrl
+      }
+    })
+    .then(res => {
+      return res.data;
+    });
+};
+
+const getGrammyResults = () => {
+  return axios
+    .get('/api/grammyResults', {
+      params: {
+        storefront: MusicKit.getInstance().storefrontId
+      }
+    })
+    .then(res => {
+      return res.data;
+    });
+};
+
 const getSongsFromCollection = (collection: Nullable<Collection>): Song[] => {
   if (
     !collection ||
@@ -117,5 +141,7 @@ export {
   getSongsFromCollection,
   getArtistDetails,
   getCuratorBanner,
-  getCuratorsByGenre
+  getCuratorsByGenre,
+  getAlbumExtraInfo,
+  getGrammyResults
 };

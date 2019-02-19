@@ -16,10 +16,20 @@ const router = new Router({
       component: () => import(/* webpackChunkName: "home" */ './views/Home.vue')
     },
     {
+      path: '/index.html',
+      redirect: { name: 'home' }
+    },
+    {
       path: '/charts',
       name: 'charts',
       component: () =>
         import(/* webpackChunkName: "charts" */ './views/Charts.vue')
+    },
+    {
+      path: '/grammy',
+      name: 'grammy',
+      component: () =>
+        import(/* webpackChunkName: "grammy" */ './views/Grammy.vue')
     },
     {
       path: '/auth/lastfm/success',

@@ -427,4 +427,8 @@ export default class ArtistDetail extends Vue {
 .latest-release__content {
   z-index: 2;
 }
+
+.latest-release__title {
+  color: white;
+}
 </style>

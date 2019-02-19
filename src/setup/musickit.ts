@@ -8,6 +8,8 @@ import {
 } from '@/store/mutations.type';
 import { CHANGE_ROUTE, PLAY_NEXT } from '@/store/actions.type';
 
+const DEFAULT_PAGE_TITLE = 'Maeve - An Apple Music web player';
+
 export function connectMusicKitToStore(
   musicKitInstance: MusicKit.MusicKitInstance,
   store: Store<any>
@@ -24,18 +26,27 @@ export function connectMusicKitToStore(
     switch (musicKitInstance.player.playbackState) {
       case MusicKit.PlaybackStates.stopped:
         store.commit(SET_IS_PLAYING, false);
+        document.title = DEFAULT_PAGE_TITLE;
         break;
       case MusicKit.PlaybackStates.paused:
         store.commit(SET_IS_PLAYING, false);
+        document.title = DEFAULT_PAGE_TITLE;
         break;
-      case MusicKit.PlaybackStates.playing:
+      case MusicKit.PlaybackStates.playing: {
         store.commit(SET_IS_PLAYING, true);
         store.commit(SET_SONG_LOADING, false);
+
+        const { nowPlayingItem } = musicKitInstance.player;
+        document.title = `${nowPlayingItem.attributes.name} - ${
+          nowPlayingItem.attributes.artistName
+        }`;
         break;
+      }
       case MusicKit.PlaybackStates.loading:
         store.commit(SET_SONG_LOADING, true);
         break;
       case MusicKit.PlaybackStates.completed:
+        document.title = DEFAULT_PAGE_TITLE;
         store.dispatch(PLAY_NEXT);
     }
   }

@@ -92,7 +92,8 @@ export default class GrammyAlbumNomination extends Vue {
 
     this.playSongs({
       songs,
-      startSongIndex: 0
+      startSongIndex: 0,
+      songsSourceName: this.title
     });
   }
 

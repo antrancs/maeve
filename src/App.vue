@@ -38,8 +38,7 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 
 import AppSidebar from '@/components/TheSidebar.vue';
 import AppHeader from '@/components/TheHeader.vue';
-// import PlayerBar from '@/components/MusicPlayer/ThePlayerBar.vue';
-import PlayQueue from '@/components/PlayQueue.vue';
+import PlayQueue from '@/components/PlayQueue/PlayQueue.vue';
 import AppFooter from '@/components/TheFooter.vue';
 import AppSnackbar from '@/components/TheSnackbar.vue';
 import MediaActionMenu from '@/components/MediaActionMenu.vue';

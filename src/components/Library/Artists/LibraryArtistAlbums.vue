@@ -96,7 +96,7 @@ export default class LibraryArtistAlbums extends Vue {
   playAllSongs() {
     this.playSongs({
       songs: this.totalSongs,
-      startSongIndex: 0
+      songsSourceName: `${this.artistName}'s songs`
     });
   }
 
@@ -105,7 +105,7 @@ export default class LibraryArtistAlbums extends Vue {
 
     this.playSongs({
       songs: shuffledSongs,
-      startSongIndex: 0
+      songsSourceName: `${this.artistName}'s songs`
     });
   }
 }

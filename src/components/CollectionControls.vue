@@ -1,8 +1,6 @@
 <template>
   <div>
-    <app-button class="ml-0 mb-0" @on-click="playCollection">{{
-      isCollectionBeingPlayed ? 'Pause' : 'Play'
-    }}</app-button>
+    <app-button class="ml-0 mb-0" @on-click="playCollection">Play</app-button>
     <app-button class="mb-0" @on-click="shuffleSongs">Shuffle</app-button>
     <v-btn fab dark class="accent mb-0" small @click="showActionMenu">
       <v-icon medium>more_horiz</v-icon>
@@ -15,9 +13,9 @@ import Vue from 'vue';
 import { Prop, Component } from 'vue-property-decorator';
 import { Collection, CollectionType } from '@/@types/model/model';
 import { State, Action } from 'vuex-class';
-import { PLAY_COLLECTION_WITH_SONG } from '@/store/actions.type';
-import { PlayCollectionWithSongAction } from '@/store/types';
 import MediaActionMenu from '@/components/MediaActionMenu.vue';
+import { PLAY_SONGS } from '@/store/actions.type';
+import { PlaySongsAction } from '@/store/types';
 
 @Component({
   components: {
@@ -32,26 +30,19 @@ export default class CollectionControls extends Vue {
   isPlaying!: boolean;
 
   @Action
-  [PLAY_COLLECTION_WITH_SONG]: PlayCollectionWithSongAction;
-
-  get isCollectionBeingPlayed(): boolean {
-    if (!this.collection) {
-      return false;
-    }
-    return (
-      this.$store.getters.isCollectionBeingPlayed(this.collection.id) &&
-      this.isPlaying
-    );
-  }
+  [PLAY_SONGS]: PlaySongsAction;
 
   /**
    * Play the entire collection
    */
   playCollection() {
     // Start with the first song by default
-    this.playCollectionWithSong({
-      collection: this.collection,
-      songs: this.songs
+    this.playSongs({
+      collectionId: this.collection.id,
+      songs: this.songs,
+      songsSourceName: this.collection.attributes
+        ? this.collection.attributes.name
+        : ''
     });
   }
 
@@ -59,10 +50,13 @@ export default class CollectionControls extends Vue {
    * Shuffle the collection and play
    */
   shuffleSongs() {
-    this.playCollectionWithSong({
-      collection: this.collection,
+    this.playSongs({
+      collectionId: this.collection.id,
       shuffle: true,
-      songs: this.songs
+      songs: this.songs,
+      songsSourceName: this.collection.attributes
+        ? this.collection.attributes.name
+        : ''
     });
   }
 

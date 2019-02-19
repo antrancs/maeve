@@ -3,11 +3,10 @@ import { Store } from 'vuex';
 import {
   SET_PLAYBACK_PROGESS,
   SET_IS_PLAYING,
-  SET_CURRENTLY_PLAYING_SONG,
   SET_SONG_LOADING,
   SET_CURRENT_PLAYBACK_TIME
 } from '@/store/mutations.type';
-import { CHANGE_ROUTE } from '@/store/actions.type';
+import { CHANGE_ROUTE, PLAY_NEXT } from '@/store/actions.type';
 
 export function connectMusicKitToStore(
   musicKitInstance: MusicKit.MusicKitInstance,
@@ -24,6 +23,8 @@ export function connectMusicKitToStore(
   function onPlaybackStateDidChange(event: any) {
     switch (musicKitInstance.player.playbackState) {
       case MusicKit.PlaybackStates.stopped:
+        store.commit(SET_IS_PLAYING, false);
+        break;
       case MusicKit.PlaybackStates.paused:
         store.commit(SET_IS_PLAYING, false);
         break;
@@ -33,6 +34,9 @@ export function connectMusicKitToStore(
         break;
       case MusicKit.PlaybackStates.loading:
         store.commit(SET_SONG_LOADING, true);
+        break;
+      case MusicKit.PlaybackStates.completed:
+        store.dispatch(PLAY_NEXT);
     }
   }
   musicKitInstance.addEventListener(
@@ -47,14 +51,6 @@ export function connectMusicKitToStore(
   musicKitInstance.addEventListener(
     MusicKit.Events.authorizationStatusDidChange,
     onAuthorizationStatusDidChange
-  );
-
-  function onMediaItemDidChange({ item }: any) {
-    store.commit(SET_CURRENTLY_PLAYING_SONG, item);
-  }
-  musicKitInstance.addEventListener(
-    MusicKit.Events.mediaItemDidChange,
-    onMediaItemDidChange
   );
 
   function onPlaybackTimeDidChange(event: any) {
@@ -77,10 +73,6 @@ export function connectMusicKitToStore(
     musicKitInstance.removeEventListener(
       MusicKit.Events.authorizationStatusDidChange,
       onAuthorizationStatusDidChange
-    );
-    musicKitInstance.removeEventListener(
-      MusicKit.Events.mediaItemDidChange,
-      onMediaItemDidChange
     );
     musicKitInstance.removeEventListener(
       MusicKit.Events.playbackTimeDidChange,

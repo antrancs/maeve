@@ -5,11 +5,10 @@ import apiService from '@/services/musicApi.service';
 import { AuthState } from './types';
 import {
   SET_USER_TOKEN,
-  SET_SONG_QUEUE,
   SET_CURRENTLY_PLAYING_SONG,
   SET_QUEUE_VISIBILITY
 } from './mutations.type';
-import { LOGIN, LOGOUT } from '@/store/actions.type';
+import { LOGIN, LOGOUT, RESET_QUEUE } from '@/store/actions.type';
 
 const initialState: AuthState = {
   musicUserToken: authService.userToken
@@ -26,16 +25,18 @@ const actions: ActionTree<AuthState, any> = {
     const userToken = await authService.login();
     await apiService.updateUserStorefront();
     commit(SET_USER_TOKEN, userToken);
-    commit(SET_SONG_QUEUE, []);
+    await dispatch(RESET_QUEUE);
+
     commit(SET_CURRENTLY_PLAYING_SONG, null);
     commit(SET_QUEUE_VISIBILITY, false);
   },
 
-  async [LOGOUT]({ commit }) {
+  async [LOGOUT]({ commit, dispatch }) {
     await authService.logout();
     apiService.setUserStorefront('us');
     commit(SET_USER_TOKEN, null);
-    commit(SET_SONG_QUEUE, []);
+    await dispatch(RESET_QUEUE);
+
     commit(SET_CURRENTLY_PLAYING_SONG, null);
     commit(SET_QUEUE_VISIBILITY, false);
   }

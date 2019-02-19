@@ -283,9 +283,6 @@ export default class MyLibrary extends Mixins(InfiniteScrollMixin) {
     } else {
       this.shouldLoad = true;
     }
-    // this.searchLibrary(this.searchText).then(results => {
-    //   console.log({ results });
-    // });
   }
 }
 </script>

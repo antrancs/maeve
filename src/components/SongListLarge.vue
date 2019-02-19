@@ -15,11 +15,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
-import { Action, State } from 'vuex-class';
-
-import { Collection, Nullable, Song, SnackbarMode } from '@/@types/model/model';
-import { MusicPlayerState } from '@/store/types';
+import { Component, Vue, Mixins } from 'vue-property-decorator';
 
 import SongListLargeItem from '@/components/SongListLargeItem.vue';
 import SongListMixin from '@/mixins/SongListMixin';
@@ -27,35 +23,5 @@ import SongListMixin from '@/mixins/SongListMixin';
 @Component({
   components: { SongListLargeItem }
 })
-export default class SongListLarge extends Mixins(SongListMixin) {
-  handleActionIconClick(song: Song, posX: number, posY: number) {
-    // @ts-ignore
-    this.$root.$mediaActionMenu.open(
-      song,
-      this.collectionId,
-      posX,
-      posY,
-      false
-    );
-  }
-
-  handleSongClicked(songId: string, songIndex: number) {
-    this.handlePlaySongs(songId);
-  }
-}
+export default class SongListLarge extends Mixins(SongListMixin) {}
 </script>
-
-<style lang="scss" scoped>
-.icon-playing {
-  align-items: center;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  left: 0;
-  opacity: 0;
-  position: absolute;
-  top: 0;
-  width: 100%;
-  z-index: 4;
-}
-</style>

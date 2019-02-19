@@ -13,6 +13,7 @@
         step="0.1"
         v-model="volumeControl"
         :color="primaryColor"
+        @click.native="$event.stopImmediatePropagation()"
       >
       </v-slider>
     </div>
@@ -23,6 +24,7 @@
       step="0.1"
       v-model="volumeControl"
       :color="primaryColor"
+      @click.native="$event.stopImmediatePropagation()"
     >
     </v-slider>
   </v-layout>

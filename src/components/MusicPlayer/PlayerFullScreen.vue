@@ -77,6 +77,14 @@
                 <v-divider></v-divider>
                 <v-flex class="text-xs-center my-2">
                   <app-button
+                    :color="shuffleButtonColor"
+                    @on-click="toggleShuffleMode"
+                    :style="shuffleButtonTextColor"
+                  >
+                    <v-icon left>shuffle</v-icon>Shuffle
+                  </app-button>
+
+                  <app-button
                     :color="buttonColor"
                     @on-click="updateRepeatMode"
                     :style="buttonTextColor"
@@ -99,7 +107,8 @@
                   </v-expansion-panel-content>
                 </v-expansion-panel>
                 <h2 class="my-2">Play Queue</h2>
-                <SongListSmall :songs="queuedSongs" :is-queue="true" />
+                <YourQueue />
+                <PlayQueueUpNext />
               </v-flex>
 
               <v-flex
@@ -134,6 +143,8 @@
 import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { State, Getter, Action } from 'vuex-class';
 
+import YourQueue from '@/components/PlayQueue/YourQueue.vue';
+import PlayQueueUpNext from '@/components/PlayQueue/PlayQueueUpNext.vue';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import PlayNextButton from './PlayNextButton.vue';
 import PlayPreviousButton from './PlayPreviousButton.vue';
@@ -143,13 +154,13 @@ import PlayerProgressBar from './PlayerProgressBar.vue';
 import PlayerVolume from './PlayerVolume.vue';
 import PlayerBarColorMixin from '@/mixins/PlayerBarColorMixin';
 import LyricsMixin from '@/mixins/LyricsMixin';
-import SongListSmall from '@/components/SongListSmall.vue';
 import { MusicPlayerState } from '@/store/types';
 import { Watch } from 'vue-property-decorator';
-import { RepeatMode } from '@/utils/constants';
-import { UPDATE_REPEAT_MODE } from '@/store/actions.type';
-import { Song, Nullable } from '@/@types/model/model';
+import { RepeatMode, PLACEHOLDER_IMAGE } from '@/utils/constants';
+import { UPDATE_REPEAT_MODE, TOGGLE_SHUFFLE_MODE } from '@/store/actions.type';
+import { Song, Nullable, ShuffleMode } from '@/@types/model/model';
 import { TEXT_PRIMARY_DARK, TEXT_PRIMARY_LIGHT } from '@/themes';
+import { getArtworkUrl } from '@/utils/utils';
 
 @Component({
   components: {
@@ -159,8 +170,9 @@ import { TEXT_PRIMARY_DARK, TEXT_PRIMARY_LIGHT } from '@/themes';
     PlayPreviousButton,
     PlayButton,
     PlayerVolume,
-    SongListSmall,
-    PlayingVisualization
+    PlayingVisualization,
+    YourQueue,
+    PlayQueueUpNext
   }
 })
 export default class PlayerFullScreen extends Mixins(
@@ -171,43 +183,43 @@ export default class PlayerFullScreen extends Mixins(
 
   @State
   musicPlayer!: MusicPlayerState;
-  @State(state => state.playQueue.songs)
-  queuedSongs!: Song[];
 
   @Getter currentPlayingDuration!: number;
-  @Getter currentTrackArtwork!: Nullable<string>;
   @Getter isAuthenticated!: boolean;
   @Getter darkMode!: boolean;
 
   @Action
   [UPDATE_REPEAT_MODE]: () => void;
+  @Action
+  [TOGGLE_SHUFFLE_MODE]: () => void;
 
   @Watch('dialog')
   onDialogVisibilityChanged(newValue: boolean) {
-    if (newValue && this.musicPlayer.currentPlaying) {
-      this.lyrics = '';
-
-      if (this.isAuthenticated) {
-        this.$_fetchLyrics(
-          this.musicPlayer.currentPlaying.title,
-          this.musicPlayer.currentPlaying.artistName
-        );
-      }
+    if (newValue) {
+      this.$_fetchLyrics();
     }
   }
 
   @Watch('musicPlayer.currentPlaying')
   onCurrentPlayingChanged(newValue: MusicKit.MediaItem) {
-    if (newValue && this.dialog && this.musicPlayer.currentPlaying) {
-      this.lyrics = '';
-
-      if (this.isAuthenticated) {
-        this.$_fetchLyrics(
-          this.musicPlayer.currentPlaying.title,
-          this.musicPlayer.currentPlaying.artistName
-        );
-      }
+    if (newValue && this.dialog) {
+      this.$_fetchLyrics();
     }
+  }
+
+  get currentTrackArtwork() {
+    if (
+      !this.musicPlayer.currentPlaying ||
+      !this.musicPlayer.currentPlaying.attributes
+    ) {
+      return PLACEHOLDER_IMAGE;
+    }
+
+    return getArtworkUrl(
+      this.musicPlayer.currentPlaying.attributes.artwork.url,
+      300,
+      300
+    );
   }
 
   get playingVisualizationSize() {
@@ -235,6 +247,12 @@ export default class PlayerFullScreen extends Mixins(
       : 'accent';
   }
 
+  get shuffleButtonColor(): string {
+    return this.musicPlayer.shuffleMode === ShuffleMode.Off
+      ? 'primary lighten-2'
+      : 'accent';
+  }
+
   get buttonTextColor() {
     let textColor: string;
 
@@ -248,8 +266,36 @@ export default class PlayerFullScreen extends Mixins(
     };
   }
 
+  get shuffleButtonTextColor() {
+    let textColor: string;
+
+    if (!this.darkMode && this.musicPlayer.shuffleMode === ShuffleMode.Off) {
+      textColor = TEXT_PRIMARY_LIGHT;
+    } else {
+      textColor = TEXT_PRIMARY_DARK;
+    }
+    return {
+      color: textColor
+    };
+  }
+
   open() {
     this.dialog = true;
+  }
+
+  $_fetchLyrics() {
+    this.lyrics = '';
+
+    if (
+      this.isAuthenticated &&
+      this.musicPlayer.currentPlaying &&
+      this.musicPlayer.currentPlaying.attributes
+    ) {
+      this.fetchLyrics(
+        this.musicPlayer.currentPlaying.attributes.name,
+        this.musicPlayer.currentPlaying.attributes.artistName
+      );
+    }
   }
 }
 </script>

@@ -82,13 +82,12 @@ import { Nullable, Song, Collection, SnackbarMode } from '@/@types/model/model';
 import {
   ADD_TO_LIBRARY,
   SHOW_SNACKBAR,
-  PREPEND_SONGS,
   ADD_SONGS_TO_PLAYLIST,
-  APPEND_SONGS,
   BLOCK_ARTISTS,
   UNBLOCK_ARTISTS,
   BLOCK_SONG,
-  UNBLOCK_SONG
+  UNBLOCK_SONG,
+  PREPEND_SONGS_TO_QUEUE
 } from '@/store/actions.type';
 import {
   AddToLibraryAction,
@@ -128,9 +127,12 @@ export default class MediaActionMenu extends Vue {
   @Action
   [ADD_TO_LIBRARY]: AddToLibraryAction;
   @Action [SHOW_SNACKBAR]: ShowSnackbarAction;
-  @Action [PREPEND_SONGS]: PrependSongsAction;
+  @Action [PREPEND_SONGS_TO_QUEUE]: PrependSongsAction;
+  // @Action [PREPEND_SONGS]: PrependSongsAction;
   @Action [ADD_SONGS_TO_PLAYLIST]: AddSongsToPlaylistAction;
-  @Action [APPEND_SONGS]: AppendSongsAction;
+
+  @Action appendSongsToQueue!: AppendSongsAction;
+  // @Action [APPEND_SONGS]: AppendSongsAction;
   @Action [BLOCK_ARTISTS]: BlockArtistsAction;
   @Action [UNBLOCK_ARTISTS]: UnblockArtistsAction;
   @Action [BLOCK_SONG]: BlockSongAction;
@@ -275,6 +277,13 @@ export default class MediaActionMenu extends Vue {
   onPlayNext() {
     const songsToAdd = this.$_getSongsToAdd();
 
+    const queueSongs = songsToAdd.map(song => {
+      return {
+        qId: song.id + '-' + Date.now(),
+        ...song
+      };
+    });
+
     const mediaItems = songsToAdd.map(
       ({ id, attributes }) =>
         new MusicKit.MediaItem({
@@ -287,7 +296,7 @@ export default class MediaActionMenu extends Vue {
         })
     );
 
-    this.prependSongs({ items: mediaItems });
+    this.prependSongsToQueue({ items: queueSongs });
 
     this.showSnackbar({
       text: 'Song is playing next'
@@ -297,6 +306,13 @@ export default class MediaActionMenu extends Vue {
   onAddToQueue() {
     // this.$emit('add-to-queue');
     const songsToAdd = this.$_getSongsToAdd();
+
+    const queueSongs = songsToAdd.map(song => {
+      return {
+        qId: song.id + '-' + Date.now(),
+        ...song
+      };
+    });
 
     const mediaItems = songsToAdd.map(
       ({ id, attributes }) =>
@@ -312,7 +328,7 @@ export default class MediaActionMenu extends Vue {
 
     try {
       // appendSongs is synchronous
-      this.appendSongs({ items: mediaItems });
+      this.appendSongsToQueue({ items: queueSongs });
       this.showSnackbar({
         text: 'Item is added to queue'
       });

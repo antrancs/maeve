@@ -39,19 +39,19 @@ export default class SongItemMixin extends Vue {
 
     const currentPlayingId = this.musicPlayer.currentPlaying.id;
 
-    const isMediaItemBeingPlayed =
-      this.musicPlayer.currentPlaying.container !== undefined &&
-      this.song.id === this.musicPlayer.currentPlaying.container.id;
+    // const isMediaItemBeingPlayed =
+    //   this.musicPlayer.currentPlaying.container !== undefined &&
+    //   this.song.id === this.musicPlayer.currentPlaying.container.id;
 
-    const isResourceBeingPlayed =
-      this.song.attributes !== undefined &&
-      this.song.attributes.playParams !== undefined &&
-      this.song.attributes.playParams.catalogId === currentPlayingId;
+    // const isResourceBeingPlayed =
+    //   this.song.attributes !== undefined &&
+    //   this.song.attributes.playParams !== undefined &&
+    //   this.song.attributes.playParams.catalogId === currentPlayingId;
 
     return (
-      this.song.id === currentPlayingId ||
-      isMediaItemBeingPlayed ||
-      isResourceBeingPlayed // when a song is a library-song
+      this.song.id === currentPlayingId
+      // isMediaItemBeingPlayed ||
+      // isResourceBeingPlayed // when a song is a library-song
     );
   }
 

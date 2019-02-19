@@ -54,6 +54,7 @@ export default class PlayerProgressBar extends Vue {
   musicPlayer!: MusicPlayerState;
 
   @Getter currentPlayingDuration!: number;
+  @Getter isAuthenticated!: boolean;
 
   @Action [SEEK_TO_TIME]: (time: number) => void;
   @Action [SCROBBLE_LASTFM]: ScobbleLastfmAction;
@@ -74,15 +75,15 @@ export default class PlayerProgressBar extends Vue {
   @Watch('musicPlayer.playbackProgress')
   onPlaybackProgresshanged(newValue: number, oldValue: number) {
     // Start to scrobble when the user has listened to half of the song
-    if (newValue === 0.5) {
+    if (newValue === 0.5 && this.isAuthenticated) {
       const { currentPlaying } = this.musicPlayer;
 
-      if (!currentPlaying) {
+      if (!currentPlaying || !currentPlaying.attributes) {
         return;
       }
       this.scrobbleLastfm({
-        artist: currentPlaying.artistName,
-        track: currentPlaying.title
+        artist: currentPlaying.attributes.artistName,
+        track: currentPlaying.attributes.name
       });
     }
   }

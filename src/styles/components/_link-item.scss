@@ -1,0 +1,12 @@
+.link-item {
+  color: var(--v-secondaryText-base);
+}
+
+.link-item a {
+  color: var(--v-secondaryText-base);
+}
+
+.link-item a:hover {
+  color: var(--v-primaryText-base);
+  text-decoration: underline;
+}

@@ -3,7 +3,6 @@ export const PLAY_PREVIOUS = 'playPrevious';
 export const PLAY_CURRENT_SONG = 'playCurrentSong';
 export const PLAY_NEXT = 'playNext';
 export const PLAY_SONGS = 'playSongs';
-export const TOGGLE_SHUFFLE_MODE = 'toggleShuffleMode';
 export const RESUME_CURRENT_TRACK = 'resumeCurrentTrack';
 export const SKIP_TO_SONG_AT_INDEX = 'skipToSongAtIndex';
 export const TOGGLE_CURRENT_TRACK = 'toggleCurrentTrack'; // play or pause the current song
@@ -11,6 +10,7 @@ export const SEEK_TO_TIME = 'seekToTime';
 export const CHANGE_VOLUME = 'changeVolume';
 export const MUTE_VOLUME = 'muteVolume';
 export const UPDATE_REPEAT_MODE = 'updateRepeatMode';
+export const TOGGLE_SHUFFLE_MODE = 'toggleShuffleMode';
 
 export const CHANGE_ROUTE = 'changeRoute';
 
@@ -30,6 +30,8 @@ export const MOVE_NEXT_PLAY_QUEUE = 'updateQueuePosition';
 export const MOVE_BACK_PLAY_QUEUE = 'moveBackPlayQueue';
 export const REMOVE_FROM_UP_NEXT = 'removeFromUpNext';
 export const REMOVE_FROM_HISTORY = 'removeFromHistory';
+export const CHANGE_TO_INDEX_IN_HISTORY = 'changeToIndexInHistory';
+export const CHANGE_TO_INDEX_IN_UP_NEXT = 'changeToIndexInUpNext';
 
 export const BLOCK_ARTISTS = 'blockArtists';
 export const UNBLOCK_ARTISTS = 'unblockArtists';

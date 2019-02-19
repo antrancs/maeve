@@ -10,14 +10,14 @@ import {
   RESUME_CURRENT_TRACK,
   TOGGLE_CURRENT_TRACK,
   SKIP_TO_SONG_AT_INDEX,
-  TOGGLE_SHUFFLE_MODE,
   SEEK_TO_TIME,
   CHANGE_VOLUME,
   MUTE_VOLUME,
   UPDATE_REPEAT_MODE,
   PLAY_CURRENT_SONG,
   MOVE_NEXT_PLAY_QUEUE,
-  MOVE_BACK_PLAY_QUEUE
+  MOVE_BACK_PLAY_QUEUE,
+  TOGGLE_SHUFFLE_MODE
 } from '@/store/actions.type';
 import {
   SET_CURRENTLY_PLAYING_SONG,
@@ -33,7 +33,8 @@ import {
   SET_CURRENT_COLLECTION_ID,
   SET_CURRENTLY_PLAYING_SOURCE,
   SET_MAIN_SONGS_SOURCE,
-  SET_MAIN_SONGS_INDEX
+  SET_MAIN_SONGS_INDEX,
+  SET_SHUFFLE_MODE
 } from '@/store/mutations.type';
 import {
   MusicPlayerState,
@@ -41,7 +42,12 @@ import {
   PlaySongsPayload
 } from './types';
 import { RepeatMode } from '@/utils/constants';
-import { Nullable, PlayQueueSong, Song, Artist } from '@/@types/model/model';
+import {
+  Nullable,
+  PlayQueueSong,
+  Artist,
+  ShuffleMode
+} from '@/@types/model/model';
 import { getArtworkUrl } from '@/utils/utils';
 
 const initialState: MusicPlayerState = {
@@ -55,18 +61,11 @@ const initialState: MusicPlayerState = {
   repeatMode: RepeatMode.Off,
   volume: 1,
   isMuted: false,
-  currentPlaybackTimeAfterSkip: 0
+  currentPlaybackTimeAfterSkip: 0,
+  shuffleMode: ShuffleMode.Off
 };
 
 const getters: GetterTree<MusicPlayerState, any> = {
-  currentTrackArtwork({ currentPlaying }, getters): Nullable<string> {
-    if (!currentPlaying || !currentPlaying.attributes) {
-      return null;
-    }
-
-    return getArtworkUrl(currentPlaying.attributes.artwork.url, 120, 120);
-  },
-
   isSongBeingPlayed({ currentPlaying }) {
     return (songId: string) => {
       return currentPlaying && currentPlaying.id === songId;
@@ -85,7 +84,7 @@ const getters: GetterTree<MusicPlayerState, any> = {
 };
 
 const actions: ActionTree<MusicPlayerState, any> = {
-  async [PLAY_NEXT]({ rootState, dispatch, commit }) {
+  async [PLAY_NEXT]({ state, rootState, dispatch, commit }) {
     dispatch(MOVE_NEXT_PLAY_QUEUE);
     const songToPlay = rootState.playQueue.nextSongToPlay;
 
@@ -100,15 +99,11 @@ const actions: ActionTree<MusicPlayerState, any> = {
     dispatch(MOVE_BACK_PLAY_QUEUE);
     const songToPlay = rootState.playQueue.nextSongToPlay;
 
-    if (songToPlay) {
+    if (songToPlay.song) {
       commit(SET_CURRENTLY_PLAYING_SONG, songToPlay.song);
       commit(SET_CURRENTLY_PLAYING_SOURCE, songToPlay.source);
       await dispatch(PLAY_CURRENT_SONG, songToPlay.song);
     }
-  },
-
-  [TOGGLE_SHUFFLE_MODE]() {
-    musicPlayerService.toggleShuffleMode();
   },
 
   [TOGGLE_CURRENT_TRACK]({ dispatch }) {
@@ -196,12 +191,19 @@ const actions: ActionTree<MusicPlayerState, any> = {
 
   [UPDATE_REPEAT_MODE]({ state, commit }) {
     const currentRepeatMode = state.repeatMode;
-
     const nextRepeatMode = (currentRepeatMode + 1) % 3;
 
-    musicPlayerService.changeRepeatMode(nextRepeatMode);
+    // if (nextRepeatMode === RepeatMode.One) {
+    //   musicPlayerService.changeRepeatMode(nextRepeatMode);
+    // }
 
     commit(SET_REPEAT_MODE, nextRepeatMode);
+  },
+
+  [TOGGLE_SHUFFLE_MODE]({ state, commit, dispatch }) {
+    const newMode = +!state.shuffleMode;
+    commit(SET_SHUFFLE_MODE, newMode);
+    dispatch('updateShuffledSongsIndex');
   },
 
   [SEEK_TO_TIME]({ commit }, time) {
@@ -255,6 +257,10 @@ const mutations: MutationTree<MusicPlayerState> = {
 
   [SET_REPEAT_MODE](state, repeatMode: number) {
     state.repeatMode = repeatMode;
+  },
+
+  [SET_SHUFFLE_MODE](state, value: number) {
+    state.shuffleMode = value;
   },
 
   [SET_VOLUME](state, volume: number) {

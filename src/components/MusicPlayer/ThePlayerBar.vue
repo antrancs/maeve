@@ -41,6 +41,18 @@
                       $vuetify.breakpoint.xsOnly
                   }"
                 >
+                  <v-btn
+                    v-if="$vuetify.breakpoint.mdAndUp"
+                    icon
+                    @click.stop="handleShuffleClicked"
+                  >
+                    <v-icon
+                      medium
+                      :style="primaryStyle"
+                      :color="shuffleIconColor"
+                      >shuffle</v-icon
+                    >
+                  </v-btn>
                   <PlayPreviousButton v-if="$vuetify.breakpoint.mdAndUp" />
                   <PlayButton :size="50" />
                   <PlayNextButton />
@@ -105,12 +117,13 @@ import PlayerVolume from './PlayerVolume.vue';
 import PlayerBarColorMixin from '@/mixins/PlayerBarColorMixin';
 import { MusicPlayerState } from '@/store/types';
 import {
-  TOGGLE_SHUFFLE_MODE,
   TOGGLE_QUEUE_VISIBILITY,
-  UPDATE_REPEAT_MODE
+  UPDATE_REPEAT_MODE,
+  TOGGLE_SHUFFLE_MODE
 } from '@/store/actions.type';
-import { Nullable } from '@/@types/model/model';
-import { RepeatMode } from '@/utils/constants';
+import { Nullable, ShuffleMode } from '@/@types/model/model';
+import { RepeatMode, PLACEHOLDER_IMAGE } from '@/utils/constants';
+import { getArtworkUrl } from '@/utils/utils';
 
 @Component({
   components: {
@@ -127,16 +140,15 @@ export default class PlayerBar extends Mixins(PlayerBarColorMixin) {
   private playerFullScreenVisible = false;
   @State musicPlayer!: MusicPlayerState;
 
-  @Getter currentTrackArtwork!: Nullable<string>;
   @Getter currentPlayingDuration!: number;
   @Getter isAuthenticated!: boolean;
 
   @Action
-  [TOGGLE_SHUFFLE_MODE]: () => void;
-  @Action
   [UPDATE_REPEAT_MODE]: () => void;
   @Action
   [TOGGLE_QUEUE_VISIBILITY]: () => void;
+  @Action
+  [TOGGLE_SHUFFLE_MODE]: () => void;
 
   get artistName(): string {
     if (
@@ -166,6 +178,25 @@ export default class PlayerBar extends Mixins(PlayerBarColorMixin) {
 
   get repeatIconColor(): string {
     return this.musicPlayer.repeatMode !== RepeatMode.Off ? 'accent' : '';
+  }
+
+  get shuffleIconColor(): string {
+    return this.musicPlayer.shuffleMode === ShuffleMode.On ? 'accent' : '';
+  }
+
+  get currentTrackArtwork() {
+    if (
+      !this.musicPlayer.currentPlaying ||
+      !this.musicPlayer.currentPlaying.attributes
+    ) {
+      return PLACEHOLDER_IMAGE;
+    }
+
+    return getArtworkUrl(
+      this.musicPlayer.currentPlaying.attributes.artwork.url,
+      120,
+      120
+    );
   }
 
   handleShuffleClicked() {

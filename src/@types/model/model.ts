@@ -48,6 +48,11 @@ export enum SnackbarMode {
   error = 'error'
 }
 
+export enum ShuffleMode {
+  Off = 0,
+  On = 1
+}
+
 export type PlayQueueNextSongToPlay = {
   song: PlayQueueSong;
   source: string;

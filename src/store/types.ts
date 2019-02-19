@@ -6,14 +6,15 @@ import {
   SnackbarMode,
   ThemeOption,
   PlayQueueSong,
-  PlayQueueNextSongToPlay
+  PlayQueueNextSongToPlay,
+  ShuffleMode
 } from '@/@types/model/model';
 import { RepeatMode, ButtonStyle } from '@/utils/constants';
 
 // MusicPlayer module
 export interface MusicPlayerState {
   currentPlaying: PlayQueueSong | null;
-  // name of the source where the currentPlaying is from (Your Queue or name of the album/playlists)
+  // name of the source where the currentPlaying is from ('Your Queue' or name of the album/playlists)
   currentPlayingSource: string;
   // currentCollectionId is the id of the collection to which currentPlaying belongs
   // currentCollectionId is null when currentPlaying is from a list of songs (for eg, top songs of an artist)
@@ -26,32 +27,10 @@ export interface MusicPlayerState {
   volume: number;
   isMuted: boolean;
   currentPlaybackTimeAfterSkip: number;
+  shuffleMode: ShuffleMode;
 }
 
 // Payload
-// export type AppendSongsPayload = {
-//   items: MusicKit.MediaItem[];
-// };
-export type AppendSongsPayload = {
-  items: PlayQueueSong[];
-};
-
-// export type PrependSongsPayload = {
-//   items: MusicKit.MediaItem[];
-// };
-export type PrependSongsPayload = {
-  items: PlayQueueSong[];
-};
-
-// export type PlayCollectionWithSongPayload = {
-//   shuffle?: boolean;
-//   songs: Song[];
-//   // id of the starting song
-//   songId?: string;
-//   // id of the collection from which 'songs' are from
-//   collectionId?: string;
-// };
-
 export type SkipToSongAtIndexPayload = {
   index: number;
 };
@@ -125,11 +104,6 @@ export interface AuthState {
 
 export interface PlayQueueState {
   visibility: boolean;
-  songs: MusicKit.MediaItem[];
-}
-
-export interface NewPlayQueueState {
-  visibility: boolean;
   // mainSongs are songs that we originally add to the play queue
   // (songs from an album/playlist/multiple individual songs)
   mainSongs: PlayQueueSong[];
@@ -137,7 +111,7 @@ export interface NewPlayQueueState {
   mainSongsSource: string;
   mainSongsIndex: number;
   nextSongToPlay: PlayQueueNextSongToPlay | undefined;
-  shuffledSongs: PlayQueueSong[];
+  shuffledMainSongs: PlayQueueSong[];
   shuffleSongIndex: number;
   queue: PlayQueueSong[];
   queueIndex: number;
@@ -327,3 +301,32 @@ export type ScobbleLastfmAction = (
 ) => Promise<void>;
 
 export type SaveTokenLastfmAction = (token: Nullable<string>) => void;
+
+/**
+ * PlayQueue module
+ */
+export type AppendSongsPayload = {
+  items: PlayQueueSong[];
+};
+
+export type PrependSongsPayload = {
+  items: PlayQueueSong[];
+};
+
+export type RemoveFromMainSongsActionPayload = {
+  // index of the song to delete in the 'Up Next' list
+  index: number;
+
+  // the queue id of song to delete
+  qId: string;
+};
+
+export type RemoveFromMainSongsAction = (
+  payload: RemoveFromMainSongsActionPayload
+) => void;
+
+export type ChangeToIndexActionPayload = {
+  index: number;
+};
+
+export type ChangeToIndexAction = (payload: ChangeToIndexActionPayload) => void;

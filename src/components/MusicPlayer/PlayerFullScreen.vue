@@ -146,10 +146,11 @@ import LyricsMixin from '@/mixins/LyricsMixin';
 import SongListSmall from '@/components/SongListSmall.vue';
 import { MusicPlayerState } from '@/store/types';
 import { Watch } from 'vue-property-decorator';
-import { RepeatMode } from '@/utils/constants';
+import { RepeatMode, PLACEHOLDER_IMAGE } from '@/utils/constants';
 import { UPDATE_REPEAT_MODE } from '@/store/actions.type';
 import { Song, Nullable } from '@/@types/model/model';
 import { TEXT_PRIMARY_DARK, TEXT_PRIMARY_LIGHT } from '@/themes';
+import { getArtworkUrl } from '@/utils/utils';
 
 @Component({
   components: {
@@ -175,7 +176,6 @@ export default class PlayerFullScreen extends Mixins(
   queuedSongs!: Song[];
 
   @Getter currentPlayingDuration!: number;
-  @Getter currentTrackArtwork!: Nullable<string>;
   @Getter isAuthenticated!: boolean;
   @Getter darkMode!: boolean;
 
@@ -194,6 +194,21 @@ export default class PlayerFullScreen extends Mixins(
     if (newValue && this.dialog) {
       this.$_fetchLyrics();
     }
+  }
+
+  get currentTrackArtwork() {
+    if (
+      !this.musicPlayer.currentPlaying ||
+      !this.musicPlayer.currentPlaying.attributes
+    ) {
+      return PLACEHOLDER_IMAGE;
+    }
+
+    return getArtworkUrl(
+      this.musicPlayer.currentPlaying.attributes.artwork.url,
+      300,
+      300
+    );
   }
 
   get playingVisualizationSize() {

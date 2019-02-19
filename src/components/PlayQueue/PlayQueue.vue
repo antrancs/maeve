@@ -19,7 +19,8 @@
               :song="song"
               :index="index"
               :isHistory="true"
-              @remove-from-queue="removeFromHistory"
+              @remove-from-queue="handleRemoveFromHistory"
+              @song-item-clicked="handleHistoryItemClicked"
             />
           </template>
 
@@ -37,14 +38,17 @@
             />
           </template>
 
-          <h4 class="mx-2 mt-3">Up Next from: {{ mainSongsSource }}</h4>
-          <PlayQueueSongItem
-            v-for="(song, index) in upNext"
-            :key="song.qId"
-            :index="index"
-            :song="song"
-            @remove-from-queue="removeFromUpNext"
-          />
+          <template v-if="upNext.length > 0">
+            <h4 class="mx-2 mt-3">Up Next from: {{ mainSongsSource }}</h4>
+            <PlayQueueSongItem
+              v-for="(song, index) in upNext"
+              :key="song.qId"
+              :index="index"
+              :song="song"
+              @remove-from-queue="handleRemoveFromUpNext"
+              @song-item-clicked="handleUpNextItemClicked"
+            />
+          </template>
         </v-flex>
       </v-layout>
     </div>
@@ -61,9 +65,12 @@ import PlayQueueSongItem from './PlayQueueSongItem.vue';
 import {
   TOGGLE_QUEUE_VISIBILITY,
   REMOVE_FROM_UP_NEXT,
-  REMOVE_FROM_HISTORY
+  REMOVE_FROM_HISTORY,
+  CHANGE_TO_INDEX_IN_UP_NEXT,
+  CHANGE_TO_INDEX_IN_HISTORY
 } from '@/store/actions.type';
 import { REMOVE_FROM_YOUR_QUEUE } from '@/store/mutations.type';
+import { RemoveFromMainSongsAction, ChangeToIndexAction } from '@/store/types';
 
 @Component({
   components: {
@@ -85,10 +92,38 @@ export default class PlayQueue extends Vue {
 
   @Action
   [TOGGLE_QUEUE_VISIBILITY]: () => void;
-  @Action [REMOVE_FROM_UP_NEXT]: (index: number) => void;
-  @Action [REMOVE_FROM_HISTORY]: (index: number) => void;
+  @Action [REMOVE_FROM_UP_NEXT]: RemoveFromMainSongsAction;
+  @Action [REMOVE_FROM_HISTORY]: RemoveFromMainSongsAction;
+  @Action [CHANGE_TO_INDEX_IN_UP_NEXT]: ChangeToIndexAction;
+  @Action [CHANGE_TO_INDEX_IN_HISTORY]: ChangeToIndexAction;
 
   @Mutation [REMOVE_FROM_YOUR_QUEUE]!: (index: number) => void;
+
+  handleUpNextItemClicked(songId: string, index: number) {
+    this.changeToIndexInUpNext({
+      index
+    });
+  }
+
+  handleHistoryItemClicked(songId: string, index: number) {
+    this.changeToIndexInHistory({
+      index
+    });
+  }
+
+  handleRemoveFromUpNext(index: number) {
+    this.removeFromUpNext({
+      index,
+      qId: this.upNext[index].qId
+    });
+  }
+
+  handleRemoveFromHistory(index: number) {
+    this.removeFromHistory({
+      index,
+      qId: this.history[index].qId
+    });
+  }
 }
 </script>
 

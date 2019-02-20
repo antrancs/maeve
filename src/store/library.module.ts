@@ -97,6 +97,10 @@ const actions: ActionTree<UserLibraryState, any> = {
     } catch (err) {
       // force log out when forbidden
       // await dispatch(LOGOUT);
+      console.log('err', err.errorCode);
+      if (err.errorCode === 'FORBIDDEN') {
+        await dispatch(LOGOUT);
+      }
     }
 
     commit(SET_LIBRARY_PLAYLISTS, playlists);

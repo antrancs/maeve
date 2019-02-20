@@ -221,6 +221,7 @@ const actions: ActionTree<SettingsState, any> = {
   },
 
   [LOAD_SETTINGS]({ commit, getters, dispatch, rootState }) {
+    dispatch(LOAD_CUSTOM_THEME);
     const selectedThemeStr = localStorage.getItem(MAEVE_SELECTED_THEME);
     const buttonStyle = localStorage.getItem(MAEVE_BUTTON_STYLE);
 

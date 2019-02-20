@@ -221,6 +221,7 @@ export default class Home extends Vue {
 .grammy-bg__title {
   font-weight: bold;
   font-size: 3rem;
+  color: white;
 }
 
 .grammy-bg::before {

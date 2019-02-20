@@ -93,7 +93,6 @@ export default class ThemeSetting extends Vue {
 
   @State settings!: SettingsState;
 
-  @Action [LOAD_CUSTOM_THEME]: () => void;
   @Action [DELETE_THEME]: (id: string) => void;
   @Action [SELECT_THEME]: SelectThemeAction;
   @Action [SELECT_BUTTON_STYLES]: (buttonStyle: ButtonStyle) => void;
@@ -110,10 +109,6 @@ export default class ThemeSetting extends Vue {
 
   set buttonStyle(val: string) {
     this.selectButtonStyle(val as ButtonStyle);
-  }
-
-  created() {
-    this.loadCustomThemes();
   }
 
   handleThemeSelection(theme: ThemeOption) {

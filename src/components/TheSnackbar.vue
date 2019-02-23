@@ -7,7 +7,9 @@
   >
     {{ snackbar.text }}
 
-    <v-btn flat dark @click="closeSnackbar">Close</v-btn>
+    <v-btn flat dark @click="handleClick">{{
+      snackbar.action ? snackbar.action.text : 'Close'
+    }}</v-btn>
   </v-snackbar>
 </template>
 
@@ -22,5 +24,13 @@ import { CLOSE_SNACKBAR } from '@/store/actions.type';
 export default class Snackbar extends Vue {
   @State snackbar!: SnackbarState;
   @Action [CLOSE_SNACKBAR]: () => void;
+
+  handleClick() {
+    if (this.snackbar.action) {
+      this.snackbar.action.handler();
+    } else {
+      this.closeSnackbar();
+    }
+  }
 }
 </script>

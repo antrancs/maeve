@@ -33,6 +33,8 @@ export const SET_YOUR_QUEUE_INDEX = 'setYourQueueIndex';
 export const SET_SNACKBAR_VISIBILITY = 'setSnackbarVisibility';
 export const SET_SNACKBAR_TEXT = 'setSnackbarText';
 export const SET_SNACKBAR_TYPE = 'setSnackbarMode';
+export const SET_SNACKBAR_ACTION = 'setSnackbarAction';
+export const SET_SNACKBAR_TIMEOUT = 'setSnackbarTimeout';
 
 export const SET_LIBRARY_ALBUMS = 'setLibraryAlbums';
 export const SET_LIBRARY_PLAYLISTS = 'setLibraryPlaylists';

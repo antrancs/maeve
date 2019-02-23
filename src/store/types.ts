@@ -95,6 +95,10 @@ export interface ShowSnackbarActionPayload {
   text: string;
   timeout?: number;
   type?: SnackbarMode;
+  action?: {
+    text: string;
+    handler: () => void;
+  };
 }
 
 // Auth module
@@ -128,6 +132,10 @@ export interface SnackbarState {
   text: string;
   timeout: number;
   type: string;
+  action?: {
+    text: string;
+    handler: () => void;
+  };
 }
 
 export interface LayoutState {
@@ -351,3 +359,8 @@ export type ChangeToIndexActionPayload = {
 };
 
 export type ChangeToIndexAction = (payload: ChangeToIndexActionPayload) => void;
+
+export type SetSnackbarActionMutationPayload = {
+  text: string;
+  handler: () => void;
+};

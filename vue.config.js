@@ -93,7 +93,7 @@ module.exports = {
         changeOrigin: true
       },
       '/api': {
-        target: 'https://us-central1-maeve-music.cloudfunctions.net',
+        target: 'http://localhost:3000',
         ws: true,
         changeOrigin: true,
         pathRewrite: {
@@ -101,7 +101,7 @@ module.exports = {
         }
       },
       '/lastfm/auth': {
-        target: 'http://localhost:3000', // https://maeve-music.appspot.com
+        target: 'http://localhost:3000',
         ws: true,
         changeOrigin: true
       }

@@ -163,9 +163,7 @@ export default class CollectionItemCard extends Mixins(CollectionSongsMixin) {
     let collection: Nullable<Collection> = null;
     switch (this.collection.type) {
       case 'albums':
-        this.fetchOneAlbumCatalog(this.collection.id).then(res => {
-          collection = res;
-        });
+        collection = await this.fetchOneAlbumCatalog(this.collection.id);
         break;
 
       case 'playlists':

@@ -68,7 +68,7 @@ export type SkipToSongAtIndexAction = (
   payload: SkipToSongAtIndexPayload
 ) => void;
 
-export type PlaySongsAction = (payload: PlaySongsPayload) => void;
+export type PlaySongsAction = (payload: PlaySongsPayload) => Promise<void>;
 
 export type BlockArtistsAction = (artistIds: string[]) => void;
 export type UnblockArtistsAction = (artistIds: string[]) => void;
@@ -265,7 +265,7 @@ export type FetchOneAlbumLibraryAction = (
   id: string
 ) => Promise<MusicKit.LibraryAlbum>;
 
-export type FetchOnePlaylistLibraryaAction = (
+export type FetchOnePlaylistLibraryAction = (
   id: string
 ) => Promise<MusicKit.LibraryPlaylist>;
 

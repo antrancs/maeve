@@ -57,7 +57,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { State, Action, Getter } from 'vuex-class';
 
 import MediaArtwork from '@/components/MediaArtwork.vue';
@@ -66,13 +66,18 @@ import {
   MusicPlayerState,
   FetchOneAlbumCatalogAction,
   FetchOnePlaylistCatalogAction,
-  PlaySongsAction
+  PlaySongsAction,
+  FetchOneAlbumLibraryAction,
+  FetchOnePlaylistLibraryAction
 } from '@/store/types';
 import {
   TOGGLE_CURRENT_TRACK,
+  PAUSE_CURRENT_TRACK,
   FETCH_ONE_ALBUM_CATALOG,
   FETCH_ONE_PLAYLIST_CATALOG,
-  PLAY_SONGS
+  PLAY_SONGS,
+  FETCH_ONE_ALBUM_LIBRARY,
+  FETCH_ONE_PLAYLIST_LIBRARY
 } from '@/store/actions.type';
 import {
   isLight,
@@ -81,11 +86,12 @@ import {
   TEXT_SECONDARY_LIGHT,
   TEXT_SECONDARY_DARK
 } from '@/themes';
+import CollectionSongsMixin from '@/mixins/CollectionSongsMixin';
 
 @Component({
   components: { MediaArtwork }
 })
-export default class CollectionItemCard extends Vue {
+export default class CollectionItemCard extends Mixins(CollectionSongsMixin) {
   @Prop()
   collection!: Collection;
 
@@ -95,9 +101,12 @@ export default class CollectionItemCard extends Vue {
   @Action
   [PLAY_SONGS]: PlaySongsAction;
   @Action
-  [TOGGLE_CURRENT_TRACK]!: () => void;
+  [TOGGLE_CURRENT_TRACK]: () => void;
+  @Action [PAUSE_CURRENT_TRACK]: () => void;
   @Action [FETCH_ONE_ALBUM_CATALOG]: FetchOneAlbumCatalogAction;
   @Action [FETCH_ONE_PLAYLIST_CATALOG]: FetchOnePlaylistCatalogAction;
+  @Action [FETCH_ONE_ALBUM_LIBRARY]: FetchOneAlbumLibraryAction;
+  @Action [FETCH_ONE_PLAYLIST_LIBRARY]: FetchOnePlaylistLibraryAction;
 
   get isCollectionBeingPlayed(): boolean {
     if (!this.musicPlayer.currentCollectionId) {
@@ -137,6 +146,8 @@ export default class CollectionItemCard extends Vue {
       return;
     }
 
+    this.pauseCurrentTrack();
+
     // if this collection already has a 'tracks' relationship, just play it
     if (
       this.collection &&
@@ -152,20 +163,38 @@ export default class CollectionItemCard extends Vue {
     let collection: Nullable<Collection> = null;
     switch (this.collection.type) {
       case 'albums':
-        collection = await this.fetchOneAlbumCatalog(this.collection.id);
+        this.fetchOneAlbumCatalog(this.collection.id).then(res => {
+          collection = res;
+        });
         break;
+
       case 'playlists':
         collection = await this.fetchOnePlaylistCatalog(this.collection.id);
         break;
+
+      case 'library-albums':
+        collection = await this.fetchOneAlbumLibrary(this.collection.id);
+        break;
+
+      case 'library-playlists':
+        collection = await this.fetchOnePlaylistLibrary(this.collection.id);
+        break;
     }
 
-    this.$_playTracksFromCollection(collection!);
+    await this.getSongsDetail(collection);
+    this.playSongs({
+      collectionId: this.collection.id,
+      songs: this.songs,
+      songsSourceName: this.collection.attributes
+        ? this.collection.attributes.name
+        : ''
+    });
   }
 
   $_playTracksFromCollection(collection: Collection) {
     if (collection.relationships && collection.relationships.tracks) {
       this.playSongs({
-        collectionId: this.collection.id,
+        collectionId: collection.id,
         songs: collection.relationships.tracks.data,
         songsSourceName: collection.attributes ? collection.attributes.name : ''
       });

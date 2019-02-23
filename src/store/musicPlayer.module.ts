@@ -85,14 +85,14 @@ const getters: GetterTree<MusicPlayerState, any> = {
 };
 
 const actions: ActionTree<MusicPlayerState, any> = {
-  async [PLAY_NEXT]({ rootState, dispatch, commit, rootGetters }) {
+  [PLAY_NEXT]({ rootState, dispatch, commit, rootGetters }) {
     dispatch(MOVE_NEXT_PLAY_QUEUE);
     const songToPlay = rootState.playQueue.nextSongToPlay;
 
     if (songToPlay) {
       commit(SET_CURRENTLY_PLAYING_SONG, songToPlay.song);
       commit(SET_CURRENTLY_PLAYING_SOURCE, songToPlay.source);
-      await dispatch(PLAY_CURRENT_SONG, songToPlay.song);
+      return dispatch(PLAY_CURRENT_SONG, songToPlay.song);
     }
   },
 
@@ -163,8 +163,11 @@ const actions: ActionTree<MusicPlayerState, any> = {
     commit(SET_MAIN_SONGS_INDEX, startSongIndex - 1);
     commit(SET_SHUFFLE_MODE, +shuffle);
 
-    dispatch(SHUFFLE_MAIN_SONGS);
-    dispatch(PLAY_NEXT);
+    if (+shuffle === ShuffleMode.On) {
+      dispatch(SHUFFLE_MAIN_SONGS);
+    }
+
+    return dispatch(PLAY_NEXT);
   },
 
   [PLAY_CURRENT_SONG](_, song: PlayQueueSong) {
@@ -177,16 +180,16 @@ const actions: ActionTree<MusicPlayerState, any> = {
       }
     });
 
-    const music = musicKit.getInstance();
+    const music = MusicKit.getInstance();
 
     return music
       .setQueue({
         items: [mediaItems]
       })
-      .then(() => music.player.play())
-      .catch(err => {
-        console.log(err);
-      });
+      .then(() => {
+        return music.player.play();
+      })
+      .catch(err => err);
   },
 
   [SKIP_TO_SONG_AT_INDEX](_, { index }: SkipToSongAtIndexPayload) {

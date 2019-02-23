@@ -93,7 +93,7 @@ module.exports = {
         changeOrigin: true
       },
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'https://us-central1-maeve-music.cloudfunctions.net',
         ws: true,
         changeOrigin: true,
         pathRewrite: {

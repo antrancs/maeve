@@ -86,7 +86,7 @@ import {
   ShowSnackbarAction,
   FetchOneAlbumCatalogAction,
   FetchOnePlaylistCatalogAction,
-  FetchOnePlaylistLibraryaAction,
+  FetchOnePlaylistLibraryAction,
   FetchOneAlbumLibraryAction,
   FetchMultipleAlbumsCatalogAction
 } from '@/store/types';
@@ -134,7 +134,7 @@ export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
   @Action [FETCH_ONE_ALBUM_CATALOG]: FetchOneAlbumCatalogAction;
   @Action [FETCH_ONE_PLAYLIST_CATALOG]: FetchOnePlaylistCatalogAction;
   @Action [FETCH_ONE_ALBUM_LIBRARY]: FetchOneAlbumLibraryAction;
-  @Action [FETCH_ONE_PLAYLIST_LIBRARY]: FetchOnePlaylistLibraryaAction;
+  @Action [FETCH_ONE_PLAYLIST_LIBRARY]: FetchOnePlaylistLibraryAction;
   @Action [SHOW_SNACKBAR]: ShowSnackbarAction;
   @Action [FETCH_MULTILE_ALBUMS_CATALOG]: FetchMultipleAlbumsCatalogAction;
   @Action [FETCH_ALBUM_EXTRA_INFO_CATALOG]: (url: string) => Promise<any>;

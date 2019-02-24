@@ -134,6 +134,25 @@ const getSongsFromCollection = (collection: Nullable<Collection>): Song[] => {
   return collection.relationships.tracks.data;
 };
 
+const getFeaturedPlaylists = (offset: number, limit: number) => {
+  return axios
+    .get('/api/featuredPlaylists/all', {
+      params: {
+        offset,
+        limit
+      }
+    })
+    .then(res => {
+      return res.data.playlists;
+    });
+};
+
+const getMainFeaturedPlaylists = () => {
+  return axios.get('/api/featuredPlaylists/main').then(res => {
+    return res.data.playlists;
+  });
+};
+
 export {
   getArtworkUrl,
   getArtistArtwork,
@@ -143,5 +162,7 @@ export {
   getCuratorBanner,
   getCuratorsByGenre,
   getAlbumExtraInfo,
-  getGrammyResults
+  getGrammyResults,
+  getFeaturedPlaylists,
+  getMainFeaturedPlaylists
 };

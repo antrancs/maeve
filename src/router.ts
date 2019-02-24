@@ -26,12 +26,6 @@ const router = new Router({
         import(/* webpackChunkName: "charts" */ './views/Charts.vue')
     },
     {
-      path: '/grammy',
-      name: 'grammy',
-      component: () =>
-        import(/* webpackChunkName: "grammy" */ './views/Grammy.vue')
-    },
-    {
       path: '/auth/lastfm/success',
       name: 'lastfmAuthSuccess',
       component: () =>
@@ -42,6 +36,12 @@ const router = new Router({
       name: 'lastfm',
       component: () =>
         import(/* webpackChunkName: "lastfm" */ './views/Lastfm.vue')
+    },
+    {
+      path: '/featured-playlists',
+      name: 'featuredPlaylists',
+      component: () =>
+        import(/* webpackChunkName: "featuredPlaylists" */ './views/FeaturedPlaylists.vue')
     },
     {
       path: '/search',

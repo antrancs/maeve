@@ -17,7 +17,7 @@
           <div
             class="absolute-fit flex-center featured-playlist__description hidden-sm-and-down"
           >
-            {{ playlistLongDescription }}
+            {{ playlistDescription }}
           </div>
         </div>
 
@@ -93,11 +93,14 @@ export default class FeaturedPlaylist extends Vue {
     };
   }
 
-  get playlistLongDescription(): string {
+  get playlistDescription(): string {
     if (!this.playlist.attributes || !this.playlist.attributes.description) {
       return '';
     }
-    return this.playlist.attributes.description.standard;
+    return (
+      this.playlist.attributes.description.short ||
+      this.playlist.attributes.description.standard
+    );
   }
 }
 </script>

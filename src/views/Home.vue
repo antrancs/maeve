@@ -1,70 +1,87 @@
 <template>
-  <div :style="cssProps">
-    <div class="grammy-bg">
-      <div class="grammy-bg__content text-xs-center">
-        <div class="grammy-bg__title">
-          The 61st GRAMMY Awards - Nominees and winners
-        </div>
-        <app-button @on-click="goToGrammyPage">View results</app-button>
-      </div>
-    </div>
-    <v-container>
-      <v-layout row wrap>
-        <template>
-          <v-flex xs12 class="px-2" v-if="featuredPlaylists.length > 0">
-            <h3 class="section-title">Featured Playlists</h3>
-          </v-flex>
+  <v-container>
+    <v-layout row wrap>
+      <template>
+        <v-flex
+          xs12
+          class="px-2 featured-playlist__header"
+          v-if="featuredPlaylists.length > 0"
+        >
+          <h3 class="section-title">Featured Playlists</h3>
 
-          <transition name="list">
-            <v-layout row wrap v-if="activities.length > 0">
-              <v-flex
-                xs6
-                sm4
-                md3
-                v-for="playlist in featuredPlaylists"
-                :key="playlist.id"
-                :class="{
-                  'pa-2': $vuetify.breakpoint.mdAndUp,
-                  'pa-1': $vuetify.breakpoint.mdAndDown
-                }"
-              >
-                <FeaturedPlaylist :playlist="playlist" />
-              </v-flex>
-            </v-layout>
-          </transition>
-        </template>
-
-        <template v-if="isAuthenticated && recentPlayed.length > 0">
-          <v-flex xs12 class="px-2 pt-4">
-            <h3 class="section-title">Recently played</h3>
-          </v-flex>
-
-          <SongCollectionList :collections="recentPlayed" />
-        </template>
-        <template>
-          <v-flex xs12 class="px-2 pt-4" v-if="activities.length > 0">
-            <h3 class="section-title">Activities & Mood</h3>
-          </v-flex>
-
-          <transition name="list">
-            <v-layout row wrap v-if="activities.length > 0">
-              <ActivityItem
-                :activity="activity"
-                v-for="activity in activities"
-                :key="activity.id"
-              />
-            </v-layout>
-          </transition>
-        </template>
-
-        <v-flex xs12 class="px-2 pt-4">
-          <h3 class="section-title">Genres</h3>
+          <router-link
+            :to="{
+              name: 'featuredPlaylists'
+            }"
+            class="link"
+            >View all</router-link
+          >
         </v-flex>
 
-        <v-flex> <GenreList /> </v-flex>
-      </v-layout>
-    </v-container>
-  </div>
+        <transition name="list">
+          <v-layout row wrap v-if="featuredPlaylists.length > 0">
+            <v-flex
+              xs6
+              sm4
+              md3
+              v-for="playlist in featuredPlaylists"
+              :key="playlist.id"
+              :class="{
+                'pa-2': $vuetify.breakpoint.mdAndUp,
+                'pa-1': $vuetify.breakpoint.mdAndDown
+              }"
+            >
+              <FeaturedPlaylist :playlist="playlist" />
+            </v-flex>
+          </v-layout>
+        </transition>
+      </template>
+
+      <template v-if="isAuthenticated && recentPlayed.length > 0">
+        <v-flex xs12 class="px-2 pt-4">
+          <h2 class="section-title">Recently played</h2>
+        </v-flex>
+
+        <SongCollectionList :collections="recentPlayed" />
+      </template>
+
+      <template v-if="albums.length > 0">
+        <v-flex xs12 class="px-2 pt-4">
+          <h2 class="section-title">Top Albums</h2>
+        </v-flex>
+        <SongCollectionList :collections="albums" />
+      </template>
+
+      <template v-if="playlists.length > 0">
+        <v-flex xs12 class="px-2 pt-4">
+          <h2 class="section-title">Top Playlists</h2>
+        </v-flex>
+        <SongCollectionList :collections="playlists" />
+      </template>
+
+      <template>
+        <v-flex xs12 class="px-2 pt-4" v-if="activities.length > 0">
+          <h3 class="section-title">Activities & Mood</h3>
+        </v-flex>
+
+        <transition name="list">
+          <v-layout row wrap v-if="activities.length > 0">
+            <ActivityItem
+              :activity="activity"
+              v-for="activity in activities"
+              :key="activity.id"
+            />
+          </v-layout>
+        </transition>
+      </template>
+
+      <v-flex xs12 class="px-2 pt-4">
+        <h3 class="section-title">Genres</h3>
+      </v-flex>
+
+      <v-flex> <GenreList /> </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script lang="ts">
@@ -86,6 +103,8 @@ import {
   FetchMultiplePlaylistsCatalogAction,
   FetchRecentPlayedAction
 } from '@/store/types';
+import { getMainFeaturedPlaylists } from '@/utils/utils';
+import { Nullable } from '@/@types/model/model';
 
 @Component({
   components: {
@@ -96,19 +115,12 @@ import {
   }
 })
 export default class Home extends Vue {
-  private featuredPlaylistIds = [
-    'pl.33c5def02b6047fd8c5eb3ae0009793f', // grammy
-    'pl.567c541f63414e798be5cf214e155557', // Today at Apple
-    'pl.2b0e6e332fdf4b7a91164da3162127b5', // Top 100 Global
-    'pl.d25f5d1181894928af76c85c967f8f31' // Best of the week
-    // 'pl.f4d106fed2bd41149aaacabb233eb5eb' // Today hit
-  ];
-
   private featuredPlaylists: ReadonlyArray<MusicKit.Playlist> = [];
   private activities: ReadonlyArray<MusicKit.Activity> = [];
   private recentPlayed: ReadonlyArray<
     MusicKit.Playlist | MusicKit.Album | MusicKit.Station
   > = [];
+  private chart: Nullable<MusicKit.ChartResponse> = null;
 
   @Getter isAuthenticated!: boolean;
 
@@ -125,70 +137,50 @@ export default class Home extends Vue {
     if (newValue) {
       this.$_fetchRecentlyPlayed();
     }
+    this.$_fetchCharts();
   }
 
-  get cssProps() {
-    return {
-      '--grammy-bg-image': `url(${this.grammyBgImage})`
-    };
-  }
-
-  get grammyBgImage() {
-    const baseUrl =
-      'https://is4-ssl.mzstatic.com/image/thumb/Features118/v4/d4/0d/24/d40d24be-59bf-4894-76a4-d130c948132d/source/{w}x{h}sr.jpeg';
-
-    let width: number, height: number;
-
-    switch (this.$vuetify.breakpoint.name) {
-      case 'xl':
-        width = 2680;
-        height = 800;
-        break;
-      case 'lg':
-        width = 1720;
-        height = 600;
-        break;
-      case 'md':
-        width = 1240;
-        height = 500;
-        break;
-      case 'sm':
-        width = 760;
-        height = 400;
-        break;
-      default:
-        width = 400;
-        height = 300;
+  get playlists(): MusicKit.Playlist[] {
+    if (!this.chart || this.chart.playlists.length === 0) {
+      return [];
     }
 
-    const imageUrl = baseUrl
-      .replace('{w}', width.toString())
-      .replace('{h}', height.toString());
+    return (this.chart.playlists[0].data as MusicKit.Playlist[]) || [];
+  }
 
-    return imageUrl;
+  get albums(): MusicKit.Album[] {
+    if (!this.chart || this.chart.albums.length === 0) {
+      return [];
+    }
+
+    return (this.chart.albums[0].data as MusicKit.Album[]) || [];
   }
 
   created() {
-    this.fetchMultiplePlaylistsCatalog(this.featuredPlaylistIds)
-      .then(playlists => {
-        this.featuredPlaylists = Object.freeze(playlists);
-      })
-      .catch(err => err);
-
+    this.$_fetchFeaturedPlaylists();
     if (this.isAuthenticated) {
       this.$_fetchRecentlyPlayed();
     }
+    this.$_fetchActivities();
 
+    this.$_fetchCharts();
+  }
+
+  async $_fetchFeaturedPlaylists() {
+    const featuredPlaylistIds = await getMainFeaturedPlaylists();
+    const featuredPlaylists = await this.fetchMultiplePlaylistsCatalog(
+      featuredPlaylistIds
+    );
+    this.featuredPlaylists = Object.freeze(featuredPlaylists);
+  }
+
+  $_fetchActivities() {
     musicApiService
       .getActivities(activityIds)
       .then(activities => {
         this.activities = Object.freeze(activities);
       })
       .catch(err => err);
-  }
-
-  goToGrammyPage() {
-    this.$router.push({ path: 'grammy' });
   }
 
   $_fetchRecentlyPlayed() {
@@ -199,47 +191,19 @@ export default class Home extends Vue {
       );
     });
   }
+
+  $_fetchCharts() {
+    musicApiService
+      .getCharts(['albums', 'playlists'], 10)
+      .then(chart => (this.chart = chart));
+  }
 }
 </script>
 
 <style lang="scss" scoped>
-.grammy-bg {
+.featured-playlist__header {
   align-items: center;
-  justify-content: center;
   display: flex;
-  flex-direction: column;
-  height: 400px;
-  position: relative;
-  width: 100%;
-}
-
-.grammy-bg__content {
-  position: relative;
-  z-index: 1;
-}
-
-.grammy-bg__title {
-  font-weight: bold;
-  font-size: 3rem;
-  color: white;
-}
-
-.grammy-bg::before {
-  content: '';
-  background-image: var(--grammy-bg-image);
-  background-size: cover;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 100%;
-}
-
-.grammy-bg::after {
-  background-color: rgba(0, 0, 0, 0.4);
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 100%;
+  justify-content: space-between;
 }
 </style>

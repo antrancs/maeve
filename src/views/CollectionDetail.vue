@@ -1,146 +1,220 @@
 <template>
-  <div class="collection-detail" v-if="collection">
-    <div
-      class="collection-detail-header"
-      :style="{ height: `${headerHeight}vh` }"
-    >
-      <div class="banner-overlay">
-        <v-container fill-height>
-          <v-layout
-            :class="{
-              'align-end row wrap': $vuetify.breakpoint.smAndUp,
-              'justify-end column': $vuetify.breakpoint.xsOnly
-            }"
-          >
-            <v-flex
-              xs12
-              :style="{ 'flex-basis': $vuetify.breakpoint.xsOnly ? 0 : '100%' }"
+  <v-container fill-height class="pb-0">
+    <v-layout row wrap>
+      <v-flex sm4 md4 lg3 v-if="$vuetify.breakpoint.smAndUp">
+        <div
+          :class="$style['left-column']"
+          :style="[leftColumnBackgroundStyle, leftColumnHeightStyle]"
+          v-if="collection"
+        >
+          <div :class="$style['left-column__top']">
+            <div
+              :class="$style['collection-name']"
+              :style="collectionNameStyle"
             >
-              <CollectionHeader
-                :collection="collection"
-                :songs="songs"
-                :artworkSize="artworkSize"
-                :numberOfSongs="numberOfSongs"
-              />
-            </v-flex>
+              {{ collectionName }}
 
-            <div class="hidden-sm-and-up mt-2">
-              <template v-if="collection">
-                <CollectionControls :collection="collection" :songs="songs" />
+              <v-icon
+                dark
+                v-if="collection.attributes.contentRating === 'explicit'"
+                >explicit</v-icon
+              >
+            </div>
+
+            <ResourceLinkList
+              :resources="artists"
+              :class="$style['artist-name']"
+              :name="collectionArtistName"
+            />
+          </div>
+          <!-- <div class="cover"></div> -->
+          <img
+            :class="$style['cover']"
+            :style="artworkStyle"
+            :src="artworkUrl"
+          />
+
+          <div :class="[$style['left-column__bottom'], 'pt-4']">
+            <div :class="$style['song-info']">
+              {{ songs.length }} {{ songs.length > 1 ? 'tracks' : 'track' }}
+            </div>
+            <div :class="$style['collection-date']">
+              <template v-if="collection.type === 'albums'">
+                Released: {{ releaseDate }}
+              </template>
+              <template v-else-if="collection.type === 'playlists'">
+                Updated {{ updatedDate }}
               </template>
             </div>
-          </v-layout>
-        </v-container>
-      </div>
-
-      <picture class="collection-detail-header__banner">
-        <source
-          media="(min-width: 1200px)"
-          :srcset="getCollectionArtwork(1000, 1000)"
-        />
-
-        <source
-          media="(min-width: 900px)"
-          :srcset="getCollectionArtwork(800, 800)"
-        />
-
-        <source
-          media="(min-width: 768px)"
-          :srcset="getCollectionArtwork(540, 540)"
-        />
-
-        <img class="image" :src="getCollectionArtwork(400, 400)" />
-      </picture>
-    </div>
-
-    <v-container>
-      <SongListLarge
-        :playlistId="playlistId"
-        :songs="songs"
-        :fromAlbum="isFromAlbum"
-      />
-
-      <template v-if="relatedAlbums.length > 0">
-        <div class="mt-3">
-          <h2 class="px-2">Albums You May Also Like</h2>
-          <SongCollectionList :collections="relatedAlbums" />
+          </div>
         </div>
-      </template>
-    </v-container>
-  </div>
+      </v-flex>
+      <v-flex xs12 v-else class="mb-3">
+        <v-layout row v-if="collection">
+          <img
+            :class="$style['cover-sm']"
+            :style="artworkStyle"
+            :src="artworkUrl"
+          />
+          <v-flex class="pl-2">
+            <v-layout column>
+              <div
+                :class="$style['collection-name']"
+                :style="collectionNameStyle"
+              >
+                {{ collectionName }}
+
+                <v-icon
+                  dark
+                  v-if="collection.attributes.contentRating === 'explicit'"
+                  >explicit</v-icon
+                >
+              </div>
+
+              <ResourceLinkList
+                :resources="artists"
+                :class="$style['artist-name']"
+                :name="collectionArtistName"
+              />
+            </v-layout>
+          </v-flex>
+        </v-layout>
+
+        <CollectionControls
+          v-if="songs.length > 0"
+          class="mt-2"
+          :collection="collection"
+          :songs="songs"
+        />
+      </v-flex>
+
+      <v-flex
+        xs12
+        sm8
+        md8
+        lg9
+        v-if="collection"
+        :class="{ [$style['right-column']]: $vuetify.breakpoint.smAndUp }"
+      >
+        <template v-if="collectionDescription">
+          <p
+            :class="$style['collection-description']"
+            :style="editorialNoteStyles"
+            v-html="collectionDescription"
+          ></p>
+          <p
+            v-if="collectionDescription.length > 260"
+            :class="$style['collection-description-toggle']"
+            @click="editorialNoteCollapse = !editorialNoteCollapse"
+          >
+            {{ editorialNoteCollapse ? 'MORE' : 'LESS' }}
+          </p>
+        </template>
+
+        <v-layout row justify-end v-if="$vuetify.breakpoint.smAndUp">
+          <CollectionControls
+            v-if="songs.length > 0"
+            :collection="collection"
+            :songs="songs"
+          />
+        </v-layout>
+        <SongListLarge
+          class="mt-2"
+          :playlistId="playlistId"
+          :songs="songs"
+          :fromAlbum="isFromAlbum"
+        />
+      </v-flex>
+
+      <v-flex xs12 v-if="relatedAlbums.length > 0">
+        <h2>Albums you might also like</h2>
+
+        <SongCollectionList :collections="relatedAlbums" />
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch, Mixins } from 'vue-property-decorator';
-import { Action, Getter, State, Mutation } from 'vuex-class';
+import { Component, Vue, Mixins, Prop, Watch } from 'vue-property-decorator';
+import parse from 'date-fns/parse';
+import format from 'date-fns/format';
+import { Action, Mutation, State } from 'vuex-class';
+import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
+import isToday from 'date-fns/is_today';
 
+import ResourceLinkList from '@/components/ResourceLinkList.vue';
 import SongListLarge from '@/components/SongListLarge.vue';
-import MediaArtwork from '@/components/MediaArtwork.vue';
-import CollectionHeader from '@/components/CollectionHeader.vue';
+import SongCollectionList from '@/components/SongCollectionList.vue';
 import CollectionControls from '@/components/CollectionControls.vue';
 import CollectionSongsMixin from '@/mixins/CollectionSongsMixin';
-import SongCollectionList from '@/components/SongCollectionList.vue';
-import { getArtworkUrl } from '@/utils/utils';
-import musicApiService from '@/services/musicApi.service';
+import MediaArtwork from '@/components/MediaArtwork.vue';
 import {
-  ShowSnackbarAction,
-  FetchOneAlbumCatalogAction,
-  FetchOnePlaylistCatalogAction,
-  FetchOnePlaylistLibraryAction,
-  FetchOneAlbumLibraryAction,
-  FetchMultipleAlbumsCatalogAction
-} from '@/store/types';
-import {
-  Collection,
-  Song,
   Nullable,
-  CollectionType,
-  SnackbarMode,
+  Collection,
   Artist,
-  CatalogCollection,
-  LibraryCollection,
-  Album
+  Album,
+  CollectionType
 } from '@/@types/model/model';
+
 import {
-  SHOW_SNACKBAR,
   FETCH_ONE_ALBUM_CATALOG,
+  FETCH_MULTILE_ALBUMS_CATALOG,
   FETCH_ONE_PLAYLIST_CATALOG,
-  FETCH_ONE_PLAYLIST_LIBRARY,
   FETCH_ONE_ALBUM_LIBRARY,
-  FETCH_ALBUM_EXTRA_INFO_CATALOG,
-  FETCH_MULTILE_ALBUMS_CATALOG
+  FETCH_ONE_PLAYLIST_LIBRARY,
+  FETCH_ALBUM_EXTRA_INFO_CATALOG
 } from '@/store/actions.type';
+import {
+  FetchOneAlbumCatalogAction,
+  FetchMultipleAlbumsCatalogAction,
+  FetchOnePlaylistCatalogAction,
+  FetchOneAlbumLibraryAction,
+  FetchOnePlaylistLibraryAction
+} from '@/store/types';
+import { SET_FOOTER_VISIBILITY } from '@/store/mutations.type';
+import { getArtworkUrl } from '@/utils/utils';
+import { PLACEHOLDER_IMAGE } from '@/utils/constants';
+import { isLight } from '@/themes';
 import { Route } from 'vue-router';
-import { TEXT_PRIMARY_DARK, TEXT_SECONDARY_DARK } from '@/themes';
 
 @Component({
   components: {
-    SongListLarge,
     MediaArtwork,
+    SongListLarge,
+    SongCollectionList,
     CollectionControls,
-    CollectionHeader,
-    SongCollectionList
+    ResourceLinkList
   }
 })
 export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
   private collection: Nullable<Collection> = null;
   private relatedAlbums: MusicKit.Album[] = [];
-  // private songsWithRelationships: Nullable<MusicKit.Song[]> = null;
+  private editorialNoteCollapse = true;
+
   @Prop() id!: string;
 
-  @Getter
-  isAuthenticated!: boolean;
+  @State(state => state.musicPlayer.currentPlaying)
+  currentPlaying!: MusicKit.MediaItem | null;
 
   @Action [FETCH_ONE_ALBUM_CATALOG]: FetchOneAlbumCatalogAction;
+  @Action [FETCH_MULTILE_ALBUMS_CATALOG]: FetchMultipleAlbumsCatalogAction;
   @Action [FETCH_ONE_PLAYLIST_CATALOG]: FetchOnePlaylistCatalogAction;
   @Action [FETCH_ONE_ALBUM_LIBRARY]: FetchOneAlbumLibraryAction;
   @Action [FETCH_ONE_PLAYLIST_LIBRARY]: FetchOnePlaylistLibraryAction;
-  @Action [SHOW_SNACKBAR]: ShowSnackbarAction;
-  @Action [FETCH_MULTILE_ALBUMS_CATALOG]: FetchMultipleAlbumsCatalogAction;
   @Action [FETCH_ALBUM_EXTRA_INFO_CATALOG]: (url: string) => Promise<any>;
 
-  get numberOfSongs(): number {
-    return this.songs.length;
+  @Mutation [SET_FOOTER_VISIBILITY]: (visibility: boolean) => void;
+
+  get editorialNoteStyles() {
+    if (this.editorialNoteCollapse) {
+      return {
+        height: '6.5rem',
+        overflow: 'hidden'
+      };
+    }
+
+    return {};
   }
 
   get isFromAlbum(): boolean {
@@ -151,6 +225,176 @@ export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
       this.collection.type === 'library-albums' ||
       this.collection.type === 'albums'
     );
+  }
+
+  get collectionDescription() {
+    if (!this.collection || !this.collection.attributes) {
+      return null;
+    }
+
+    switch (this.collection.type) {
+      case 'albums':
+        return this.collection.attributes.editorialNotes
+          ? this.collection.attributes.editorialNotes.standard
+          : null;
+
+      case 'playlists':
+        return this.collection.attributes.description
+          ? this.collection.attributes.description.standard
+          : null;
+    }
+
+    return null;
+  }
+
+  get collectionArtistName(): string {
+    if (!this.collection || !this.collection.attributes) {
+      return '';
+    }
+
+    // artistName is only available for album
+    return (
+      (this.collection.attributes as MusicKit.AlbumAttributes).artistName ||
+      (this.collection.attributes as MusicKit.PlaylistAttributes).curatorName ||
+      ''
+    );
+  }
+
+  get leftColumnBackgroundStyle() {
+    if (
+      !this.collection ||
+      !this.collection.attributes ||
+      !this.collection.attributes.artwork
+    ) {
+      return {};
+    }
+    const {
+      bgColor,
+      textColor1,
+      textColor2,
+      textColor3,
+      textColor4
+    } = this.collection.attributes.artwork;
+
+    if (!bgColor) {
+      return {
+        background: 'linear-gradient(45deg, #FF5F6D, #FFC371)'
+      };
+    }
+    if (isLight(bgColor)) {
+      const firstColor = textColor1 || '000000';
+      const secondColor = textColor3 || textColor2 || '000000';
+
+      return {
+        background: `linear-gradient(45deg, #${firstColor}, #${secondColor})`
+      };
+    }
+
+    const secondColor = textColor2 || textColor1 || '000000';
+    return {
+      background: `linear-gradient(45deg, #${bgColor}, #${textColor2})`
+    };
+
+    // background: linear-gradient(-45deg, #675419, #e6cb74)
+  }
+
+  get leftColumnHeightStyle() {
+    return {
+      height: this.currentPlaying
+        ? 'calc(100vh - 64px - 24px - 16px - 96px)' // minus: header + padding top + padding bottom + player bar
+        : 'calc(100vh - 64px - 24px - 16px)'
+    };
+  }
+
+  get artworkUrl(): string {
+    if (
+      !this.collection ||
+      !this.collection.attributes ||
+      !this.collection.attributes.artwork
+    ) {
+      return PLACEHOLDER_IMAGE;
+    }
+    return getArtworkUrl(this.collection.attributes.artwork.url, 400, 400);
+  }
+
+  get artists(): Nullable<Artist[]> {
+    if (
+      this.collection &&
+      this.collection.type === 'albums' &&
+      this.collection.relationships &&
+      this.collection.relationships.artists
+    ) {
+      return this.collection.relationships.artists.data;
+    }
+
+    return null;
+  }
+
+  get collectionName() {
+    if (!this.collection || !this.collection.attributes) {
+      return '';
+    }
+
+    return this.collection.attributes.name;
+  }
+
+  get collectionNameStyle() {
+    if (this.collectionName.length < 30) {
+      return {
+        'font-size': '2.4rem'
+      };
+    }
+    return {
+      'font-size': '1.8rem'
+    };
+  }
+
+  get artworkStyle() {
+    if (
+      !this.collection ||
+      !this.collection.attributes ||
+      !this.collection.attributes.artwork
+    ) {
+      return {};
+    }
+    const shadowColor =
+      this.collection.attributes.artwork.textColor1 || 'ffffff';
+    return {
+      'box-shadow': `0.2rem 0.2rem 1rem #${shadowColor}`
+    };
+  }
+
+  // for albums
+  get releaseDate() {
+    if (!this.collection || !this.collection.attributes) {
+      return null;
+    }
+
+    if (this.collection.type === 'albums') {
+      const releaseDateStr = this.collection.attributes.releaseDate;
+
+      return format(parse(releaseDateStr), 'MMMM DD, YYYY');
+    }
+
+    return null;
+  }
+
+  // for playlists
+  get updatedDate() {
+    if (!this.collection || !this.collection.attributes) {
+      return null;
+    }
+
+    if (this.collection.type === 'playlists') {
+      const lastModifiedDateStr = this.collection.attributes.lastModifiedDate;
+      const lastModifiedDate = new Date(lastModifiedDateStr);
+
+      return isToday(lastModifiedDate)
+        ? 'Today'
+        : `${distanceInWordsToNow(lastModifiedDate)} ago`;
+    }
+
+    return null;
   }
 
   get collectionType(): CollectionType {
@@ -176,52 +420,6 @@ export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
     return this.id;
   }
 
-  get releaseYear(): string {
-    if (!this.collection || !this.collection.attributes) {
-      return '';
-    }
-
-    let year = '';
-    switch (this.collectionType) {
-      case CollectionType.album:
-        year = (this.collection
-          .attributes as MusicKit.AlbumAttributes).releaseDate
-          .toString()
-          .substring(0, 4); // get year only
-        break;
-
-      case CollectionType.playlist:
-        year = (this.collection
-          .attributes as MusicKit.PlaylistAttributes).lastModifiedDate
-          .toString()
-          .substring(0, 4); // get year only
-    }
-
-    return year;
-  }
-
-  get artworkSize(): number {
-    switch (this.$vuetify.breakpoint.name) {
-      case 'xs':
-        return 100;
-      case 'sm':
-        return 150;
-      default:
-        return 200;
-    }
-  }
-
-  get headerHeight(): number {
-    switch (this.$vuetify.breakpoint.name) {
-      case 'xs':
-        return 40;
-      case 'sm':
-        return 50;
-      default:
-        return 60;
-    }
-  }
-
   @Watch('$route')
   onRouteChange(to: Route, from: Route) {
     this.relatedAlbums = [];
@@ -229,7 +427,12 @@ export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
   }
 
   created() {
+    this.setFooterVisibility(false);
     this.fetchCollection();
+  }
+
+  beforeDestroy() {
+    this.setFooterVisibility(true);
   }
 
   async fetchCollection() {
@@ -269,52 +472,87 @@ export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
       }
     }
   }
-
-  getCollectionArtwork(width: number, height: number) {
-    if (
-      !this.collection ||
-      !this.collection.attributes ||
-      !this.collection.attributes.artwork
-    ) {
-      return '';
-    }
-
-    return getArtworkUrl(this.collection.attributes.artwork.url, width, height);
-  }
 }
 </script>
 
-<style lang="scss" scoped>
-.collection-detail {
+<style lang="scss" module>
+.left-column {
+  display: flex;
+  border-radius: 20px;
+  position: sticky;
+  top: 88px;
+  position: sticky;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.left-column__top {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 5rem;
+}
+
+.left-column__bottom {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-left: 5rem;
+}
+.cover {
   width: 100%;
+  height: auto;
+  margin-right: -5rem;
+  margin-left: 5rem;
+  border-radius: 2rem;
 }
 
-.collection-detail-header {
-  position: relative;
+.right-column {
+  padding-left: 6.6rem;
 }
 
-.banner-overlay {
-  background-color: rgba(
-    $color: (
-      #000000
-    ),
-    $alpha: 0.6
-  );
-  height: 100%;
-  position: relative;
-  z-index: 1;
+.collection-description {
+  color: var(--v-secondaryText-base);
+  font-size: 1.4rem;
 }
 
-.collection-detail-header__banner {
-  position: absolute;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+.collection-description-toggle {
+  font-weight: bold;
+  cursor: pointer;
 }
 
-.image {
-  width: 100%;
-  object-fit: cover;
+.song-info {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: white;
+}
+
+.collection-name {
+  font-weight: bold;
+  color: white;
+}
+
+.artist-name {
+  color: white;
+}
+
+.artist-name a {
+  color: white;
+}
+
+.artist-name a:hover {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.cover-sm {
+  width: 12rem;
+  height: 12rem;
+  flex-shrink: 0;
+}
+
+.collection-date {
+  color: #bdbdbd;
 }
 </style>

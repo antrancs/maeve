@@ -184,15 +184,18 @@ const actions: ActionTree<UserLibraryState, any> = {
     return musicKit.getApiInstance().recentPlayed();
   },
 
-  async [ADD_SONGS_TO_PLAYLIST](
+  [ADD_SONGS_TO_PLAYLIST](
     _,
     { songItems, playlistId }: AddSongsToPlaylistPayload
   ) {
-    const res = await musicApiService.addSongsToPlaylist(songItems, playlistId);
-
-    if (res.status < 200 || res.status >= 300) {
-      throw new Error('Cannot add songs to library');
-    }
+    return musicApiService
+      .addSongsToPlaylist(songItems, playlistId)
+      .then(res => {
+        if (res.status < 200 || res.status >= 300) {
+          throw new Error('Cannot add songs to library');
+        }
+        return Promise.resolve();
+      });
   },
 
   async [CREATE_NEW_PLAYLIST](

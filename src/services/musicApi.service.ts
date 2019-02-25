@@ -260,11 +260,11 @@ class MusicApiService {
       });
   }
 
-  async addSongsToPlaylist(
+  addSongsToPlaylist(
     songItems: { id: string; type: string }[],
     playlistId: string
   ): Promise<AxiosResponse<any>> {
-    return await this.axiosInstance.post(
+    return this.axiosInstance.post(
       `/me/library/playlists/${playlistId}/tracks`,
       {
         data: songItems

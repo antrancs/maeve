@@ -10,7 +10,6 @@
         }
       ]"
       @click="() => handleArtistClicked(artist)"
-      :style="artistItemBackgroundColor"
     >
       <img :src="placeHolderImage" :class="$style['artist-avatar']" />
       <div :class="[$style['artist-name-wrapper'], 'ml-2']">

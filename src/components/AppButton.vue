@@ -4,6 +4,7 @@
     @click="$emit('on-click')"
     :color="color"
     :style="buttonColorStyle"
+    @block="block"
   >
     <slot></slot>
   </v-btn>
@@ -20,6 +21,8 @@ import { ButtonStyle } from '@/utils/constants';
 @Component
 export default class AppButton extends Vue {
   @Prop({ default: 'accent' }) color!: string;
+  @Prop({ default: false }) block!: boolean;
+
   @State(state => state.settings.buttonStyle) buttonStyle!: ButtonStyle;
 
   get buttonColorStyle() {

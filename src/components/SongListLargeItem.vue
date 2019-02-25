@@ -51,39 +51,40 @@
       <slot></slot>
 
       <v-flex :class="$style['middle-items']">
-        <v-layout row wrap>
-          <v-flex xs12 sm6 md5 class="pr-2">
-            <v-layout>
-              <div
-                class="long-text-truncated main-info-text"
-                :style="{ color: songNameColor }"
-                :title="song.attributes.name"
-              >
-                {{ song.attributes.name }}
-              </div>
+        <v-layout row wrap align-center>
+          <v-flex :class="isFromAlbum ? 'xs12' : 'lg6 xs12'">
+            <v-layout row wrap>
+              <v-flex xs12 :class="['pr-2', isFromAlbum ? 'lg6' : 'lg12']">
+                <v-layout>
+                  <div
+                    class="long-text-truncated main-info-text"
+                    :style="{ color: songNameColor }"
+                    :title="song.attributes.name"
+                  >
+                    {{ song.attributes.name }}
+                  </div>
 
-              <v-icon
-                class="ml-1"
-                small
-                v-if="song.attributes.contentRating === 'explicit'"
-                >explicit</v-icon
-              >
+                  <v-icon
+                    class="ml-1"
+                    small
+                    v-if="song.attributes.contentRating === 'explicit'"
+                    >explicit</v-icon
+                  >
+                </v-layout>
+              </v-flex>
+
+              <v-flex xs12 :class="['pr-2', isFromAlbum ? 'lg6' : 'lg12']">
+                <ResourceLinkList
+                  :class="['long-text-truncated', $style['artist-name']]"
+                  :resources="artists"
+                  :name="song.attributes.artistName"
+                />
+              </v-flex>
             </v-layout>
           </v-flex>
 
-          <v-flex xs12 md4 sm6 class="pr-2">
-            <ResourceLinkList
-              :class="['long-text-truncated', $style['artist-name']]"
-              :resources="artists"
-              :name="song.attributes.artistName"
-            />
-          </v-flex>
-
-          <v-flex md3 class="hidden-sm-and-down">
-            <div
-              v-if="!isFromAlbum"
-              :class="['long-text-truncated', $style['album-name']]"
-            >
+          <v-flex v-if="!isFromAlbum && $vuetify.breakpoint.lgAndUp" xs6>
+            <div :class="['long-text-truncated', $style['album-name']]">
               <span v-if="$vuetify.breakpoint.smAndDown"> - </span>
               <ResourceLinkList
                 :resources="albums"
@@ -104,7 +105,14 @@
         <v-icon>more_horiz</v-icon>
       </v-btn>
 
-      <div :class="['sub-info-text', 'hidden-xs-only', $style['right-items']]">
+      <div
+        :class="[
+          'sub-info-text',
+          'hidden-xs-only',
+          $style['right-items'],
+          'pr-2'
+        ]"
+      >
         {{ song.attributes.durationInMillis | formattedDuration }}
       </div>
     </v-layout>

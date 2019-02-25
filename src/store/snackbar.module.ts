@@ -62,14 +62,8 @@ const mutations: MutationTree<SnackbarState> = {
     state.type = type;
   },
 
-  [SET_SNACKBAR_ACTION](
-    state,
-    { text, handler }: SetSnackbarActionMutationPayload
-  ) {
-    state.action = {
-      text,
-      handler
-    };
+  [SET_SNACKBAR_ACTION](state, action: SetSnackbarActionMutationPayload) {
+    state.action = action;
   }
 };
 

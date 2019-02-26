@@ -126,8 +126,14 @@
         />
       </v-flex>
 
-      <v-flex xs12 v-if="relatedAlbums.length > 0">
-        <h2>Albums you might also like</h2>
+      <v-flex xs12 v-if="otherAlbumsFromArtists.length > 0" class="mt-2">
+        <h2 class="px-2">More by {{ collectionArtistName }}</h2>
+
+        <SongCollectionList :collections="otherAlbumsFromArtists" />
+      </v-flex>
+
+      <v-flex xs12 v-if="relatedAlbums.length > 0" class="mt-2">
+        <h2 class="px-2">Albums you might also like</h2>
 
         <SongCollectionList :collections="relatedAlbums" />
       </v-flex>
@@ -190,6 +196,7 @@ import { Route } from 'vue-router';
 export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
   private collection: Nullable<Collection> = null;
   private relatedAlbums: MusicKit.Album[] = [];
+  private otherAlbumsFromArtists: MusicKit.Album[] = [];
   private editorialNoteCollapse = true;
 
   @Prop() id!: string;
@@ -465,10 +472,15 @@ export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
       );
 
       if (info.relatedAlbums && info.relatedAlbums.length > 0) {
-        const albums = await this.fetchMultipleAlbumsCatalog(
-          info.relatedAlbums
-        );
-        this.relatedAlbums = albums;
+        this.fetchMultipleAlbumsCatalog(info.relatedAlbums).then(albums => {
+          this.relatedAlbums = albums;
+        });
+      }
+
+      if (info.otherAlbums && info.otherAlbums.length > 0) {
+        this.fetchMultipleAlbumsCatalog(info.otherAlbums).then(albums => {
+          this.otherAlbumsFromArtists = albums;
+        });
       }
     }
   }

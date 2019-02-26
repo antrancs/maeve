@@ -7,7 +7,7 @@
           class="px-2 featured-playlist__header"
           v-if="featuredPlaylists.length > 0"
         >
-          <h3 class="section-title">Featured Playlists</h3>
+          <h3 class="section-title">Today's Featured Playlists</h3>
 
           <router-link
             :to="{

@@ -66,9 +66,9 @@ export default class ArtworkOverlay extends Vue {
 .content-wrapper {
   align-items: center;
   display: flex;
-  height: 3.2rem;
+  height: 4rem;
   justify-content: center;
-  width: 3.2rem;
+  width: 4rem;
 }
 
 .song-item__wrapper:hover .artwork-overlay {

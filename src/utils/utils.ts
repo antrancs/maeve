@@ -101,7 +101,7 @@ const getCuratorsByGenre = (genreId: string) => {
 
 const getAlbumExtraInfo = (iTunesUrl: string) => {
   return axios
-    .get('/api/albumExtraInfo', {
+    .get('/api/catalog/albums/extraInfo', {
       params: {
         url: iTunesUrl
       }

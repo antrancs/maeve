@@ -156,7 +156,7 @@ export default class SongListLargeItem extends Mixins(SongItemMixin) {}
 <style lang="scss" scoped>
 .song-item__wrapper {
   border-bottom: 0.1rem solid rgba(0, 0, 0, 0.08);
-  // height: 5rem;
+  height: 6rem;
   transition: background-color 0.25s ease-in-out;
 
   &.dark-mode {

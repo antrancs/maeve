@@ -323,6 +323,7 @@ export interface LastfmState {
 export type ScobbleLastfmActionPayload = {
   artist: string;
   track: string;
+  album?: string;
 };
 
 export type ScobbleLastfmAction = (

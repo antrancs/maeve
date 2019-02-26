@@ -37,7 +37,7 @@ const actions: ActionTree<LastfmState, any> = {
     }
 
     // if isAuthenticatedLastfm is true, the token is certainly not null
-    return scrobble(payload.track, payload.artist, state.token!);
+    return scrobble(payload.track, payload.artist, state.token!, payload.album);
   },
 
   [LOAD_TOKEN_LASTFM]({ commit }) {

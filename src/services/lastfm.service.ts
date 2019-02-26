@@ -1,12 +1,18 @@
 import axios from 'axios';
 
-function scrobble(track: string, artist: string, token: string) {
+function scrobble(
+  track: string,
+  artist: string,
+  token: string,
+  album?: string
+) {
   return axios
     .post(
       '/lastfm/api/track/scrobble',
       {
         track,
-        artist
+        artist,
+        album
       },
       {
         headers: {

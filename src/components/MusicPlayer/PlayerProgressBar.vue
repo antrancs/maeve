@@ -83,7 +83,8 @@ export default class PlayerProgressBar extends Vue {
       }
       this.scrobbleLastfm({
         artist: currentPlaying.attributes.artistName,
-        track: currentPlaying.attributes.name
+        track: currentPlaying.attributes.name,
+        album: currentPlaying.attributes.albumName
       });
     }
   }

@@ -430,6 +430,7 @@ export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
   @Watch('$route')
   onRouteChange(to: Route, from: Route) {
     this.relatedAlbums = [];
+    this.otherAlbumsFromArtists = [];
     this.fetchCollection();
   }
 

@@ -29,6 +29,7 @@
       solo-inverted
       hide-details
       v-model="searchText"
+      clearable
       class="ml-4"
     ></v-text-field>
     <v-spacer></v-spacer>

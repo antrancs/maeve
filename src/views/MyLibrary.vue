@@ -35,7 +35,11 @@
 
       <template v-if="resource === 'songs'">
         <v-flex xs12>
-          <SongListLarge v-if="songs" :songs="filteredSongs" />
+          <SongListLarge
+            v-if="songs"
+            :songs="filteredSongs"
+            sourceName="Library songs"
+          />
         </v-flex>
       </template>
 

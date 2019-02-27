@@ -81,7 +81,10 @@
             <h3 class="section-title">Top Songs</h3>
           </v-flex>
 
-          <SongListLarge :songs="topSongs" />
+          <SongListLarge
+            :songs="topSongs"
+            :sourceName="`${artist.attributes.name}'s top songs`"
+          />
         </template>
 
         <template v-if="nonSingles.length > 0">

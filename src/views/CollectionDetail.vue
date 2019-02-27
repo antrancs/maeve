@@ -121,6 +121,8 @@
         <SongListLarge
           class="mt-2"
           :playlistId="playlistId"
+          :sourceName="collectionName"
+          :collectionId="collection.id"
           :songs="songs"
           :fromAlbum="isFromAlbum"
         />

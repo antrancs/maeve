@@ -11,7 +11,11 @@
 
       <ArtistList v-else-if="type === 'artists'" :artists="items" />
 
-      <SongListLarge v-else-if="type === 'songs'" :songs="items" />
+      <SongListLarge
+        v-else-if="type === 'songs'"
+        :songs="items"
+        sourceName="Search results"
+      />
     </v-layout>
   </v-container>
 </template>

@@ -36,6 +36,7 @@ export const CHANGE_TO_INDEX_IN_YOUR_QUEUE = 'changeToIndexInYourQueue';
 export const RESET_QUEUE = 'resetQueue';
 export const SHUFFLE_MAIN_SONGS = 'shuffleMainSongs';
 export const TOGGLE_SHUFFLE = 'toggleShuffle';
+export const SHUFFLE_YOUR_QUEUE = 'shuffleYourQueue';
 
 export const BLOCK_ARTISTS = 'blockArtists';
 export const UNBLOCK_ARTISTS = 'unblockArtists';

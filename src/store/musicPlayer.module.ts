@@ -36,7 +36,8 @@ import {
   SET_CURRENTLY_PLAYING_SOURCE,
   SET_MAIN_SONGS_SOURCE,
   SET_MAIN_SONGS_INDEX,
-  SET_SHUFFLE_MODE
+  SET_SHUFFLE_MODE,
+  SET_YOUR_QUEUE
 } from '@/store/mutations.type';
 import {
   MusicPlayerState,
@@ -166,6 +167,8 @@ const actions: ActionTree<MusicPlayerState, any> = {
     if (+shuffle === ShuffleMode.On) {
       dispatch(SHUFFLE_MAIN_SONGS);
     }
+
+    commit(SET_YOUR_QUEUE, []);
 
     return dispatch(PLAY_NEXT);
   },

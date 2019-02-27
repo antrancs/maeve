@@ -26,7 +26,8 @@ import {
   CHANGE_TO_INDEX_IN_YOUR_QUEUE,
   RESET_QUEUE,
   TOGGLE_SHUFFLE,
-  SHUFFLE_MAIN_SONGS
+  SHUFFLE_MAIN_SONGS,
+  SHUFFLE_YOUR_QUEUE
 } from './actions.type';
 import {
   SET_QUEUE_VISIBILITY,
@@ -332,6 +333,10 @@ const actions: ActionTree<PlayQueueState, any> = {
     commit(SET_SHUFFLED_SONGS_INDEX, -1);
     commit(SET_YOUR_QUEUE, []);
     commit(SET_NEXT_SONG_TO_PLAY, undefined);
+  },
+
+  [SHUFFLE_YOUR_QUEUE]({ commit, state }) {
+    commit(SET_YOUR_QUEUE, shuffle(state.queue));
   }
 };
 

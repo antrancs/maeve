@@ -20,7 +20,7 @@
       <div>
         <template v-if="songs.length > 0">
           <h2 class="ml-1">Top songs</h2>
-          <SongListLarge :songs="songs" />
+          <SongListLarge :songs="songs" sourceName="Top songs" />
         </template>
 
         <template v-if="albums.length > 0">

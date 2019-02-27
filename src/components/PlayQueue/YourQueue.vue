@@ -1,7 +1,10 @@
 <template>
   <div>
     <template v-if="queuedSongs.length > 0">
-      <h4 class="mx-2 mt-3">Your Queue</h4>
+      <v-layout row wrap justify-space-between align-center class="ml-2 mt-3">
+        <h4>Your Queue</h4>
+        <app-button @on-click="handleShuffle">Shuffle</app-button>
+      </v-layout>
       <PlayQueueSongItem
         v-for="(song, index) in queuedSongs"
         :key="song.qId"
@@ -22,7 +25,10 @@ import { State, Mutation, Action } from 'vuex-class';
 import PlayQueueSongItem from './PlayQueueSongItem.vue';
 import { PlayQueueSong } from '@/@types/model/model';
 import { REMOVE_FROM_YOUR_QUEUE } from '@/store/mutations.type';
-import { CHANGE_TO_INDEX_IN_YOUR_QUEUE } from '@/store/actions.type';
+import {
+  CHANGE_TO_INDEX_IN_YOUR_QUEUE,
+  SHUFFLE_YOUR_QUEUE
+} from '@/store/actions.type';
 import { ChangeToIndexAction } from '@/store/types';
 
 @Component({
@@ -35,12 +41,18 @@ export default class YourQueue extends Vue {
   queuedSongs!: PlayQueueSong[];
 
   @Action [CHANGE_TO_INDEX_IN_YOUR_QUEUE]: ChangeToIndexAction;
+  @Action [SHUFFLE_YOUR_QUEUE]: () => void;
+
   @Mutation [REMOVE_FROM_YOUR_QUEUE]!: (index: number) => void;
 
   handleYourQueueItemClicked(songId: string, index: number) {
     this.changeToIndexInYourQueue({
       index
     });
+  }
+
+  handleShuffle() {
+    this.shuffleYourQueue();
   }
 }
 </script>

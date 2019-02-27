@@ -8,6 +8,11 @@ import { PLAY_SONGS } from '@/store/actions.type';
 export default class SongListMixin extends Vue {
   @Prop()
   collectionId: string | undefined;
+
+  // the source where the song list is from (album/playlist, search results...)
+  @Prop()
+  sourceName!: string;
+
   @Prop()
   songs!: Song[];
   @Prop({ default: false }) isChart!: boolean;
@@ -19,34 +24,6 @@ export default class SongListMixin extends Vue {
 
   @Action
   [PLAY_SONGS]: PlaySongsAction;
-
-  // @Action [FETCH_CATALOG_SONG_DETAILS]: (
-  //   ids?: string[]
-  // ) => Promise<MusicKit.Song[]>;
-
-  // get tracksFromCollection(): Nullable<Song[]> {
-  //   // return null so we'll take the 'songs' prop to render SongList item
-  //   if (!this.collection) {
-  //     return null;
-  //   }
-
-  //   return getSongsFromCollection(this.collection);
-  // }
-
-  // get fromAlbum(): boolean {
-  //   return (
-  //     this.collection !== undefined &&
-  //     (this.collection.type === 'albums' ||
-  //       this.collection.type === 'library-albums')
-  //   );
-  // }
-
-  // @Watch('collection')
-  // onCollectionChanged(newValue: Collection) {
-  //   if (newValue) {
-  //     this.$_updateSongItems();
-  //   }
-  // }
 
   handlePlaySongs(songId: string) {
     // Since there might be some unavailable songs, we can't rely on their index of the array
@@ -67,8 +44,9 @@ export default class SongListMixin extends Vue {
 
     this.playSongs({
       songs,
-      songsSourceName: '',
-      startSongIndex: songIndex
+      songsSourceName: this.sourceName,
+      startSongIndex: songIndex,
+      collectionId: this.collectionId
     });
   }
 
@@ -80,37 +58,4 @@ export default class SongListMixin extends Vue {
   handleSongClicked(songId: string, songIndex: number) {
     this.handlePlaySongs(songId);
   }
-
-  // async $_updateSongItems() {
-  //   // We want to fetch collection songs' 'artists' & 'albums' relationships for linking
-  //   if (this.collection) {
-  //     let songIds: string[] = [];
-
-  //     switch (this.collection.type) {
-  //       case 'albums':
-  //       case 'playlists':
-  //         // we're sure that collection is NOT null, so tracksFromCollection is not null
-  //         songIds = this.tracksFromCollection!.map(song => song.id);
-  //         break;
-
-  //       case 'library-albums':
-  //       case 'library-playlists':
-  //         songIds = this.tracksFromCollection!.map(song => {
-  //           return song.attributes!.playParams!.catalogId!;
-  //         });
-  //         break;
-  //       default:
-  //         break;
-  //     }
-
-  //     const songsWithRelationships = await this.fetchCatalogSongsDetails(
-  //       songIds
-  //     );
-
-  //     this.songItems = songsWithRelationships;
-  //   } else {
-  //     // otherwise just use tracksFromCollection or songs
-  //     this.songItems = this.tracksFromCollection || this.songs;
-  //   }
-  // }
 }

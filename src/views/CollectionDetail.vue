@@ -4,10 +4,10 @@
       <v-flex sm4 md4 lg3 v-if="$vuetify.breakpoint.smAndUp">
         <div
           :class="$style['left-column']"
-          :style="[leftColumnBackgroundStyle, leftColumnHeightStyle]"
+          :style="[leftColumnBackgroundStyle]"
           v-if="collection"
         >
-          <div :class="$style['left-column__top']">
+          <div :class="[$style['left-column__top'], 'pr-2 py-2']">
             <div
               :class="$style['collection-name']"
               :style="collectionNameStyle"
@@ -16,6 +16,7 @@
 
               <v-icon
                 dark
+                size="22"
                 v-if="collection.attributes.contentRating === 'explicit'"
                 >explicit</v-icon
               >
@@ -307,13 +308,13 @@ export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
     // background: linear-gradient(-45deg, #675419, #e6cb74)
   }
 
-  get leftColumnHeightStyle() {
-    return {
-      height: this.currentPlaying
-        ? 'calc(100vh - 64px - 24px - 16px - 96px)' // minus: header + padding top + padding bottom + player bar
-        : 'calc(100vh - 64px - 24px - 16px)'
-    };
-  }
+  // get leftColumnHeightStyle() {
+  //   return {
+  //     height: this.currentPlaying
+  //       ? 'calc(100vh - 64px - 24px - 16px - 96px)' // minus: header + padding top + padding bottom + player bar
+  //       : 'calc(100vh - 64px - 24px - 16px)'
+  //   };
+  // }
 
   get artworkUrl(): string {
     if (
@@ -494,6 +495,7 @@ export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
 .left-column {
   display: flex;
   border-radius: 20px;
+  height: calc(100vh - 64px - 24px - 16px);
   position: sticky;
   top: 88px;
   position: sticky;

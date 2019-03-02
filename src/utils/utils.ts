@@ -47,7 +47,7 @@ const getArtistArtwork = (
   size: string
 ): Promise<string> => {
   return axios
-    .get('/api/getArtistArtwork-2', {
+    .get('/api/catalog/artists/artwork', {
       params: {
         url: itunesUrl,
         artistId,
@@ -61,7 +61,7 @@ const getArtistArtwork = (
 
 const getArtistDetails = (url: string, artistId: string, size: string) => {
   return axios
-    .get('/api/getArtistDetails', {
+    .get('/api/catalog/artists/details', {
       params: {
         url,
         artistId,
@@ -75,7 +75,7 @@ const getArtistDetails = (url: string, artistId: string, size: string) => {
 
 const getCuratorBanner = (url: string, curatorId: string, size: string) => {
   return axios
-    .get('/api/getCuratorBanner', {
+    .get('/api/catalog/curators/banner', {
       params: {
         url,
         curatorId,
@@ -88,15 +88,9 @@ const getCuratorBanner = (url: string, curatorId: string, size: string) => {
 };
 
 const getCuratorsByGenre = (genreId: string) => {
-  return axios
-    .get('/api/getCuratorsByGenre', {
-      params: {
-        genreId
-      }
-    })
-    .then(res => {
-      return res.data;
-    });
+  return axios.get(`/api/catalog/curators/genre/${genreId}`).then(res => {
+    return res.data;
+  });
 };
 
 const getAlbumExtraInfo = (iTunesUrl: string) => {

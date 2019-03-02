@@ -105,7 +105,7 @@
 
         <template v-if="singles.length > 0">
           <v-flex xs12 class="px-2 pt-4">
-            <h3 class="section-title">Singles</h3>
+            <h3 class="section-title">EPs & Singles</h3>
           </v-flex>
 
           <SongCollectionList :collections="singles" />
@@ -160,7 +160,8 @@ import {
   FETCH_MULTIPLE_SONGS_CATALOG,
   FETCH_MULTIPLE_PLAYLISTS_CATALOG,
   FETCH_ONE_ALBUM_CATALOG,
-  FETCH_ONE_SONG_CATALOG
+  FETCH_ONE_SONG_CATALOG,
+  FETCH_MULTILE_ALBUMS_CATALOG
 } from '@/store/actions.type';
 import { PLACEHOLDER_IMAGE } from '@/utils/constants';
 import { Route } from 'vue-router';
@@ -168,7 +169,8 @@ import {
   FetchMultipleArtitsCatalogAction,
   FetchMultipleSongsCatalogAction,
   FetchMultiplePlaylistsCatalogAction,
-  FetchOneAlbumCatalogAction
+  FetchOneAlbumCatalogAction,
+  FetchMultipleAlbumsCatalogAction
 } from '@/store/types';
 
 @Component({
@@ -195,6 +197,8 @@ export default class ArtistDetail extends Vue {
   private featureRelease: Nullable<Collection> = null;
   private artistPlaylists: MusicKit.Playlist[] = [];
   private latestRelease: Nullable<MusicKit.Album> = null;
+  private albums: MusicKit.Album[] = [];
+  private singles: MusicKit.Album[] = [];
 
   @Action [FETCH_ONE_ARTIST_LIBRARY]!: (
     id: string
@@ -204,6 +208,7 @@ export default class ArtistDetail extends Vue {
   @Action
   [FETCH_MULTIPLE_PLAYLISTS_CATALOG]: FetchMultiplePlaylistsCatalogAction;
   @Action [FETCH_ONE_ALBUM_CATALOG]: FetchOneAlbumCatalogAction;
+  @Action [FETCH_MULTILE_ALBUMS_CATALOG]: FetchMultipleAlbumsCatalogAction;
 
   created() {
     this.$_getArtistInfo();
@@ -232,16 +237,16 @@ export default class ArtistDetail extends Vue {
     };
   }
 
-  get albums(): Album[] {
-    if (
-      !this.artist ||
-      !this.artist.relationships ||
-      !this.artist.relationships.albums
-    ) {
-      return [];
-    }
-    return this.artist.relationships.albums.data;
-  }
+  // get albums(): Album[] {
+  //   if (
+  //     !this.artist ||
+  //     !this.artist.relationships ||
+  //     !this.artist.relationships.albums
+  //   ) {
+  //     return [];
+  //   }
+  //   return this.artist.relationships.albums.data;
+  // }
 
   get playlists(): MusicKit.Playlist[] {
     if (
@@ -259,16 +264,16 @@ export default class ArtistDetail extends Vue {
     return this.artist.relationships.playlists!.data;
   }
 
-  get singles(): Album[] {
-    if (!this.artist || this.artist.type === 'library-artists') {
-      return [];
-    }
+  // get singles(): Album[] {
+  //   if (!this.artist || this.artist.type === 'library-artists') {
+  //     return [];
+  //   }
 
-    return this.albums.filter(
-      album =>
-        album.type === 'albums' && album.attributes && album.attributes.isSingle
-    );
-  }
+  //   return this.albums.filter(
+  //     album =>
+  //       album.type === 'albums' && album.attributes && album.attributes.isSingle
+  //   );
+  // }
 
   get nonSingles(): Album[] {
     return this.albums.filter(
@@ -297,6 +302,9 @@ export default class ArtistDetail extends Vue {
     this.bio = null;
     this.birthday = null;
     this.origin = null;
+    this.albums = [];
+    this.singles = [];
+    this.relatedArtists = [];
     window.scrollTo(0, 0);
     this.$_getArtistInfo();
   }
@@ -343,7 +351,9 @@ export default class ArtistDetail extends Vue {
         origin,
         topSongIds,
         artistPlaylists,
-        feature
+        feature,
+        albums,
+        singles
       } = artistDetail;
 
       this.bannerUrl = bannerUrl;
@@ -375,6 +385,18 @@ export default class ArtistDetail extends Vue {
       if (feature && feature.id) {
         this.fetchOneAlbumCatalog(feature.id).then(album => {
           this.latestRelease = album;
+        });
+      }
+
+      if (albums && albums.length > 0) {
+        this.fetchMultipleAlbumsCatalog(albums).then(albums => {
+          this.albums = albums;
+        });
+      }
+
+      if (singles && singles.length > 0) {
+        this.fetchMultipleAlbumsCatalog(singles).then(singles => {
+          this.singles = singles;
         });
       }
     });

@@ -34,7 +34,7 @@
             :src="artworkUrl"
           />
 
-          <div :class="[$style['left-column__bottom'], 'pt-4']">
+          <div :class="[$style['left-column__bottom'], 'pt-3']">
             <div :class="$style['song-info']">
               {{ songs.length }} {{ songs.length > 1 ? 'tracks' : 'track' }}
             </div>
@@ -350,7 +350,7 @@ export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
   get collectionNameStyle() {
     if (this.collectionName.length < 30) {
       return {
-        'font-size': '2.4rem'
+        'font-size': '2.2rem'
       };
     }
     return {
@@ -497,7 +497,7 @@ export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
   position: sticky;
   top: 88px;
   position: sticky;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   flex-direction: column;
 }
 
@@ -506,20 +506,20 @@ export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-left: 5rem;
+  padding-left: 4rem;
 }
 
 .left-column__bottom {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding-left: 5rem;
+  padding-left: 4rem;
 }
 .cover {
   width: 100%;
   height: auto;
-  margin-right: -5rem;
-  margin-left: 5rem;
+  margin-right: -4rem;
+  margin-left: 4rem;
   border-radius: 2rem;
 }
 

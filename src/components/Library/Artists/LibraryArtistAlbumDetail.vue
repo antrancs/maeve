@@ -7,11 +7,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch, Mixins } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Prop } from 'vue-property-decorator';
 import CollectionHeader from '@/components/CollectionHeader.vue';
 import SongListSmall from '@/components/SongListSmall.vue';
-import CollectionSongsMixin from '@/mixins/CollectionSongsMixin';
+import { getSongsFromCollection } from '@/utils/utils';
 
 @Component({
   components: {
@@ -19,18 +19,11 @@ import CollectionSongsMixin from '@/mixins/CollectionSongsMixin';
     SongListSmall
   }
 })
-export default class LibraryArtistAlbumDetail extends Mixins(
-  CollectionSongsMixin
-) {
+export default class LibraryArtistAlbumDetail extends Vue {
   @Prop() album!: MusicKit.LibraryAlbum;
 
-  created() {
-    this.getSongsDetail(this.album);
-  }
-
-  @Watch('album')
-  onAlbumChanged(newValue: MusicKit.LibraryAlbum) {
-    this.getSongsDetail(newValue);
+  get songs() {
+    return getSongsFromCollection(this.album);
   }
 }
 </script>

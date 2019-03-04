@@ -53,9 +53,35 @@ const actions: ActionTree<CatalogState, any> = {
   },
 
   async [FETCH_ONE_PLAYLIST_CATALOG](_, id: string) {
-    return await musicKit.getApiInstance().playlist(id, {
-      include: 'tracks,artists'
-    });
+    // by default, the call already includes 'tracks' and 'curator' relationships
+    const playlist = await musicKit.getApiInstance().playlist(id);
+
+    // if there's 'next' property, there are more than 100 songs in the playlists --> fetch the remaining songs
+    if (
+      playlist.relationships &&
+      playlist.relationships.tracks &&
+      playlist.relationships.tracks.next
+    ) {
+      const remainingSongs = [];
+      let offset = 100;
+      for (;;) {
+        const { data, next } = await musicApiService.getCatalogPlaylistTracks(
+          id,
+          offset
+        );
+
+        remainingSongs.push(...data);
+        if (!next) {
+          break;
+        }
+
+        offset += 100;
+      }
+
+      playlist.relationships.tracks.data.push(...remainingSongs);
+    }
+
+    return playlist;
   },
 
   [FETCH_MULTIPLE_PLAYLISTS_CATALOG](_, ids: string[]) {

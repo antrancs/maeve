@@ -83,6 +83,7 @@ export const FETCH_ACTIVITY_PLAYLISTS = 'fetchActivityPlaylists';
 export const FETCH_ONE_ALBUM_LIBRARY = 'fetchOneAlbumLibrary';
 export const FETCH_ONE_PLAYLIST_LIBRARY = 'fetchOnePlaylistLibrary';
 export const FETCH_ONE_ARTIST_LIBRARY = 'fetchOneArtistLibrary';
+export const FETCH_LIBRARY_PLAYLIST_TRACKS = 'fetchLibraryPlaylistTracks';
 
 export const SCROBBLE_LASTFM = 'scrobbleLastfm';
 export const SAVE_TOKEN_LASTFM = 'saveTokenLastfm';

@@ -277,6 +277,10 @@ export type FetchOnePlaylistLibraryAction = (
   id: string
 ) => Promise<MusicKit.LibraryPlaylist>;
 
+export type FetchLibraryPlaylistTracksAction = (
+  id: string
+) => Promise<MusicKit.LibrarySong[]>;
+
 export type FetchMultipleAlbumsCatalogAction = (
   ids: string[]
 ) => Promise<MusicKit.Album[]>;

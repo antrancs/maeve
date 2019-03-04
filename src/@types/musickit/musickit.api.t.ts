@@ -101,7 +101,7 @@ declare namespace MusicKit {
      * @param parameters A query parameters object that is serialized and passed directly to the Apple Music API.
      * @returns An array of playlist resources.
      */
-    playlist(id: string, parameters: QueryParameters): Promise<Playlist>;
+    playlist(id: string, parameters?: QueryParameters): Promise<Playlist>;
 
     /**
      *

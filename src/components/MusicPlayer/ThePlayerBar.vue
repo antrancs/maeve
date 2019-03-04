@@ -27,11 +27,13 @@
                 >
                   {{ songName }}
                 </div>
-                <ResourceLinkList
+
+                <div
                   :class="['long-text-truncated', $style['link-item']]"
-                  :resources="artists"
-                  :name="artistName"
-                />
+                  @click.stop="() => goToArtistPage(musicPlayer.currentPlaying)"
+                >
+                  {{ artistName }}
+                </div>
               </v-flex>
 
               <v-flex xs4 sm4 md4>
@@ -114,7 +116,6 @@ import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { State, Action, Getter, Mutation } from 'vuex-class';
 
 import LyricsDialog from '@/components/LyricsDialog.vue';
-import ResourceLinkList from '@/components/ResourceLinkList.vue';
 import PlayerProgressBar from './PlayerProgressBar.vue';
 import PlayerFullScreen from './PlayerFullScreen.vue';
 import PlayNextButton from './PlayNextButton.vue';
@@ -122,11 +123,13 @@ import PlayPreviousButton from './PlayPreviousButton.vue';
 import PlayButton from './PlayButton.vue';
 import PlayerVolume from './PlayerVolume.vue';
 import PlayerBarColorMixin from '@/mixins/PlayerBarColorMixin';
+import GoToArtistPageMixin from '@/mixins/GoToArtistPageMixin';
 import { MusicPlayerState } from '@/store/types';
 import {
   TOGGLE_QUEUE_VISIBILITY,
   UPDATE_REPEAT_MODE,
-  TOGGLE_SHUFFLE_MODE
+  TOGGLE_SHUFFLE_MODE,
+  FETCH_CATALOG_SONG_DETAILS
 } from '@/store/actions.type';
 import { Nullable, ShuffleMode, Artist } from '@/@types/model/model';
 import { RepeatMode, PLACEHOLDER_IMAGE } from '@/utils/constants';
@@ -140,11 +143,13 @@ import { getArtworkUrl } from '@/utils/utils';
     PlayPreviousButton,
     PlayButton,
     PlayerVolume,
-    PlayerFullScreen,
-    ResourceLinkList
+    PlayerFullScreen
   }
 })
-export default class PlayerBar extends Mixins(PlayerBarColorMixin) {
+export default class PlayerBar extends Mixins(
+  PlayerBarColorMixin,
+  GoToArtistPageMixin
+) {
   private playerFullScreenVisible = false;
   @State musicPlayer!: MusicPlayerState;
 
@@ -157,6 +162,9 @@ export default class PlayerBar extends Mixins(PlayerBarColorMixin) {
   [TOGGLE_QUEUE_VISIBILITY]: () => void;
   @Action
   [TOGGLE_SHUFFLE_MODE]: () => void;
+  @Action [FETCH_CATALOG_SONG_DETAILS]: (
+    ids?: string[]
+  ) => Promise<MusicKit.Song[]>;
 
   get artistName(): string {
     if (
@@ -166,19 +174,6 @@ export default class PlayerBar extends Mixins(PlayerBarColorMixin) {
       return '';
     }
     return this.musicPlayer.currentPlaying.attributes.artistName;
-  }
-
-  get artists(): Nullable<Artist[]> {
-    const { currentPlaying } = this.musicPlayer;
-    if (
-      !currentPlaying ||
-      !currentPlaying.relationships ||
-      !currentPlaying.relationships.artists
-    ) {
-      return null;
-    }
-
-    return currentPlaying.relationships.artists.data;
   }
 
   get songName(): string {

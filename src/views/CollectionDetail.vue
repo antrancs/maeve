@@ -145,7 +145,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Mixins, Prop, Watch } from 'vue-property-decorator';
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 import parse from 'date-fns/parse';
 import format from 'date-fns/format';
 import { Action, Mutation, State } from 'vuex-class';
@@ -156,14 +156,14 @@ import ResourceLinkList from '@/components/ResourceLinkList.vue';
 import SongListLarge from '@/components/SongListLarge.vue';
 import SongCollectionList from '@/components/SongCollectionList.vue';
 import CollectionControls from '@/components/CollectionControls.vue';
-import CollectionSongsMixin from '@/mixins/CollectionSongsMixin';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import {
   Nullable,
   Collection,
   Artist,
   Album,
-  CollectionType
+  CollectionType,
+  Song
 } from '@/@types/model/model';
 
 import {
@@ -172,14 +172,16 @@ import {
   FETCH_ONE_PLAYLIST_CATALOG,
   FETCH_ONE_ALBUM_LIBRARY,
   FETCH_ONE_PLAYLIST_LIBRARY,
-  FETCH_ALBUM_EXTRA_INFO_CATALOG
+  FETCH_ALBUM_EXTRA_INFO_CATALOG,
+  FETCH_LIBRARY_PLAYLIST_TRACKS
 } from '@/store/actions.type';
 import {
   FetchOneAlbumCatalogAction,
   FetchMultipleAlbumsCatalogAction,
   FetchOnePlaylistCatalogAction,
   FetchOneAlbumLibraryAction,
-  FetchOnePlaylistLibraryAction
+  FetchOnePlaylistLibraryAction,
+  FetchLibraryPlaylistTracksAction
 } from '@/store/types';
 import { SET_FOOTER_VISIBILITY } from '@/store/mutations.type';
 import { getArtworkUrl } from '@/utils/utils';
@@ -196,11 +198,12 @@ import { Route } from 'vue-router';
     ResourceLinkList
   }
 })
-export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
+export default class CollectionDetail extends Vue {
   private collection: Nullable<Collection> = null;
   private relatedAlbums: MusicKit.Album[] = [];
   private otherAlbumsFromArtists: MusicKit.Album[] = [];
   private editorialNoteCollapse = true;
+  private songs: Song[] = [];
 
   @Prop() id!: string;
 
@@ -212,6 +215,7 @@ export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
   @Action [FETCH_ONE_PLAYLIST_CATALOG]: FetchOnePlaylistCatalogAction;
   @Action [FETCH_ONE_ALBUM_LIBRARY]: FetchOneAlbumLibraryAction;
   @Action [FETCH_ONE_PLAYLIST_LIBRARY]: FetchOnePlaylistLibraryAction;
+  @Action [FETCH_LIBRARY_PLAYLIST_TRACKS]: FetchLibraryPlaylistTracksAction;
   @Action [FETCH_ALBUM_EXTRA_INFO_CATALOG]: (url: string) => Promise<any>;
 
   @Mutation [SET_FOOTER_VISIBILITY]: (visibility: boolean) => void;
@@ -304,17 +308,7 @@ export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
     return {
       background: `linear-gradient(45deg, #${bgColor}, #${textColor2})`
     };
-
-    // background: linear-gradient(-45deg, #675419, #e6cb74)
   }
-
-  // get leftColumnHeightStyle() {
-  //   return {
-  //     height: this.currentPlaying
-  //       ? 'calc(100vh - 64px - 24px - 16px - 96px)' // minus: header + padding top + padding bottom + player bar
-  //       : 'calc(100vh - 64px - 24px - 16px)'
-  //   };
-  // }
 
   get artworkUrl(): string {
     if (
@@ -434,6 +428,7 @@ export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
   onRouteChange(to: Route, from: Route) {
     this.relatedAlbums = [];
     this.otherAlbumsFromArtists = [];
+    this.songs = [];
     this.fetchCollection();
   }
 
@@ -446,46 +441,67 @@ export default class CollectionDetail extends Mixins(CollectionSongsMixin) {
     this.setFooterVisibility(true);
   }
 
-  async fetchCollection() {
+  fetchCollection() {
     this.collection = null;
-    this.getSongsDetail(this.collection);
+
     switch (this.collectionType) {
       case CollectionType.album:
-        this.collection = await this.fetchOneAlbumCatalog(this.id);
+        this.fetchOneAlbumCatalog(this.id).then(collection => {
+          this.collection = collection;
+          this.$_fetchAlbumExtraInfo(collection);
+          this.$_getSongsFromCollection(collection);
+        });
+
         break;
       case CollectionType.playlist:
-        this.collection = await this.fetchOnePlaylistCatalog(this.id);
+        this.fetchOnePlaylistCatalog(this.id).then(collection => {
+          this.collection = collection;
+          this.$_getSongsFromCollection(collection);
+        });
         break;
       case CollectionType.libraryAlbum:
-        this.collection = await this.fetchOneAlbumLibrary(this.id);
+        this.fetchOneAlbumLibrary(this.id).then(collection => {
+          this.collection = collection;
+          this.$_getSongsFromCollection(collection);
+        });
         break;
       case CollectionType.libraryPlaylist:
-        this.collection = await this.fetchOnePlaylistLibrary(this.id);
+        this.fetchOnePlaylistLibrary(this.id).then(collection => {
+          this.collection = collection;
+        });
+
+        this.fetchLibraryPlaylistTracks(this.id).then(tracks => {
+          this.songs = tracks;
+        });
+    }
+  }
+
+  $_getSongsFromCollection(collection: Collection) {
+    if (
+      collection &&
+      collection.relationships &&
+      collection.relationships.tracks
+    ) {
+      this.songs = collection.relationships.tracks.data;
+    }
+  }
+
+  async $_fetchAlbumExtraInfo(album: MusicKit.Album) {
+    if (!album.attributes) {
+      return;
+    }
+    const info = await this.fetchAlbumExtraInfoCatalog(album.attributes.url);
+
+    if (info.relatedAlbums && info.relatedAlbums.length > 0) {
+      this.fetchMultipleAlbumsCatalog(info.relatedAlbums).then(albums => {
+        this.relatedAlbums = albums;
+      });
     }
 
-    this.getSongsDetail(this.collection);
-
-    // fetch extra info after gettings songs details so it doesnt have to wait
-    if (
-      this.collection &&
-      this.collection.type === 'albums' &&
-      this.collection.attributes
-    ) {
-      const info = await this.fetchAlbumExtraInfoCatalog(
-        this.collection.attributes.url
-      );
-
-      if (info.relatedAlbums && info.relatedAlbums.length > 0) {
-        this.fetchMultipleAlbumsCatalog(info.relatedAlbums).then(albums => {
-          this.relatedAlbums = albums;
-        });
-      }
-
-      if (info.otherAlbums && info.otherAlbums.length > 0) {
-        this.fetchMultipleAlbumsCatalog(info.otherAlbums).then(albums => {
-          this.otherAlbumsFromArtists = albums;
-        });
-      }
+    if (info.otherAlbums && info.otherAlbums.length > 0) {
+      this.fetchMultipleAlbumsCatalog(info.otherAlbums).then(albums => {
+        this.otherAlbumsFromArtists = albums;
+      });
     }
   }
 }

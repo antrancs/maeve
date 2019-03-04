@@ -61,11 +61,12 @@
             </v-flex>
 
             <v-flex xs12 class="pr-2">
-              <ResourceLinkList
+              <div
                 :class="['long-text-truncated', $style['artist-name']]"
-                :resources="artists"
-                :name="song.attributes.artistName"
-              />
+                @click="() => goToArtistPage(song)"
+              >
+                {{ song.attributes.artistName }}
+              </div>
             </v-flex>
           </v-layout>
         </v-flex>
@@ -116,13 +117,16 @@ import { TOGGLE_CURRENT_TRACK } from '@/store/actions.type';
 import { HandleSongClicked, Song } from '@/@types/model/model';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import MediaArtworkOverlay from '@/components/MediaArtworkOverlay.vue';
-import ResourceLinkList from '@/components/ResourceLinkList.vue';
 import SongItemMixin from '@/mixins/SongItemMixin';
+import GoToArtistPageMixin from '@/mixins/GoToArtistPageMixin';
 
 @Component({
-  components: { MediaArtworkOverlay, MediaArtwork, ResourceLinkList }
+  components: { MediaArtworkOverlay, MediaArtwork }
 })
-export default class PlayQueueSongItem extends Mixins(SongItemMixin) {
+export default class PlayQueueSongItem extends Mixins(
+  SongItemMixin,
+  GoToArtistPageMixin
+) {
   @Prop({ default: false }) isHistory!: boolean;
   @Prop({ default: false }) isNowPlaying!: boolean;
   @Prop() index!: number;

@@ -180,6 +180,84 @@ class MusicApiService {
     return musicKit.getApiInstance().charts(types, params);
   }
 
+  getLibraryPlaylist(id: string) {
+    return this.axiosInstance
+      .get(`me/library/playlists/${id}`, {
+        headers: this.apiHeaders
+      })
+      .then(res => {
+        if (!res.data) {
+          throw new Error('Error while fetching curators');
+        }
+
+        return res.data.data ? res.data.data[0] : null;
+      });
+  }
+
+  getCatalogPlaylistTracks(id: string, offset: number) {
+    const storefrontId = musicKit.getApiInstance().storefrontId;
+    return this.axiosInstance
+      .get(`catalog/${storefrontId}/playlists/${id}/tracks`, {
+        headers: {
+          Authorization: `Bearer ${authService.developerToken}`,
+          'Content-Type': 'application/json'
+        },
+        params: {
+          limit: 100,
+          offset
+        }
+      })
+      .then(res => {
+        if (!res.data) {
+          throw new Error('Error while fetching playlist tracks');
+        }
+
+        return res.data;
+      });
+  }
+
+  async getLibraryPlaylistTracks(id: string) {
+    const tracks: MusicKit.LibrarySong[] = [];
+    let offset = 0;
+    for (;;) {
+      const { data, next } = await this.getLibraryPlaylistTracksHelper(
+        id,
+        100,
+        offset
+      );
+      tracks.push(...data);
+      if (!next) {
+        break;
+      }
+      offset += 100;
+    }
+
+    return tracks;
+  }
+
+  async getLibraryPlaylistTracksHelper(
+    id: string,
+    limit: number,
+    offset: number
+  ) {
+    const result = await this.axiosInstance.get(
+      `me/library/playlists/${id}/tracks`,
+      {
+        headers: this.apiHeaders,
+        params: {
+          limit,
+          offset
+        }
+      }
+    );
+
+    if (!result.data) {
+      throw new Error('Error while fetching curators');
+    }
+
+    return result.data;
+  }
+
   getCuratorRelationship(curatorId: string, limit: number, offset: number) {
     const storefrontId = musicKit.getApiInstance().storefrontId;
     return this.axiosInstance

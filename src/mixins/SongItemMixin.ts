@@ -1,7 +1,10 @@
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 import { Getter, Action, State } from 'vuex-class';
 import { Song, Nullable } from '@/@types/model/model';
-import { TOGGLE_CURRENT_TRACK } from '@/store/actions.type';
+import {
+  TOGGLE_CURRENT_TRACK,
+  FETCH_CATALOG_SONG_DETAILS
+} from '@/store/actions.type';
 import { MusicPlayerState } from '@/store/types';
 
 @Component
@@ -28,6 +31,9 @@ export default class SongItemMixin extends Vue {
 
   @Action
   [TOGGLE_CURRENT_TRACK]: () => void;
+  @Action [FETCH_CATALOG_SONG_DETAILS]: (
+    ids?: string[]
+  ) => Promise<MusicKit.Song[]>;
 
   @State
   musicPlayer!: MusicPlayerState;
@@ -66,30 +72,6 @@ export default class SongItemMixin extends Vue {
     return this.isActive
       ? this.$vuetify.theme.accent
       : this.$vuetify.theme.primaryText;
-  }
-
-  get artists(): Nullable<MusicKit.Artist[]> {
-    // album songs shouldn't have relationships
-    if (
-      !this.song.relationships ||
-      !this.song.relationships.artists ||
-      this.song.type !== 'songs'
-    ) {
-      return null;
-    }
-
-    return this.song.relationships.artists.data;
-  }
-
-  get albums(): Nullable<MusicKit.Album[]> {
-    if (
-      !this.song.relationships ||
-      !this.song.relationships.albums ||
-      this.song.type !== 'songs'
-    ) {
-      return null;
-    }
-    return this.song.relationships.albums.data;
   }
 
   get isSongBlocked(): boolean {
@@ -141,5 +123,32 @@ export default class SongItemMixin extends Vue {
 
   handleRightClick(event: MouseEvent) {
     this.$emit('actions-icon-click', this.song, event.clientX, event.clientY);
+  }
+
+  goToAlbumPage() {
+    let songId: string | undefined;
+
+    switch (this.song.type) {
+      case 'songs':
+        songId = this.song.id;
+        break;
+      case 'library-songs':
+        if (this.song.attributes && this.song.attributes.playParams) {
+          songId = this.song.attributes.playParams.catalogId;
+        }
+    }
+
+    if (!songId) {
+      return;
+    }
+    this.fetchCatalogSongsDetails([songId]).then(songs => {
+      const song = songs[0];
+
+      if (song && song.relationships && song.relationships.albums) {
+        const album = song.relationships.albums.data[0];
+
+        this.$router.push({ name: 'albums', params: { id: album.id } });
+      }
+    });
   }
 }

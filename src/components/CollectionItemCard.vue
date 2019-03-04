@@ -57,7 +57,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 import { State, Action, Getter } from 'vuex-class';
 
 import MediaArtwork from '@/components/MediaArtwork.vue';
@@ -86,12 +86,12 @@ import {
   TEXT_SECONDARY_LIGHT,
   TEXT_SECONDARY_DARK
 } from '@/themes';
-import CollectionSongsMixin from '@/mixins/CollectionSongsMixin';
+import { getSongsFromCollection } from '@/utils/utils';
 
 @Component({
   components: { MediaArtwork }
 })
-export default class CollectionItemCard extends Mixins(CollectionSongsMixin) {
+export default class CollectionItemCard extends Vue {
   @Prop()
   collection!: Collection;
 
@@ -159,7 +159,7 @@ export default class CollectionItemCard extends Mixins(CollectionSongsMixin) {
     }
 
     // fetch 'tracks' relationships of the current collection to play
-    let songs: Song[] = [];
+
     let collection: Nullable<Collection> = null;
     switch (this.collection.type) {
       case 'albums':
@@ -179,10 +179,10 @@ export default class CollectionItemCard extends Mixins(CollectionSongsMixin) {
         break;
     }
 
-    await this.getSongsDetail(collection);
+    const songs = getSongsFromCollection(collection);
     this.playSongs({
       collectionId: this.collection.id,
-      songs: this.songs,
+      songs: songs,
       songsSourceName: this.collection.attributes
         ? this.collection.attributes.name
         : ''

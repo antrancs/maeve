@@ -25,7 +25,8 @@ import {
   LOGOUT,
   FETCH_HEAVY_ROTATION,
   FETCH_RECOMMENDATIONS,
-  FETCH_RECENT_PLAYED
+  FETCH_RECENT_PLAYED,
+  FETCH_LIBRARY_PLAYLIST_TRACKS
 } from './actions.type';
 import {
   SET_LIBRARY_ALBUMS,
@@ -46,10 +47,12 @@ const actions: ActionTree<UserLibraryState, any> = {
       .library.album(id, { include: 'tracks' });
   },
 
-  async [FETCH_ONE_PLAYLIST_LIBRARY](_, id: string) {
-    return await musicKit.getApiInstance().library.playlist(id, {
-      include: 'tracks'
-    });
+  [FETCH_ONE_PLAYLIST_LIBRARY](_, id: string) {
+    return musicApiService.getLibraryPlaylist(id);
+  },
+
+  [FETCH_LIBRARY_PLAYLIST_TRACKS](_, id: string) {
+    return musicApiService.getLibraryPlaylistTracks(id);
   },
 
   async [FETCH_ONE_ARTIST_LIBRARY](_, id: string) {

@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch, Mixins } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Action, Mutation, State } from 'vuex-class';
 
 import { DAILY_TOP_100_COUNTRY_MAP } from '@/utils/constants';
@@ -59,7 +59,6 @@ import WorldMap from './WorldMap.vue';
 import CollectionHeader from '@/components/CollectionHeader.vue';
 import SongCollectionList from '@/components/SongCollectionList.vue';
 import SongListSmall from '@/components/SongListSmall.vue';
-import CollectionSongsMixin from '@/mixins/CollectionSongsMixin';
 import {
   FETCH_ONE_PLAYLIST_CATALOG,
   FETCH_MULTIPLE_PLAYLISTS_CATALOG
@@ -71,6 +70,7 @@ import {
 import { Nullable } from '@/@types/model/model';
 import { SET_FOOTER_VISIBILITY } from '@/store/mutations.type';
 import { TEXT_PRIMARY_DARK } from '@/themes';
+import { getSongsFromCollection } from '@/utils/utils';
 
 @Component({
   components: {
@@ -80,7 +80,7 @@ import { TEXT_PRIMARY_DARK } from '@/themes';
     SongCollectionList
   }
 })
-export default class ChartsByCountry extends Mixins(CollectionSongsMixin) {
+export default class ChartsByCountry extends Vue {
   private playlist: Nullable<MusicKit.Playlist> = null;
   private worldPlaylistWrapperStyle: any = {
     height: 0,
@@ -105,6 +105,10 @@ export default class ChartsByCountry extends Mixins(CollectionSongsMixin) {
 
   get numberOfSongs(): number {
     return this.songs.length;
+  }
+
+  get songs() {
+    return getSongsFromCollection(this.playlist);
   }
 
   get collectionName(): string {
@@ -153,7 +157,6 @@ export default class ChartsByCountry extends Mixins(CollectionSongsMixin) {
 
     this.fetchOnePlaylistCatalog(playlistId).then(playlist => {
       this.playlist = playlist;
-      this.getSongsDetail(this.playlist);
 
       let color: string = this.$vuetify.theme.accent as string;
       if (this.playlist.attributes && this.playlist.attributes.artwork) {
@@ -180,7 +183,6 @@ export default class ChartsByCountry extends Mixins(CollectionSongsMixin) {
 
   handleMapZoomOut() {
     this.playlist = undefined;
-    this.getSongsDetail(this.playlist);
     this.countryId = null;
     this.worldPlaylistWrapperStyle = {
       ...this.worldPlaylistWrapperStyle,

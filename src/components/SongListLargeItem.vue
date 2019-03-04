@@ -74,22 +74,25 @@
               </v-flex>
 
               <v-flex xs12 :class="['pr-2', isFromAlbum ? 'lg6' : 'lg12']">
-                <ResourceLinkList
+                <div
                   :class="['long-text-truncated', $style['artist-name']]"
-                  :resources="artists"
-                  :name="song.attributes.artistName"
-                />
+                  @click="() => goToArtistPage(song)"
+                >
+                  {{ song.attributes.artistName }}
+                </div>
               </v-flex>
             </v-layout>
           </v-flex>
 
           <v-flex v-if="!isFromAlbum && $vuetify.breakpoint.lgAndUp" xs6>
-            <div :class="['long-text-truncated', $style['album-name']]">
+            <div>
               <span v-if="$vuetify.breakpoint.smAndDown"> - </span>
-              <ResourceLinkList
-                :resources="albums"
-                :name="song.attributes.albumName"
-              />
+              <div
+                :class="['long-text-truncated', $style['album-name']]"
+                @click="goToAlbumPage"
+              >
+                {{ song.attributes.albumName }}
+              </div>
             </div>
           </v-flex>
         </v-layout>
@@ -140,13 +143,16 @@ import {
 } from '@/@types/model/model';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import MediaArtworkOverlay from '@/components/MediaArtworkOverlay.vue';
-import ResourceLinkList from '@/components/ResourceLinkList.vue';
 import SongItemMixin from '@/mixins/SongItemMixin';
+import GoToArtistPageMixin from '@/mixins/GoToArtistPageMixin';
 
 @Component({
-  components: { MediaArtworkOverlay, MediaArtwork, ResourceLinkList }
+  components: { MediaArtworkOverlay, MediaArtwork }
 })
-export default class SongListLargeItem extends Mixins(SongItemMixin) {}
+export default class SongListLargeItem extends Mixins(
+  SongItemMixin,
+  GoToArtistPageMixin
+) {}
 </script>
 
 <style lang="scss" module>

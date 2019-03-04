@@ -26,8 +26,9 @@
   color: var(--v-secondaryText-base);
 }
 
-.artist-name a:hover,
-.album-name a:hover {
+.artist-name:hover,
+.album-name:hover {
   color: var(--v-primaryText-base);
+  cursor: pointer;
   text-decoration: underline;
 }

@@ -1,7 +1,11 @@
 <template>
   <v-hover>
     <v-card class="secondary elevation-8 item-card" slot-scope="{ hover }">
-      <MediaArtwork :artwork="artwork" :width="220" :height="220">
+      <MediaArtwork
+        :artwork="artwork"
+        :width="artworkSize"
+        :height="artworkSize"
+      >
         <template v-if="hover || isCollectionBeingPlayed">
           <div class="overlay"></div>
           <v-btn
@@ -86,7 +90,7 @@ import {
   TEXT_SECONDARY_LIGHT,
   TEXT_SECONDARY_DARK
 } from '@/themes';
-import { getSongsFromCollection } from '@/utils/utils';
+import { getSongsFromCollection, getArtworkSize } from '@/utils/utils';
 
 @Component({
   components: { MediaArtwork }
@@ -113,6 +117,10 @@ export default class CollectionItemCard extends Vue {
       return false;
     }
     return this.musicPlayer.currentCollectionId === this.collection.id;
+  }
+
+  get artworkSize() {
+    return getArtworkSize(this.$vuetify.breakpoint.name);
   }
 
   get artworkOverlayClass(): object {

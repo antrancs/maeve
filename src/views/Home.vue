@@ -167,11 +167,8 @@ export default class Home extends Vue {
   }
 
   async $_fetchFeaturedPlaylists() {
-    const featuredPlaylistIds = await getMainFeaturedPlaylists();
-    const featuredPlaylists = await this.fetchMultiplePlaylistsCatalog(
-      featuredPlaylistIds
-    );
-    this.featuredPlaylists = Object.freeze(featuredPlaylists);
+    const playlists = await getMainFeaturedPlaylists();
+    this.featuredPlaylists = playlists;
   }
 
   $_fetchActivities() {

@@ -34,7 +34,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { getArtworkUrl } from '@/utils/utils';
+import { getArtworkUrl, getArtworkSize } from '@/utils/utils';
 
 @Component
 export default class FeaturedPlaylist extends Vue {
@@ -50,7 +50,12 @@ export default class FeaturedPlaylist extends Vue {
       return '';
     }
 
-    return getArtworkUrl(this.playlist.attributes.artwork.url, 300, 300);
+    const artworkSize = getArtworkSize(this.$vuetify.breakpoint.name);
+    return getArtworkUrl(
+      this.playlist.attributes.artwork.url,
+      artworkSize,
+      artworkSize
+    );
   }
 
   get featurePlaylistHeight() {

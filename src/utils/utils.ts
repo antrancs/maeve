@@ -20,6 +20,21 @@ const getArtworkUrl = (
   });
 };
 
+const getArtworkSize = (screenSize: string) => {
+  switch (screenSize) {
+    case 'xl':
+      return 300;
+    case 'lg':
+      return 250;
+    case 'md':
+      return 210;
+    case 'sm':
+      return 180;
+    default:
+      return 150;
+  }
+};
+
 const formatArtworkUrl = (
   artworkUrl: string,
   width: number,
@@ -128,23 +143,28 @@ const getSongsFromCollection = (collection: Nullable<Collection>): Song[] => {
   return collection.relationships.tracks.data;
 };
 
-const getFeaturedPlaylists = (offset: number, limit: number) => {
+const getFeaturedPlaylists = () => {
   return axios
-    .get('/api/featuredPlaylists/all', {
+    .get('/api/catalog/playlists/featured/all', {
       params: {
-        offset,
-        limit
+        country: MusicKit.getInstance().storefrontId
       }
     })
     .then(res => {
-      return res.data.playlists;
+      return res.data;
     });
 };
 
 const getMainFeaturedPlaylists = () => {
-  return axios.get('/api/featuredPlaylists/main').then(res => {
-    return res.data.playlists;
-  });
+  return axios
+    .get('/api/catalog/playlists/featured/main', {
+      params: {
+        country: MusicKit.getInstance().storefrontId
+      }
+    })
+    .then(res => {
+      return res.data;
+    });
 };
 
 export {
@@ -158,5 +178,6 @@ export {
   getAlbumExtraInfo,
   getGrammyResults,
   getFeaturedPlaylists,
-  getMainFeaturedPlaylists
+  getMainFeaturedPlaylists,
+  getArtworkSize
 };

@@ -353,6 +353,21 @@ class MusicApiService {
     );
   }
 
+  async getRecentlyAdded() {
+    const result = await this.axiosInstance.get('me/library/recently-added', {
+      headers: this.apiHeaders,
+      params: {
+        limit: 10
+      }
+    });
+
+    if (!result.data) {
+      throw new Error('Error while fetching recently added resources');
+    }
+
+    return result.data.data;
+  }
+
   async createNewPlaylist(
     name: string,
     description?: string,

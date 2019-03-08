@@ -26,7 +26,8 @@ import {
   FETCH_HEAVY_ROTATION,
   FETCH_RECOMMENDATIONS,
   FETCH_RECENT_PLAYED,
-  FETCH_LIBRARY_PLAYLIST_TRACKS
+  FETCH_LIBRARY_PLAYLIST_TRACKS,
+  FETCH_RECENTLY_ADDED
 } from './actions.type';
 import {
   SET_LIBRARY_ALBUMS,
@@ -185,6 +186,10 @@ const actions: ActionTree<UserLibraryState, any> = {
 
   [FETCH_RECENT_PLAYED]() {
     return musicKit.getApiInstance().recentPlayed();
+  },
+
+  [FETCH_RECENTLY_ADDED]() {
+    return musicApiService.getRecentlyAdded();
   },
 
   [ADD_SONGS_TO_PLAYLIST](

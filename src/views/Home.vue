@@ -137,6 +137,7 @@ export default class Home extends Vue {
     if (newValue) {
       this.$_fetchRecentlyPlayed();
     }
+    this.$_fetchFeaturedPlaylists();
     this.$_fetchCharts();
   }
 

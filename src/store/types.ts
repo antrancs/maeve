@@ -321,6 +321,10 @@ export interface LastfmState {
   token: string;
 }
 
+export type FetchRecentlyAddedAction = () => Promise<
+  (MusicKit.LibraryAlbum | MusicKit.LibraryPlaylist)[]
+>;
+
 /**
  * Lastfm module
  */

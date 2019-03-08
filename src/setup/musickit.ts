@@ -37,9 +37,12 @@ export function connectMusicKitToStore(
         store.commit(SET_SONG_LOADING, false);
 
         const { nowPlayingItem } = musicKitInstance.player;
-        document.title = `${nowPlayingItem.attributes.name} - ${
-          nowPlayingItem.attributes.artistName
-        }`;
+
+        if (nowPlayingItem) {
+          document.title = `${nowPlayingItem.attributes.name} - ${
+            nowPlayingItem.attributes.artistName
+          }`;
+        }
         break;
       }
       case MusicKit.PlaybackStates.loading:

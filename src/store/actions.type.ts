@@ -53,6 +53,7 @@ export const FETCH_LIBRARY_ARTISTS = 'fetchLibraryArtists';
 export const FETCH_HEAVY_ROTATION = 'fetchHeavyRotation';
 export const FETCH_RECOMMENDATIONS = 'fetchRecommendations';
 export const FETCH_RECENT_PLAYED = 'fetchRecentPlayed';
+export const FETCH_RECENTLY_ADDED = 'fetchRecentlyAdded';
 
 export const CREATE_THEME = 'createNewTheme';
 export const UPDATE_THEME = 'updateTheme';

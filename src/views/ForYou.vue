@@ -2,68 +2,79 @@
   <v-container>
     <transition name="list">
       <v-layout row wrap v-if="recommendations.length > 0">
-        <v-flex
-          xs12
-          v-for="recommendation in recommendations"
-          :key="recommendation.id"
-          class="mt-4"
-        >
-          <v-layout row wrap>
-            <v-flex xs12 class="px-2">
-              <h3 class="section-title">
-                {{ recommendation.attributes.title.stringForDisplay }}
-              </h3>
-            </v-flex>
-            <v-flex
-              xs12
-              v-if="!recommendation.attributes.isGroupRecommendation"
-            >
-              <SongCollectionList
-                :collections="recommendation.relationships.contents.data"
-              />
-            </v-flex>
-
-            <template v-else>
+        <template>
+          <v-flex
+            xs12
+            v-for="(recommendation, index) in recommendations"
+            :key="recommendation.id"
+            :class="{ 'mt-4': index > 0 }"
+          >
+            <v-layout row wrap>
+              <v-flex xs12 class="px-2">
+                <h3 class="section-title">
+                  {{ recommendation.attributes.title.stringForDisplay }}
+                </h3>
+              </v-flex>
               <v-flex
                 xs12
-                row
-                wrap
-                v-for="(subRecommendation, index) in recommendation
-                  .relationships.recommendations.data"
-                :key="`${subRecommendation.id}-${index}`"
+                v-if="!recommendation.attributes.isGroupRecommendation"
               >
-                <v-layout row wrap>
-                  <v-flex xs12 sm12 md2 class="pa-2">
-                    <div
-                      class="reason-group-recommendation px-4"
-                      :style="getGroupRecommendationStyle(index)"
-                    >
-                      {{ subRecommendation.attributes.reason.stringForDisplay }}
-                    </div>
-                  </v-flex>
-
-                  <v-flex
-                    xs6
-                    sm3
-                    md2
-                    class="pa-2"
-                    v-for="(collection, index) in subRecommendation
-                      .relationships.contents.data"
-                    :key="`${collection.id}-${index}`"
-                  >
-                    <LinkComponent
-                      v-if="collection && collection.attributes"
-                      :routeName="collection.type"
-                      :routeParams="{ id: collection.id }"
-                    >
-                      <CollectionItemCard :collection="collection" />
-                    </LinkComponent>
-                  </v-flex>
-                </v-layout>
+                <SongCollectionList
+                  :collections="recommendation.relationships.contents.data"
+                />
               </v-flex>
-            </template>
-          </v-layout>
-        </v-flex>
+
+              <template v-else>
+                <v-flex
+                  xs12
+                  row
+                  wrap
+                  v-for="(subRecommendation, index) in recommendation
+                    .relationships.recommendations.data"
+                  :key="`${subRecommendation.id}-${index}`"
+                >
+                  <v-layout row wrap>
+                    <v-flex xs12 sm12 md2 class="pa-2">
+                      <div
+                        class="reason-group-recommendation px-4"
+                        :style="getGroupRecommendationStyle(index)"
+                      >
+                        {{
+                          subRecommendation.attributes.reason.stringForDisplay
+                        }}
+                      </div>
+                    </v-flex>
+
+                    <v-flex
+                      xs6
+                      sm3
+                      md2
+                      class="pa-2"
+                      v-for="(collection, index) in subRecommendation
+                        .relationships.contents.data"
+                      :key="`${collection.id}-${index}`"
+                    >
+                      <LinkComponent
+                        v-if="collection && collection.attributes"
+                        :routeName="collection.type"
+                        :routeParams="{ id: collection.id }"
+                      >
+                        <CollectionItemCard :collection="collection" />
+                      </LinkComponent>
+                    </v-flex>
+                  </v-layout>
+                </v-flex>
+              </template>
+            </v-layout>
+          </v-flex>
+        </template>
+
+        <template row wrap v-if="recentlyAdded.length > 0">
+          <v-flex xs12 class="px-2 pt-3">
+            <h2 class="section-title">Recently Added</h2>
+          </v-flex>
+          <SongCollectionList :collections="recentlyAdded" />
+        </template>
       </v-layout>
     </transition>
   </v-container>
@@ -79,9 +90,13 @@ import { Collection } from '@/@types/model/model';
 import { Action } from 'vuex-class';
 import {
   FETCH_RECOMMENDATIONS,
-  FETCH_HEAVY_ROTATION
+  FETCH_HEAVY_ROTATION,
+  FETCH_RECENTLY_ADDED
 } from '@/store/actions.type';
-import { FetchRecommendationsAction } from '@/store/types';
+import {
+  FetchRecommendationsAction,
+  FetchRecentlyAddedAction
+} from '@/store/types';
 
 @Component({
   components: {
@@ -92,6 +107,9 @@ import { FetchRecommendationsAction } from '@/store/types';
 })
 export default class ForYou extends Vue {
   private recommendations: MusicKit.Recommendation[] = [];
+  private recentlyAdded: (
+    | MusicKit.LibraryAlbum
+    | MusicKit.LibraryPlaylist)[] = [];
   // colors for Sunday to Saturday <3
   private groupRecommendationColors = [
     [
@@ -140,6 +158,7 @@ export default class ForYou extends Vue {
 
   @Action [FETCH_RECOMMENDATIONS]: FetchRecommendationsAction;
   @Action [FETCH_HEAVY_ROTATION]: () => Promise<any>;
+  @Action [FETCH_RECENTLY_ADDED]: FetchRecentlyAddedAction;
 
   created() {
     this.fetchRecommendations()
@@ -151,6 +170,10 @@ export default class ForYou extends Vue {
         this.recommendations = result;
       })
       .catch(err => err);
+
+    this.fetchRecentlyAdded().then(resources => {
+      this.recentlyAdded = resources;
+    });
   }
 
   getGroupRecommendationStyle(index: number) {

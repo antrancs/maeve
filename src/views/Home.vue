@@ -45,6 +45,34 @@
         <SongCollectionList :collections="recentPlayed" />
       </template>
 
+      <template v-if="newReleases">
+        <v-flex xs12>
+          <v-layout row wrap>
+            <v-flex xs12 class="px-2 pt-4">
+              <v-layout row align-center wrap>
+                <h2 class="section-title mr-2">New releases</h2>
+
+                <v-menu offset-y>
+                  <v-btn round color="accent" dark slot="activator">
+                    {{ selectedNewReleasesGenre.title }}
+                  </v-btn>
+                  <v-list class="primary lighten-1">
+                    <v-list-tile
+                      v-for="(genre, index) in genres"
+                      :key="index"
+                      @click="() => updateNewReleases(genre)"
+                    >
+                      <v-list-tile-title>{{ genre.title }}</v-list-tile-title>
+                    </v-list-tile>
+                  </v-list>
+                </v-menu>
+              </v-layout>
+            </v-flex>
+
+            <SongCollectionList :collections="newReleases" />
+          </v-layout>
+        </v-flex>
+      </template>
       <template v-if="albums.length > 0">
         <v-flex xs12 class="px-2 pt-4">
           <h2 class="section-title">Top Albums</h2>
@@ -121,6 +149,22 @@ export default class Home extends Vue {
     MusicKit.Playlist | MusicKit.Album | MusicKit.Station
   > = [];
   private chart: Nullable<MusicKit.ChartResponse> = null;
+  private genres = [
+    {
+      title: 'Pop',
+      value: 'pop'
+    },
+    {
+      title: 'Hiphop/Rap',
+      value: 'hiphop'
+    },
+    {
+      title: 'Dance',
+      value: 'dance'
+    }
+  ];
+  private selectedNewReleasesGenre = this.genres[0];
+  private newReleases: MusicKit.Album[] | null = null;
 
   @Getter isAuthenticated!: boolean;
 
@@ -141,6 +185,8 @@ export default class Home extends Vue {
     this.$_fetchCharts().then(() => {
       this.$_fetchFeaturedPlaylists();
     });
+
+    this.$_getNewReleases();
   }
 
   get playlists(): MusicKit.Playlist[] {
@@ -167,11 +213,32 @@ export default class Home extends Vue {
     this.$_fetchActivities();
 
     this.$_fetchCharts();
+
+    this.$_getNewReleases();
+  }
+
+  updateNewReleases(genre: any) {
+    this.selectedNewReleasesGenre = genre;
+
+    this.$_getNewReleases();
   }
 
   async $_fetchFeaturedPlaylists() {
     const playlists = await getMainFeaturedPlaylists();
     this.featuredPlaylists = playlists;
+  }
+
+  $_getNewReleases() {
+    return musicApiService
+      .getNewReleases(this.selectedNewReleasesGenre.value)
+      .then(releases => {
+        // display just first 12 items
+        if (Array.isArray(releases)) {
+          this.newReleases = releases.slice(0, 12);
+        } else {
+          this.newReleases = null;
+        }
+      });
   }
 
   $_fetchActivities() {

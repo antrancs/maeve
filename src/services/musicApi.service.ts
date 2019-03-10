@@ -436,6 +436,19 @@ class MusicApiService {
       .catch(err => {});
   }
 
+  getNewReleases(genre: string) {
+    return axios
+      .get('/api/catalog/newReleases/', {
+        params: {
+          country: musicKit.getApiInstance().storefrontId,
+          genre
+        }
+      })
+      .then(res => {
+        return res.data;
+      });
+  }
+
   setUserStorefront(storefront: string) {
     const api = musicKit.getApiInstance();
     api.userStorefrontId = storefront;

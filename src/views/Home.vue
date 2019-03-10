@@ -137,8 +137,10 @@ export default class Home extends Vue {
     if (newValue) {
       this.$_fetchRecentlyPlayed();
     }
-    this.$_fetchFeaturedPlaylists();
-    this.$_fetchCharts();
+
+    this.$_fetchCharts().then(() => {
+      this.$_fetchFeaturedPlaylists();
+    });
   }
 
   get playlists(): MusicKit.Playlist[] {
@@ -191,7 +193,7 @@ export default class Home extends Vue {
   }
 
   $_fetchCharts() {
-    musicApiService
+    return musicApiService
       .getCharts(['albums', 'playlists'], 10)
       .then(chart => (this.chart = chart));
   }

@@ -11,7 +11,7 @@
           <a
             target="_blank"
             class="link link--external"
-            href="https://github.com/antrancs"
+            href="https://twitter.com/an_t_tran"
             >An Tran</a
           >
 

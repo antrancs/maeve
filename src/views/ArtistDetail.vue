@@ -13,7 +13,18 @@
               :has-shadow="true"
               :isRound="true"
             />
-            <h2 class="artist-detail__name">{{ artist.attributes.name }}</h2>
+            <v-flex>
+              <h2
+                :title="artist.attributes.name"
+                :style="artistNameFontStyle"
+                :class="[
+                  'artist-detail__name',
+                  { 'long-text-truncated': $vuetify.breakpoint.smAndUp }
+                ]"
+              >
+                {{ artist.attributes.name }}
+              </h2>
+            </v-flex>
           </v-layout>
         </v-container>
       </div>
@@ -237,16 +248,22 @@ export default class ArtistDetail extends Vue {
     };
   }
 
-  // get albums(): Album[] {
-  //   if (
-  //     !this.artist ||
-  //     !this.artist.relationships ||
-  //     !this.artist.relationships.albums
-  //   ) {
-  //     return [];
-  //   }
-  //   return this.artist.relationships.albums.data;
-  // }
+  get artistNameFontStyle() {
+    let fontSize: number;
+    switch (this.$vuetify.breakpoint.name) {
+      case 'xs':
+        fontSize = 3.2;
+        break;
+      case 'sm':
+        fontSize = 3.6;
+        break;
+      default:
+        fontSize = 4;
+    }
+    return {
+      'font-size': `${fontSize}rem`
+    };
+  }
 
   get playlists(): MusicKit.Playlist[] {
     if (
@@ -432,7 +449,6 @@ export default class ArtistDetail extends Vue {
 
 .artist-detail__name {
   color: white;
-  font-size: $xl-font;
 }
 
 .artist-detail__info {

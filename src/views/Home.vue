@@ -37,15 +37,7 @@
         </transition>
       </template>
 
-      <template v-if="isAuthenticated && recentPlayed.length > 0">
-        <v-flex xs12 class="px-2 pt-4">
-          <h2 class="section-title">Recently played</h2>
-        </v-flex>
-
-        <SongCollectionList :collections="recentPlayed" />
-      </template>
-
-      <template v-if="newReleases">
+      <template v-if="genres.length > 0">
         <v-flex xs12>
           <v-layout row wrap>
             <v-flex xs12 class="px-2 pt-4">
@@ -54,7 +46,7 @@
 
                 <v-menu offset-y>
                   <v-btn round color="accent" dark slot="activator">
-                    {{ selectedNewReleasesGenre.title }}
+                    {{ selectedNewReleasesGenre }}
                   </v-btn>
                   <v-list class="primary lighten-1">
                     <v-list-tile
@@ -62,7 +54,7 @@
                       :key="index"
                       @click="() => updateNewReleases(genre)"
                     >
-                      <v-list-tile-title>{{ genre.title }}</v-list-tile-title>
+                      <v-list-tile-title>{{ genre }}</v-list-tile-title>
                     </v-list-tile>
                   </v-list>
                 </v-menu>
@@ -73,6 +65,15 @@
           </v-layout>
         </v-flex>
       </template>
+
+      <template v-if="isAuthenticated && recentPlayed.length > 0">
+        <v-flex xs12 class="px-2 pt-4">
+          <h2 class="section-title">Recently played</h2>
+        </v-flex>
+
+        <SongCollectionList :collections="recentPlayed" />
+      </template>
+
       <template v-if="albums.length > 0">
         <v-flex xs12 class="px-2 pt-4">
           <h2 class="section-title">Top Albums</h2>
@@ -149,21 +150,8 @@ export default class Home extends Vue {
     MusicKit.Playlist | MusicKit.Album | MusicKit.Station
   > = [];
   private chart: Nullable<MusicKit.ChartResponse> = null;
-  private genres = [
-    {
-      title: 'Pop',
-      value: 'pop'
-    },
-    {
-      title: 'Hiphop/Rap',
-      value: 'hiphop'
-    },
-    {
-      title: 'Dance',
-      value: 'dance'
-    }
-  ];
-  private selectedNewReleasesGenre = this.genres[0];
+  private genres: string[] = [];
+  private selectedNewReleasesGenre: Nullable<string> = null;
   private newReleases: MusicKit.Album[] | null = null;
 
   @Getter isAuthenticated!: boolean;
@@ -186,7 +174,14 @@ export default class Home extends Vue {
       this.$_fetchFeaturedPlaylists();
     });
 
-    this.$_getNewReleases();
+    this.$_getNewReleasesGenres().then(genres => {
+      this.genres = genres;
+
+      if (this.genres.length > 0) {
+        this.selectedNewReleasesGenre = this.genres[0];
+        this.$_getNewReleases();
+      }
+    });
   }
 
   get playlists(): MusicKit.Playlist[] {
@@ -214,10 +209,17 @@ export default class Home extends Vue {
 
     this.$_fetchCharts();
 
-    this.$_getNewReleases();
+    this.$_getNewReleasesGenres().then(genres => {
+      this.genres = genres;
+
+      if (this.genres.length > 0) {
+        this.selectedNewReleasesGenre = this.genres[0];
+        this.$_getNewReleases();
+      }
+    });
   }
 
-  updateNewReleases(genre: any) {
+  updateNewReleases(genre: string) {
     this.selectedNewReleasesGenre = genre;
 
     this.$_getNewReleases();
@@ -228,9 +230,17 @@ export default class Home extends Vue {
     this.featuredPlaylists = playlists;
   }
 
+  $_getNewReleasesGenres() {
+    return musicApiService.getNewReleasesGenres();
+  }
+
   $_getNewReleases() {
+    if (!this.selectedNewReleasesGenre) {
+      return;
+    }
+
     return musicApiService
-      .getNewReleases(this.selectedNewReleasesGenre.value)
+      .getNewReleases(this.selectedNewReleasesGenre)
       .then(releases => {
         // display just first 12 items
         if (Array.isArray(releases)) {

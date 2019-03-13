@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-layout v-if="artists" row wrap>
+    <v-layout v-if="artists.length > 0" row wrap>
       <v-flex
         sm5
         md6
@@ -8,7 +8,7 @@
         :style="[columnStyleHeight, artistColumnStyle]"
       >
         <LibraryArtistList
-          v-if="artists"
+          v-if="artists.length > 0"
           :artists="artists"
           @artist-item-clicked="handleArtistItemClicked"
         />
@@ -79,9 +79,9 @@ import { SET_FOOTER_VISIBILITY } from '@/store/mutations.type';
   }
 })
 export default class MyLibraryArtists extends Vue {
-  private artists: Nullable<MusicKit.LibraryArtist[]> = null;
+  private artists: MusicKit.LibraryArtist[] = [];
   private offset = 0;
-  private searchLimit = 20;
+  private searchLimit = 100;
   private albumClicked = false;
   private selectedAlbum: Nullable<MusicKit.LibraryAlbum> = null;
   private selectedArtist: Nullable<MusicKit.LibraryArtist> = null;
@@ -137,14 +137,7 @@ export default class MyLibraryArtists extends Vue {
 
   created() {
     this.setFooterVisibility(false);
-    this.fetchLibraryArtists({
-      offset: this.offset,
-      limit: this.searchLimit
-    }).then(result => {
-      const { hasNext, hasNoData, data } = result;
-
-      this.artists = data;
-    });
+    this.$_fetchArtists();
   }
 
   beforeDestroy() {
@@ -165,6 +158,21 @@ export default class MyLibraryArtists extends Vue {
       this.fetchOneAlbumLibrary(albumId).then(libraryAlbum => {
         this.selectedAlbum = libraryAlbum;
       });
+    }
+  }
+
+  async $_fetchArtists() {
+    for (;;) {
+      const { hasNext, hasNoData, data } = await this.fetchLibraryArtists({
+        offset: this.offset,
+        limit: this.searchLimit
+      });
+
+      this.artists.push(...data);
+      this.offset += this.searchLimit;
+      if (!hasNext) {
+        break;
+      }
     }
   }
 }

@@ -20,9 +20,9 @@ const musicPlayerService = {
     return musicKit.getPlayerInstance().play();
   },
 
-  pause(): void {
+  pause(): Promise<void> {
     // pause is a sync void function
-    musicKit.getPlayerInstance().pause();
+    return musicKit.getPlayerInstance().pause();
   },
 
   /**

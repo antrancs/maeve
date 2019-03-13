@@ -106,7 +106,7 @@ export default class CollectionItemCard extends Vue {
   [PLAY_SONGS]: PlaySongsAction;
   @Action
   [TOGGLE_CURRENT_TRACK]: () => void;
-  @Action [PAUSE_CURRENT_TRACK]: () => void;
+  @Action [PAUSE_CURRENT_TRACK]: () => Promise<void>;
   @Action [FETCH_ONE_ALBUM_CATALOG]: FetchOneAlbumCatalogAction;
   @Action [FETCH_ONE_PLAYLIST_CATALOG]: FetchOnePlaylistCatalogAction;
   @Action [FETCH_ONE_ALBUM_LIBRARY]: FetchOneAlbumLibraryAction;
@@ -154,7 +154,7 @@ export default class CollectionItemCard extends Vue {
       return;
     }
 
-    this.pauseCurrentTrack();
+    await this.pauseCurrentTrack();
 
     // if this collection already has a 'tracks' relationship, just play it
     if (

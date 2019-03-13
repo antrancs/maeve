@@ -112,7 +112,7 @@ declare namespace MusicKit {
     /**
      * Pauses playback of the current item.
      */
-    pause(): void;
+    pause(): Promise<void>;
 
     /**
      * Initiates playback of the current item.

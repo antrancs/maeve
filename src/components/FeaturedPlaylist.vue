@@ -23,7 +23,14 @@
 
         <div class="featured-playlist__info text-xs-center">
           <v-layout fill-height align-center justify-center class="ma-0">
-            {{ playlist.attributes.name }}
+            <v-flex
+              :class="[
+                'px-1',
+                { 'long-text-truncated': $vuetify.breakpoint.mdAndDown }
+              ]"
+            >
+              {{ playlist.attributes.name }}
+            </v-flex>
           </v-layout>
         </div>
       </div>

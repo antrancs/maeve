@@ -56,13 +56,13 @@
                   </v-layout>
 
                   <v-flex :class="['long-text-truncated', 'mb-1', 'song-name']">
-                    {{ musicPlayer.currentPlaying.title }}
+                    {{ songName }}
                   </v-flex>
                   <v-flex
                     :class="['long-text-truncated', 'artist-name']"
                     :style="secondaryTextStyle"
                   >
-                    {{ musicPlayer.currentPlaying.artistName }}
+                    {{ artistName }}
                   </v-flex>
                 </v-layout>
 
@@ -220,6 +220,26 @@ export default class PlayerFullScreen extends Mixins(
       300,
       300
     );
+  }
+
+  get artistName() {
+    if (
+      !this.musicPlayer.currentPlaying ||
+      !this.musicPlayer.currentPlaying.attributes
+    ) {
+      return '';
+    }
+    return this.musicPlayer.currentPlaying.attributes.artistName;
+  }
+
+  get songName() {
+    if (
+      !this.musicPlayer.currentPlaying ||
+      !this.musicPlayer.currentPlaying.attributes
+    ) {
+      return '';
+    }
+    return this.musicPlayer.currentPlaying.attributes.name;
   }
 
   get playingVisualizationSize() {

@@ -117,7 +117,7 @@ const actions: ActionTree<MusicPlayerState, any> = {
   },
 
   [PAUSE_CURRENT_TRACK]() {
-    musicPlayerService.pause();
+    return musicPlayerService.pause();
   },
 
   [RESUME_CURRENT_TRACK]() {
@@ -173,7 +173,7 @@ const actions: ActionTree<MusicPlayerState, any> = {
     return dispatch(PLAY_NEXT);
   },
 
-  [PLAY_CURRENT_SONG](_, song: PlayQueueSong) {
+  [PLAY_CURRENT_SONG]({ state, dispatch }, song: PlayQueueSong) {
     const mediaItems = new MusicKit.MediaItem({
       id: song.id,
       attributes: song.attributes,
@@ -188,6 +188,12 @@ const actions: ActionTree<MusicPlayerState, any> = {
     return music
       .setQueue({
         items: [mediaItems]
+      })
+      .then(() => {
+        if (music.player.playbackState === MusicKit.PlaybackStates.playing) {
+          return music.player.pause();
+        }
+        return Promise.resolve();
       })
       .then(() => {
         return music.player.play();

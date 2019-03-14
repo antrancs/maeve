@@ -129,11 +129,17 @@ import {
   TOGGLE_QUEUE_VISIBILITY,
   UPDATE_REPEAT_MODE,
   TOGGLE_SHUFFLE_MODE,
-  FETCH_CATALOG_SONG_DETAILS
+  FETCH_CATALOG_SONG_DETAILS,
+  TOGGLE_CURRENT_TRACK,
+  PLAY_NEXT,
+  PLAY_PREVIOUS,
+  CHANGE_VOLUME,
+  MUTE_VOLUME
 } from '@/store/actions.type';
 import { Nullable, ShuffleMode, Artist } from '@/@types/model/model';
 import { RepeatMode, PLACEHOLDER_IMAGE } from '@/utils/constants';
 import { getArtworkUrl } from '@/utils/utils';
+import { SET_IS_MUTED } from '@/store/mutations.type';
 
 @Component({
   components: {
@@ -151,7 +157,10 @@ export default class PlayerBar extends Mixins(
   GoToArtistPageMixin
 ) {
   private playerFullScreenVisible = false;
+
   @State musicPlayer!: MusicPlayerState;
+  @State(state => state.musicPlayer.volume) volume!: number;
+  @State(state => state.musicPlayer.isMuted) isMuted!: boolean;
 
   @Getter currentPlayingDuration!: number;
   @Getter isAuthenticated!: boolean;
@@ -165,6 +174,19 @@ export default class PlayerBar extends Mixins(
   @Action [FETCH_CATALOG_SONG_DETAILS]: (
     ids?: string[]
   ) => Promise<MusicKit.Song[]>;
+  @Action
+  [TOGGLE_CURRENT_TRACK]: () => void;
+  @Action
+  [PLAY_NEXT]: () => void;
+  @Action
+  [PLAY_PREVIOUS]: () => void;
+  @Action [CHANGE_VOLUME]: (volume: number) => void;
+  @Action [MUTE_VOLUME]: () => void;
+
+  @Mutation [SET_IS_MUTED]: () => void;
+
+  @Getter canGoBack!: boolean;
+  @Getter canGoNext!: boolean;
 
   get artistName(): string {
     if (
@@ -217,6 +239,82 @@ export default class PlayerBar extends Mixins(
 
   handleShuffleClicked() {
     this.toggleShuffleMode();
+  }
+
+  created() {
+    window.addEventListener('keydown', this.handleKeyDown);
+  }
+
+  beforeDestroy() {
+    window.removeEventListener('keydown', this.handleKeyDown);
+  }
+
+  handleKeyDown(event: KeyboardEvent) {
+    event.preventDefault();
+
+    const key = event.which || event.keyCode;
+    if (key === 32) {
+      // spacebar
+      this.toggleCurrentTrack();
+    } else if ((event.ctrlKey || event.metaKey) && key === 39) {
+      // right arrow
+      if (this.canGoNext) {
+        this.playNext();
+      }
+    } else if ((event.ctrlKey || event.metaKey) && key === 37) {
+      // left arrow
+      if (this.canGoBack) {
+        this.playPrevious();
+      }
+    } else if (
+      // Ctrl/Cmd + Shift + Down
+      key === 40 &&
+      (event.ctrlKey || event.metaKey) &&
+      event.shiftKey
+    ) {
+      this.muteVolume();
+    } else if (
+      // Ctrl/Cmd + Shift + Up
+      key === 38 &&
+      (event.ctrlKey || event.metaKey) &&
+      event.shiftKey
+    ) {
+      // MAX volume
+      this.changeVolume(1);
+    } else if (key === 40 && (event.ctrlKey || event.metaKey)) {
+      this.$_turnDownVolume();
+    } else if (key === 38 && (event.ctrlKey || event.metaKey)) {
+      this.$_turnUpVolume();
+    }
+  }
+
+  $_turnDownVolume() {
+    // Ctrl Down / Cmd Down
+    if (this.volume === 0) {
+      return;
+    }
+    let newVolume = this.volume - 0.1;
+    if (newVolume < 0) {
+      newVolume = 0;
+    }
+
+    this.changeVolume(newVolume);
+    if (newVolume === 0) {
+      this.setIsMuted();
+    }
+  }
+
+  $_turnUpVolume() {
+    // Ctrl Up / Cmd Up
+    if (this.volume === 1) {
+      return;
+    }
+    let newVolume = this.volume + 0.1;
+    if (newVolume >= 1) {
+      newVolume = 1;
+    }
+
+    this.changeVolume(newVolume);
   }
 }
 </script>

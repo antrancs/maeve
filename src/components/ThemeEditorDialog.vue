@@ -16,6 +16,7 @@
             label="Theme name *"
             color="accent"
             :rules="[rules.themeName]"
+            @keydown.stop=""
           ></v-text-field>
 
           <h3>Theme preview</h3>

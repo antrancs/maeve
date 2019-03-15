@@ -30,6 +30,7 @@
       hide-details
       v-model="searchText"
       clearable
+      @keydown.stop=""
       class="ml-4"
     ></v-text-field>
     <v-spacer></v-spacer>

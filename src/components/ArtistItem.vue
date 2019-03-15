@@ -91,10 +91,10 @@ export default class ArtistItem extends Vue {
         this.artistArtwork = artwork || PLACEHOLDER_IMAGE;
       })
       .catch(err => {
-        this.showSnackbar({
-          text: 'Something went wrong.',
-          type: SnackbarMode.error
-        });
+        // this.showSnackbar({
+        //   text: 'Something went wrong.',
+        //   type: SnackbarMode.error
+        // });
       });
   }
 }

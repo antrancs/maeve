@@ -12,6 +12,7 @@
             color="accent"
             label="Name"
             :rules="[rules.name]"
+            @keydown.stop=""
           ></v-text-field>
 
           <v-textarea

@@ -14,6 +14,7 @@
               :placeholder="placeholderSearch"
               clearable
               v-model="searchText"
+              @keydown.stop=""
             ></v-text-field>
           </v-flex>
         </v-layout>

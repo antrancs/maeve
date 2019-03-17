@@ -250,13 +250,13 @@ export default class PlayerBar extends Mixins(
   }
 
   handleKeyDown(event: KeyboardEvent) {
-    event.preventDefault();
-
     const key = event.which || event.keyCode;
     if (key === 32) {
       // spacebar
+      event.preventDefault();
       this.toggleCurrentTrack();
     } else if ((event.ctrlKey || event.metaKey) && key === 39) {
+      event.preventDefault();
       // right arrow
       if (this.canGoNext) {
         this.playNext({
@@ -264,6 +264,7 @@ export default class PlayerBar extends Mixins(
         });
       }
     } else if ((event.ctrlKey || event.metaKey) && key === 37) {
+      event.preventDefault();
       // left arrow
       if (this.canGoBack) {
         this.playPrevious();
@@ -274,6 +275,7 @@ export default class PlayerBar extends Mixins(
       (event.ctrlKey || event.metaKey) &&
       event.shiftKey
     ) {
+      event.preventDefault();
       this.muteVolume();
     } else if (
       // Ctrl/Cmd + Shift + Up
@@ -281,11 +283,14 @@ export default class PlayerBar extends Mixins(
       (event.ctrlKey || event.metaKey) &&
       event.shiftKey
     ) {
+      event.preventDefault();
       // MAX volume
       this.changeVolume(1);
     } else if (key === 40 && (event.ctrlKey || event.metaKey)) {
+      event.preventDefault();
       this.$_turnDownVolume();
     } else if (key === 38 && (event.ctrlKey || event.metaKey)) {
+      event.preventDefault();
       this.$_turnUpVolume();
     }
   }

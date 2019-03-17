@@ -301,7 +301,7 @@ const actions: ActionTree<PlayQueueState, any> = {
     }
   },
 
-  [MOVE_BACK_PLAY_QUEUE]({ state, commit, rootState, rootGetters }) {
+  [MOVE_BACK_PLAY_QUEUE]({ state, commit, rootState, rootGetters, getters }) {
     if (state.mainSongsIndex === 0) {
       return;
     }
@@ -331,6 +331,13 @@ const actions: ActionTree<PlayQueueState, any> = {
         source: state.mainSongsSource
       });
     }
+
+    const { currentSongs, currentSongIndex } = getters;
+
+    commit(SET_NEXT_SONG_TO_PLAY, {
+      song: currentSongs[currentSongIndex],
+      source: state.mainSongsSource
+    });
   },
 
   [REMOVE_FROM_UP_NEXT](

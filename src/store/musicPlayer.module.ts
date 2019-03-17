@@ -1,7 +1,7 @@
 import { GetterTree, MutationTree, ActionTree } from 'vuex';
 
 import musicPlayerService from '@/services/musicPlayer.service';
-import musicKit from '@/services/musicKit';
+
 import {
   PAUSE_CURRENT_TRACK,
   PLAY_NEXT,
@@ -19,7 +19,8 @@ import {
   MOVE_BACK_PLAY_QUEUE,
   TOGGLE_SHUFFLE_MODE,
   TOGGLE_SHUFFLE,
-  SHUFFLE_MAIN_SONGS
+  SHUFFLE_MAIN_SONGS,
+  PLAY_CURRENT
 } from '@/store/actions.type';
 import {
   SET_CURRENTLY_PLAYING_SONG,
@@ -37,20 +38,18 @@ import {
   SET_MAIN_SONGS_SOURCE,
   SET_MAIN_SONGS_INDEX,
   SET_SHUFFLE_MODE,
-  SET_YOUR_QUEUE
+  SET_YOUR_QUEUE,
+  SET_SHUFFLED_SONGS_INDEX,
+  SET_NEXT_SONG_TO_PLAY
 } from '@/store/mutations.type';
 import {
   MusicPlayerState,
   SkipToSongAtIndexPayload,
-  PlaySongsPayload
+  PlaySongsPayload,
+  PlayNextPayload
 } from './types';
 import { RepeatMode } from '@/utils/constants';
-import {
-  PlayQueueSong,
-  Artist,
-  ShuffleMode,
-  Nullable
-} from '@/@types/model/model';
+import { PlayQueueSong, Artist, ShuffleMode } from '@/@types/model/model';
 
 const initialState: MusicPlayerState = {
   currentPlaying: null,
@@ -82,22 +81,32 @@ const getters: GetterTree<MusicPlayerState, any> = {
     return getters.isAuthenticated
       ? currentPlaying.attributes.durationInMillis
       : 30000; // 30 seconds
+  },
+
+  isYourQueuePlaying({ currentPlayingSource }) {
+    return currentPlayingSource === 'Your Queue';
   }
 };
 
 const actions: ActionTree<MusicPlayerState, any> = {
-  [PLAY_NEXT]({ rootState, dispatch, commit, rootGetters }) {
-    dispatch(MOVE_NEXT_PLAY_QUEUE);
+  async [PLAY_NEXT]({ dispatch }, { forceSkip = false }: PlayNextPayload) {
+    await dispatch(MOVE_NEXT_PLAY_QUEUE, { forceSkip });
+    await dispatch(PLAY_CURRENT);
+  },
+
+  [PLAY_CURRENT]({ rootState, commit, dispatch }) {
     const songToPlay = rootState.playQueue.nextSongToPlay;
 
     if (songToPlay) {
       commit(SET_CURRENTLY_PLAYING_SONG, songToPlay.song);
       commit(SET_CURRENTLY_PLAYING_SOURCE, songToPlay.source);
-      return dispatch(PLAY_CURRENT_SONG, songToPlay.song);
+      if (songToPlay.song) {
+        return dispatch(PLAY_CURRENT_SONG, songToPlay.song);
+      }
     }
   },
 
-  async [PLAY_PREVIOUS]({ rootState, dispatch, commit, rootGetters }) {
+  async [PLAY_PREVIOUS]({ rootState, dispatch, commit }) {
     dispatch(MOVE_BACK_PLAY_QUEUE);
     const songToPlay = rootState.playQueue.nextSongToPlay;
 
@@ -126,8 +135,8 @@ const actions: ActionTree<MusicPlayerState, any> = {
     });
   },
 
-  async [PLAY_SONGS](
-    { dispatch, commit, rootState },
+  [PLAY_SONGS](
+    { dispatch, commit, rootState, rootGetters },
     {
       collectionId,
       startSongIndex = 0,
@@ -161,7 +170,8 @@ const actions: ActionTree<MusicPlayerState, any> = {
     commit(SET_MAIN_SONGS, playQueueSongs);
     commit(SET_MAIN_SONGS_SOURCE, songsSourceName);
     commit(SET_CURRENT_COLLECTION_ID, collectionId);
-    commit(SET_MAIN_SONGS_INDEX, startSongIndex - 1);
+    commit(SET_MAIN_SONGS_INDEX, startSongIndex);
+    commit(SET_SHUFFLED_SONGS_INDEX, 0);
     commit(SET_SHUFFLE_MODE, +shuffle);
 
     if (+shuffle === ShuffleMode.On) {
@@ -170,7 +180,12 @@ const actions: ActionTree<MusicPlayerState, any> = {
 
     commit(SET_YOUR_QUEUE, []);
 
-    return dispatch(PLAY_NEXT);
+    const { currentSongs, currentSongIndex } = rootGetters;
+    commit(SET_NEXT_SONG_TO_PLAY, {
+      song: currentSongs[currentSongIndex],
+      source: songsSourceName
+    });
+    dispatch(PLAY_CURRENT);
   },
 
   [PLAY_CURRENT_SONG]({ state, dispatch }, song: PlayQueueSong) {

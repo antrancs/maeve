@@ -37,7 +37,7 @@ import {
 } from 'd3';
 import { feature } from 'topojson';
 import { State } from 'vuex-class';
-import { Nullable } from '@/@types/model/model';
+import { Nullable, PlayQueueSong } from '@/@types/model/model';
 
 @Component
 export default class WorldMap extends Vue {
@@ -60,7 +60,7 @@ export default class WorldMap extends Vue {
     [id: string]: { name: string; a2: string };
   } = {};
   @State(state => state.musicPlayer.currentPlaying)
-  currentPlaying!: MusicKit.MediaItem | null;
+  currentPlaying!: PlayQueueSong | null;
 
   mounted() {
     this.setupMap();
@@ -69,8 +69,8 @@ export default class WorldMap extends Vue {
 
   @Watch('currentPlaying')
   onCurrentPlayingChanged(
-    newValue: MusicKit.MediaItem,
-    oldValue: Nullable<MusicKit.MediaItem>
+    newValue: PlayQueueSong,
+    oldValue: Nullable<PlayQueueSong>
   ) {
     if (newValue && !oldValue) {
       // substract the player bar height (96) and offset a bit

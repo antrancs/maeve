@@ -38,6 +38,7 @@ export default class PlayPreviousButton extends Mixins(PlayerBarColorMixin) {
   handlePlayPrevious() {
     if (this.canGoBack) {
       this.playPrevious();
+      this.$emit('on-previous');
     }
   }
 }

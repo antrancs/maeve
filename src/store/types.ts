@@ -30,6 +30,10 @@ export interface MusicPlayerState {
   shuffleMode: ShuffleMode;
 }
 
+export type PlayNextPayload = {
+  forceSkip: boolean;
+};
+
 // Payload
 export type SkipToSongAtIndexPayload = {
   index: number;
@@ -104,20 +108,6 @@ export interface ShowSnackbarActionPayload {
 // Auth module
 export interface AuthState {
   musicUserToken: string | null;
-}
-
-export interface PlayQueueState {
-  visibility: boolean;
-  // mainSongs are songs that we originally add to the play queue
-  // (songs from an album/playlist/multiple individual songs)
-  mainSongs: PlayQueueSong[];
-  // name of the source where 'mainSongs' are from (name of an album/playlist, Artist's top tracks...)
-  mainSongsSource: string;
-  mainSongsIndex: number;
-  nextSongToPlay: PlayQueueNextSongToPlay | undefined;
-  shuffledMainSongs: PlayQueueSong[];
-  shuffleSongIndex: number;
-  queue: PlayQueueSong[];
 }
 
 export interface CollectionState {
@@ -372,4 +362,25 @@ export type ChangeToIndexAction = (payload: ChangeToIndexActionPayload) => void;
 export type SetSnackbarActionMutationPayload = {
   text: string;
   handler: () => void;
+};
+
+/**
+ * PlayQueue module
+ */
+export interface PlayQueueState {
+  visibility: boolean;
+  // mainSongs are songs that we originally add to the play queue
+  // (songs from an album/playlist/multiple individual songs)
+  mainSongs: PlayQueueSong[];
+  // name of the source where 'mainSongs' are from (name of an album/playlist, Artist's top tracks...)
+  mainSongsSource: string;
+  mainSongsIndex: number;
+  nextSongToPlay: PlayQueueNextSongToPlay | undefined;
+  shuffledMainSongs: PlayQueueSong[];
+  shuffleSongIndex: number;
+  queue: PlayQueueSong[];
+}
+
+export type MoveNextPlayQueuePayload = {
+  forceSkip: boolean;
 };

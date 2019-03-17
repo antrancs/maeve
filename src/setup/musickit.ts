@@ -50,7 +50,7 @@ export function connectMusicKitToStore(
         break;
       case MusicKit.PlaybackStates.completed:
         document.title = DEFAULT_PAGE_TITLE;
-        store.dispatch(PLAY_NEXT);
+        store.dispatch(PLAY_NEXT, { forceSkip: false });
     }
   }
   musicKitInstance.addEventListener(

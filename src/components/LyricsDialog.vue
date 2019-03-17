@@ -61,8 +61,8 @@ export default class LyricsDialog extends Mixins(LyricsMixin) {
 
   @Watch('currentPlaying')
   onCurrentPlayingChanged(
-    newValue: Nullable<MusicKit.MediaItem>,
-    oldValue: Nullable<MusicKit.MediaItem>
+    newValue: Nullable<PlayQueueSong>,
+    oldValue: Nullable<PlayQueueSong>
   ) {
     if (newValue && this.dialog && this.currentPlaying.attributes) {
       this.lyrics = '';

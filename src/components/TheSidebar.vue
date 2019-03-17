@@ -114,6 +114,7 @@ import SvgIcon from '@/components/SvgIcon.vue';
 import { MusicPlayerState, FetchLibraryPlaylistsActions } from '@/store/types';
 import { FETCH_LIBRARY_PLAYLISTS } from '@/store/actions.type';
 import { isLight, TEXT_PRIMARY_LIGHT, TEXT_PRIMARY_DARK } from '@/themes';
+import { PlayQueueSong } from '@/@types/model/model';
 
 @Component({
   components: {
@@ -192,7 +193,7 @@ export default class AppSidebar extends Vue {
   @State(state => state.library.playlists)
   playlists!: MusicKit.LibraryPlaylist[];
   @State(state => state.musicPlayer.currentPlaying)
-  currentPlaying!: MusicKit.MediaItem | null;
+  currentPlaying!: PlayQueueSong | null;
 
   @Action [FETCH_LIBRARY_PLAYLISTS]: FetchLibraryPlaylistsActions;
 

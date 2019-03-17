@@ -1,12 +1,12 @@
 <template>
   <div>
-    <template v-if="queuedSongs.length > 0">
+    <template v-if="yourQueue.length > 0">
       <v-layout row wrap justify-space-between align-center class="ml-2 mt-3">
         <h4>Your Queue</h4>
         <app-button @on-click="handleShuffle">Shuffle</app-button>
       </v-layout>
       <PlayQueueSongItem
-        v-for="(song, index) in queuedSongs"
+        v-for="(song, index) in yourQueue"
         :key="song.qId"
         :song="song"
         :index="index"
@@ -20,7 +20,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { State, Mutation, Action } from 'vuex-class';
+import { State, Mutation, Action, Getter } from 'vuex-class';
 
 import PlayQueueSongItem from './PlayQueueSongItem.vue';
 import { PlayQueueSong } from '@/@types/model/model';
@@ -37,8 +37,7 @@ import { ChangeToIndexAction } from '@/store/types';
   }
 })
 export default class YourQueue extends Vue {
-  @State(state => state.playQueue.queue)
-  queuedSongs!: PlayQueueSong[];
+  @Getter yourQueue!: PlayQueueSong[];
 
   @Action [CHANGE_TO_INDEX_IN_YOUR_QUEUE]: ChangeToIndexAction;
   @Action [SHUFFLE_YOUR_QUEUE]: () => void;

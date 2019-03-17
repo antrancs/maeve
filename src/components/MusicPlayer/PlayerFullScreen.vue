@@ -20,24 +20,9 @@
             <v-layout row wrap>
               <v-flex xs12 sm12 md6>
                 <v-layout column wrap align-center>
-                  <div
-                    v-if="$vuetify.breakpoint.mdAndDown"
-                    class="artwork-wrapper mb-3"
-                    :class="{ playing: musicPlayer.isPlaying }"
-                  >
-                    <img
-                      v-if="currentTrackArtwork"
-                      :class="['song-artwork']"
-                      :src="currentTrackArtwork"
-                      :style="artworkStyle"
-                      alt="Song artwork"
-                    />
-                  </div>
-
-                  <PlayingVisualization
-                    v-else
-                    :artworkUrl="currentTrackArtwork"
-                    :size="playingVisualizationSize"
+                  <ArtworkSlide
+                    :direction="artworkSlideDirection"
+                    :artworkSize="artworkSize"
                   />
 
                   <PlayerProgressBar class="mt-3" />
@@ -67,9 +52,15 @@
                 </v-layout>
 
                 <v-layout row justify-center align-center>
-                  <PlayPreviousButton :size="40" />
+                  <PlayPreviousButton
+                    :size="40"
+                    @on-previous="artworkSlideDirection = 'left'"
+                  />
                   <PlayButton :size="80" />
-                  <PlayNextButton :size="40" />
+                  <PlayNextButton
+                    :size="40"
+                    @on-next="artworkSlideDirection = 'right'"
+                  />
                 </v-layout>
 
                 <PlayerVolume />
@@ -149,7 +140,7 @@ import MediaArtwork from '@/components/MediaArtwork.vue';
 import PlayNextButton from './PlayNextButton.vue';
 import PlayPreviousButton from './PlayPreviousButton.vue';
 import PlayButton from './PlayButton.vue';
-import PlayingVisualization from './PlayingVisualization.vue';
+import ArtworkSlide from './ArtworkSlide.vue';
 import PlayerProgressBar from './PlayerProgressBar.vue';
 import PlayerVolume from './PlayerVolume.vue';
 import PlayerBarColorMixin from '@/mixins/PlayerBarColorMixin';
@@ -158,7 +149,12 @@ import { MusicPlayerState } from '@/store/types';
 import { Watch } from 'vue-property-decorator';
 import { RepeatMode, PLACEHOLDER_IMAGE } from '@/utils/constants';
 import { UPDATE_REPEAT_MODE, TOGGLE_SHUFFLE_MODE } from '@/store/actions.type';
-import { Song, Nullable, ShuffleMode } from '@/@types/model/model';
+import {
+  Song,
+  Nullable,
+  ShuffleMode,
+  PlayQueueSong
+} from '@/@types/model/model';
 import { TEXT_PRIMARY_DARK, TEXT_PRIMARY_LIGHT } from '@/themes';
 import { getArtworkUrl } from '@/utils/utils';
 
@@ -170,7 +166,7 @@ import { getArtworkUrl } from '@/utils/utils';
     PlayPreviousButton,
     PlayButton,
     PlayerVolume,
-    PlayingVisualization,
+    ArtworkSlide,
     YourQueue,
     PlayQueueUpNext
   }
@@ -180,6 +176,7 @@ export default class PlayerFullScreen extends Mixins(
   LyricsMixin
 ) {
   private dialog = false;
+  private artworkSlideDirection = 'right';
 
   @State
   musicPlayer!: MusicPlayerState;
@@ -201,25 +198,23 @@ export default class PlayerFullScreen extends Mixins(
   }
 
   @Watch('musicPlayer.currentPlaying')
-  onCurrentPlayingChanged(newValue: MusicKit.MediaItem) {
+  onCurrentPlayingChanged(newValue: PlayQueueSong) {
     if (newValue && this.dialog) {
       this.$_fetchLyrics();
     }
   }
 
-  get currentTrackArtwork() {
-    if (
-      !this.musicPlayer.currentPlaying ||
-      !this.musicPlayer.currentPlaying.attributes
-    ) {
-      return PLACEHOLDER_IMAGE;
+  get artworkSize() {
+    switch (this.$vuetify.breakpoint.name) {
+      case 'xs':
+        return 250;
+      case 'sm':
+        return 500;
+      case 'xl':
+        return 400;
+      default:
+        return 300;
     }
-
-    return getArtworkUrl(
-      this.musicPlayer.currentPlaying.attributes.artwork.url,
-      300,
-      300
-    );
   }
 
   get artistName() {
@@ -240,19 +235,6 @@ export default class PlayerFullScreen extends Mixins(
       return '';
     }
     return this.musicPlayer.currentPlaying.attributes.name;
-  }
-
-  get playingVisualizationSize() {
-    return this.$vuetify.breakpoint.xsOnly ? 300 : 450;
-  }
-
-  get artworkStyle() {
-    if (!this.currentTrackArtwork) {
-      return {};
-    }
-    return {
-      'box-shadow': '0.2rem 0.2rem 1rem #ffffff'
-    };
   }
 
   get repeatIcon(): string {
@@ -346,6 +328,6 @@ export default class PlayerFullScreen extends Mixins(
 }
 
 .song-artwork {
-  width: 100%;
+  width: 50%;
 }
 </style>

@@ -29,6 +29,7 @@ export const SET_SHUFFLED_SONGS = 'setShuffledMainSongs';
 export const SET_SHUFFLED_SONGS_INDEX = 'setShuffledSongsIndex';
 export const SET_YOUR_QUEUE = 'setYourQueue';
 export const SET_YOUR_QUEUE_INDEX = 'setYourQueueIndex';
+export const MOVE_NEXT_IN_QUEUE = 'moveNextInQueue';
 
 export const SET_SNACKBAR_VISIBILITY = 'setSnackbarVisibility';
 export const SET_SNACKBAR_TEXT = 'setSnackbarText';

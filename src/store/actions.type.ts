@@ -2,6 +2,7 @@ export const PAUSE_CURRENT_TRACK = 'pauseCurrentTrack';
 export const PLAY_PREVIOUS = 'playPrevious';
 export const PLAY_CURRENT_SONG = 'playCurrentSong';
 export const PLAY_NEXT = 'playNext';
+export const PLAY_CURRENT = 'playCurrent';
 export const PLAY_SONGS = 'playSongs';
 export const RESUME_CURRENT_TRACK = 'resumeCurrentTrack';
 export const SKIP_TO_SONG_AT_INDEX = 'skipToSongAtIndex';

@@ -49,11 +49,12 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { State, Getter } from 'vuex-class';
+import { PlayQueueSong } from '@/@types/model/model';
 
 @Component
 export default class AppFooter extends Vue {
   @State(state => state.musicPlayer.currentPlaying)
-  currentPlaying!: MusicKit.MediaItem | null;
+  currentPlaying!: PlayQueueSong | null;
 
   @State(state => state.layout.showFooter) showFooter!: boolean;
 

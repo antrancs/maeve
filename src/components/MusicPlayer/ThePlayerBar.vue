@@ -124,7 +124,7 @@ import PlayButton from './PlayButton.vue';
 import PlayerVolume from './PlayerVolume.vue';
 import PlayerBarColorMixin from '@/mixins/PlayerBarColorMixin';
 import GoToArtistPageMixin from '@/mixins/GoToArtistPageMixin';
-import { MusicPlayerState } from '@/store/types';
+import { MusicPlayerState, PlayNextPayload } from '@/store/types';
 import {
   TOGGLE_QUEUE_VISIBILITY,
   UPDATE_REPEAT_MODE,
@@ -177,7 +177,7 @@ export default class PlayerBar extends Mixins(
   @Action
   [TOGGLE_CURRENT_TRACK]: () => void;
   @Action
-  [PLAY_NEXT]: () => void;
+  [PLAY_NEXT]: (payload: PlayNextPayload) => void;
   @Action
   [PLAY_PREVIOUS]: () => void;
   @Action [CHANGE_VOLUME]: (volume: number) => void;
@@ -259,7 +259,9 @@ export default class PlayerBar extends Mixins(
     } else if ((event.ctrlKey || event.metaKey) && key === 39) {
       // right arrow
       if (this.canGoNext) {
-        this.playNext();
+        this.playNext({
+          forceSkip: true
+        });
       }
     } else if ((event.ctrlKey || event.metaKey) && key === 37) {
       // left arrow

@@ -68,7 +68,7 @@ import {
   FetchLibraryArtistssActions,
   FetchOneAlbumLibraryAction
 } from '@/store/types';
-import { Nullable } from '@/@types/model/model';
+import { Nullable, PlayQueueSong } from '@/@types/model/model';
 import { SET_FOOTER_VISIBILITY } from '@/store/mutations.type';
 
 @Component({
@@ -87,7 +87,7 @@ export default class MyLibraryArtists extends Vue {
   private selectedArtist: Nullable<MusicKit.LibraryArtist> = null;
 
   @State(state => state.musicPlayer.currentPlaying)
-  currentPlaying!: MusicKit.MediaItem | null;
+  currentPlaying!: PlayQueueSong | null;
 
   @Action [FETCH_LIBRARY_ARTISTS]: FetchLibraryArtistssActions;
   @Action [FETCH_ONE_ARTIST_LIBRARY]!: (

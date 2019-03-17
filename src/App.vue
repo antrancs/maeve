@@ -45,7 +45,7 @@ import MediaActionMenu from '@/components/MediaActionMenu.vue';
 import NewPlaylistDialog from '@/components/NewPlaylistDialog.vue';
 import ThemeSetting from '@/components/ThemeSetting.vue';
 import { State, Action, Getter } from 'vuex-class';
-import { ThemeOption, Nullable } from '@/@types/model/model';
+import { ThemeOption, Nullable, PlayQueueSong } from '@/@types/model/model';
 import {
   LOAD_SETTINGS,
   LOAD_TOKEN_LASTFM,
@@ -71,7 +71,7 @@ export default class App extends Vue {
 
   @State(state => state.settings.selectedTheme) selectedTheme!: ThemeOption;
   @State(state => state.musicPlayer.currentPlaying) currentPlaying!: Nullable<
-    MusicKit.MediaItem
+    PlayQueueSong
   >;
 
   @Action [LOAD_SETTINGS]: () => void;

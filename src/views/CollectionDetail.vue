@@ -163,7 +163,8 @@ import {
   Artist,
   Album,
   CollectionType,
-  Song
+  Song,
+  PlayQueueSong
 } from '@/@types/model/model';
 
 import {
@@ -208,7 +209,7 @@ export default class CollectionDetail extends Vue {
   @Prop() id!: string;
 
   @State(state => state.musicPlayer.currentPlaying)
-  currentPlaying!: MusicKit.MediaItem | null;
+  currentPlaying!: PlayQueueSong | null;
 
   @Action [FETCH_ONE_ALBUM_CATALOG]: FetchOneAlbumCatalogAction;
   @Action [FETCH_MULTILE_ALBUMS_CATALOG]: FetchMultipleAlbumsCatalogAction;

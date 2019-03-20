@@ -74,11 +74,12 @@
               </v-flex>
 
               <v-flex xs12 :class="['pr-2', isFromAlbum ? 'lg6' : 'lg12']">
-                <div
-                  :class="['long-text-truncated', $style['artist-name']]"
-                  @click="() => goToArtistPage(song)"
-                >
-                  {{ song.attributes.artistName }}
+                <div :class="['long-text-truncated']">
+                  <span
+                    :class="$style['artist-name']"
+                    @click="() => goToArtistPage(song)"
+                    >{{ song.attributes.artistName }}</span
+                  >
                 </div>
               </v-flex>
             </v-layout>
@@ -87,11 +88,10 @@
           <v-flex v-if="!isFromAlbum && $vuetify.breakpoint.lgAndUp" xs6>
             <div>
               <span v-if="$vuetify.breakpoint.smAndDown"> - </span>
-              <div
-                :class="['long-text-truncated', $style['album-name']]"
-                @click="goToAlbumPage"
-              >
-                {{ song.attributes.albumName }}
+              <div :class="['long-text-truncated']">
+                <span :class="$style['album-name']" @click="goToAlbumPage">{{
+                  song.attributes.albumName
+                }}</span>
               </div>
             </div>
           </v-flex>

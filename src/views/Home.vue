@@ -47,6 +47,7 @@
                 <v-menu offset-y>
                   <v-btn round color="accent" dark slot="activator">
                     {{ selectedNewReleasesGenre }}
+                    <v-icon>keyboard_arrow_down</v-icon>
                   </v-btn>
                   <v-list class="primary lighten-1">
                     <v-list-tile

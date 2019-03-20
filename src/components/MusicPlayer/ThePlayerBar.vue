@@ -28,11 +28,15 @@
                   {{ songName }}
                 </div>
 
-                <div
-                  :class="['long-text-truncated', $style['link-item']]"
-                  @click.stop="() => goToArtistPage(musicPlayer.currentPlaying)"
-                >
-                  {{ artistName }}
+                <div :class="['long-text-truncated']">
+                  <span
+                    :class="$style['link-item']"
+                    @click.stop="
+                      () => goToArtistPage(musicPlayer.currentPlaying)
+                    "
+                  >
+                    {{ artistName }}</span
+                  >
                 </div>
               </v-flex>
 

@@ -74,11 +74,12 @@
             </v-flex>
 
             <v-flex xs12 class="pr-2">
-              <div
-                :class="['long-text-truncated', $style['artist-name']]"
-                @click="() => goToArtistPage(song)"
-              >
-                {{ song.attributes.artistName }}
+              <div :class="['long-text-truncated']">
+                <span
+                  :class="$style['artist-name']"
+                  @click="() => goToArtistPage(song)"
+                  >{{ song.attributes.artistName }}</span
+                >
               </div>
             </v-flex>
           </v-layout>

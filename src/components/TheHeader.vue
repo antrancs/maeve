@@ -41,7 +41,7 @@
     <v-menu v-else offset-y transition="scale-transition" :nudge-bottom="10">
       <v-btn icon large flat slot="activator" class="mr-1">
         <v-avatar color="accent" size="40px">
-          <v-icon>account_circle</v-icon>
+          <v-icon :color="iconStyle">account_circle</v-icon>
         </v-avatar>
       </v-btn>
 
@@ -71,7 +71,7 @@ import { Getter, Action } from 'vuex-class';
 import debounce from 'lodash/debounce';
 
 import { LOGOUT, LOGIN } from '@/store/actions.type';
-import { isLight } from '@/themes';
+import { isLight, TEXT_PRIMARY_LIGHT, TEXT_PRIMARY_DARK } from '@/themes';
 
 @Component
 export default class AppHeader extends Vue {
@@ -99,6 +99,12 @@ export default class AppHeader extends Vue {
       click: this.logout
     }
   ];
+
+  get iconStyle() {
+    return isLight(this.$vuetify.theme.accent as string)
+      ? TEXT_PRIMARY_LIGHT
+      : TEXT_PRIMARY_DARK;
+  }
 
   @Watch('searchText')
   onSearchTextChanged(newVal: string, oldVal: string) {

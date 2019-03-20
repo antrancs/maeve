@@ -51,7 +51,7 @@
                   </v-flex>
                 </v-layout>
 
-                <v-layout row justify-center align-center>
+                <v-layout row justify-center align-center class="mt-3">
                   <PlayPreviousButton
                     :size="40"
                     @on-previous="artworkSlideDirection = 'left'"

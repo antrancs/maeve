@@ -1,12 +1,12 @@
 <template>
-  <v-btn
-    icon
+  <div
     title="Play"
+    class="play-button"
     @click.stop="toggleCurrentTrack"
-    :style="{ width: `${size}px`, height: `${size}px` }"
+    :style="buttonStyle"
   >
-    <v-icon :size="size" :style="primaryStyle">{{ songStatusIcon }}</v-icon>
-  </v-btn>
+    <v-icon medium :color="iconStyle">{{ songStatusIcon }}</v-icon>
+  </div>
 </template>
 
 <script lang="ts">
@@ -15,6 +15,12 @@ import { Action, State } from 'vuex-class';
 
 import PlayerBarColorMixin from '@/mixins/PlayerBarColorMixin';
 import { TOGGLE_CURRENT_TRACK } from '@/store/actions.type';
+import {
+  lighten,
+  isLight,
+  TEXT_PRIMARY_LIGHT,
+  TEXT_PRIMARY_DARK
+} from '@/themes';
 
 @Component
 export default class PlayButton extends Mixins(PlayerBarColorMixin) {
@@ -28,5 +34,39 @@ export default class PlayButton extends Mixins(PlayerBarColorMixin) {
   get songStatusIcon(): string {
     return this.isPlaying ? 'pause' : 'play_arrow';
   }
+
+  get buttonStyle() {
+    const accent = this.$vuetify.theme.accent as string;
+    const accentLighten2 = lighten(accent, 20);
+    const accentLighten1 = lighten(accent, 10);
+
+    return {
+      background: `linear-gradient(-45deg, ${accent}, #${accentLighten1})`,
+      'box-shadow': `0px 0px 15px #${accentLighten2}`
+    };
+  }
+
+  get iconStyle() {
+    return isLight(this.$vuetify.theme.accent as string)
+      ? TEXT_PRIMARY_LIGHT
+      : TEXT_PRIMARY_DARK;
+  }
 }
 </script>
+
+<style lang="scss" scoped>
+.play-button:hover {
+  cursor: pointer;
+  transform: scale(1.1);
+}
+
+.play-button {
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+</style>

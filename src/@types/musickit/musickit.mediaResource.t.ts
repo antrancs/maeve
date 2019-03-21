@@ -1402,6 +1402,8 @@ declare namespace MusicKit {
     kind: string;
 
     catalogId?: string;
+
+    globalId?: string;
   }
 
   /**

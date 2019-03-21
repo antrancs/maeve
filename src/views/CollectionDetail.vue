@@ -28,12 +28,14 @@
               :name="collectionArtistName"
             />
           </div>
-          <!-- <div class="cover"></div> -->
-          <img
-            :class="$style['cover']"
-            :style="artworkStyle"
-            :src="artworkUrl"
-          />
+
+          <div :class="$style['cover-wrapper']">
+            <CollectionDetailArtwork
+              :class="$style['cover']"
+              :style="artworkStyle"
+              :artworks="artworks"
+            />
+          </div>
 
           <div :class="[$style['left-column__bottom'], 'pt-3']">
             <div :class="$style['song-info']">
@@ -52,12 +54,18 @@
       </v-flex>
       <v-flex xs12 v-else class="mb-3">
         <v-layout row v-if="collection">
-          <img
-            :class="$style['cover-sm']"
+          <!-- <img
+            
             :style="artworkStyle"
             :src="artworkUrl"
-          />
-          <v-flex class="pl-2">
+          /> -->
+          <div :class="$style['cover-sm']">
+            <CollectionDetailArtwork
+              :class="$style['cover']"
+              :artworks="artworks"
+            />
+          </div>
+          <v-flex class="pl-3">
             <v-layout column>
               <div
                 :class="$style['collection-name']"
@@ -157,6 +165,7 @@ import SongListLarge from '@/components/SongListLarge.vue';
 import SongCollectionList from '@/components/SongCollectionList.vue';
 import CollectionControls from '@/components/CollectionControls.vue';
 import MediaArtwork from '@/components/MediaArtwork.vue';
+import CollectionDetailArtwork from '@/components/Collection/CollectionDetailArtwork.vue';
 import {
   Nullable,
   Collection,
@@ -196,7 +205,8 @@ import { Route } from 'vue-router';
     SongListLarge,
     SongCollectionList,
     CollectionControls,
-    ResourceLinkList
+    ResourceLinkList,
+    CollectionDetailArtwork
   }
 })
 export default class CollectionDetail extends Vue {
@@ -260,6 +270,41 @@ export default class CollectionDetail extends Vue {
     }
 
     return null;
+  }
+
+  get artworks() {
+    if (!this.collection || !this.collection.attributes) {
+      return [PLACEHOLDER_IMAGE];
+    }
+    switch (this.collection.type) {
+      case 'albums':
+      case 'library-albums':
+      case 'playlists':
+        return [this.collection.attributes.artwork!.url];
+
+      case 'library-playlists': {
+        if (!this.collection.attributes.canEdit) {
+          return [this.collection.attributes.artwork!.url];
+        }
+        const artworks: Set<string> = new Set<string>();
+        for (const song of this.songs) {
+          if (artworks.size === 4) {
+            break;
+          }
+          if (!song.attributes || !song.attributes.artwork) {
+            continue;
+          }
+          if (!artworks.has(song.attributes.artwork.url)) {
+            artworks.add(song.attributes!.artwork!.url);
+          }
+        }
+
+        return [...artworks];
+      }
+
+      default:
+        return [];
+    }
   }
 
   get collectionArtistName(): string {
@@ -534,11 +579,26 @@ export default class CollectionDetail extends Vue {
   flex-direction: column;
   padding-left: 4rem;
 }
-.cover {
+
+.cover-wrapper {
+  position: relative;
   width: 100%;
-  height: auto;
   margin-right: -4rem;
   margin-left: 4rem;
+  // background-color: red;
+}
+
+.cover-wrapper:before {
+  content: '';
+  display: block;
+  padding-top: 100%; /* initial ratio of 1:1*/
+}
+
+.cover {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
   border-radius: 2rem;
 }
 
@@ -581,9 +641,16 @@ export default class CollectionDetail extends Vue {
 }
 
 .cover-sm {
-  width: 12rem;
-  height: 12rem;
+  width: 15rem;
+  height: 15rem;
   flex-shrink: 0;
+  position: relative;
+}
+
+.cover-sm:before {
+  content: '';
+  display: block;
+  padding-top: 100%;
 }
 
 .collection-date {

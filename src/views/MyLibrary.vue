@@ -13,9 +13,17 @@
               label="Filter"
               :placeholder="placeholderSearch"
               clearable
+              :disabled="loading"
               v-model="searchText"
               @keydown.stop=""
             ></v-text-field>
+          </v-flex>
+
+          <v-flex xs12 v-if="resource === 'songs' && filteredSongs.length > 0">
+            <app-button class="ml-0" @on-click="handlePlaySongs"
+              >Play</app-button
+            >
+            <app-button @on-click="handleShuffleSongs">Shuffle</app-button>
           </v-flex>
         </v-layout>
       </v-flex>
@@ -48,7 +56,7 @@
         You don't have any {{ resource }} in your library
       </div>
 
-      <v-flex class="text-xs-center" v-if="shouldLoad && !noMoreData">
+      <v-flex class="text-xs-center mt-2" v-if="loading">
         <v-progress-circular indeterminate color="accent"></v-progress-circular>
       </v-flex>
     </v-layout>
@@ -58,6 +66,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch, Mixins } from 'vue-property-decorator';
 import debounce from 'lodash/debounce';
+import shuffle from 'lodash/shuffle';
 
 import SongCollectionList from '@/components/SongCollectionList.vue';
 import SongListLarge from '@/components/SongListLarge.vue';
@@ -71,12 +80,14 @@ import { Route } from 'vue-router';
 import {
   FETCH_LIBRARY_SONGS,
   FETCH_LIBRARY_ALBUMS,
-  FETCH_LIBRARY_PLAYLISTS
+  FETCH_LIBRARY_PLAYLISTS,
+  PLAY_SONGS
 } from '@/store/actions.type';
 import {
   FetchLibraryAlbumsActions,
   FetchLibraryPlaylistsActions,
-  FetchLibrarySongsActions
+  FetchLibrarySongsActions,
+  PlaySongsAction
 } from '@/store/types';
 
 @Component({
@@ -87,9 +98,11 @@ import {
 })
 export default class MyLibrary extends Mixins(InfiniteScrollMixin) {
   static SEARCH_LIMIT = 50;
+  static SONG_SEARCH_LIMIT = 100;
   private playlists: MusicKit.LibraryPlaylist[] = [];
   private albums: MusicKit.LibraryAlbum[] = [];
   private songs: MusicKit.LibrarySong[] = [];
+  private loading = true;
 
   private hasNoData = false;
   private throttleScrollHandler!: (event: Event) => void;
@@ -102,6 +115,7 @@ export default class MyLibrary extends Mixins(InfiniteScrollMixin) {
   @Action [FETCH_LIBRARY_ALBUMS]: FetchLibraryAlbumsActions;
   @Action [FETCH_LIBRARY_PLAYLISTS]: FetchLibraryPlaylistsActions;
   @Action [FETCH_LIBRARY_SONGS]: FetchLibrarySongsActions;
+  @Action [PLAY_SONGS]: PlaySongsAction;
   @Action searchLibrary!: (searchTerm: string) => Promise<any[]>;
 
   get filteredAlbums(): MusicKit.LibraryAlbum[] {
@@ -208,19 +222,39 @@ export default class MyLibrary extends Mixins(InfiniteScrollMixin) {
     this.debouncedHandleSearchTextChanged();
   }
 
+  handlePlaySongs() {
+    this.playSongs({
+      songs: this.filteredSongs,
+      songsSourceName: 'Library Songs'
+    });
+  }
+
+  handleShuffleSongs() {
+    const shuffledSongs = shuffle(this.filteredSongs);
+    this.playSongs({
+      songs: shuffledSongs,
+      songsSourceName: 'Library Songs'
+    });
+  }
+
   async $_fetchResource() {
     this.shouldLoad = false;
+    this.loading = true;
     switch (this.resource) {
       case 'albums': {
         const { data, hasNext, hasNoData } = await this.fetchLibraryAlbums({
           offset: this.offset,
           limit: MyLibrary.SEARCH_LIMIT
         });
-        this.$_processResult<MusicKit.LibraryAlbum>(this.albums, {
-          data,
-          hasNext,
-          hasNoData
-        });
+        this.$_processResult<MusicKit.LibraryAlbum>(
+          this.albums,
+          {
+            data,
+            hasNext,
+            hasNoData
+          },
+          MyLibrary.SEARCH_LIMIT
+        );
         break;
       }
 
@@ -229,27 +263,36 @@ export default class MyLibrary extends Mixins(InfiniteScrollMixin) {
           offset: this.offset,
           limit: MyLibrary.SEARCH_LIMIT
         });
-        this.$_processResult<MusicKit.LibraryPlaylist>(this.playlists, {
-          data,
-          hasNext,
-          hasNoData
-        });
+        this.$_processResult<MusicKit.LibraryPlaylist>(
+          this.playlists,
+          {
+            data,
+            hasNext,
+            hasNoData
+          },
+          MyLibrary.SEARCH_LIMIT
+        );
         break;
       }
 
       case 'songs': {
         const { data, hasNext, hasNoData } = await this.fetchLibrarySongs({
           offset: this.offset,
-          limit: MyLibrary.SEARCH_LIMIT
+          limit: MyLibrary.SONG_SEARCH_LIMIT
         });
-        this.$_processResult<MusicKit.LibrarySong>(this.songs, {
-          data,
-          hasNext,
-          hasNoData
-        });
+        this.$_processResult<MusicKit.LibrarySong>(
+          this.songs,
+          {
+            data,
+            hasNext,
+            hasNoData
+          },
+          MyLibrary.SONG_SEARCH_LIMIT
+        );
         break;
       }
     }
+    this.loading = false;
   }
 
   $_processResult<T>(
@@ -258,7 +301,8 @@ export default class MyLibrary extends Mixins(InfiniteScrollMixin) {
       data: T[];
       hasNext: boolean;
       hasNoData: boolean;
-    }
+    },
+    limit: number
   ) {
     const { data, hasNext, hasNoData } = result;
     if (hasNoData) {
@@ -273,7 +317,7 @@ export default class MyLibrary extends Mixins(InfiniteScrollMixin) {
     if (!this.noMoreData) {
       this.shouldLoad = true;
     }
-    this.offset += MyLibrary.SEARCH_LIMIT;
+    this.offset += limit;
 
     // For now, just set the maximum items to fetch to 300
     if (!hasNext || this.offset === 300) {

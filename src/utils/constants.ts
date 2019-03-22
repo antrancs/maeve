@@ -1,4 +1,5 @@
 export enum ActivityType {
+  FeelGood = '976439512',
   Workout = '976439525',
   Party = '976439514',
   Chill = '976439503',

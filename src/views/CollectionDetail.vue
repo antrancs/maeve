@@ -1,7 +1,7 @@
 <template>
   <v-container fill-height class="pb-0">
     <v-layout row wrap>
-      <v-flex sm4 md4 lg3 v-if="$vuetify.breakpoint.smAndUp">
+      <v-flex md4 lg3 v-if="$vuetify.breakpoint.mdAndUp">
         <div
           :class="$style['left-column']"
           :style="[leftColumnBackgroundStyle]"
@@ -99,11 +99,11 @@
 
       <v-flex
         xs12
-        sm8
+        sm12
         md8
         lg9
         v-if="collection"
-        :class="{ [$style['right-column']]: $vuetify.breakpoint.smAndUp }"
+        :class="{ [$style['right-column']]: $vuetify.breakpoint.mdAndUp }"
       >
         <template v-if="collectionDescription">
           <p
@@ -120,7 +120,7 @@
           </p>
         </template>
 
-        <v-layout row justify-end v-if="$vuetify.breakpoint.smAndUp">
+        <v-layout row justify-end v-if="$vuetify.breakpoint.mdAndUp">
           <CollectionControls
             v-if="songs.length > 0"
             :collection="collection"
@@ -583,6 +583,7 @@ export default class CollectionDetail extends Vue {
 .cover-wrapper {
   position: relative;
   width: 100%;
+  max-width: 50vh;
   margin-right: -4rem;
   margin-left: 4rem;
   // background-color: red;

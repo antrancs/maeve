@@ -1,6 +1,6 @@
 <template>
   <v-hover>
-    <v-card class="secondary elevation-8 item-card" slot-scope="{ hover }">
+    <v-card class="secondary elevation-4 item-card" slot-scope="{ hover }">
       <MediaArtwork
         :artwork="artwork"
         :width="artworkSize"

@@ -185,7 +185,9 @@ const actions: ActionTree<UserLibraryState, any> = {
   },
 
   [FETCH_RECENT_PLAYED]() {
-    return musicKit.getApiInstance().recentPlayed();
+    return musicKit.getApiInstance().recentPlayed({
+      offset: 0
+    });
   },
 
   [FETCH_RECENTLY_ADDED]() {

@@ -151,9 +151,9 @@ export default class MyLibrary extends Mixins(InfiniteScrollMixin) {
     return this.songs.filter(
       song =>
         song.attributes &&
-        (song.attributes.name.toLowerCase().includes(searchText) ||
-          song.attributes.artistName.toLowerCase().includes(searchText) ||
-          song.attributes.albumName.toLowerCase().includes(searchText))
+        (song.attributes.artistName.toLowerCase().includes(searchText) ||
+          song.attributes.albumName.toLowerCase().includes(searchText) ||
+          song.attributes.name.toLowerCase().includes(searchText))
     );
   }
 

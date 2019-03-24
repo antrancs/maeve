@@ -62,7 +62,10 @@
               </v-layout>
             </v-flex>
 
-            <SongCollectionList :collections="newReleases" />
+            <CollectionCarousel
+              v-if="newReleases.length > 0"
+              :collections="newReleases"
+            />
           </v-layout>
         </v-flex>
       </template>
@@ -72,21 +75,21 @@
           <h2 class="section-title">Recently played</h2>
         </v-flex>
 
-        <SongCollectionList :collections="recentPlayed" />
+        <CollectionCarousel :collections="recentPlayed" />
       </template>
 
       <template v-if="albums.length > 0">
         <v-flex xs12 class="px-2 pt-4">
           <h2 class="section-title">Top Albums</h2>
         </v-flex>
-        <SongCollectionList :collections="albums" />
+        <CollectionCarousel :collections="albums" />
       </template>
 
       <template v-if="playlists.length > 0">
         <v-flex xs12 class="px-2 pt-4">
           <h2 class="section-title">Top Playlists</h2>
         </v-flex>
-        <SongCollectionList :collections="playlists" />
+        <CollectionCarousel :collections="playlists" />
       </template>
 
       <template>
@@ -117,6 +120,7 @@
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator';
 
+import CollectionCarousel from '@/components/Collection/CollectionCarousel.vue';
 import FeaturedPlaylist from '@/components/FeaturedPlaylist.vue';
 import ActivityItem from '@/components/ActivityItem.vue';
 import SongCollectionList from '@/components/SongCollectionList.vue';
@@ -141,7 +145,8 @@ import { Nullable } from '@/@types/model/model';
     FeaturedPlaylist,
     ActivityItem,
     GenreList,
-    SongCollectionList
+    SongCollectionList,
+    CollectionCarousel
   }
 })
 export default class Home extends Vue {
@@ -153,7 +158,7 @@ export default class Home extends Vue {
   private chart: Nullable<MusicKit.ChartResponse> = null;
   private genres: string[] = [];
   private selectedNewReleasesGenre: Nullable<string> = null;
-  private newReleases: MusicKit.Album[] | null = null;
+  private newReleases: MusicKit.Album[] = [];
 
   @Getter isAuthenticated!: boolean;
 
@@ -247,7 +252,7 @@ export default class Home extends Vue {
         if (Array.isArray(releases)) {
           this.newReleases = releases.slice(0, 12);
         } else {
-          this.newReleases = null;
+          this.newReleases = [];
         }
       });
   }

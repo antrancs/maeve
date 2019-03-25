@@ -21,6 +21,7 @@
             v-model="description"
             color="accent"
             auto-grow
+            @keydown.stop=""
           ></v-textarea>
         </v-form>
       </v-card-text>

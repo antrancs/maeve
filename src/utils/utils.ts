@@ -167,6 +167,31 @@ const getMainFeaturedPlaylists = () => {
     });
 };
 
+const getGenreData = (id: string, limit: number) => {
+  return axios
+    .get(`/api/catalog/genres/${id}`, {
+      params: {
+        limit,
+        country: MusicKit.getInstance().storefrontId
+      }
+    })
+    .then(res => {
+      return res.data;
+    });
+};
+
+const getGenreOneResource = (id: string, resource: string) => {
+  return axios
+    .get(`/api/catalog/genres/${id}/${resource}`, {
+      params: {
+        country: MusicKit.getInstance().storefrontId
+      }
+    })
+    .then(res => {
+      return res.data;
+    });
+};
+
 export {
   getArtworkUrl,
   getArtistArtwork,
@@ -179,5 +204,7 @@ export {
   getGrammyResults,
   getFeaturedPlaylists,
   getMainFeaturedPlaylists,
-  getArtworkSize
+  getArtworkSize,
+  getGenreData,
+  getGenreOneResource
 };

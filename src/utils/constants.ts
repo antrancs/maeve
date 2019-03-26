@@ -55,7 +55,7 @@ export const GENRES: Genre[] = [
   },
   {
     id: '18',
-    name: 'Hiphop/Rap',
+    name: 'Hip-Hop/Rap',
     colors: ['#ff6e7f', '#bfe9ff'],
     curatorId: '976439539'
   },

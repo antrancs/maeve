@@ -226,7 +226,6 @@ export default class CollectionCarousel extends Vue {
     }
 
     this.scrollLeftMax = scrollWidth - clientWidth;
-    // console.log('left max', scrollWidth, clientWidth, this.scrollLeftMax);
   }
 }
 </script>

@@ -37,6 +37,46 @@
         </transition>
       </template>
 
+      <v-flex xs12 class="pt-4">
+        <h2 class="section-title px-2">Browse</h2>
+        <v-layout row wrap>
+          <v-flex
+            xs6
+            sm3
+            md3
+            lg2
+            class="pa-2"
+            v-for="category in categories"
+            :key="category.name"
+          >
+            <router-link
+              :to="{
+                name: 'browse',
+                params: {
+                  resource: category.path
+                }
+              }"
+            >
+              <div style="width: 100%">
+                <img style="width: 100%" :src="category.img" />
+
+                <div class="main-info-text text-xs-center">
+                  {{ category.name }}
+                </div>
+              </div>
+            </router-link>
+          </v-flex>
+        </v-layout>
+      </v-flex>
+
+      <template v-if="isAuthenticated && recentPlayed.length > 0">
+        <v-flex xs12 class="px-2 pt-4">
+          <h2 class="section-title">Recently played</h2>
+        </v-flex>
+
+        <CollectionCarousel :collections="recentPlayed" />
+      </template>
+
       <template v-if="genres.length > 0">
         <v-flex xs12>
           <v-layout row wrap>
@@ -68,14 +108,6 @@
             />
           </v-layout>
         </v-flex>
-      </template>
-
-      <template v-if="isAuthenticated && recentPlayed.length > 0">
-        <v-flex xs12 class="px-2 pt-4">
-          <h2 class="section-title">Recently played</h2>
-        </v-flex>
-
-        <CollectionCarousel :collections="recentPlayed" />
       </template>
 
       <template v-if="albums.length > 0">
@@ -137,7 +169,7 @@ import {
   FetchMultiplePlaylistsCatalogAction,
   FetchRecentPlayedAction
 } from '@/store/types';
-import { getMainFeaturedPlaylists } from '@/utils/utils';
+import { getMainFeaturedPlaylists, getArtworkSize } from '@/utils/utils';
 import { Nullable } from '@/@types/model/model';
 
 @Component({
@@ -159,6 +191,23 @@ export default class Home extends Vue {
   private genres: string[] = [];
   private selectedNewReleasesGenre: Nullable<string> = null;
   private newReleases: MusicKit.Album[] = [];
+  private categories = [
+    {
+      name: 'New Music',
+      img: require(`@/assets/images/newMusic/${this.artworkSize}.jpg`),
+      path: 'new-music'
+    },
+    {
+      name: 'Replay',
+      img: require(`@/assets/images/replay/${this.artworkSize}.jpg`),
+      path: 'replay'
+    },
+    {
+      name: 'Girl Power',
+      img: require(`@/assets/images/girlPower/${this.artworkSize}.jpg`),
+      path: 'girl-power'
+    }
+  ];
 
   @Getter isAuthenticated!: boolean;
 
@@ -204,6 +253,10 @@ export default class Home extends Vue {
     }
 
     return (this.chart.albums[0].data as MusicKit.Album[]) || [];
+  }
+
+  get artworkSize() {
+    return getArtworkSize(this.$vuetify.breakpoint.name);
   }
 
   created() {

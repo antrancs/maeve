@@ -85,6 +85,13 @@ const router = new Router({
       props: true
     },
     {
+      path: '/browse/:resource',
+      name: 'browse',
+      component: () =>
+        import(/* webpackChunkName: "browse" */ './views/Browse.vue'),
+      props: true
+    },
+    {
       path: '/genres/:id/:resource',
       name: 'genresViewAll',
       component: () =>

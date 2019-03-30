@@ -192,6 +192,12 @@ const getGenreOneResource = (id: string, resource: string) => {
     });
 };
 
+const getBrowsePlaylists = (path: string) => {
+  return axios.get(`/api/catalog/browse/${path}`).then(res => {
+    return res.data;
+  });
+};
+
 export {
   getArtworkUrl,
   getArtistArtwork,
@@ -206,5 +212,6 @@ export {
   getMainFeaturedPlaylists,
   getArtworkSize,
   getGenreData,
-  getGenreOneResource
+  getGenreOneResource,
+  getBrowsePlaylists
 };

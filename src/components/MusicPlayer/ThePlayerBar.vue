@@ -24,6 +24,7 @@
               >
                 <div
                   :class="[$style['song-name'], 'long-text-truncated', 'mb-1']"
+                  @click.stop="goToSongAlbumPage"
                 >
                   {{ songName }}
                 </div>
@@ -37,6 +38,36 @@
                   >
                     {{ artistName }}</span
                   >
+                </div>
+
+                <div class="long-text-truncated" style="cursor: default">
+                  <small style="cursor: default">Playing from</small>
+                  <template
+                    v-if="
+                      musicPlayer.currentCollectionId &&
+                        musicPlayer.currentPlayingSource !== 'Your Queue'
+                    "
+                  >
+                    <router-link
+                      @click.native="$event.stopImmediatePropagation()"
+                      :to="{
+                        name: musicPlayer.currentCollectionType,
+                        params: {
+                          id: musicPlayer.currentCollectionId
+                        }
+                      }"
+                    >
+                      <small :class="$style['link-item']">
+                        {{ musicPlayer.currentPlayingSource }}
+                      </small>
+                    </router-link>
+                  </template>
+
+                  <template v-else>
+                    <small class="ml-1" style="cursor: default">{{
+                      musicPlayer.currentPlayingSource
+                    }}</small>
+                  </template>
                 </div>
               </v-flex>
 
@@ -133,12 +164,12 @@ import {
   TOGGLE_QUEUE_VISIBILITY,
   UPDATE_REPEAT_MODE,
   TOGGLE_SHUFFLE_MODE,
-  FETCH_CATALOG_SONG_DETAILS,
   TOGGLE_CURRENT_TRACK,
   PLAY_NEXT,
   PLAY_PREVIOUS,
   CHANGE_VOLUME,
-  MUTE_VOLUME
+  MUTE_VOLUME,
+  FETCH_CATALOG_SONG_DETAILS
 } from '@/store/actions.type';
 import { Nullable, ShuffleMode, Artist } from '@/@types/model/model';
 import { RepeatMode, PLACEHOLDER_IMAGE } from '@/utils/constants';
@@ -175,9 +206,6 @@ export default class PlayerBar extends Mixins(
   [TOGGLE_QUEUE_VISIBILITY]: () => void;
   @Action
   [TOGGLE_SHUFFLE_MODE]: () => void;
-  @Action [FETCH_CATALOG_SONG_DETAILS]: (
-    ids?: string[]
-  ) => Promise<MusicKit.Song[]>;
   @Action
   [TOGGLE_CURRENT_TRACK]: () => void;
   @Action
@@ -186,6 +214,9 @@ export default class PlayerBar extends Mixins(
   [PLAY_PREVIOUS]: () => void;
   @Action [CHANGE_VOLUME]: (volume: number) => void;
   @Action [MUTE_VOLUME]: () => void;
+  @Action [FETCH_CATALOG_SONG_DETAILS]: (
+    ids?: string[]
+  ) => Promise<MusicKit.Song[]>;
 
   @Mutation [SET_IS_MUTED]: () => void;
 
@@ -251,6 +282,38 @@ export default class PlayerBar extends Mixins(
 
   beforeDestroy() {
     window.removeEventListener('keydown', this.handleKeyDown);
+  }
+
+  goToSongAlbumPage() {
+    const { currentPlaying } = this.musicPlayer;
+    if (!currentPlaying) {
+      return;
+    }
+    let songId: string | undefined;
+
+    switch (currentPlaying.type) {
+      case 'songs':
+        songId = currentPlaying.id;
+        break;
+      case 'library-songs':
+        if (currentPlaying.attributes && currentPlaying.attributes.playParams) {
+          songId = currentPlaying.attributes.playParams.catalogId;
+        }
+    }
+
+    if (!songId) {
+      return;
+    }
+
+    this.fetchCatalogSongsDetails([songId]).then(songs => {
+      const song = songs[0];
+
+      if (song && song.relationships && song.relationships.albums) {
+        const album = song.relationships.albums.data[0];
+
+        this.$router.push({ name: 'albums', params: { id: album.id } });
+      }
+    });
   }
 
   handleKeyDown(event: KeyboardEvent) {
@@ -349,6 +412,10 @@ export default class PlayerBar extends Mixins(
 
 .song-name {
   font-weight: bold;
+}
+
+.song-name:hover {
+  text-decoration: underline;
 }
 
 .btn-groups-small-device button {

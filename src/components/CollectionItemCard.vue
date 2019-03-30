@@ -190,6 +190,7 @@ export default class CollectionItemCard extends Vue {
     const songs = getSongsFromCollection(collection);
     this.playSongs({
       collectionId: this.collection.id,
+      collectionType: this.collection.type,
       songs: songs,
       songsSourceName: this.collection.attributes
         ? this.collection.attributes.name
@@ -201,6 +202,7 @@ export default class CollectionItemCard extends Vue {
     if (collection.relationships && collection.relationships.tracks) {
       this.playSongs({
         collectionId: collection.id,
+        collectionType: collection.type,
         songs: collection.relationships.tracks.data,
         songsSourceName: collection.attributes ? collection.attributes.name : ''
       });

@@ -19,6 +19,12 @@ export interface MusicPlayerState {
   // currentCollectionId is the id of the collection to which currentPlaying belongs
   // currentCollectionId is null when currentPlaying is from a list of songs (for eg, top songs of an artist)
   currentCollectionId: string | null;
+  currentCollectionType:
+    | 'albums'
+    | 'playlists'
+    | 'library-albums'
+    | 'library-playlists'
+    | null;
   isPlaying: boolean;
   playbackProgress: number;
   isLoading: boolean;
@@ -48,6 +54,11 @@ export type PlaySongsPayload = {
   startSongIndex?: number;
   // id of the collection from which 'songs' are from
   collectionId?: string;
+  collectionType?:
+    | 'albums'
+    | 'playlists'
+    | 'library-albums'
+    | 'library-playlists';
 };
 
 export type FetchCollectionPayload = {

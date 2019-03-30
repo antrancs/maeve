@@ -40,7 +40,8 @@ import {
   SET_SHUFFLE_MODE,
   SET_YOUR_QUEUE,
   SET_SHUFFLED_SONGS_INDEX,
-  SET_NEXT_SONG_TO_PLAY
+  SET_NEXT_SONG_TO_PLAY,
+  SET_CURRENT_COLLECTION_TYPE
 } from '@/store/mutations.type';
 import {
   MusicPlayerState,
@@ -55,6 +56,7 @@ const initialState: MusicPlayerState = {
   currentPlaying: null,
   currentPlayingSource: '',
   currentCollectionId: null,
+  currentCollectionType: null,
   isPlaying: false,
   playbackProgress: 0,
   isLoading: false,
@@ -142,7 +144,8 @@ const actions: ActionTree<MusicPlayerState, any> = {
       startSongIndex = 0,
       shuffle = false,
       songs,
-      songsSourceName
+      songsSourceName,
+      collectionType
     }: PlaySongsPayload
   ) {
     // filter out blocked songs & songs from blocked artists
@@ -170,6 +173,7 @@ const actions: ActionTree<MusicPlayerState, any> = {
     commit(SET_MAIN_SONGS, playQueueSongs);
     commit(SET_MAIN_SONGS_SOURCE, songsSourceName);
     commit(SET_CURRENT_COLLECTION_ID, collectionId);
+    commit(SET_CURRENT_COLLECTION_TYPE, collectionType);
     commit(SET_MAIN_SONGS_INDEX, startSongIndex);
     commit(SET_SHUFFLED_SONGS_INDEX, 0);
     commit(SET_SHUFFLE_MODE, +shuffle);
@@ -270,6 +274,10 @@ const mutations: MutationTree<MusicPlayerState> = {
 
   [SET_CURRENT_COLLECTION_ID](state, id: string | null) {
     state.currentCollectionId = id;
+  },
+
+  [SET_CURRENT_COLLECTION_TYPE](state, type: 'albums' | 'playlists' | null) {
+    state.currentCollectionType = type;
   },
 
   [SET_IS_PLAYING](state, isPlaying: boolean) {

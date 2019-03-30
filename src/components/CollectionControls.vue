@@ -39,6 +39,7 @@ export default class CollectionControls extends Vue {
     // Start with the first song by default
     this.playSongs({
       collectionId: this.collection.id,
+      collectionType: this.collection.type,
       songs: this.songs,
       songsSourceName: this.collection.attributes
         ? this.collection.attributes.name
@@ -52,6 +53,7 @@ export default class CollectionControls extends Vue {
   shuffleSongs() {
     this.playSongs({
       collectionId: this.collection.id,
+      collectionType: this.collection.type,
       shuffle: true,
       songs: this.songs,
       songsSourceName: this.collection.attributes

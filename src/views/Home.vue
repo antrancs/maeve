@@ -37,6 +37,14 @@
         </transition>
       </template>
 
+      <template v-if="isAuthenticated && recentPlayed.length > 0">
+        <v-flex xs12 class="px-2 pt-4">
+          <h2 class="section-title">Recently played</h2>
+        </v-flex>
+
+        <CollectionCarousel :collections="recentPlayed" />
+      </template>
+
       <v-flex xs12 class="pt-4">
         <h2 class="section-title px-2">Browse</h2>
         <v-layout row wrap>
@@ -68,14 +76,6 @@
           </v-flex>
         </v-layout>
       </v-flex>
-
-      <template v-if="isAuthenticated && recentPlayed.length > 0">
-        <v-flex xs12 class="px-2 pt-4">
-          <h2 class="section-title">Recently played</h2>
-        </v-flex>
-
-        <CollectionCarousel :collections="recentPlayed" />
-      </template>
 
       <template v-if="genres.length > 0">
         <v-flex xs12>

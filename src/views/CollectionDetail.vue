@@ -423,7 +423,7 @@ export default class CollectionDetail extends Vue {
     if (this.collection.type === 'albums') {
       const releaseDateStr = this.collection.attributes.releaseDate;
 
-      return format(parse(releaseDateStr), 'MMMM DD, YYYY');
+      return format(parse(releaseDateStr), 'DD-MMM-YYYY');
     }
 
     return null;

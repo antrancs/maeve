@@ -43,9 +43,11 @@
             </div>
             <div :class="$style['collection-date']">
               <template v-if="collection.type === 'albums'">
-                Released: {{ releaseDate }}
+                {{ releaseDate }}
               </template>
-              <template v-else-if="collection.type === 'playlists'">
+              <template
+                v-else-if="collection.type === 'playlists' && updatedDate"
+              >
                 Updated {{ updatedDate }}
               </template>
             </div>
@@ -154,11 +156,12 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
+import { Action, Mutation, State } from 'vuex-class';
 import parse from 'date-fns/parse';
 import format from 'date-fns/format';
-import { Action, Mutation, State } from 'vuex-class';
-import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
 import isToday from 'date-fns/is_today';
+import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
+import random from 'lodash/random';
 
 import ResourceLinkList from '@/components/ResourceLinkList.vue';
 import SongListLarge from '@/components/SongListLarge.vue';
@@ -215,6 +218,12 @@ export default class CollectionDetail extends Vue {
   private otherAlbumsFromArtists: MusicKit.Album[] = [];
   private editorialNoteCollapse = true;
   private songs: Song[] = [];
+  private bgColors = [
+    ['#556270', '#4ECDC4'],
+    ['#114357', '#F29492'],
+    ['#525252', '#3d72b4'],
+    ['#514A9D', '#24C6DC']
+  ]; // used when the artwork doesn't have bgColor properties
 
   @Prop() id!: string;
 
@@ -337,8 +346,12 @@ export default class CollectionDetail extends Vue {
     } = this.collection.attributes.artwork;
 
     if (!bgColor) {
+      const bgColorIndex = random(0, this.bgColors.length - 1);
+
       return {
-        background: 'linear-gradient(45deg, #FF5F6D, #FFC371)'
+        background: `linear-gradient(45deg, ${this.bgColors[bgColorIndex].join(
+          ','
+        )})`
       };
     }
     if (isLight(bgColor)) {
@@ -423,7 +436,16 @@ export default class CollectionDetail extends Vue {
     if (this.collection.type === 'albums') {
       const releaseDateStr = this.collection.attributes.releaseDate;
 
-      return format(parse(releaseDateStr), 'DD-MMM-YYYY');
+      const releaseDate = parse(releaseDateStr);
+      const formattedReleaseDate = format(
+        parse(releaseDateStr),
+        'MMM DD, YYYY'
+      );
+
+      if (releaseDate > new Date()) {
+        return `Coming ${formattedReleaseDate}`;
+      }
+      return `Released ${formattedReleaseDate}`;
     }
 
     return null;
@@ -437,6 +459,10 @@ export default class CollectionDetail extends Vue {
 
     if (this.collection.type === 'playlists') {
       const lastModifiedDateStr = this.collection.attributes.lastModifiedDate;
+
+      if (!lastModifiedDateStr) {
+        return null;
+      }
       const lastModifiedDate = new Date(lastModifiedDateStr);
 
       return isToday(lastModifiedDate)

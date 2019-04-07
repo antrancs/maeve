@@ -32,19 +32,19 @@
 
     <v-container
       class="pb-0 latest-release"
-      v-if="$vuetify.breakpoint.smAndUp && latestRelease"
+      v-if="$vuetify.breakpoint.smAndUp && featuredRelease"
     >
       <v-layout row wrap>
         <v-flex class="px-2 latest-release__title" xs12>
-          <h2>Latest release</h2>
+          <h2>{{ featuredReleaseTitle }}</h2>
         </v-flex>
 
         <v-flex xs6 sm3 md3 lg2 class="pa-2 latest-release__content">
           <LinkComponent
-            :routeName="latestRelease.type"
-            :routeParams="{ id: latestRelease.id }"
+            :routeName="featuredRelease.type"
+            :routeParams="{ id: featuredRelease.id }"
           >
-            <CollectionItemCard :collection="latestRelease" />
+            <CollectionItemCard :collection="featuredRelease" />
           </LinkComponent>
         </v-flex>
       </v-layout>
@@ -205,9 +205,10 @@ export default class ArtistDetail extends Vue {
   private bioCollapse = true;
   private origin: Nullable<string> = null;
   private topSongs: MusicKit.Song[] = [];
-  private featureRelease: Nullable<Collection> = null;
+
   private artistPlaylists: MusicKit.Playlist[] = [];
-  private latestRelease: Nullable<MusicKit.Album> = null;
+  private featuredRelease: Nullable<MusicKit.Album> = null;
+  private featuredReleaseTitle = '';
   private albums: MusicKit.Album[] = [];
   private singles: MusicKit.Album[] = [];
 
@@ -312,7 +313,7 @@ export default class ArtistDetail extends Vue {
   @Watch('$route')
   onRouteChange(to: Route, from: Route) {
     this.artist = null;
-    this.latestRelease = null;
+    this.featuredRelease = null;
     this.bannerUrl = PLACEHOLDER_IMAGE;
     this.artistPlaylists = [];
     this.topSongs = [];
@@ -401,7 +402,8 @@ export default class ArtistDetail extends Vue {
 
       if (feature && feature.id) {
         this.fetchOneAlbumCatalog(feature.id).then(album => {
-          this.latestRelease = album;
+          this.featuredRelease = album;
+          this.featuredReleaseTitle = feature.title;
         });
       }
 

@@ -40,6 +40,8 @@ export default class Browse extends Vue {
         return 'Replay';
       case 'girl-power':
         return 'Girl Power';
+      case 'sing-along':
+        return 'Sing Along';
       default:
         return null;
     }

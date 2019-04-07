@@ -2,3 +2,5 @@ User-agent: *
 Disallow: /albums/*
 Disallow: /artists/*
 Disallow: /genres/*
+Disallow: /api/*
+Disallow: /lastfm/*

@@ -7,7 +7,7 @@
           class="px-2 featured-playlist__header"
           v-if="featuredPlaylists.length > 0"
         >
-          <h3 class="section-title">Today's Featured Playlists</h3>
+          <h3 class="section-title">Featured Playlists</h3>
 
           <router-link
             :to="{
@@ -201,6 +201,11 @@ export default class Home extends Vue {
       name: 'Replay',
       img: require(`@/assets/images/replay/${this.artworkSize}.jpg`),
       path: 'replay'
+    },
+    {
+      name: 'Sing-Along',
+      img: require(`@/assets/images/singAlong/${this.artworkSize}.jpg`),
+      path: 'sing-along'
     },
     {
       name: 'Girl Power',

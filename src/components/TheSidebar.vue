@@ -241,7 +241,7 @@ export default class AppSidebar extends Vue {
     if (newVal) {
       this.fetchLibraryPlaylists({
         offset: 0,
-        limit: 20
+        limit: 50
       });
     }
   }

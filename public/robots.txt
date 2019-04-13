@@ -1,5 +1,6 @@
 User-agent: *
 Disallow: /albums/*
+Disallow: /curators/*
 Disallow: /artists/*
 Disallow: /genres/*
 Disallow: /api/*

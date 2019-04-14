@@ -3,7 +3,7 @@
     <v-layout row wrap v-if="hasResults">
       <template v-if="artists.length > 0">
         <v-flex class="section-header pa-2" xs12>
-          <h3 class="section-title">Artists</h3>
+          <section-header>Artists</section-header>
           <!-- <router-link
             v-if="artists.length > 5"
             :to="{
@@ -20,7 +20,7 @@
 
       <template v-if="songs.length > 0">
         <v-flex xs12 class="section-header px-2 pt-4">
-          <h3 class="section-title">Songs</h3>
+          <section-header>Songs</section-header>
           <router-link
             v-if="songs.length > 5"
             :to="{
@@ -40,7 +40,7 @@
 
       <template v-if="albums.length > 0">
         <v-flex class="section-header px-2 pt-4" xs12>
-          <h3 class="section-title">Albums</h3>
+          <section-header>Albums</section-header>
           <router-link
             v-if="albums.length > 10"
             :to="{
@@ -57,7 +57,7 @@
 
       <template v-if="playlists.length > 0">
         <v-flex xs12 class="section-header px-2 pt-4">
-          <h3 class="section-title">Playlists</h3>
+          <section-header>Playlists</section-header>
           <router-link
             v-if="playlists.length > 10"
             :to="{

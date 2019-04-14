@@ -2,7 +2,7 @@
   <v-container>
     <v-layout row wrap>
       <v-flex xs12 class="px-2" v-if="genre">
-        <h3 class="section-title">{{ genre.name }} - {{ resourceText }}</h3>
+        <section-header>{{ genre.name }} - {{ resourceText }}</section-header>
       </v-flex>
 
       <v-flex xs12 v-if="collections.length > 0">

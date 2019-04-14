@@ -53,7 +53,7 @@
     <v-container>
       <v-layout row wrap>
         <v-flex xs12 class="px-2" v-if="bio || origin || birthday">
-          <h3 class="section-title">About {{ artist.attributes.name }}</h3>
+          <section-header>About {{ artist.attributes.name }}</section-header>
         </v-flex>
         <v-flex xs12 class="px-2">
           <v-layout row wrap>
@@ -89,7 +89,7 @@
 
         <template v-if="topSongs.length > 0">
           <v-flex xs12 class="px-2 pt-4">
-            <h3 class="section-title">Top Songs</h3>
+            <section-header>Top Songs</section-header>
           </v-flex>
 
           <SongListLarge
@@ -100,7 +100,7 @@
 
         <template v-if="nonSingles.length > 0">
           <v-flex xs12 class="px-2 pt-4">
-            <h3 class="section-title">Albums</h3>
+            <section-header>Albums</section-header>
           </v-flex>
 
           <SongCollectionList :collections="nonSingles" />
@@ -108,7 +108,7 @@
 
         <template v-if="artistType === 'library-artists'">
           <v-flex xs12 class="px-2 pt-4">
-            <h3 class="section-title">Albums</h3>
+            <section-header>Albums</section-header>
           </v-flex>
 
           <SongCollectionList :collections="albums" />
@@ -116,7 +116,7 @@
 
         <template v-if="singles.length > 0">
           <v-flex xs12 class="px-2 pt-4">
-            <h3 class="section-title">EPs & Singles</h3>
+            <section-header>EPs & Singles</section-header>
           </v-flex>
 
           <SongCollectionList :collections="singles" />
@@ -124,7 +124,7 @@
 
         <template v-if="artistPlaylists.length > 0">
           <v-flex xs12 class="px-2 pt-4">
-            <h3 class="section-title">Playlists</h3>
+            <section-header>Playlists</section-header>
           </v-flex>
 
           <SongCollectionList :collections="artistPlaylists" />
@@ -132,7 +132,7 @@
 
         <template v-if="relatedArtists.length > 0">
           <v-flex xs12 class="px-2 pt-4">
-            <h3 class="section-title">Related artists</h3>
+            <section-header>Related artists</section-header>
           </v-flex>
           <ArtistList :artists="relatedArtists" />
         </template>

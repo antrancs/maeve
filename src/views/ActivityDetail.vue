@@ -15,7 +15,7 @@
     <v-container class="activity-content pt-0">
       <v-layout row wrap style="z-index: 2">
         <v-flex xs12 class="px-2">
-          <h3 class="section-title">Popular playlists</h3>
+          <section-header>Popular playlists</section-header>
         </v-flex>
 
         <v-flex xs12> <SongCollectionList :collections="playlists" /> </v-flex>

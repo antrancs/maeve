@@ -49,6 +49,7 @@ export const SET_THEME = 'setTheme';
 export const DELETE_THEME_MUTATION = 'deleteThemeMutation';
 export const SET_SELECTED_THEME = 'setSelectedTheme';
 export const SET_BUTTON_STYLE = 'setButtonStyle';
+export const SET_PLAYBACK_BITRATE = 'setPlaybackBitrate';
 export const ADD_BLOCKED_ARTISTS = 'addBlockedArtist';
 export const REMOVE_BLOCKED_ARTISTS = 'removeBlockedArtists';
 export const SET_BLOCKED_ARTISTS = 'setBlockedArtists';

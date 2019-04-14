@@ -4,7 +4,7 @@
       <v-flex xs12 class="px-2">
         <v-layout row wrap fill-height align-center>
           <v-flex xs12 md6 lg8>
-            <h2 class="section-title">My {{ resource }}</h2>
+            <section-header>My {{ resource }}</section-header>
           </v-flex>
 
           <v-flex xs12 md6 lg4>

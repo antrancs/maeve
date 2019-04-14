@@ -37,7 +37,7 @@ declare namespace MusicKit {
     /**
      * The current bit rate for the media player.
      */
-    readonly bitrate: PlaybackBitrate;
+    bitrate: PlaybackBitrate;
 
     /**
      * The developer token to identify yourself as a trusted developer and member of the Apple Developer Program.
@@ -125,9 +125,9 @@ declare namespace MusicKit {
   type QueryParameters = object;
   type AddToLibraryParameters = { [key: string]: any };
   type CallbackType = (...args: any[]) => void;
-  type PlaybackProgressDidChangeCallbackType = (
-    event: { progress: number }
-  ) => void;
+  type PlaybackProgressDidChangeCallbackType = (event: {
+    progress: number;
+  }) => void;
   type AnotherType = (event: { timer: string }) => void;
 
   /**

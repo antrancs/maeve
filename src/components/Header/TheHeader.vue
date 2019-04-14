@@ -25,7 +25,7 @@
       :style="searchTextAndLoginBtnWidthStyle"
     >
       <v-container class="py-0">
-        <v-layout>
+        <v-layout row align-center>
           <SearchTextField class="pl-2" v-if="$vuetify.breakpoint.smAndUp" />
           <v-spacer></v-spacer>
 

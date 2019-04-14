@@ -7,7 +7,7 @@
           class="px-2 featured-playlist__header"
           v-if="featuredPlaylists.length > 0"
         >
-          <h3 class="section-title">Featured Playlists</h3>
+          <section-header>Featured Playlists</section-header>
 
           <router-link
             :to="{
@@ -39,14 +39,16 @@
 
       <template v-if="isAuthenticated && recentPlayed.length > 0">
         <v-flex xs12 class="px-2 pt-4">
-          <h2 class="section-title">Recently played</h2>
+          <section-header>Recently played</section-header>
         </v-flex>
 
         <CollectionCarousel :collections="recentPlayed" />
       </template>
 
-      <v-flex xs12 class="pt-4">
-        <h2 class="section-title px-2">Browse</h2>
+      <v-flex xs12>
+        <v-flex xs12 class="px-2 pt-4">
+          <section-header>Browse</section-header>
+        </v-flex>
         <v-layout row wrap>
           <v-flex
             xs6
@@ -82,7 +84,7 @@
           <v-layout row wrap>
             <v-flex xs12 class="px-2 pt-4">
               <v-layout row align-center wrap>
-                <h2 class="section-title mr-2">New releases</h2>
+                <section-header class="mr-2">New releases</section-header>
 
                 <v-menu offset-y>
                   <v-btn round color="accent" dark slot="activator">
@@ -112,21 +114,21 @@
 
       <template v-if="albums.length > 0">
         <v-flex xs12 class="px-2 pt-4">
-          <h2 class="section-title">Top Albums</h2>
+          <section-header>Top Albums</section-header>
         </v-flex>
         <CollectionCarousel :collections="albums" />
       </template>
 
       <template v-if="playlists.length > 0">
         <v-flex xs12 class="px-2 pt-4">
-          <h2 class="section-title">Top Playlists</h2>
+          <section-header>Top Playlists</section-header>
         </v-flex>
         <CollectionCarousel :collections="playlists" />
       </template>
 
       <template>
         <v-flex xs12 class="px-2 pt-4" v-if="activities.length > 0">
-          <h3 class="section-title">Activities & Mood</h3>
+          <section-header>Activities & Mood</section-header>
         </v-flex>
 
         <transition name="list">
@@ -141,7 +143,7 @@
       </template>
 
       <v-flex xs12 class="px-2 pt-4">
-        <h3 class="section-title">Genres</h3>
+        <section-header>Genres</section-header>
       </v-flex>
 
       <v-flex> <GenreList /> </v-flex>

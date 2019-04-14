@@ -15,8 +15,7 @@
     <v-container class="genre-content pt-0" v-if="hotTracks.length > 0">
       <v-layout row wrap style="z-index: 2">
         <v-flex xs12 class="flex-row px-2" justify-space-between align-center>
-          <h3 class="section-title">Hot Tracks</h3>
-
+          <section-header>Hot Tracks</section-header>
           <router-link
             :to="{
               name: 'genresViewAll',
@@ -42,8 +41,7 @@
     <v-container class="genre-content pt-0" v-if="playlists.length > 0">
       <v-layout row wrap>
         <v-flex xs12 class="flex-row px-2" justify-space-between align-center>
-          <h3 class="section-title">Playlists</h3>
-
+          <section-header>Playlists</section-header>
           <router-link
             :to="{
               name: 'genresViewAll',
@@ -64,8 +62,7 @@
     <v-container class="genre-content pt-0" v-if="newReleases.length > 0">
       <v-layout row wrap style="z-index: 2">
         <v-flex xs12 class="flex-row px-2" justify-space-between align-center>
-          <h3 class="section-title">New Releases</h3>
-
+          <section-header>New Releases</section-header>
           <router-link
             :to="{
               name: 'genresViewAll',
@@ -86,8 +83,7 @@
     <v-container class="genre-content pt-0" v-if="essentialAlbums.length > 0">
       <v-layout row wrap style="z-index: 2">
         <v-flex xs12 class="flex-row px-2" justify-space-between align-center>
-          <h3 class="section-title">Essential Albums</h3>
-
+          <section-header>Essential Albums</section-header>
           <router-link
             :to="{
               name: 'genresViewAll',
@@ -108,8 +104,7 @@
     <v-container class="genre-content pt-0" v-if="artistsPlaylists.length > 0">
       <v-layout row wrap style="z-index: 2">
         <v-flex xs12 class="flex-row px-2" justify-space-between align-center>
-          <h3 class="section-title">Artist Playlists</h3>
-
+          <section-header>Artist Playlists</section-header>
           <router-link
             :to="{
               name: 'genresViewAll',
@@ -130,7 +125,7 @@
     <v-container class="genre-content pt-0" v-if="curators.length > 0">
       <v-layout row wrap style="z-index: 2">
         <v-flex xs12 class="px-2">
-          <h3 class="section-title">Curators</h3>
+          <section-header>Curators</section-header>
         </v-flex>
 
         <v-flex xs12> <CuratorList :curators="curators" /> </v-flex>

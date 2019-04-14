@@ -102,6 +102,11 @@ export enum ButtonStyle {
   round = 'round'
 }
 
+export enum PlaybackBitrate {
+  STANDARD = 64,
+  HIGH = 256
+}
+
 export const PLACEHOLDER_IMAGE =
   'https://user-images.githubusercontent.com/14043840/50736349-e11feb00-11bc-11e9-84d9-20dc9652ef5b.jpeg';
 

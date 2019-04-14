@@ -23,12 +23,14 @@ Component.registerHooks([
 
 import Chrome from 'vue-color/src/components/Chrome.vue';
 import AppButton from '@/components/AppButton.vue';
+import SectionHeader from '@/components/SectionHeader.vue';
 
 Vue.config.productionTip = false;
 // Vue.config.performance = true;
 
 Vue.component('chrome-picker', Chrome);
 Vue.component('app-button', AppButton);
+Vue.component('section-header', SectionHeader);
 
 connectMusicKitToStore(musicKit.getInstance(), store);
 new Vue({

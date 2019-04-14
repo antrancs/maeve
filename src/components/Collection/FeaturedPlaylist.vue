@@ -78,9 +78,7 @@ export default class FeaturedPlaylist extends Vue {
 
     return this.playlist.attributes.artwork.url
       .replace('{w}', width.toString())
-      .replace('{h}', height.toString())
-      .replace('cc.jpeg', 'sr.jpeg')
-      .replace('bb.jpeg', 'sr.jpeg');
+      .replace('{h}', height.toString());
   }
 
   get featuredPlaylistHeight() {

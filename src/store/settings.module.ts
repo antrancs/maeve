@@ -21,7 +21,8 @@ import {
   UNBLOCK_ARTISTS,
   BLOCK_SONG,
   UNBLOCK_SONG,
-  LOAD_BLOCKED_ITEMS
+  LOAD_BLOCKED_ITEMS,
+  SELECT_PLAYBACK_BITRATE
 } from './actions.type';
 import {
   ADD_ONE_THEME,
@@ -35,10 +36,11 @@ import {
   SET_BLOCKED_ARTISTS,
   ADD_BLOCKED_SONG,
   REMOVE_BLOCKED_SONG,
-  SET_BLOCKED_SONGS
+  SET_BLOCKED_SONGS,
+  SET_PLAYBACK_BITRATE
 } from './mutations.type';
 import Vue from 'vue';
-import { ButtonStyle } from '@/utils/constants';
+import { ButtonStyle, PlaybackBitrate } from '@/utils/constants';
 import {
   blockSong,
   unblockSong,
@@ -51,6 +53,7 @@ import {
 const MAEVE_CUSTOM_THEMES = 'MAEVE_CUSTOM_THEMES';
 const MAEVE_SELECTED_THEME = 'MAEVE_SELECTED_THEME';
 const MAEVE_BUTTON_STYLE = 'MAEVE_BUTTON_STYLE';
+const MAEVE_PLAYBACK_BITRATE = 'MAEVE_PLAYBACK_BITRATE';
 const MAEVE_BLOCKED_ARTISTS = 'MAEVE_BLOCKED_ARTISTS';
 const MAEVE_BLOCKED_SONGS = 'MAEVE_BLOCKED_SONGS';
 
@@ -62,7 +65,8 @@ const initialState: SettingsState = {
   // Would be ideal to use Set, but Set is not reactive in Vue. So, use an object to
   // quickly lookup blocked artists/songs
   blockedArtists: {},
-  blockedSongs: {}
+  blockedSongs: {},
+  playbackBitrate: PlaybackBitrate.STANDARD
 };
 
 const getters: GetterTree<SettingsState, any> = {
@@ -241,6 +245,12 @@ const actions: ActionTree<SettingsState, any> = {
       commit(SET_BUTTON_STYLE, buttonStyle);
     }
 
+    const bitrate =
+      localStorage.getItem(MAEVE_PLAYBACK_BITRATE) || PlaybackBitrate.STANDARD;
+    if (bitrate) {
+      dispatch(SELECT_PLAYBACK_BITRATE, +bitrate);
+    }
+
     if (rootState.lastfm.token.length === 0) {
       dispatch(LOAD_BLOCKED_ITEMS);
     }
@@ -316,6 +326,18 @@ const actions: ActionTree<SettingsState, any> = {
   [SELECT_BUTTON_STYLES](context, buttonStyle: ButtonStyle) {
     localStorage.setItem(MAEVE_BUTTON_STYLE, buttonStyle);
     context.commit(SET_BUTTON_STYLE, buttonStyle);
+  },
+
+  [SELECT_PLAYBACK_BITRATE](context, bitrate: PlaybackBitrate) {
+    const musicKitInstance = MusicKit.getInstance();
+
+    if (!musicKitInstance) {
+      return;
+    }
+
+    musicKitInstance.bitrate = bitrate as number;
+    localStorage.setItem(MAEVE_PLAYBACK_BITRATE, bitrate.toString());
+    context.commit(SET_PLAYBACK_BITRATE, bitrate);
   }
 };
 
@@ -358,6 +380,10 @@ const mutations: MutationTree<SettingsState> = {
 
   [SET_BUTTON_STYLE](state, buttonStyle: ButtonStyle) {
     state.buttonStyle = buttonStyle;
+  },
+
+  [SET_PLAYBACK_BITRATE](state, bitrate: PlaybackBitrate) {
+    state.playbackBitrate = bitrate;
   },
 
   [ADD_BLOCKED_ARTISTS](state, artistIds: string[]) {

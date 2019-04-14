@@ -171,12 +171,12 @@ declare namespace MusicKit {
     /**
      * The bit rate is 256 kbps.
      */
-    HIGH = 'HIGH',
+    HIGH = 256,
 
     /**
      * The bit rate is 64 kbps.
      */
-    STANDARD = 'STANDARD'
+    STANDARD = 64
   }
 
   /**

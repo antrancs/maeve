@@ -7,7 +7,7 @@
     <v-container>
       <v-layout column fill-height>
         <v-flex d-flex align-center class="mb-2">
-          <h2>Themes</h2>
+          <h3>Themes</h3>
           <v-spacer></v-spacer>
           <theme-editor-dialog ref="newThemeDialog">
             <app-button>New theme</app-button>
@@ -35,7 +35,7 @@
 
         <v-divider></v-divider>
 
-        <v-flex> <h2 class="mt-2">Buttons</h2> </v-flex>
+        <v-flex> <h3 class="mt-2">Buttons</h3> </v-flex>
 
         <v-flex>
           <v-radio-group v-model="buttonStyle" row class="mt-0">
@@ -43,6 +43,12 @@
             <v-radio label="Round" value="round"></v-radio>
           </v-radio-group>
         </v-flex>
+        <v-divider></v-divider>
+        <v-flex> <h3 class="mt-2">Playback Bitrate</h3> </v-flex>
+        <v-radio-group v-model="playbackBitrate" row class="mt-0">
+          <v-radio label="64 kbps" value="64"></v-radio>
+          <v-radio label="256 kbps" value="256"></v-radio>
+        </v-radio-group>
 
         <v-divider></v-divider>
         <v-flex class="mt-2">
@@ -74,10 +80,11 @@ import {
   SELECT_THEME,
   SELECT_BUTTON_STYLES,
   SAVE_TOKEN_LASTFM,
-  LOGOUT_LASTFM
+  LOGOUT_LASTFM,
+  SELECT_PLAYBACK_BITRATE
 } from '@/store/actions.type';
 import { Watch, Prop } from 'vue-property-decorator';
-import { ButtonStyle } from '@/utils/constants';
+import { ButtonStyle, PlaybackBitrate } from '@/utils/constants';
 
 @Component({
   components: {
@@ -96,11 +103,16 @@ export default class ThemeSetting extends Vue {
   @Action [DELETE_THEME]: (id: string) => void;
   @Action [SELECT_THEME]: SelectThemeAction;
   @Action [SELECT_BUTTON_STYLES]: (buttonStyle: ButtonStyle) => void;
+  @Action [SELECT_PLAYBACK_BITRATE]: (bitrate: PlaybackBitrate) => void;
   @Action [SAVE_TOKEN_LASTFM]: SaveTokenLastfmAction;
   @Action [LOGOUT_LASTFM]: () => void;
 
   get buttonStyle(): string {
     return this.settings.buttonStyle;
+  }
+
+  get playbackBitrate(): string {
+    return this.settings.playbackBitrate.toString();
   }
 
   get selectedThemeId(): string {
@@ -109,6 +121,10 @@ export default class ThemeSetting extends Vue {
 
   set buttonStyle(val: string) {
     this.selectButtonStyle(val as ButtonStyle);
+  }
+
+  set playbackBitrate(val: string) {
+    this.selectPlaybackBitrate(+val as PlaybackBitrate);
   }
 
   handleThemeSelection(theme: ThemeOption) {

@@ -64,6 +64,7 @@ export const SELECT_THEME = 'selectTheme';
 export const LOAD_SETTINGS = 'loadSettings';
 export const SELECT_BUTTON_STYLES = 'selectButtonStyle';
 export const LOAD_BLOCKED_ITEMS = 'loadBlockedItems';
+export const SELECT_PLAYBACK_BITRATE = 'selectPlaybackBitrate';
 
 export const FETCH_ONE_ALBUM_CATALOG = 'fetchOneAlbumCatalog';
 export const FETCH_ONE_PLAYLIST_CATALOG = 'fetchOnePlaylistCatalog';

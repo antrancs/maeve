@@ -11,9 +11,9 @@
           >
             <v-layout row wrap>
               <v-flex xs12 class="px-2">
-                <h3 class="section-title">
-                  {{ recommendation.attributes.title.stringForDisplay }}
-                </h3>
+                <section-header>{{
+                  recommendation.attributes.title.stringForDisplay
+                }}</section-header>
               </v-flex>
               <v-flex
                 xs12
@@ -71,7 +71,7 @@
 
         <template row wrap v-if="recentlyAdded.length > 0">
           <v-flex xs12 class="px-2 pt-3">
-            <h2 class="section-title">Recently Added</h2>
+            <section-header>Recently Added</section-header>
           </v-flex>
           <SongCollectionList :collections="recentlyAdded" />
         </template>

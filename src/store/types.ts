@@ -9,7 +9,7 @@ import {
   PlayQueueNextSongToPlay,
   ShuffleMode
 } from '@/@types/model/model';
-import { RepeatMode, ButtonStyle } from '@/utils/constants';
+import { RepeatMode, ButtonStyle, PlaybackBitrate } from '@/utils/constants';
 
 // MusicPlayer module
 export interface MusicPlayerState {
@@ -157,6 +157,7 @@ export interface SettingsState {
   blockedSongs: {
     [id: string]: boolean;
   };
+  playbackBitrate: PlaybackBitrate;
 }
 
 export type CreateNewThemeActionPayload = {

@@ -1,17 +1,3 @@
 .logo {
   height: 4rem;
 }
-
-.logo--desktop {
-  display: none;
-}
-
-@media (min-width: $bp-tablet-landscape) {
-  .logo--desktop {
-    display: block;
-  }
-
-  .logo--mobile {
-    display: none;
-  }
-}

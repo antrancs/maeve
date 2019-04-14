@@ -48,12 +48,6 @@
   font-size: $header-font-mobile;
 }
 
-@media (min-width: $bp-tablet-landscape) {
-  .section-title {
-    font-size: $header-font;
-  }
-}
-
 .main-text {
   font-weight: bold;
 }

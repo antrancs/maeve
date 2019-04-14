@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { Collection, Song, Nullable } from '@/@types/model/model';
+import { isLight, TEXT_PRIMARY_DARK, TEXT_PRIMARY_LIGHT } from '@/themes';
 
 const getArtworkUrl = (
   originalUrl: string,
@@ -198,6 +199,19 @@ const getBrowsePlaylists = (path: string) => {
   });
 };
 
+const hexToRgb = (hex: string) => {
+  var bigint = parseInt(hex, 16);
+  var r = (bigint >> 16) & 255;
+  var g = (bigint >> 8) & 255;
+  var b = bigint & 255;
+
+  return [r, g, b];
+};
+
+const getTextColorForBackground = (bgColor: string) => {
+  return isLight(bgColor) ? TEXT_PRIMARY_LIGHT : TEXT_PRIMARY_DARK;
+};
+
 export {
   getArtworkUrl,
   getArtistArtwork,
@@ -213,5 +227,7 @@ export {
   getArtworkSize,
   getGenreData,
   getGenreOneResource,
-  getBrowsePlaylists
+  getBrowsePlaylists,
+  hexToRgb,
+  getTextColorForBackground
 };

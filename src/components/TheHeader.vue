@@ -6,21 +6,13 @@
 
     <router-link :to="{ name: 'home' }">
       <img
-        class="logo logo--desktop"
-        src="@/assets/logo-mobile.png"
+        v-if="$vuetify.breakpoint.mdAndUp"
+        class="logo"
+        src="@/assets/logo-desktop.png"
         alt="logo"
       />
+      <img v-else class="logo" src="@/assets/logo-mobile.png" alt="logo" />
     </router-link>
-
-    <v-toolbar-title
-      :class="[
-        'hidden-xs-only',
-        {
-          'mr-5': $vuetify.breakpoint.mdAndUp
-        }
-      ]"
-      >Maeve</v-toolbar-title
-    >
 
     <v-text-field
       label="Search"

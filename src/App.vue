@@ -141,7 +141,7 @@ export default class App extends Vue {
 
 .item-card {
   height: 100%;
-  border-radius: 10px;
+  border-radius: $card-border-radius;
 }
 
 .white-text {

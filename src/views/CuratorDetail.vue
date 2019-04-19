@@ -42,7 +42,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch, Mixins } from 'vue-property-decorator';
 
-import SongCollectionList from '@/components/SongCollectionList.vue';
+import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import InfiniteScrollMixin from '@/mixins/InfiniteScrollMixin';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import { TEXT_PRIMARY_DARK } from '@/themes';

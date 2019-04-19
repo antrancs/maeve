@@ -150,6 +150,7 @@
 import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { State, Action, Getter, Mutation } from 'vuex-class';
 
+import musicKit from '@/services/musicKit';
 import LyricsDialog from '@/components/LyricsDialog.vue';
 import PlayerProgressBar from './PlayerProgressBar.vue';
 import PlayerFullScreen from './PlayerFullScreen.vue';
@@ -174,7 +175,13 @@ import {
 import { Nullable, ShuffleMode, Artist } from '@/@types/model/model';
 import { RepeatMode, PLACEHOLDER_IMAGE } from '@/utils/constants';
 import { getArtworkUrl } from '@/utils/utils';
-import { SET_IS_MUTED } from '@/store/mutations.type';
+import {
+  SET_IS_MUTED,
+  SET_PLAYBACK_PROGESS,
+  SET_IS_PLAYING,
+  SET_SONG_LOADING,
+  SET_CURRENT_PLAYBACK_TIME
+} from '@/store/mutations.type';
 
 @Component({
   components: {
@@ -192,6 +199,7 @@ export default class PlayerBar extends Mixins(
   GoToArtistPageMixin
 ) {
   private playerFullScreenVisible = false;
+  private musicKitInstance = musicKit.getInstance();
 
   @State musicPlayer!: MusicPlayerState;
   @State(state => state.musicPlayer.volume) volume!: number;
@@ -218,7 +226,12 @@ export default class PlayerBar extends Mixins(
     ids?: string[]
   ) => Promise<MusicKit.Song[]>;
 
+  @Mutation
+  [SET_PLAYBACK_PROGESS]: (progress: number) => void;
   @Mutation [SET_IS_MUTED]: () => void;
+  @Mutation [SET_IS_PLAYING]: (isPlaying: boolean) => void;
+  @Mutation [SET_SONG_LOADING]: (isLoading: boolean) => void;
+  @Mutation [SET_CURRENT_PLAYBACK_TIME]: (time: number) => void;
 
   @Getter canGoBack!: boolean;
   @Getter canGoNext!: boolean;
@@ -278,10 +291,41 @@ export default class PlayerBar extends Mixins(
 
   created() {
     window.addEventListener('keydown', this.handleKeyDown);
+
+    // set up musicKit
+    this.musicKitInstance.addEventListener(
+      MusicKit.Events.playbackProgressDidChange,
+      this.onPlaybackProgressDidChange
+    );
+
+    this.musicKitInstance.addEventListener(
+      MusicKit.Events.playbackStateDidChange,
+      this.onPlaybackStateDidChange
+    );
+
+    this.musicKitInstance.addEventListener(
+      MusicKit.Events.playbackTimeDidChange,
+      this.onPlaybackTimeDidChange
+    );
   }
 
   beforeDestroy() {
     window.removeEventListener('keydown', this.handleKeyDown);
+
+    this.musicKitInstance.removeEventListener(
+      MusicKit.Events.playbackProgressDidChange,
+      this.onPlaybackProgressDidChange
+    );
+
+    this.musicKitInstance.addEventListener(
+      MusicKit.Events.playbackStateDidChange,
+      this.onPlaybackStateDidChange
+    );
+
+    this.musicKitInstance.removeEventListener(
+      MusicKit.Events.playbackTimeDidChange,
+      this.onPlaybackTimeDidChange
+    );
   }
 
   goToSongAlbumPage() {
@@ -361,6 +405,51 @@ export default class PlayerBar extends Mixins(
       this.$_turnUpVolume();
     }
   }
+
+  onPlaybackProgressDidChange = (event: any) => {
+    this.setPlaybackProgress(event.progress);
+    // store.commit(SET_PLAYBACK_PROGESS, event.progress);
+  };
+
+  onPlaybackStateDidChange = (event: any) => {
+    const DEFAULT_PAGE_TITLE = 'Maeve - An Apple Music web player';
+    const musicKitInstance = musicKit.getInstance();
+    switch (musicKitInstance.player.playbackState) {
+      case MusicKit.PlaybackStates.stopped:
+        this.setIsPlaying(false);
+        document.title = DEFAULT_PAGE_TITLE;
+        break;
+      case MusicKit.PlaybackStates.paused:
+        this.setIsPlaying(false);
+        document.title = DEFAULT_PAGE_TITLE;
+        break;
+      case MusicKit.PlaybackStates.playing: {
+        this.setIsPlaying(true);
+        this.setSongLoading(false);
+
+        const { nowPlayingItem } = musicKitInstance.player;
+
+        if (nowPlayingItem) {
+          document.title = `${nowPlayingItem.attributes.name} - ${
+            nowPlayingItem.attributes.artistName
+          }`;
+        }
+        break;
+      }
+      case MusicKit.PlaybackStates.loading:
+        this.setSongLoading(true);
+        break;
+      case MusicKit.PlaybackStates.completed:
+        document.title = DEFAULT_PAGE_TITLE;
+        this.playNext({
+          forceSkip: false
+        });
+    }
+  };
+
+  onPlaybackTimeDidChange = (event: any) => {
+    this.setCurrentPlaybackTime(event.currentPlaybackTime);
+  };
 
   $_turnDownVolume() {
     // Ctrl Down / Cmd Down

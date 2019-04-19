@@ -83,8 +83,8 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import SongCollectionList from '@/components/SongCollectionList.vue';
-import CollectionItemCard from '@/components/CollectionItemCard.vue';
+import SongCollectionList from '@/components/Song/SongCollectionList.vue';
+import CollectionItemCard from '@/components/Collection/CollectionItemCard.vue';
 import LinkComponent from '@/components/LinkComponent.vue';
 import { Collection } from '@/@types/model/model';
 import { Action } from 'vuex-class';

@@ -65,7 +65,7 @@ import Component from 'vue-class-component';
 import CollectionControls from './CollectionControls.vue';
 import { Prop } from 'vue-property-decorator';
 
-import MediaArtwork from './MediaArtwork.vue';
+import MediaArtwork from '@/components/MediaArtwork.vue';
 import {
   Collection,
   Nullable,

@@ -137,9 +137,9 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import SongCollectionList from '@/components/SongCollectionList.vue';
+import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import CuratorList from '@/components/CuratorList.vue';
-import SongListLarge from '@/components/SongListLarge.vue';
+import SongListLarge from '@/components/Song/SongListLarge.vue';
 import CollectionCarousel from '@/components/Collection/CollectionCarousel.vue';
 import musicApiService from '@/services/musicApi.service';
 import { Nullable } from '@/@types/model/model';

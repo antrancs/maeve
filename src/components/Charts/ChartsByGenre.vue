@@ -40,8 +40,8 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
 
-import SongListLarge from '@/components/SongListLarge.vue';
-import SongCollectionList from '@/components/SongCollectionList.vue';
+import SongListLarge from '@/components/Song/SongListLarge.vue';
+import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import musicApiService from '@/services/musicApi.service';
 import { Nullable } from '@/@types/model/model';
 import { GENRES } from '@/utils/constants';

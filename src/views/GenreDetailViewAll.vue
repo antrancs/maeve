@@ -20,8 +20,8 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 
-import SongListLarge from '@/components/SongListLarge.vue';
-import SongCollectionList from '@/components/SongCollectionList.vue';
+import SongListLarge from '@/components/Song/SongListLarge.vue';
+import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import { Collection, Nullable } from '@/@types/model/model';
 import { Prop } from 'vue-property-decorator';
 import { getGenreOneResource } from '@/utils/utils';

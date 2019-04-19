@@ -164,9 +164,9 @@ import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
 import random from 'lodash/random';
 
 import ResourceLinkList from '@/components/ResourceLinkList.vue';
-import SongListLarge from '@/components/SongListLarge.vue';
-import SongCollectionList from '@/components/SongCollectionList.vue';
-import CollectionControls from '@/components/CollectionControls.vue';
+import SongListLarge from '@/components/Song/SongListLarge.vue';
+import SongCollectionList from '@/components/Song/SongCollectionList.vue';
+import CollectionControls from '@/components/Collection/CollectionControls.vue';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import CollectionDetailArtwork from '@/components/Collection/CollectionDetailArtwork.vue';
 import {

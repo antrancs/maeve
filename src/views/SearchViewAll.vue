@@ -24,9 +24,9 @@
 import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 
-import SongCollectionList from '@/components/SongCollectionList.vue';
+import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import ArtistList from '@/components/ArtistList.vue';
-import SongListLarge from '@/components/SongListLarge.vue';
+import SongListLarge from '@/components/Song/SongListLarge.vue';
 import InfiniteScrollMixin from '@/mixins/InfiniteScrollMixin';
 import { HandleSongClicked } from '@/@types/model/model';
 import { PLAY_SONGS, SEARCH_CATALOG } from '@/store/actions.type';

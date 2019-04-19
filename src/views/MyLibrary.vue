@@ -68,9 +68,8 @@ import { Component, Prop, Vue, Watch, Mixins } from 'vue-property-decorator';
 import debounce from 'lodash/debounce';
 import shuffle from 'lodash/shuffle';
 
-import SongCollectionList from '@/components/SongCollectionList.vue';
-import SongListLarge from '@/components/SongListLarge.vue';
-// import ArtistList from '@/components/ArtistList.vue';
+import SongCollectionList from '@/components/Song/SongCollectionList.vue';
+import SongListLarge from '@/components/Song/SongListLarge.vue';
 import InfiniteScrollMixin from '@/mixins/InfiniteScrollMixin';
 import musicApiService from '@/services/musicApi.service';
 import { Action, Mutation } from 'vuex-class';

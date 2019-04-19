@@ -9,8 +9,8 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Prop } from 'vue-property-decorator';
-import CollectionHeader from '@/components/CollectionHeader.vue';
-import SongListSmall from '@/components/SongListSmall.vue';
+import CollectionHeader from '@/components/Collection/CollectionHeader.vue';
+import SongListSmall from '@/components/Song/SongListSmall.vue';
 import { getSongsFromCollection } from '@/utils/utils';
 
 @Component({

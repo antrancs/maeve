@@ -23,7 +23,7 @@ import Component from 'vue-class-component';
 import { Action } from 'vuex-class';
 
 import ArtistListLastfm from '@/components/Lastfm/ArtistListLastfm.vue';
-import SongListSmall from '@/components/SongListSmall.vue';
+import SongListSmall from '@/components/Song/SongListSmall.vue';
 import {
   FETCH_TOP_ARTISTS_LASTFM,
   FETCH_RECENT_TRACKS_LASTFM

@@ -81,8 +81,8 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 import { Route } from 'vue-router';
 
-import SongCollectionList from '@/components/SongCollectionList.vue';
-import SongListLarge from '@/components/SongListLarge.vue';
+import SongCollectionList from '@/components/Song/SongCollectionList.vue';
+import SongListLarge from '@/components/Song/SongListLarge.vue';
 import ArtistList from '@/components/ArtistList.vue';
 import musicApiService from '@/services/musicApi.service';
 import { PLAY_SONGS, SHOW_SNACKBAR } from '@/store/actions.type';

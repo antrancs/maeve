@@ -36,20 +36,22 @@
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
 
-import AppSidebar from '@/components/TheSidebar.vue';
+import musicKit from '@/services/musicKit';
+import AppSidebar from '@/components/Layout/TheSidebar.vue';
 import AppHeader from '@/components/Header/TheHeader.vue';
 import PlayQueue from '@/components/PlayQueue/PlayQueue.vue';
-import AppFooter from '@/components/TheFooter.vue';
+import AppFooter from '@/components/Layout/TheFooter.vue';
 import AppSnackbar from '@/components/TheSnackbar.vue';
 import MediaActionMenu from '@/components/MediaActionMenu.vue';
 import NewPlaylistDialog from '@/components/NewPlaylistDialog.vue';
-import ThemeSetting from '@/components/ThemeSetting.vue';
+import ThemeSetting from '@/components/Setting/ThemeSetting.vue';
 import { State, Action, Getter } from 'vuex-class';
 import { ThemeOption, Nullable, PlayQueueSong } from '@/@types/model/model';
 import {
   LOAD_SETTINGS,
   LOAD_TOKEN_LASTFM,
-  LOAD_BLOCKED_ITEMS
+  LOAD_BLOCKED_ITEMS,
+  CHANGE_ROUTE
 } from '@/store/actions.type';
 
 @Component({
@@ -68,6 +70,7 @@ import {
 export default class App extends Vue {
   private showSidebar = this.$vuetify.breakpoint.lgAndUp;
   private themeSetting = false;
+  private musicKitInstance = musicKit.getInstance();
 
   @State(state => state.settings.selectedTheme) selectedTheme!: ThemeOption;
   @State(state => state.musicPlayer.currentPlaying) currentPlaying!: Nullable<
@@ -77,6 +80,7 @@ export default class App extends Vue {
   @Action [LOAD_SETTINGS]: () => void;
   @Action [LOAD_TOKEN_LASTFM]: () => void;
   @Action [LOAD_BLOCKED_ITEMS]: () => void;
+  @Action [CHANGE_ROUTE]: (routeName: string) => void;
 
   @Getter darkMode!: boolean;
   @Getter isAuthenticatedLastfm!: boolean;
@@ -111,10 +115,28 @@ export default class App extends Vue {
   created() {
     this.loadTokenLastfm();
     this.loadSettings();
+
+    this.musicKitInstance.addEventListener(
+      MusicKit.Events.authorizationStatusDidChange,
+      this.onAuthorizationStatusDidChange
+    );
+  }
+
+  beforeDestroy() {
+    this.musicKitInstance.removeEventListener(
+      MusicKit.Events.authorizationStatusDidChange,
+      this.onAuthorizationStatusDidChange
+    );
   }
 
   updateSidebarVisibility(value: boolean) {
     this.showSidebar = value;
+  }
+
+  onAuthorizationStatusDidChange({ authorizationStatus }: any) {
+    this.musicKitInstance.player.stop();
+    //  store.dispatch(CHANGE_ROUTE, 'home');
+    this.changeRoute('home');
   }
 }
 </script>

@@ -37,7 +37,7 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import shuffle from 'lodash/shuffle';
 
-import CollectionItemCard from '@/components/CollectionItemCard.vue';
+import CollectionItemCard from '@/components/Collection/CollectionItemCard.vue';
 import { Prop, Watch } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 import { FETCH_ONE_ALBUM_LIBRARY, PLAY_SONGS } from '@/store/actions.type';

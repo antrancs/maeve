@@ -23,7 +23,7 @@ import { Action, State } from 'vuex-class';
 import { Nullable } from '@/@types/model/model';
 import { SkipToSongAtIndexAction } from '@/store/types';
 
-import SongListSmallItem from '@/components/SongListSmallItem.vue';
+import SongListSmallItem from './SongListSmallItem.vue';
 import SongListMixin from '@/mixins/SongListMixin';
 import { SKIP_TO_SONG_AT_INDEX } from '@/store/actions.type';
 

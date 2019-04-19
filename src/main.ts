@@ -8,7 +8,6 @@ musicKit.init();
 import store from '@/store';
 import router from '@/router';
 import '@/plugins';
-import { connectMusicKitToStore } from '@/setup/musickit';
 import '@/filters';
 import App from './App.vue';
 
@@ -32,7 +31,6 @@ Vue.component('chrome-picker', Chrome);
 Vue.component('app-button', AppButton);
 Vue.component('section-header', SectionHeader);
 
-connectMusicKitToStore(musicKit.getInstance(), store);
 new Vue({
   router,
   store,

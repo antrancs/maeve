@@ -65,8 +65,8 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 
-import ThemeOptionItem from '@/components/ThemeOptionItem.vue';
-import ThemeEditorDialog from '@/components/ThemeEditorDialog.vue';
+import ThemeOptionItem from '@/components/Setting/ThemeOptionItem.vue';
+import ThemeEditorDialog from '@/components/Setting/ThemeEditorDialog.vue';
 import { ThemeOption, Nullable } from '@/@types/model/model';
 import { Action, Getter, State } from 'vuex-class';
 import {

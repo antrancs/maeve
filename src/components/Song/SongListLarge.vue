@@ -17,7 +17,7 @@
 <script lang="ts">
 import { Component, Vue, Mixins } from 'vue-property-decorator';
 
-import SongListLargeItem from '@/components/SongListLargeItem.vue';
+import SongListLargeItem from './SongListLargeItem.vue';
 import SongListMixin from '@/mixins/SongListMixin';
 
 @Component({

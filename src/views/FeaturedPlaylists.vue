@@ -15,7 +15,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 
-import SongCollectionList from '@/components/SongCollectionList.vue';
+import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import { FETCH_MULTIPLE_PLAYLISTS_CATALOG } from '@/store/actions.type';
 import { FetchMultiplePlaylistsCatalogAction } from '@/store/types';
 import { getFeaturedPlaylists } from '@/utils/utils';

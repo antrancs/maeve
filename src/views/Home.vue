@@ -157,7 +157,7 @@ import { Vue, Component, Watch } from 'vue-property-decorator';
 import CollectionCarousel from '@/components/Collection/CollectionCarousel.vue';
 import FeaturedPlaylist from '@/components/Collection/FeaturedPlaylist.vue';
 import ActivityItem from '@/components/ActivityItem.vue';
-import SongCollectionList from '@/components/SongCollectionList.vue';
+import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import GenreList from '@/components/GenreList.vue';
 import musicApiService from '@/services/musicApi.service';
 import { activityIds } from '@/utils/constants';

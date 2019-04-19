@@ -56,9 +56,9 @@ import { Action, Mutation, State } from 'vuex-class';
 
 import { DAILY_TOP_100_COUNTRY_MAP } from '@/utils/constants';
 import WorldMap from './WorldMap.vue';
-import CollectionHeader from '@/components/CollectionHeader.vue';
-import SongCollectionList from '@/components/SongCollectionList.vue';
-import SongListSmall from '@/components/SongListSmall.vue';
+import CollectionHeader from '@/components/Collection/CollectionHeader.vue';
+import SongCollectionList from '@/components/Song/SongCollectionList.vue';
+import SongListSmall from '@/components/Song/SongListSmall.vue';
 import {
   FETCH_ONE_PLAYLIST_CATALOG,
   FETCH_MULTIPLE_PLAYLISTS_CATALOG

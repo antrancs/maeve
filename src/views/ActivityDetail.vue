@@ -27,7 +27,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 
-import SongCollectionList from '@/components/SongCollectionList.vue';
+import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import InfiniteScrollMixin from '@/mixins/InfiniteScrollMixin';
 import { Nullable } from '@/@types/model/model';
 import { ActivityType } from '@/utils/constants';

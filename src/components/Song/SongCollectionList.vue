@@ -26,7 +26,7 @@
  */
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import CollectionItemCard from '@/components/CollectionItemCard.vue';
+import CollectionItemCard from '@/components/Collection/CollectionItemCard.vue';
 import { Collection } from '@/@types/model/model';
 import LinkComponent from '@/components/LinkComponent.vue';
 

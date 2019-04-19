@@ -50,7 +50,7 @@ import { Prop, Component } from 'vue-property-decorator';
 import throttle from 'lodash/throttle';
 
 import LinkComponent from '@/components/LinkComponent.vue';
-import CollectionItemCard from '@/components/CollectionItemCard.vue';
+import CollectionItemCard from './CollectionItemCard.vue';
 import { Collection } from '@/@types/model/model';
 import { setTimeout } from 'timers';
 

@@ -144,9 +144,9 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
-import SongListLarge from '@/components/SongListLarge.vue';
-import CollectionItemCard from '@/components/CollectionItemCard.vue';
-import SongCollectionList from '@/components/SongCollectionList.vue';
+import SongListLarge from '@/components/Song/SongListLarge.vue';
+import CollectionItemCard from '@/components/Collection/CollectionItemCard.vue';
+import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import LinkComponent from '@/components/LinkComponent.vue';
 import ArtistList from '@/components/ArtistList.vue';
 import MediaArtwork from '@/components/MediaArtwork.vue';

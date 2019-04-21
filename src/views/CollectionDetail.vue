@@ -161,7 +161,6 @@ import parse from 'date-fns/parse';
 import format from 'date-fns/format';
 import isToday from 'date-fns/is_today';
 import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
-import random from 'lodash/random';
 
 import ResourceLinkList from '@/components/ResourceLinkList.vue';
 import SongListLarge from '@/components/Song/SongListLarge.vue';
@@ -197,7 +196,10 @@ import {
   FetchLibraryPlaylistTracksAction
 } from '@/store/types';
 import { SET_FOOTER_VISIBILITY } from '@/store/mutations.type';
-import { getArtworkUrl } from '@/utils/utils';
+import {
+  getArtworkUrl,
+  getGradientBackgroundColorsFromArtwork
+} from '@/utils/utils';
 import { PLACEHOLDER_IMAGE } from '@/utils/constants';
 import { isLight } from '@/themes';
 import { Route } from 'vue-router';
@@ -218,12 +220,6 @@ export default class CollectionDetail extends Vue {
   private otherAlbumsFromArtists: MusicKit.Album[] = [];
   private editorialNoteCollapse = true;
   private songs: Song[] = [];
-  private bgColors = [
-    ['#556270', '#4ECDC4'],
-    ['#114357', '#F29492'],
-    ['#525252', '#3d72b4'],
-    ['#514A9D', '#24C6DC']
-  ]; // used when the artwork doesn't have bgColor properties
 
   @Prop() id!: string;
 
@@ -337,35 +333,13 @@ export default class CollectionDetail extends Vue {
     ) {
       return {};
     }
-    const {
-      bgColor,
-      textColor1,
-      textColor2,
-      textColor3,
-      textColor4
-    } = this.collection.attributes.artwork;
 
-    if (!bgColor) {
-      const bgColorIndex = random(0, this.bgColors.length - 1);
+    const colorsForGradient = getGradientBackgroundColorsFromArtwork(
+      this.collection.attributes.artwork
+    );
 
-      return {
-        background: `linear-gradient(45deg, ${this.bgColors[bgColorIndex].join(
-          ','
-        )})`
-      };
-    }
-    if (isLight(bgColor)) {
-      const firstColor = textColor1 || '000000';
-      const secondColor = textColor3 || textColor2 || '000000';
-
-      return {
-        background: `linear-gradient(45deg, #${firstColor}, #${secondColor})`
-      };
-    }
-
-    const secondColor = textColor2 || textColor1 || '000000';
     return {
-      background: `linear-gradient(45deg, #${bgColor}, #${textColor2})`
+      background: `linear-gradient(45deg, ${colorsForGradient.join(',')})`
     };
   }
 

@@ -73,7 +73,7 @@
               </v-layout>
             </v-flex>
 
-            <v-flex xs12 class="pr-2">
+            <v-flex xs12 class="pr-2" v-if="!isFromAlbum">
               <div :class="['long-text-truncated']">
                 <span
                   :class="$style['artist-name']"

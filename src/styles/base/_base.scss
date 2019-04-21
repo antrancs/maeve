@@ -29,7 +29,11 @@ a:focus {
 
 @supports not (scrollbar-color: red blue) {
   ::-webkit-scrollbar {
-    width: 9px;
+    width: 5px;
+  }
+
+  ::-webkit-scrollbar:horizontal {
+    height: 5px;
   }
 
   /* Track */

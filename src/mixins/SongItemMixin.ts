@@ -1,11 +1,12 @@
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
-import { Getter, Action, State } from 'vuex-class';
+import { Getter, Action, State, Mutation } from 'vuex-class';
 import { Song, Nullable } from '@/@types/model/model';
 import {
   TOGGLE_CURRENT_TRACK,
   FETCH_CATALOG_SONG_DETAILS
 } from '@/store/actions.type';
 import { MusicPlayerState } from '@/store/types';
+import { SET_SONG_LOADING } from '@/store/mutations.type';
 
 @Component
 export default class SongItemMixin extends Vue {
@@ -25,6 +26,8 @@ export default class SongItemMixin extends Vue {
   @State(state => state.settings.blockedArtists) blockedArtists!: {
     [id: string]: boolean;
   };
+  @State
+  musicPlayer!: MusicPlayerState;
 
   @Getter darkMode!: boolean;
   @Getter isAuthenticated!: boolean;
@@ -35,8 +38,7 @@ export default class SongItemMixin extends Vue {
     ids?: string[]
   ) => Promise<MusicKit.Song[]>;
 
-  @State
-  musicPlayer!: MusicPlayerState;
+  @Mutation [SET_SONG_LOADING]: (isLoading: boolean) => void;
 
   get isActive(): boolean {
     if (!this.musicPlayer.currentPlaying) {
@@ -111,6 +113,8 @@ export default class SongItemMixin extends Vue {
     }
 
     this.showLoading = true;
+    this.setSongLoading(true);
+
     this.$emit('song-item-clicked', this.song.id, this.index);
   }
 

@@ -46,7 +46,8 @@ export default class SongListMixin extends Vue {
       songs,
       songsSourceName: this.sourceName,
       startSongIndex: songIndex,
-      collectionId: this.collectionId
+      collectionId: this.collectionId,
+      collectionType: this.fromAlbum ? 'albums' : 'playlists'
     });
   }
 

@@ -34,6 +34,8 @@
             :songs="songs"
             :isChart="true"
             :textColor="textColor"
+            :collectionId="playlist.id"
+            :sourceName="playlist.attributes.name"
           />
         </template>
 

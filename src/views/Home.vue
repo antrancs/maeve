@@ -2,9 +2,17 @@
   <v-container>
     <v-layout row wrap>
       <template>
+        <template v-if="featuredAlbums.length > 0">
+          <v-flex xs12 class="px-2">
+            <section-header>Featured Releases</section-header>
+          </v-flex>
+
+          <NewReleaseHomeList class="pa-2" :releases="featuredAlbums" />
+        </template>
+
         <v-flex
           xs12
-          class="px-2 featured-playlist__header"
+          class="px-2 pt-4 featured-playlist__header"
           v-if="featuredPlaylists.length > 0"
         >
           <section-header>Featured Playlists</section-header>
@@ -159,6 +167,7 @@ import FeaturedPlaylist from '@/components/Collection/FeaturedPlaylist.vue';
 import ActivityItem from '@/components/ActivityItem.vue';
 import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import GenreList from '@/components/GenreList.vue';
+import NewReleaseHomeList from '@/components/Home/NewReleaseHomeList.vue';
 import musicApiService from '@/services/musicApi.service';
 import { activityIds } from '@/utils/constants';
 import { Action, Getter } from 'vuex-class';
@@ -171,7 +180,11 @@ import {
   FetchMultiplePlaylistsCatalogAction,
   FetchRecentPlayedAction
 } from '@/store/types';
-import { getMainFeaturedPlaylists, getArtworkSize } from '@/utils/utils';
+import {
+  getMainFeaturedPlaylists,
+  getArtworkSize,
+  getFeaturedAlbums
+} from '@/utils/utils';
 import { Nullable } from '@/@types/model/model';
 
 @Component({
@@ -180,7 +193,8 @@ import { Nullable } from '@/@types/model/model';
     ActivityItem,
     GenreList,
     SongCollectionList,
-    CollectionCarousel
+    CollectionCarousel,
+    NewReleaseHomeList
   }
 })
 export default class Home extends Vue {
@@ -193,6 +207,8 @@ export default class Home extends Vue {
   private genres: string[] = [];
   private selectedNewReleasesGenre: Nullable<string> = null;
   private newReleases: MusicKit.Album[] = [];
+  private featuredAlbums: any[] = [];
+
   private categories = [
     {
       name: 'New Music',
@@ -267,6 +283,10 @@ export default class Home extends Vue {
   }
 
   created() {
+    getFeaturedAlbums().then(releases => {
+      this.featuredAlbums = releases;
+    });
+
     this.$_fetchFeaturedPlaylists();
     if (this.isAuthenticated) {
       this.$_fetchRecentlyPlayed();

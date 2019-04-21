@@ -1,6 +1,15 @@
 import axios from 'axios';
+import random from 'lodash/random';
+
 import { Collection, Song, Nullable } from '@/@types/model/model';
 import { isLight, TEXT_PRIMARY_DARK, TEXT_PRIMARY_LIGHT } from '@/themes';
+
+const bgColors = [
+  ['#556270', '#4ECDC4'],
+  ['#114357', '#F29492'],
+  ['#525252', '#3d72b4'],
+  ['#514A9D', '#24C6DC']
+]; // used when the artwork doesn't have bgColor properties
 
 const getArtworkUrl = (
   originalUrl: string,
@@ -121,6 +130,18 @@ const getAlbumExtraInfo = (iTunesUrl: string) => {
     });
 };
 
+const getFeaturedAlbums = () => {
+  return axios
+    .get('/api/catalog/albums/featuredAlbums', {
+      params: {
+        country: 'us' // MusicKit.getInstance().storefrontId
+      }
+    })
+    .then(res => {
+      return res.data;
+    });
+};
+
 const getGrammyResults = () => {
   return axios
     .get('/api/grammyResults', {
@@ -148,7 +169,7 @@ const getFeaturedPlaylists = () => {
   return axios
     .get('/api/catalog/playlists/featured/all', {
       params: {
-        country: MusicKit.getInstance().storefrontId
+        country: 'us' // MusicKit.getInstance().storefrontId
       }
     })
     .then(res => {
@@ -160,7 +181,7 @@ const getMainFeaturedPlaylists = () => {
   return axios
     .get('/api/catalog/playlists/featured/main', {
       params: {
-        country: MusicKit.getInstance().storefrontId
+        country: 'us' //  MusicKit.getInstance().storefrontId
       }
     })
     .then(res => {
@@ -212,6 +233,26 @@ const getTextColorForBackground = (bgColor: string) => {
   return isLight(bgColor) ? TEXT_PRIMARY_LIGHT : TEXT_PRIMARY_DARK;
 };
 
+// return 2 colors for gradient background color based on the given artwork
+const getGradientBackgroundColorsFromArtwork = (artwork: MusicKit.Artwork) => {
+  const { bgColor, textColor1, textColor2, textColor3, textColor4 } = artwork;
+
+  if (!bgColor) {
+    const bgColorIndex = random(0, bgColors.length - 1);
+
+    return bgColors[bgColorIndex];
+  }
+  if (isLight(bgColor)) {
+    const firstColor = textColor1 || '000000';
+    const secondColor = textColor3 || textColor2 || '000000';
+
+    return [`#${firstColor}`, `#${secondColor}`];
+  }
+
+  const secondColor = textColor2 || textColor1 || '000000';
+  return [`#${bgColor}`, `#${secondColor}`];
+};
+
 export {
   getArtworkUrl,
   getArtistArtwork,
@@ -229,5 +270,7 @@ export {
   getGenreOneResource,
   getBrowsePlaylists,
   hexToRgb,
-  getTextColorForBackground
+  getTextColorForBackground,
+  getFeaturedAlbums,
+  getGradientBackgroundColorsFromArtwork
 };

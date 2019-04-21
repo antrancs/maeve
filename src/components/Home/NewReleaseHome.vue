@@ -157,6 +157,7 @@ export default class NewReleaseHome extends Vue {
     const albumArtworkWidth = this.cardWidth / 6;
     const bottomSheetHeight = albumArtworkWidth + 8 * 2;
     const expandedHeight = albumHeaderHeight + this.cardWidth;
+    const upperHeight = this.cardHeight - bottomSheetHeight;
 
     return {
       '--featured-release-card-width': `${this.cardWidth}px`,
@@ -164,7 +165,8 @@ export default class NewReleaseHome extends Vue {
       '--featured-release-card-expanded-height': `${expandedHeight}px`,
       '--album-artwork-width': `${albumArtworkWidth}px`,
       '--bottom-sheet-height': `${bottomSheetHeight}px`,
-      '--album-header-height': `${albumHeaderHeight}px`
+      '--album-header-height': `${albumHeaderHeight}px`,
+      '--upper-height': `${upperHeight}px`
     };
   }
 
@@ -203,12 +205,6 @@ export default class NewReleaseHome extends Vue {
 
 <style lang="scss" module>
 $padding-x: 8px;
-$upper-height: calc(
-  var(--featured-release-card-height) - var(--bottom-sheet-height)
-);
-$expanded-height: calc(
-  var(--album-header-height) + var(--featured-release-card-width)
-);
 
 .wrapper {
   border-radius: $featured-card-border-radius;
@@ -241,7 +237,7 @@ $expanded-height: calc(
     .album-artwork {
       transform: translate(
           -16px,
-          calc(var(--album-header-height) - 8px - #{$upper-height})
+          calc(var(--album-header-height) - 8px - var(--upper-height))
         )
         scale(6);
       border-bottom-left-radius: $featured-card-border-radius / 6;
@@ -251,7 +247,7 @@ $expanded-height: calc(
     .album-name {
       transform: translate(
           calc(-#{$padding-x} - var(--album-artwork-width)),
-          calc(4px - #{$upper-height})
+          calc(4px - var(--upper-height))
         )
         scale(1.2);
     }
@@ -320,7 +316,7 @@ $expanded-height: calc(
   left: 16px;
   height: var(--album-artwork-width);
   position: absolute;
-  top: calc(#{$upper-height} + 8px);
+  top: calc(var(--upper-height) + 8px);
   transform-origin: top left;
   transition: transform 0.4s ease-out; // , scale 0.4s ease-out;
   width: var(--album-artwork-width);
@@ -331,7 +327,7 @@ $expanded-height: calc(
   font-size: 1.8rem;
   position: absolute;
   left: calc(var(--featured-release-card-width) / 6 + 16px + 8px);
-  top: calc(#{$upper-height} + 6px);
+  top: calc(var(--upper-height) + 6px);
   z-index: 1;
   right: $padding-x;
 }
@@ -339,7 +335,7 @@ $expanded-height: calc(
 .album-description {
   position: absolute;
   left: calc(var(--featured-release-card-width) / 6 + 16px + 8px);
-  top: calc(#{$upper-height} + 32px);
+  top: calc(var(--upper-height) + 32px);
   opacity: 1;
   z-index: 1;
   transition: opacity 0.2s ease-out;

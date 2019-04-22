@@ -201,7 +201,7 @@ export default class ForYou extends Vue {
   display: flex;
   font-weight: bold;
   color: white;
-  font-size: 2rem;
+  font-size: 1.8rem;
   justify-items: center;
   align-items: center;
   width: 100%;

@@ -249,7 +249,7 @@ $padding-x: 8px;
           calc(-#{$padding-x} - var(--album-artwork-width)),
           calc(4px - var(--upper-height))
         )
-        scale(1.2);
+        scale(1.1);
     }
 
     .album-header,

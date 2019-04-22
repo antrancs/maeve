@@ -244,6 +244,7 @@ export default class Home extends Vue {
 
   @Watch('isAuthenticated')
   onAuthenticationChanged(newValue: boolean) {
+    this.$_getFeaturedReleases();
     if (newValue) {
       this.$_fetchRecentlyPlayed();
     }
@@ -283,9 +284,7 @@ export default class Home extends Vue {
   }
 
   created() {
-    getFeaturedAlbums().then(releases => {
-      this.featuredAlbums = releases;
-    });
+    this.$_getFeaturedReleases();
 
     this.$_fetchFeaturedPlaylists();
     if (this.isAuthenticated) {
@@ -359,6 +358,12 @@ export default class Home extends Vue {
     return musicApiService
       .getCharts(['albums', 'playlists'], 10)
       .then(chart => (this.chart = chart));
+  }
+
+  $_getFeaturedReleases() {
+    getFeaturedAlbums().then(releases => {
+      this.featuredAlbums = releases;
+    });
   }
 }
 </script>

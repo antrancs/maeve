@@ -32,4 +32,14 @@ export default class NewReleaseHomeList extends Vue {
   overflow-x: scroll;
   display: flex;
 }
+
+/* .wrapper::-webkit-scrollbar {
+  display: none;
+} */
+
+@supports (scrollbar-width: thin) {
+  .wrapper {
+    scrollbar-width: thin;
+  }
+}
 </style>

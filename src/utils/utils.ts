@@ -134,7 +134,7 @@ const getFeaturedAlbums = () => {
   return axios
     .get('/api/catalog/albums/featuredAlbums', {
       params: {
-        country: 'us' // MusicKit.getInstance().storefrontId
+        country: MusicKit.getInstance().storefrontId
       }
     })
     .then(res => {
@@ -169,7 +169,7 @@ const getFeaturedPlaylists = () => {
   return axios
     .get('/api/catalog/playlists/featured/all', {
       params: {
-        country: 'us' // MusicKit.getInstance().storefrontId
+        country: MusicKit.getInstance().storefrontId
       }
     })
     .then(res => {
@@ -181,7 +181,7 @@ const getMainFeaturedPlaylists = () => {
   return axios
     .get('/api/catalog/playlists/featured/main', {
       params: {
-        country: 'us' //  MusicKit.getInstance().storefrontId
+        country: MusicKit.getInstance().storefrontId
       }
     })
     .then(res => {

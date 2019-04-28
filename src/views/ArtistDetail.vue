@@ -151,11 +151,7 @@ import LinkComponent from '@/components/LinkComponent.vue';
 import ArtistList from '@/components/ArtistList.vue';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import musicApiService from '@/services/musicApi.service';
-import {
-  getArtistArtwork,
-  formatArtworkUrl,
-  getArtistDetails
-} from '@/utils/utils';
+import { formatArtworkUrl } from '@/utils/utils';
 import {
   Nullable,
   Album,
@@ -183,6 +179,7 @@ import {
   FetchOneAlbumCatalogAction,
   FetchMultipleAlbumsCatalogAction
 } from '@/store/types';
+import { getArtistDetails } from '../services/catalog.service';
 
 @Component({
   components: {

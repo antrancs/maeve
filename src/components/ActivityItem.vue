@@ -1,5 +1,5 @@
 <template>
-  <v-flex xs6 sm3 md2 class="pa-2">
+  <v-flex xs6 sm3 md3 lg2 class="pa-2">
     <router-link :to="{ name: 'activities', params: { id: activity.id } }">
       <div :class="$style['wrapper']" :style="wrapperStyle">
         <MediaArtwork

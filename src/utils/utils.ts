@@ -1,4 +1,3 @@
-import axios from 'axios';
 import random from 'lodash/random';
 
 import { Collection, Song, Nullable } from '@/@types/model/model';
@@ -20,12 +19,13 @@ const getArtworkUrl = (
     return '';
   }
 
-  const replace: { [key: string]: number } = {
-    '{w}': width,
-    '{h}': height
+  const replace: { [key: string]: string } = {
+    '{w}': width.toString(),
+    '{h}': height.toString(),
+    'bb.jpeg': 'sr.jpeg'
   };
 
-  return originalUrl.replace(/{w}|{h}/gi, matched => {
+  return originalUrl.replace(/{w}|{h}|bb.jpeg/gi, matched => {
     return replace[matched].toString();
   });
 };
@@ -59,101 +59,6 @@ const formatArtworkUrl = (
   )}${width}x${height}bb.jpg`;
 };
 
-/**
- * A workaround to get the artwork for an artist as Apple Music API doesn't support it yet
- * @param {string} itunesUrl - iTunes URL for an artist
- * @param width (optional) - If not provided, the placeholder url will be returned
- * @param height (optional) - If not provided, the placeholder url will be returned
- * @returns {Promise}
- */
-const getArtistArtwork = (
-  itunesUrl: string,
-  artistId: string,
-  size: string
-): Promise<string> => {
-  return axios
-    .get('/api/catalog/artists/artwork', {
-      params: {
-        url: itunesUrl,
-        artistId,
-        size
-      }
-    })
-    .then(res => {
-      return res.data;
-    });
-};
-
-const getArtistDetails = (url: string, artistId: string, size: string) => {
-  return axios
-    .get('/api/catalog/artists/details', {
-      params: {
-        url,
-        artistId,
-        size
-      }
-    })
-    .then(res => {
-      return res.data;
-    });
-};
-
-const getCuratorBanner = (url: string, curatorId: string, size: string) => {
-  return axios
-    .get('/api/catalog/curators/banner', {
-      params: {
-        url,
-        curatorId,
-        size
-      }
-    })
-    .then(res => {
-      return res.data;
-    });
-};
-
-const getCuratorsByGenre = (genreId: string) => {
-  return axios.get(`/api/catalog/curators/genre/${genreId}`).then(res => {
-    return res.data;
-  });
-};
-
-const getAlbumExtraInfo = (iTunesUrl: string) => {
-  return axios
-    .get('/api/catalog/albums/extraInfo', {
-      params: {
-        url: iTunesUrl
-      }
-    })
-    .then(res => {
-      return res.data;
-    });
-};
-
-const getFeaturedAlbums = () => {
-  return axios
-    .get('/api/catalog/albums/featuredAlbums', {
-      params: {
-        country: MusicKit.getInstance().storefrontId
-      }
-    })
-    .then(res => {
-      return res.data;
-    });
-};
-
-const getGrammyResults = () => {
-  return axios
-    .get('/api/grammyResults', {
-      params: {
-        storefront: MusicKit.getInstance().storefrontId
-      }
-    })
-    .then(res => {
-      return res.data;
-    });
-};
-
 const getSongsFromCollection = (collection: Nullable<Collection>): Song[] => {
   if (
     !collection ||
@@ -163,61 +68,6 @@ const getSongsFromCollection = (collection: Nullable<Collection>): Song[] => {
     return [];
   }
   return collection.relationships.tracks.data;
-};
-
-const getFeaturedPlaylists = () => {
-  return axios
-    .get('/api/catalog/playlists/featured/all', {
-      params: {
-        country: MusicKit.getInstance().storefrontId
-      }
-    })
-    .then(res => {
-      return res.data;
-    });
-};
-
-const getMainFeaturedPlaylists = () => {
-  return axios
-    .get('/api/catalog/playlists/featured/main', {
-      params: {
-        country: MusicKit.getInstance().storefrontId
-      }
-    })
-    .then(res => {
-      return res.data;
-    });
-};
-
-const getGenreData = (id: string, limit: number) => {
-  return axios
-    .get(`/api/catalog/genres/${id}`, {
-      params: {
-        limit,
-        country: MusicKit.getInstance().storefrontId
-      }
-    })
-    .then(res => {
-      return res.data;
-    });
-};
-
-const getGenreOneResource = (id: string, resource: string) => {
-  return axios
-    .get(`/api/catalog/genres/${id}/${resource}`, {
-      params: {
-        country: MusicKit.getInstance().storefrontId
-      }
-    })
-    .then(res => {
-      return res.data;
-    });
-};
-
-const getBrowsePlaylists = (path: string) => {
-  return axios.get(`/api/catalog/browse/${path}`).then(res => {
-    return res.data;
-  });
 };
 
 const hexToRgb = (hex: string) => {
@@ -255,22 +105,10 @@ const getGradientBackgroundColorsFromArtwork = (artwork: MusicKit.Artwork) => {
 
 export {
   getArtworkUrl,
-  getArtistArtwork,
   formatArtworkUrl,
   getSongsFromCollection,
-  getArtistDetails,
-  getCuratorBanner,
-  getCuratorsByGenre,
-  getAlbumExtraInfo,
-  getGrammyResults,
-  getFeaturedPlaylists,
-  getMainFeaturedPlaylists,
   getArtworkSize,
-  getGenreData,
-  getGenreOneResource,
-  getBrowsePlaylists,
   hexToRgb,
   getTextColorForBackground,
-  getFeaturedAlbums,
   getGradientBackgroundColorsFromArtwork
 };

@@ -16,11 +16,6 @@
             <h2 class="curator-name white-text">
               {{ curator.attributes.name }}
             </h2>
-
-            <p
-              class="px-4 hidden-xs-only white-text"
-              v-html="curator.attributes.editorialNotes.standard"
-            ></p>
           </v-layout>
         </v-container>
       </div>
@@ -28,6 +23,10 @@
 
     <v-container>
       <v-layout row wrap>
+        <p
+          class="px-4 hidden-xs-only white-text"
+          v-html="curator.attributes.editorialNotes.standard"
+        ></p>
         <template v-if="playlists.length > 0">
           <v-flex xs12 class="px-2 pt-4">
             <section-header>Playlists</section-header>
@@ -53,9 +52,10 @@ import {
 } from '@/store/actions.type';
 import { PLACEHOLDER_IMAGE } from '@/utils/constants';
 import { Route } from 'vue-router';
-import { getArtworkUrl, getCuratorBanner } from '@/utils/utils';
+import { getArtworkUrl } from '@/utils/utils';
 import { Nullable } from '@/@types/model/model';
 import { FetchCuratorPlaylistsAction } from '@/store/types';
+import { getCuratorBanner } from '../services/catalog.service';
 
 @Component({
   components: { SongCollectionList, MediaArtwork }

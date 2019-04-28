@@ -1,8 +1,8 @@
 <template>
   <v-container>
     <v-layout row wrap>
-      <v-flex xs12 class="px-2" v-if="genre">
-        <section-header>{{ genre.name }} - {{ resourceText }}</section-header>
+      <v-flex xs12 class="px-2">
+        <section-header>{{ genreDetailName }}</section-header>
       </v-flex>
 
       <v-flex xs12 v-if="collections.length > 0">
@@ -19,16 +19,16 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import { Prop } from 'vue-property-decorator';
+import { Action } from 'vuex-class';
 
 import SongListLarge from '@/components/Song/SongListLarge.vue';
 import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import { Collection, Nullable } from '@/@types/model/model';
-import { Prop } from 'vue-property-decorator';
-import { getGenreOneResource } from '@/utils/utils';
-import { Action } from 'vuex-class';
 import { FETCH_MULTIPLE_SONGS_CATALOG } from '@/store/actions.type';
 import { FetchMultipleSongsCatalogAction } from '@/store/types';
 import { GENRES, Genre } from '@/utils/constants';
+import { getGenreOneResource } from '../services/catalog.service';
 
 @Component({
   components: {
@@ -37,55 +37,33 @@ import { GENRES, Genre } from '@/utils/constants';
   }
 })
 export default class GenreDetailViewAll extends Vue {
-  private genre: Nullable<Genre> = null;
   private songs: MusicKit.Song[] = [];
   private collections: (MusicKit.Album | MusicKit.Playlist)[] = [];
+  private genreDetailName!: string;
 
   @Prop() id!: string;
   @Prop() resource!: string;
 
   @Action [FETCH_MULTIPLE_SONGS_CATALOG]: FetchMultipleSongsCatalogAction;
 
-  get resourceText() {
-    switch (this.resource) {
-      case 'new-releases':
-        return 'New Releases';
-      case 'essential-albums':
-        return 'Essential Albums';
-      case 'artist-playlists':
-        return 'Artist Playlists';
-      case 'hot-tracks':
-        return 'Hot Tracks';
-      case 'playlists':
-        return 'Playlists';
-      default:
-        return null;
-    }
-  }
-
   created() {
-    const genre = GENRES.find(genre => genre.id === this.id);
-
-    if (!genre) {
-      this.$router.push({ name: 'NotFound' });
-      return;
-    }
-    this.genre = genre;
-
     this.$_fetchData();
   }
 
   async $_fetchData() {
-    if (!this.resourceText) {
+    const result = await getGenreOneResource(this.id, this.resource);
+
+    if (!result || Object.keys(result).length === 0) {
       return;
     }
-    const result = await getGenreOneResource(this.id, this.resource);
+
+    this.genreDetailName = result.name;
     if (this.resource === 'hot-tracks') {
-      if (result.length > 0) {
-        this.songs = await this.fetchMultipleSongsCatalog(result);
+      if (result.data.length > 0) {
+        this.songs = await this.fetchMultipleSongsCatalog(result.data);
       }
     } else {
-      this.collections = result;
+      this.collections = result.data;
     }
   }
 }

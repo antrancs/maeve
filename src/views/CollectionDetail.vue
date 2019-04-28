@@ -560,7 +560,6 @@ export default class CollectionDetail extends Vue {
   height: calc(100vh - 64px - 24px - 16px);
   position: sticky;
   top: 88px;
-  position: sticky;
   flex-wrap: nowrap;
   flex-direction: column;
 }

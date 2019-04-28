@@ -27,7 +27,7 @@ import {
   FetchActivityPlaylistsPayload
 } from './types';
 import musicApiService from '@/services/musicApi.service';
-import { getAlbumExtraInfo } from '@/utils/utils';
+import { getAlbumExtraInfo } from '@/services/catalog.service';
 
 const initialState: CatalogState = {};
 

@@ -16,6 +16,10 @@ export default class GenreListItem extends Vue {
   @Prop() genre!: Genre;
 
   get genreBackgroundColorStyle() {
+    if (!this.genre.colors) {
+      return {};
+    }
+
     return {
       background: `linear-gradient(45deg, ${this.genre.colors.join(',')})`,
       'box-shadow': `0px 10px 40px -10px ${this.genre.colors[0]}`
@@ -33,5 +37,6 @@ export default class GenreListItem extends Vue {
   justify-content: center;
   align-items: center;
   height: 6rem;
+  text-align: center;
 }
 </style>

@@ -71,3 +71,9 @@ export interface ThemeOption {
   secondaryText: string;
   editable: boolean;
 }
+
+export type GenreItem = {
+  name: string;
+  id: string;
+  colors: string[];
+};

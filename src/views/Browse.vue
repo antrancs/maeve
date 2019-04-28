@@ -1,12 +1,12 @@
 <template>
   <v-container>
-    <v-layout row wrap>
-      <v-flex xs12 class="px-2" v-if="resourceText">
-        <section-header>{{ resourceText }}</section-header>
+    <v-layout row wrap v-if="categoryData">
+      <v-flex xs12 class="px-2">
+        <section-header>{{ categoryData.name }}</section-header>
       </v-flex>
 
-      <v-flex xs12 v-if="collections.length > 0">
-        <SongCollectionList :collections="collections" />
+      <v-flex xs12>
+        <SongCollectionList :collections="categoryData.playlists" />
       </v-flex>
     </v-layout>
   </v-container>
@@ -17,10 +17,8 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 
 import SongCollectionList from '@/components/Song/SongCollectionList.vue';
-import { Collection, Nullable } from '@/@types/model/model';
 import { Prop } from 'vue-property-decorator';
-import { getBrowsePlaylists } from '@/utils/utils';
-import { Action } from 'vuex-class';
+import { getOneBrowseCategory } from '../services/catalog.service';
 
 @Component({
   components: {
@@ -28,36 +26,19 @@ import { Action } from 'vuex-class';
   }
 })
 export default class Browse extends Vue {
-  private collections: (MusicKit.Album | MusicKit.Playlist)[] = [];
+  private categoryData: any = null;
 
   @Prop() resource!: string;
-
-  get resourceText() {
-    switch (this.resource) {
-      case 'new-music':
-        return 'New Music';
-      case 'replay':
-        return 'Replay';
-      case 'girl-power':
-        return 'Girl Power';
-      case 'sing-along':
-        return 'Sing Along';
-      default:
-        return null;
-    }
-  }
 
   created() {
     this.$_fetchData();
   }
 
   async $_fetchData() {
-    if (!this.resourceText) {
-      return;
+    const category = await getOneBrowseCategory(this.resource);
+    if (category && Object.keys(category).length > 0) {
+      this.categoryData = category;
     }
-    const result = await getBrowsePlaylists(this.resource);
-
-    this.collections = result;
   }
 }
 </script>

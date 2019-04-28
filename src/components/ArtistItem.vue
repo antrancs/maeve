@@ -40,13 +40,13 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { getArtistArtwork } from '@/utils/utils';
 import { Artist, SnackbarMode } from '@/@types/model/model';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import { Action } from 'vuex-class';
 import { SHOW_SNACKBAR } from '@/store/actions.type';
 import { ShowSnackbarAction } from '@/store/types';
 import { PLACEHOLDER_IMAGE } from '@/utils/constants';
+import { getArtistArtwork } from '../services/catalog.service';
 
 @Component({
   components: {

@@ -19,17 +19,17 @@
     <transition name="fade" mode="out-in">
       <div>
         <template v-if="songs.length > 0">
-          <h2 class="ml-1">Top songs</h2>
+          <section-header class="ml-2">Top songs</section-header>
           <SongListLarge :songs="songs" sourceName="Top songs" />
         </template>
 
         <template v-if="albums.length > 0">
-          <h2 class="ml-2 mt-4 mb-1">Top Albums</h2>
+          <section-header class="ml-2 mt-4">Top Albums</section-header>
           <SongCollectionList :collections="albums" />
         </template>
 
         <template v-if="playlists.length > 0">
-          <h2 class="ml-2 mt-4 mb-1">Top Playlists</h2>
+          <section-header class="ml-2 mt-4">Top Playlists</section-header>
           <SongCollectionList :collections="playlists" />
         </template>
       </div>

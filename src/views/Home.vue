@@ -53,7 +53,7 @@
         <CollectionCarousel :collections="recentPlayed" />
       </template>
 
-      <v-flex xs12>
+      <template xs12 v-if="browseCategories.length > 0">
         <v-flex xs12 class="px-2 pt-4">
           <section-header>Browse</section-header>
         </v-flex>
@@ -64,19 +64,19 @@
             md3
             lg2
             class="pa-2"
-            v-for="category in categories"
+            v-for="category in browseCategories"
             :key="category.name"
           >
             <router-link
               :to="{
                 name: 'browse',
                 params: {
-                  resource: category.path
+                  resource: category.id
                 }
               }"
             >
               <div style="width: 100%">
-                <img style="width: 100%" :src="category.img" />
+                <img style="width: 100%" :src="category.imageUrl" />
 
                 <div class="main-info-text text-xs-center">
                   {{ category.name }}
@@ -85,7 +85,7 @@
             </router-link>
           </v-flex>
         </v-layout>
-      </v-flex>
+      </template>
 
       <template v-if="genres.length > 0">
         <v-flex xs12>
@@ -150,11 +150,11 @@
         </transition>
       </template>
 
-      <v-flex xs12 class="px-2 pt-4">
+      <v-flex xs12 class="px-2 pt-4" v-if="genreItems.length > 0">
         <section-header>Genres</section-header>
       </v-flex>
 
-      <v-flex> <GenreList /> </v-flex>
+      <v-flex> <GenreList :genres="genreItems" /> </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -180,12 +180,14 @@ import {
   FetchMultiplePlaylistsCatalogAction,
   FetchRecentPlayedAction
 } from '@/store/types';
+import { getArtworkSize } from '@/utils/utils';
+import { Nullable, GenreItem } from '@/@types/model/model';
 import {
+  getAllBrowseCategories,
+  getGenresForCountry,
   getMainFeaturedPlaylists,
-  getArtworkSize,
   getFeaturedAlbums
-} from '@/utils/utils';
-import { Nullable } from '@/@types/model/model';
+} from '../services/catalog.service';
 
 @Component({
   components: {
@@ -208,29 +210,8 @@ export default class Home extends Vue {
   private selectedNewReleasesGenre: Nullable<string> = null;
   private newReleases: MusicKit.Album[] = [];
   private featuredAlbums: any[] = [];
-
-  private categories = [
-    {
-      name: 'New Music',
-      img: require(`@/assets/images/newMusic/${this.artworkSize}.jpg`),
-      path: 'new-music'
-    },
-    {
-      name: 'Replay',
-      img: require(`@/assets/images/replay/${this.artworkSize}.jpg`),
-      path: 'replay'
-    },
-    {
-      name: 'Sing-Along',
-      img: require(`@/assets/images/singAlong/${this.artworkSize}.jpg`),
-      path: 'sing-along'
-    },
-    {
-      name: 'Girl Power',
-      img: require(`@/assets/images/girlPower/${this.artworkSize}.jpg`),
-      path: 'girl-power'
-    }
-  ];
+  private browseCategories: any[] = [];
+  private genreItems: GenreItem[] = [];
 
   @Getter isAuthenticated!: boolean;
 
@@ -244,13 +225,14 @@ export default class Home extends Vue {
 
   @Watch('isAuthenticated')
   onAuthenticationChanged(newValue: boolean) {
-    this.$_getFeaturedReleases();
     if (newValue) {
       this.$_fetchRecentlyPlayed();
     }
 
     this.$_fetchCharts().then(() => {
       this.$_fetchFeaturedPlaylists();
+      this.$_getFeaturedReleases();
+      this.$_getGenres();
     });
 
     this.$_getNewReleasesGenres().then(genres => {
@@ -302,6 +284,12 @@ export default class Home extends Vue {
         this.$_getNewReleases();
       }
     });
+
+    getAllBrowseCategories().then(categories => {
+      this.browseCategories = categories;
+    });
+
+    this.$_getGenres();
   }
 
   updateNewReleases(genre: string) {
@@ -363,6 +351,12 @@ export default class Home extends Vue {
   $_getFeaturedReleases() {
     getFeaturedAlbums().then(releases => {
       this.featuredAlbums = releases;
+    });
+  }
+
+  $_getGenres() {
+    getGenresForCountry().then(genres => {
+      this.genreItems = genres;
     });
   }
 }

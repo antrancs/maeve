@@ -58,8 +58,8 @@
         $style['album-description'],
         { 'long-text-truncated': $vuetify.breakpoint.smAndDown }
       ]"
-      >{{ release.description }}</small
-    >
+      v-html="release.description"
+    ></small>
 
     <div :class="[$style['play-button']]">
       <v-btn

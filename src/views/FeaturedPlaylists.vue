@@ -1,7 +1,9 @@
 <template>
   <v-container>
     <v-layout row wrap>
-      <v-flex xs12 class="px-2"> <h2>Featured Playlists</h2> </v-flex>
+      <v-flex xs12 class="px-2">
+        <section-header>Featured Playlists</section-header>
+      </v-flex>
       <SongCollectionList :collections="playlists" />
 
       <v-flex class="text-xs-center" v-if="playlists.length === 0">
@@ -18,7 +20,7 @@ import { Action } from 'vuex-class';
 import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import { FETCH_MULTIPLE_PLAYLISTS_CATALOG } from '@/store/actions.type';
 import { FetchMultiplePlaylistsCatalogAction } from '@/store/types';
-import { getFeaturedPlaylists } from '@/utils/utils';
+import { getFeaturedPlaylists } from '../services/catalog.service';
 
 @Component({
   components: {

@@ -101,7 +101,7 @@
       </v-layout>
     </v-container>
 
-    <v-container class="genre-content pt-0" v-if="artistsPlaylists.length > 0">
+    <v-container class="genre-content pt-0" v-if="artistPlaylists.length > 0">
       <v-layout row wrap style="z-index: 2">
         <v-flex xs12 class="flex-row px-2" justify-space-between align-center>
           <section-header>Artist Playlists</section-header>
@@ -118,7 +118,7 @@
           >
         </v-flex>
 
-        <CollectionCarousel :collections="artistsPlaylists" />
+        <CollectionCarousel :collections="artistPlaylists" />
       </v-layout>
     </v-container>
 
@@ -144,7 +144,7 @@ import CollectionCarousel from '@/components/Collection/CollectionCarousel.vue';
 import musicApiService from '@/services/musicApi.service';
 import { Nullable } from '@/@types/model/model';
 import { Genre, GENRES } from '@/utils/constants';
-import { getArtworkUrl, getCuratorsByGenre, getGenreData } from '@/utils/utils';
+import { getArtworkUrl } from '@/utils/utils';
 import { TEXT_PRIMARY_DARK } from '@/themes';
 import { Action } from 'vuex-class';
 import {
@@ -152,6 +152,7 @@ import {
   FETCH_MULTIPLE_SONGS_CATALOG
 } from '@/store/actions.type';
 import { FetchMultipleSongsCatalogAction } from '@/store/types';
+import { getOneGenreForCountry } from '../services/catalog.service';
 
 @Component({
   components: {
@@ -168,7 +169,7 @@ export default class GenreDetail extends Vue {
   private hotTracks: MusicKit.Song[] = [];
   private newReleases: MusicKit.Album[] = [];
   private essentialAlbums: MusicKit.Album[] = [];
-  private artistsPlaylists: MusicKit.Playlist[] = [];
+  private artistPlaylists: MusicKit.Playlist[] = [];
 
   @Prop() id!: string;
 
@@ -178,7 +179,7 @@ export default class GenreDetail extends Vue {
   @Action [FETCH_MULTIPLE_SONGS_CATALOG]: FetchMultipleSongsCatalogAction;
 
   get headerBackgroundStyle() {
-    if (!this.genre) {
+    if (!this.genre || !this.genre.colors) {
       return {};
     }
     return {
@@ -207,36 +208,27 @@ export default class GenreDetail extends Vue {
   }
 
   created() {
-    const genre = GENRES.find(genre => genre.id === this.id);
-
-    if (!genre) {
-      this.$router.push({ name: 'NotFound' });
-      return;
-    }
-    this.genre = genre;
-
     this.$_fetchCurators();
     this.$_fetchGenreData();
   }
 
   async $_fetchCurators() {
-    if (!this.genre) {
-      return;
-    }
-
-    const curatorIds = await getCuratorsByGenre(this.genre.id);
-
-    if (curatorIds && curatorIds.length > 0) {
-      this.curators = await this.fetchMultipleCurators(curatorIds);
-    }
+    // if (!this.genre) {
+    //   return;
+    // }
+    // const curatorIds = await getCuratorsByGenre(this.genre.id);
+    // if (curatorIds && curatorIds.length > 0) {
+    //   this.curators = await this.fetchMultipleCurators(curatorIds);
+    // }
   }
 
   async $_fetchGenreData() {
-    const result = await getGenreData(this.id, this.fetchLimit);
+    const result = await getOneGenreForCountry(this.id, this.fetchLimit);
     if (Object.keys(result).length === 0) {
       return;
     }
 
+    this.genre = result.genre;
     const hotTrackIds = result['hotTracks'];
 
     if (hotTrackIds && Array.isArray(hotTrackIds)) {
@@ -255,9 +247,9 @@ export default class GenreDetail extends Vue {
       this.essentialAlbums = essentialAlbums;
     }
 
-    const artistsPlaylists = result['artistsPlaylists'];
-    if (artistsPlaylists && Array.isArray(artistsPlaylists)) {
-      this.artistsPlaylists = artistsPlaylists;
+    const artistPlaylists = result['artistPlaylists'];
+    if (artistPlaylists && Array.isArray(artistPlaylists)) {
+      this.artistPlaylists = artistPlaylists;
     }
 
     const playlists = result['playlists'];

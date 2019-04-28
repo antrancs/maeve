@@ -6,7 +6,7 @@
     >
       <div
         v-if="isJustUpdated"
-        :class="[$style['just-updated-tag'], 'pa-1']"
+        :class="[$style['just-updated-tag'], 'pa-1', 'elevation-5']"
         :style="justUpdatedTagStyle"
       >
         Just Updated
@@ -31,10 +31,8 @@ import differenceInCalendarDays from 'date-fns/difference_in_calendar_days';
 import {
   getArtworkUrl,
   getArtworkSize,
-  hexToRgb,
   getTextColorForBackground
 } from '@/utils/utils';
-import { isLight } from '../../themes';
 
 @Component
 export default class FeaturedPlaylist extends Vue {
@@ -103,27 +101,7 @@ export default class FeaturedPlaylist extends Vue {
   }
 
   get bottomSheetStyle() {
-    let bottomSheetBgColor = '';
-    if (
-      !this.playlist ||
-      !this.playlist.attributes ||
-      !this.playlist.attributes.artwork ||
-      !this.playlist.attributes.artwork.textColor1 ||
-      !this.playlist.attributes.artwork.bgColor
-    ) {
-      bottomSheetBgColor = '000000';
-    } else {
-      const { textColor1, bgColor } = this.playlist.attributes.artwork;
-
-      bottomSheetBgColor = !isLight(bgColor) ? bgColor : textColor1;
-    }
-
-    const bgColorRgb = hexToRgb(bottomSheetBgColor);
-
     const style: any = {};
-    style['background-color'] = `rgba(${bgColorRgb[0]},${bgColorRgb[1]}, ${
-      bgColorRgb[2]
-    }, 0.6)`;
 
     // Height
     let height = '7rem';
@@ -200,6 +178,7 @@ $featured-playlist-border: 1.5rem;
 .playlist-info {
   align-items: center;
   background-color: rgba($color: #000000, $alpha: 0.4);
+  border-radius: $featured-playlist-border;
   color: white;
   display: flex;
   justify-content: center;
@@ -210,6 +189,7 @@ $featured-playlist-border: 1.5rem;
 
 .bottom-sheet {
   align-items: center;
+  background-color: rgba($color: #000000, $alpha: 0.6);
   border-bottom-left-radius: $featured-playlist-border;
   border-bottom-right-radius: $featured-playlist-border;
   color: white;

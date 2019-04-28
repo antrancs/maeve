@@ -18,8 +18,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import Component from 'vue-class-component';
+import { Component, Vue, Mixins } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 
 import ArtistListLastfm from '@/components/Lastfm/ArtistListLastfm.vue';
@@ -29,6 +28,7 @@ import {
   FETCH_RECENT_TRACKS_LASTFM
 } from '@/store/actions.type';
 import { Nullable, LastfmSong } from '@/@types/model/model';
+import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 
 @Component({
   components: {
@@ -36,7 +36,7 @@ import { Nullable, LastfmSong } from '@/@types/model/model';
     SongListSmall
   }
 })
-export default class Lastfm extends Vue {
+export default class Lastfm extends Mixins(DataLoadingMixin) {
   private topArtists: Nullable<any[]> = null;
   private recentTracks: Nullable<LastfmSong[]> = null;
 
@@ -44,13 +44,17 @@ export default class Lastfm extends Vue {
   @Action [FETCH_RECENT_TRACKS_LASTFM]: () => Promise<LastfmSong[]>;
 
   created() {
-    this.fetchTopArtistsLastFm().then(artists => {
-      this.topArtists = artists;
-    });
+    const fetchTopArtistsPromise = this.fetchTopArtistsLastFm();
+    const fetchRecentTrackPromise = this.fetchRecentTracksLastfm();
 
-    this.fetchRecentTracksLastfm().then(tracks => {
-      this.recentTracks = tracks;
-    });
+    Promise.all([fetchTopArtistsPromise, fetchRecentTrackPromise])
+      .then(results => {
+        this.topArtists = results[0];
+        this.recentTracks = results[1];
+      })
+      .finally(() => {
+        this.dataLoadingDone();
+      });
   }
 }
 </script>

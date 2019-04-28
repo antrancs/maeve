@@ -160,7 +160,8 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from 'vue-property-decorator';
+import { Vue, Component, Watch, Mixins } from 'vue-property-decorator';
+import { Action, Getter } from 'vuex-class';
 
 import CollectionCarousel from '@/components/Collection/CollectionCarousel.vue';
 import FeaturedPlaylist from '@/components/Collection/FeaturedPlaylist.vue';
@@ -170,7 +171,7 @@ import GenreList from '@/components/GenreList.vue';
 import NewReleaseHomeList from '@/components/Home/NewReleaseHomeList.vue';
 import musicApiService from '@/services/musicApi.service';
 import { activityIds } from '@/utils/constants';
-import { Action, Getter } from 'vuex-class';
+import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 import {
   FETCH_MULTIPLE_PLAYLISTS_CATALOG,
   FETCH_RECENT_PLAYED,
@@ -199,7 +200,7 @@ import {
     NewReleaseHomeList
   }
 })
-export default class Home extends Vue {
+export default class Home extends Mixins(DataLoadingMixin) {
   private featuredPlaylists: ReadonlyArray<MusicKit.Playlist> = [];
   private activities: ReadonlyArray<MusicKit.Activity> = [];
   private recentPlayed: ReadonlyArray<
@@ -351,6 +352,7 @@ export default class Home extends Vue {
   $_getFeaturedReleases() {
     getFeaturedAlbums().then(releases => {
       this.featuredAlbums = releases;
+      this.dataLoadingDone();
     });
   }
 

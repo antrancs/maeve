@@ -155,8 +155,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
+import { Component, Vue, Prop, Watch, Mixins } from 'vue-property-decorator';
 import { Action, Mutation, State } from 'vuex-class';
+import { Route } from 'vue-router';
 import parse from 'date-fns/parse';
 import format from 'date-fns/format';
 import isToday from 'date-fns/is_today';
@@ -168,6 +169,7 @@ import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import CollectionControls from '@/components/Collection/CollectionControls.vue';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import CollectionDetailArtwork from '@/components/Collection/CollectionDetailArtwork.vue';
+import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 import {
   Nullable,
   Collection,
@@ -202,7 +204,6 @@ import {
 } from '@/utils/utils';
 import { PLACEHOLDER_IMAGE } from '@/utils/constants';
 import { isLight } from '@/themes';
-import { Route } from 'vue-router';
 
 @Component({
   components: {
@@ -214,7 +215,7 @@ import { Route } from 'vue-router';
     CollectionDetailArtwork
   }
 })
-export default class CollectionDetail extends Vue {
+export default class CollectionDetail extends Mixins(DataLoadingMixin) {
   private collection: Nullable<Collection> = null;
   private relatedAlbums: MusicKit.Album[] = [];
   private otherAlbumsFromArtists: MusicKit.Album[] = [];
@@ -496,21 +497,27 @@ export default class CollectionDetail extends Vue {
           this.collection = collection;
           this.$_fetchAlbumExtraInfo(collection);
           this.$_getSongsFromCollection(collection);
+          this.dataLoadingDone();
         });
 
         break;
+
       case CollectionType.playlist:
         this.fetchOnePlaylistCatalog(this.id).then(collection => {
           this.collection = collection;
           this.$_getSongsFromCollection(collection);
+          this.dataLoadingDone();
         });
         break;
+
       case CollectionType.libraryAlbum:
         this.fetchOneAlbumLibrary(this.id).then(collection => {
           this.collection = collection;
           this.$_getSongsFromCollection(collection);
+          this.dataLoadingDone();
         });
         break;
+
       case CollectionType.libraryPlaylist:
         this.fetchOnePlaylistLibrary(this.id).then(collection => {
           this.collection = collection;
@@ -518,6 +525,7 @@ export default class CollectionDetail extends Vue {
 
         this.fetchLibraryPlaylistTracks(this.id).then(tracks => {
           this.songs = tracks;
+          this.dataLoadingDone();
         });
     }
   }

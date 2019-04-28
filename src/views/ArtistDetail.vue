@@ -142,7 +142,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch, Mixins } from 'vue-property-decorator';
 
 import SongListLarge from '@/components/Song/SongListLarge.vue';
 import CollectionItemCard from '@/components/Collection/CollectionItemCard.vue';
@@ -151,6 +151,7 @@ import LinkComponent from '@/components/LinkComponent.vue';
 import ArtistList from '@/components/ArtistList.vue';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import musicApiService from '@/services/musicApi.service';
+import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 import { formatArtworkUrl } from '@/utils/utils';
 import {
   Nullable,
@@ -191,7 +192,7 @@ import { getArtistDetails } from '../services/catalog.service';
     LinkComponent
   }
 })
-export default class ArtistDetail extends Vue {
+export default class ArtistDetail extends Mixins(DataLoadingMixin) {
   private artist: Nullable<Artist> = null;
   // private attributes: Nullable<MusicKit.ArtistAttributes> = null;
   private artworkUrl: Nullable<string> = PLACEHOLDER_IMAGE;
@@ -334,10 +335,13 @@ export default class ArtistDetail extends Vue {
           this.artist = artist;
           this.$_getArtistDetails();
         })
-        .catch(err => err);
+        .catch(err => {
+          this.dataLoadingDone();
+        });
     } else {
       this.fetchOneArtistLibrary(artistId).then(artist => {
         this.artist = artist;
+        this.dataLoadingDone();
       });
     }
   }
@@ -375,8 +379,9 @@ export default class ArtistDetail extends Vue {
       this.artworkUrl = artworkUrl;
       this.bio = bio;
       this.birthday = birthday;
-
       this.origin = origin;
+
+      this.dataLoadingDone();
 
       if (relatedArtists && relatedArtists.length > 0) {
         this.fetchMultipleArtistsCatalog(relatedArtists).then(artists => {

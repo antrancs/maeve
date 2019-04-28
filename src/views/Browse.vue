@@ -13,19 +13,18 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import Component from 'vue-class-component';
+import { Component, Vue, Prop, Mixins } from 'vue-property-decorator';
 
 import SongCollectionList from '@/components/Song/SongCollectionList.vue';
-import { Prop } from 'vue-property-decorator';
 import { getOneBrowseCategory } from '../services/catalog.service';
+import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 
 @Component({
   components: {
     SongCollectionList
   }
 })
-export default class Browse extends Vue {
+export default class Browse extends Mixins(DataLoadingMixin) {
   private categoryData: any = null;
 
   @Prop() resource!: string;
@@ -38,6 +37,7 @@ export default class Browse extends Vue {
     const category = await getOneBrowseCategory(this.resource);
     if (category && Object.keys(category).length > 0) {
       this.categoryData = category;
+      this.dataLoadingDone();
     }
   }
 }

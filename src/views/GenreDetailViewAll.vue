@@ -17,9 +17,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { Prop, Component, Vue, Mixins } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 
 import SongListLarge from '@/components/Song/SongListLarge.vue';
@@ -29,6 +27,7 @@ import { FETCH_MULTIPLE_SONGS_CATALOG } from '@/store/actions.type';
 import { FetchMultipleSongsCatalogAction } from '@/store/types';
 import { GENRES, Genre } from '@/utils/constants';
 import { getGenreOneResource } from '../services/catalog.service';
+import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 
 @Component({
   components: {
@@ -36,7 +35,7 @@ import { getGenreOneResource } from '../services/catalog.service';
     SongCollectionList
   }
 })
-export default class GenreDetailViewAll extends Vue {
+export default class GenreDetailViewAll extends Mixins(DataLoadingMixin) {
   private songs: MusicKit.Song[] = [];
   private collections: (MusicKit.Album | MusicKit.Playlist)[] = [];
   private genreDetailName!: string;
@@ -65,6 +64,7 @@ export default class GenreDetailViewAll extends Vue {
     } else {
       this.collections = result.data;
     }
+    this.dataLoadingDone();
   }
 }
 </script>

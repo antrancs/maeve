@@ -14,20 +14,21 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 
 import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import { FETCH_MULTIPLE_PLAYLISTS_CATALOG } from '@/store/actions.type';
 import { FetchMultiplePlaylistsCatalogAction } from '@/store/types';
 import { getFeaturedPlaylists } from '../services/catalog.service';
+import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 
 @Component({
   components: {
     SongCollectionList
   }
 })
-export default class FeaturedPlaylists extends Vue {
+export default class FeaturedPlaylists extends Mixins(DataLoadingMixin) {
   private playlists: MusicKit.Playlist[] = [];
 
   created() {
@@ -36,6 +37,7 @@ export default class FeaturedPlaylists extends Vue {
 
   async $_fetchPlaylists() {
     this.playlists = await getFeaturedPlaylists();
+    this.dataLoadingDone();
   }
 }
 </script>

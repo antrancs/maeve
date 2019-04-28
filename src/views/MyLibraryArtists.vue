@@ -52,13 +52,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
 import { Action, Mutation, State } from 'vuex-class';
-import Component from 'vue-class-component';
+import { Component, Vue, Mixins } from 'vue-property-decorator';
 
 import LibraryArtistList from '@/components/Library/Artists/LibraryArtistList.vue';
 import LibraryArtistAlbums from '@/components/Library/Artists/LibraryArtistAlbums.vue';
 import LibraryArtistAlbumDetail from '@/components/Library/Artists/LibraryArtistAlbumDetail.vue';
+import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 import {
   FETCH_LIBRARY_ARTISTS,
   FETCH_ONE_ARTIST_LIBRARY,
@@ -78,7 +78,7 @@ import { SET_FOOTER_VISIBILITY } from '@/store/mutations.type';
     LibraryArtistAlbumDetail
   }
 })
-export default class MyLibraryArtists extends Vue {
+export default class MyLibraryArtists extends Mixins(DataLoadingMixin) {
   private artists: MusicKit.LibraryArtist[] = [];
   private offset = 0;
   private searchLimit = 100;
@@ -174,6 +174,8 @@ export default class MyLibraryArtists extends Vue {
         break;
       }
     }
+
+    this.dataLoadingDone();
   }
 }
 </script>

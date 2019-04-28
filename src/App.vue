@@ -10,7 +10,7 @@
     />
     <v-content class="app-body">
       <transition name="fade" mode="out-in">
-        <router-view></router-view>
+        <router-view @ready="pageLoadReady"></router-view>
       </transition>
     </v-content>
 
@@ -35,6 +35,8 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
+import { State, Action, Getter } from 'vuex-class';
+import NProgress from 'nprogress';
 
 import musicKit from '@/services/musicKit';
 import AppSidebar from '@/components/Layout/TheSidebar.vue';
@@ -45,7 +47,6 @@ import AppSnackbar from '@/components/TheSnackbar.vue';
 import MediaActionMenu from '@/components/MediaActionMenu.vue';
 import NewPlaylistDialog from '@/components/NewPlaylistDialog.vue';
 import ThemeSetting from '@/components/Setting/ThemeSetting.vue';
-import { State, Action, Getter } from 'vuex-class';
 import { ThemeOption, Nullable, PlayQueueSong } from '@/@types/model/model';
 import {
   LOAD_SETTINGS,
@@ -120,6 +121,17 @@ export default class App extends Vue {
       MusicKit.Events.authorizationStatusDidChange,
       this.onAuthorizationStatusDidChange
     );
+
+    NProgress.configure({
+      speed: 200,
+      showSpinner: false
+    });
+    NProgress.start();
+
+    this.$router.beforeEach((to, from, next) => {
+      NProgress.start();
+      next();
+    });
   }
 
   beforeDestroy() {
@@ -127,6 +139,10 @@ export default class App extends Vue {
       MusicKit.Events.authorizationStatusDidChange,
       this.onAuthorizationStatusDidChange
     );
+  }
+
+  pageLoadReady() {
+    NProgress.done();
   }
 
   updateSidebarVisibility(value: boolean) {
@@ -144,6 +160,7 @@ export default class App extends Vue {
 <style lang="scss">
 @import '~normalize.css/normalize';
 @import '@/styles/styles.scss';
+@import '~nprogress/nprogress.css';
 
 .app-body .v-content__wrap {
   -webkit-overflow-scrolling: touch;
@@ -214,5 +231,9 @@ export default class App extends Vue {
 }
 .list-move {
   transition: transform 1s;
+}
+
+#nprogress .bar {
+  background: var(--v-accent-base);
 }
 </style>

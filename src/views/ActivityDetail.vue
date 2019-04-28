@@ -26,14 +26,16 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
+import { Action } from 'vuex-class';
 
 import SongCollectionList from '@/components/Song/SongCollectionList.vue';
-import InfiniteScrollMixin from '@/mixins/InfiniteScrollMixin';
 import { Nullable } from '@/@types/model/model';
 import { ActivityType } from '@/utils/constants';
 import { getArtworkUrl } from '@/utils/utils';
 import { TEXT_PRIMARY_DARK } from '@/themes';
-import { Action } from 'vuex-class';
+import InfiniteScrollMixin from '@/mixins/InfiniteScrollMixin';
+import DataLoadingMixin from '@/mixins/DataLoadingMixin';
+
 import {
   FETCH_ACTIVITY_PLAYLISTS,
   FETCH_ONE_ACTIVITY_CATALOG
@@ -43,7 +45,10 @@ import { FetchActivityPlaylistsAction } from '@/store/types';
 @Component({
   components: { SongCollectionList }
 })
-export default class ActivityDetail extends Mixins(InfiniteScrollMixin) {
+export default class ActivityDetail extends Mixins(
+  InfiniteScrollMixin,
+  DataLoadingMixin
+) {
   private activity: Nullable<MusicKit.Activity> = null;
   // already have first 10 playlists in the activity relationship
   private offset = 10;
@@ -87,7 +92,7 @@ export default class ActivityDetail extends Mixins(InfiniteScrollMixin) {
   async $_fetchActivityDetail() {
     if (!this.activity) {
       this.activity = await this.fetchOneActivityCatalog(this.id);
-
+      this.dataLoadingDone();
       if (
         !this.activity ||
         !this.activity.relationships ||

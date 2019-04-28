@@ -77,7 +77,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch, Mixins } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 import { Route } from 'vue-router';
 
@@ -88,6 +88,7 @@ import musicApiService from '@/services/musicApi.service';
 import { PLAY_SONGS, SHOW_SNACKBAR } from '@/store/actions.type';
 import { HandleSongClicked } from '@/@types/model/model';
 import { PlaySongsAction, ShowSnackbarAction } from '@/store/types';
+import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 
 @Component({
   components: {
@@ -96,7 +97,7 @@ import { PlaySongsAction, ShowSnackbarAction } from '@/store/types';
     SongListLarge
   }
 })
-export default class SearchResults extends Vue {
+export default class SearchResults extends Mixins(DataLoadingMixin) {
   private albums: MusicKit.Album[] = [];
   private songs: MusicKit.Song[] = [];
   private artists: MusicKit.Artist[] = [];
@@ -147,6 +148,9 @@ export default class SearchResults extends Vue {
         this.showSnackbar({
           text: 'Something went wrong.'
         });
+      })
+      .finally(() => {
+        this.dataLoadingDone();
       });
   }
 }

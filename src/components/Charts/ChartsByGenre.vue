@@ -130,7 +130,10 @@ export default class ChartsByGenre extends Vue {
         limit,
         genreId !== '0' ? genreId : undefined
       )
-      .then(chart => (this.chart = chart));
+      .then(chart => {
+        this.chart = chart;
+        this.$emit('ready');
+      });
   }
 }
 </script>

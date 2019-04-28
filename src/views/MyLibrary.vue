@@ -65,16 +65,17 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch, Mixins } from 'vue-property-decorator';
+import { Route } from 'vue-router';
+import { Action, Mutation } from 'vuex-class';
 import debounce from 'lodash/debounce';
 import shuffle from 'lodash/shuffle';
 
 import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import SongListLarge from '@/components/Song/SongListLarge.vue';
-import InfiniteScrollMixin from '@/mixins/InfiniteScrollMixin';
 import musicApiService from '@/services/musicApi.service';
-import { Action, Mutation } from 'vuex-class';
 import { Nullable } from '@/@types/model/model';
-import { Route } from 'vue-router';
+import InfiniteScrollMixin from '@/mixins/InfiniteScrollMixin';
+import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 
 import {
   FETCH_LIBRARY_SONGS,
@@ -95,7 +96,10 @@ import {
     SongListLarge
   }
 })
-export default class MyLibrary extends Mixins(InfiniteScrollMixin) {
+export default class MyLibrary extends Mixins(
+  InfiniteScrollMixin,
+  DataLoadingMixin
+) {
   static SEARCH_LIMIT = 50;
   static SONG_SEARCH_LIMIT = 100;
   private playlists: MusicKit.LibraryPlaylist[] = [];
@@ -292,6 +296,7 @@ export default class MyLibrary extends Mixins(InfiniteScrollMixin) {
       }
     }
     this.loading = false;
+    this.dataLoadingDone();
   }
 
   $_processResult<T>(

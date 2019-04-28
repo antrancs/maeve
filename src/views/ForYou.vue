@@ -81,13 +81,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
+import { Action } from 'vuex-class';
 
 import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import CollectionItemCard from '@/components/Collection/CollectionItemCard.vue';
 import LinkComponent from '@/components/LinkComponent.vue';
 import { Collection } from '@/@types/model/model';
-import { Action } from 'vuex-class';
+
+import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 import {
   FETCH_RECOMMENDATIONS,
   FETCH_HEAVY_ROTATION,
@@ -105,7 +107,7 @@ import {
     LinkComponent
   }
 })
-export default class ForYou extends Vue {
+export default class ForYou extends Mixins(DataLoadingMixin) {
   private recommendations: MusicKit.Recommendation[] = [];
   private recentlyAdded: (
     | MusicKit.LibraryAlbum
@@ -169,7 +171,8 @@ export default class ForYou extends Vue {
         }
         this.recommendations = result;
       })
-      .catch(err => err);
+      .catch(err => err)
+      .finally(() => this.dataLoadingDone());
 
     this.fetchRecentlyAdded().then(resources => {
       this.recentlyAdded = resources;

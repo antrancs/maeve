@@ -28,6 +28,7 @@ import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import ArtistList from '@/components/ArtistList.vue';
 import SongListLarge from '@/components/Song/SongListLarge.vue';
 import InfiniteScrollMixin from '@/mixins/InfiniteScrollMixin';
+import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 import { HandleSongClicked } from '@/@types/model/model';
 import { PLAY_SONGS, SEARCH_CATALOG } from '@/store/actions.type';
 import { PlaySongsAction, SearchCatalogAction } from '@/store/types';
@@ -39,7 +40,10 @@ import { PlaySongsAction, SearchCatalogAction } from '@/store/types';
     SongListLarge
   }
 })
-export default class SearchViewAll extends Mixins(InfiniteScrollMixin) {
+export default class SearchViewAll extends Mixins(
+  InfiniteScrollMixin,
+  DataLoadingMixin
+) {
   private offset = 0;
   private fetchLimit = 20;
   private hasNext = true;
@@ -84,27 +88,29 @@ export default class SearchViewAll extends Mixins(InfiniteScrollMixin) {
       limit: this.fetchLimit,
       term: this.query,
       type
-    }).then(result => {
-      const { data, hasNext, hasNoData, offset = 0 } = result;
-      if (hasNoData) {
-        this.hasNoData = true;
-        return;
-      }
+    })
+      .then(result => {
+        const { data, hasNext, hasNoData, offset = 0 } = result;
+        if (hasNoData) {
+          this.hasNoData = true;
+          return;
+        }
 
-      this.noMoreData = !hasNext;
+        this.noMoreData = !hasNext;
 
-      this.items.push(...data);
+        this.items.push(...data);
 
-      if (!this.noMoreData) {
-        this.shouldLoad = true;
-      }
-      this.offset = offset;
+        if (!this.noMoreData) {
+          this.shouldLoad = true;
+        }
+        this.offset = offset;
 
-      if (!hasNext || this.offset >= 150) {
-        this.shouldLoad = false;
-        this.noMoreData = true;
-      }
-    });
+        if (!hasNext || this.offset >= 150) {
+          this.shouldLoad = false;
+          this.noMoreData = true;
+        }
+      })
+      .finally(() => this.dataLoadingDone());
   }
 
   handleScroll() {

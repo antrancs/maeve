@@ -18,7 +18,11 @@
       </v-flex>
       <v-flex>
         <transition name="fade" mode="out-in">
-          <component v-bind:is="currentTabComponent" class="tab"></component>
+          <component
+            @ready="componentLoadReady"
+            v-bind:is="currentTabComponent"
+            class="tab"
+          ></component>
         </transition>
       </v-flex>
     </v-layout>
@@ -64,6 +68,10 @@ export default class Charts extends Vue {
 
   beforeDestroy() {
     this.setFooterVisibility(true);
+  }
+
+  componentLoadReady() {
+    this.$emit('ready');
   }
 }
 </script>

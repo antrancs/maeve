@@ -135,18 +135,20 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
+import { Action } from 'vuex-class';
 
 import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import CuratorList from '@/components/CuratorList.vue';
 import SongListLarge from '@/components/Song/SongListLarge.vue';
 import CollectionCarousel from '@/components/Collection/CollectionCarousel.vue';
 import musicApiService from '@/services/musicApi.service';
+import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 import { Nullable } from '@/@types/model/model';
 import { Genre, GENRES } from '@/utils/constants';
 import { getArtworkUrl } from '@/utils/utils';
 import { TEXT_PRIMARY_DARK } from '@/themes';
-import { Action } from 'vuex-class';
+
 import {
   FETCH_MULTIPLE_CURATORS,
   FETCH_MULTIPLE_SONGS_CATALOG
@@ -162,7 +164,7 @@ import { getOneGenreForCountry } from '../services/catalog.service';
     CollectionCarousel
   }
 })
-export default class GenreDetail extends Vue {
+export default class GenreDetail extends Mixins(DataLoadingMixin) {
   private genre: Nullable<Genre> = null;
   private playlists: MusicKit.Playlist[] = [];
   private curators: MusicKit.Curator[] = [];
@@ -229,6 +231,8 @@ export default class GenreDetail extends Vue {
     }
 
     this.genre = result.genre;
+    this.dataLoadingDone();
+
     const hotTrackIds = result['hotTracks'];
 
     if (hotTrackIds && Array.isArray(hotTrackIds)) {

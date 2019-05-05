@@ -213,7 +213,8 @@ export default class CollectionItemCard extends Vue {
 
 <style lang="scss" scoped>
 .overlay {
-  border-radius: $card-border-radius;
+  border-top-left-radius: $card-border-radius;
+  border-top-right-radius: $card-border-radius;
   position: absolute;
   top: 0;
   width: 100%;

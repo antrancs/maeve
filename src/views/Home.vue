@@ -350,10 +350,11 @@ export default class Home extends Mixins(DataLoadingMixin) {
   }
 
   $_getFeaturedReleases() {
-    getFeaturedAlbums().then(releases => {
-      this.featuredAlbums = releases;
-      this.dataLoadingDone();
-    });
+    getFeaturedAlbums()
+      .then(releases => {
+        this.featuredAlbums = releases;
+      })
+      .finally(() => this.dataLoadingDone());
   }
 
   $_getGenres() {

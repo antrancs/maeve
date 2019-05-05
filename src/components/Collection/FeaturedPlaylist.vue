@@ -178,7 +178,8 @@ $featured-playlist-border: 1.5rem;
 .playlist-info {
   align-items: center;
   background-color: rgba($color: #000000, $alpha: 0.4);
-  border-radius: $featured-playlist-border;
+  border-top-left-radius: $featured-playlist-border;
+  border-top-right-radius: $featured-playlist-border;
   color: white;
   display: flex;
   justify-content: center;

@@ -4,15 +4,16 @@
       <div class="banner" :style="bannerStyle"></div>
       <v-container fill-height>
         <v-layout align-end>
-          <h3 class="activity-title" :style="headerOverlayTextStyle">
+          <h3 class="activity-title px-2 pb-3" :style="headerOverlayTextStyle">
             {{ activity.attributes.name }}
           </h3>
         </v-layout>
+
+        <TriangleSVG />
       </v-container>
     </div>
 
-    <v-container fluid class="skew-div"></v-container>
-    <v-container class="activity-content pt-0">
+    <v-container class="activity-content">
       <v-layout row wrap style="z-index: 2">
         <v-flex xs12 class="px-2">
           <section-header>Popular playlists</section-header>
@@ -29,6 +30,7 @@ import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 
 import SongCollectionList from '@/components/Song/SongCollectionList.vue';
+import TriangleSVG from '@/components/TriangleSVG.vue';
 import { Nullable } from '@/@types/model/model';
 import { ActivityType } from '@/utils/constants';
 import { getArtworkUrl } from '@/utils/utils';
@@ -43,7 +45,7 @@ import {
 import { FetchActivityPlaylistsAction } from '@/store/types';
 
 @Component({
-  components: { SongCollectionList }
+  components: { SongCollectionList, TriangleSVG }
 })
 export default class ActivityDetail extends Mixins(
   InfiniteScrollMixin,

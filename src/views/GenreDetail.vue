@@ -3,16 +3,15 @@
     <div class="genre-header" :style="headerBackgroundStyle">
       <v-container fill-height>
         <v-layout align-end>
-          <h3 class="genre-title" :style="headerOverlayTextStyle">
+          <h3 class="genre-title px-2 pb-3" :style="headerOverlayTextStyle">
             {{ genre.name }}
           </h3>
         </v-layout>
       </v-container>
+      <TriangleSVG />
     </div>
 
-    <v-container fluid class="skew-div"></v-container>
-
-    <v-container class="genre-content pt-0" v-if="hotTracks.length > 0">
+    <v-container class="genre-content" v-if="hotTracks.length > 0">
       <v-layout row wrap style="z-index: 2">
         <v-flex xs12 class="flex-row px-2" justify-space-between align-center>
           <section-header>Hot Tracks</section-header>
@@ -140,6 +139,7 @@ import { Action } from 'vuex-class';
 
 import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import CuratorList from '@/components/CuratorList.vue';
+import TriangleSVG from '@/components/TriangleSVG.vue';
 import SongListLarge from '@/components/Song/SongListLarge.vue';
 import CollectionCarousel from '@/components/Collection/CollectionCarousel.vue';
 import musicApiService from '@/services/musicApi.service';
@@ -161,7 +161,8 @@ import { getOneGenreForCountry } from '../services/catalog.service';
     SongCollectionList,
     CuratorList,
     SongListLarge,
-    CollectionCarousel
+    CollectionCarousel,
+    TriangleSVG
   }
 })
 export default class GenreDetail extends Mixins(DataLoadingMixin) {

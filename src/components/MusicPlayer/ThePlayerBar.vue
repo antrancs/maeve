@@ -169,6 +169,7 @@ import {
   SET_SONG_LOADING,
   SET_CURRENT_PLAYBACK_TIME
 } from '@/store/mutations.type';
+import { getArtworkUrl } from '../../utils/utils';
 
 @Component({
   components: {
@@ -263,9 +264,17 @@ export default class PlayerBar extends Mixins(
       return PLACEHOLDER_IMAGE;
     }
 
-    return this.musicPlayer.currentPlaying.attributes.artwork.url.replace(
-      '2000x2000bb',
-      '120x120bb'
+    if (this.isAuthenticated) {
+      return this.musicPlayer.currentPlaying.attributes.artwork.url.replace(
+        '2000x2000bb',
+        '120x120bb'
+      );
+    }
+
+    return getArtworkUrl(
+      this.musicPlayer.currentPlaying.attributes.artwork.url,
+      120,
+      120
     );
   }
 
@@ -477,6 +486,7 @@ It can be an album/playlist or the original song lists where this song is from
 .song-artwork {
   height: $player-bar-height;
   width: $player-bar-height;
+  flex-shrink: 0;
 }
 
 .song-name {

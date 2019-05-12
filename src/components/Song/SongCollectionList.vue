@@ -1,10 +1,7 @@
 <template>
   <transition-group name="list" tag="div" class="layout row wrap">
     <v-flex
-      xs6
-      sm3
-      md3
-      lg2
+      v-bind="itemSizeAttributes"
       class="pa-2"
       v-for="(collection, index) in collections"
       :key="`${collection.id}-${index}`"
@@ -36,5 +33,17 @@ import LinkComponent from '@/components/LinkComponent.vue';
 export default class SongCollectionList extends Vue {
   @Prop({ default: () => [] })
   collections!: Collection[];
+
+  @Prop({ default: () => ['xs6', 'sm3', 'md3', 'lg2'] })
+  itemSizes!: string[];
+
+  get itemSizeAttributes() {
+    const attrs = this.itemSizes.reduce((acc: any, current) => {
+      acc[current] = true;
+      return acc;
+    }, {});
+
+    return attrs;
+  }
 }
 </script>

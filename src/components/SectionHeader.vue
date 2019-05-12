@@ -13,7 +13,7 @@ export default class SectionHeader extends Vue {
 
   get sectionHeaderStyle() {
     return {
-      'font-size': this.$vuetify.breakpoint.name === 'xs' ? '2.2rem' : '3rem'
+      'font-size': this.$vuetify.breakpoint.name === 'xs' ? '2.5rem' : '3rem'
     };
   }
 }

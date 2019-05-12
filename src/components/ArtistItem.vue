@@ -1,40 +1,30 @@
 <template>
-  <v-flex
-    xs6
-    sm3
-    md2
-    :class="{
-      'pa-2': $vuetify.breakpoint.mdAndUp,
-      'pa-1': $vuetify.breakpoint.mdAndDown
-    }"
-  >
-    <router-link :to="{ name: artist.type, params: { id: artist.id } }">
-      <v-card class="secondary elevation-8 item-card">
-        <div class="pa-3">
-          <MediaArtwork
-            class="elevation-10"
-            :artwork-url-for-artist="artistArtwork"
-            :isRound="true"
-          />
-        </div>
+  <router-link :to="{ name: artist.type, params: { id: artist.id } }">
+    <v-card class="secondary elevation-8 item-card">
+      <div class="pa-3">
+        <MediaArtwork
+          class="elevation-10"
+          :artwork-url-for-artist="artistArtwork"
+          :isRound="true"
+        />
+      </div>
 
-        <div class="top-icon pa-1"><slot></slot></div>
+      <div class="top-icon pa-1"><slot></slot></div>
 
-        <v-card-title primary-title class="py-2 px-2">
-          <v-layout column wrap>
-            <div
-              class="long-text-truncated main-info-text artist-item__name text-xs-center"
-              style="width: 100%"
-            >
-              {{ artist.attributes.name }}
-            </div>
+      <v-card-title primary-title class="py-2 px-2">
+        <v-layout column wrap>
+          <div
+            class="long-text-truncated main-info-text artist-item__name text-xs-center"
+            style="width: 100%"
+          >
+            {{ artist.attributes.name }}
+          </div>
 
-            <div class="sub-info-text text-xs-center">{{ artistGenre }}</div>
-          </v-layout>
-        </v-card-title>
-      </v-card>
-    </router-link>
-  </v-flex>
+          <div class="sub-info-text text-xs-center">{{ artistGenre }}</div>
+        </v-layout>
+      </v-card-title>
+    </v-card>
+  </router-link>
 </template>
 
 <script lang="ts">
@@ -90,12 +80,7 @@ export default class ArtistItem extends Vue {
       .then(artwork => {
         this.artistArtwork = artwork || PLACEHOLDER_IMAGE;
       })
-      .catch(err => {
-        // this.showSnackbar({
-        //   text: 'Something went wrong.',
-        //   type: SnackbarMode.error
-        // });
-      });
+      .catch(err => err);
   }
 }
 </script>

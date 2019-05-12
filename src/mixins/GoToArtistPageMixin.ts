@@ -12,7 +12,6 @@ export default class GoToArtistPageMixin extends Vue {
   goToArtistPage(song: Song) {
     let songId: string | undefined;
 
-    console.log('Goto artist page', song);
     switch (song.type) {
       case 'library-songs':
         if (song.attributes && song.attributes.playParams) {

@@ -65,6 +65,7 @@
         dark
         @click.stop="playAlbum"
         title="Play"
+        :disabled="!showExpandView"
         fab
         small
         color="accent"

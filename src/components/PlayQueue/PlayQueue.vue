@@ -11,22 +11,7 @@
           </v-layout>
         </v-flex>
 
-        <v-flex :class="$style['items']" v-if="upNext.length > 0">
-          <VirtualList :size="60" :remain="15" :bench="10" :debounce="15">
-            <PlayQueueSongItem
-              :key="`${item.id}-${index}`"
-              v-for="(item, index) in upNext"
-              :song="{
-                id: item.id,
-                type: `${item.type}s`,
-                attributes: item.attributes
-              }"
-              :index="index"
-              @remove-from-queue="removeFromQueue"
-              @queue-song-item-clicked="moveToIndexInQueue"
-            />
-          </VirtualList>
-        </v-flex>
+        <UpNext />
       </v-layout>
     </div>
   </transition>
@@ -36,29 +21,20 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { State, Action, Getter, Mutation } from 'vuex-class';
-// @ts-ignore
-import VirtualList from 'vue-virtual-scroll-list';
 
-import PlayQueueSongItem from './PlayQueueSongItem.vue';
 import { TOGGLE_QUEUE_VISIBILITY } from '@/store/actions.type';
+import UpNext from './UpNext.vue';
 
 @Component({
   components: {
-    PlayQueueSongItem,
-    VirtualList
+    UpNext
   }
 })
 export default class PlayQueue extends Vue {
   @State(state => state.playQueue.visibility) visibility!: boolean;
 
-  @Getter
-  upNext!: MusicKit.MediaItem[];
-
   @Action
   [TOGGLE_QUEUE_VISIBILITY]: () => void;
-
-  @Action removeFromQueue!: (index: number) => void;
-  @Action moveToIndexInQueue!: (index: number) => void;
 }
 </script>
 
@@ -75,13 +51,6 @@ export default class PlayQueue extends Vue {
   top: $header-height + 0.8rem;
   width: 36.8rem;
   z-index: 5;
-}
-
-.items {
-  flex: 1;
-  overflow-x: hidden;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
 }
 </style>
 

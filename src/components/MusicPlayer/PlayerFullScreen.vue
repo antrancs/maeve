@@ -97,7 +97,8 @@
                     </v-card>
                   </v-expansion-panel-content>
                 </v-expansion-panel>
-                <h2 class="my-2">Play Queue</h2>
+                <h2 class="my-2">Up Next</h2>
+                <UpNext />
               </v-flex>
 
               <v-flex
@@ -131,8 +132,10 @@
 <script lang="ts">
 import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { State, Getter, Action } from 'vuex-class';
+import { Watch } from 'vue-property-decorator';
 
 import MediaArtwork from '@/components/MediaArtwork.vue';
+import UpNext from '@/components/PlayQueue/UpNext.vue';
 import PlayNextButton from './PlayNextButton.vue';
 import PlayPreviousButton from './PlayPreviousButton.vue';
 import PlayButton from './PlayButton.vue';
@@ -142,7 +145,6 @@ import PlayerVolume from './PlayerVolume.vue';
 import PlayerBarColorMixin from '@/mixins/PlayerBarColorMixin';
 import LyricsMixin from '@/mixins/LyricsMixin';
 import { MusicPlayerState } from '@/store/types';
-import { Watch } from 'vue-property-decorator';
 import { RepeatMode, PLACEHOLDER_IMAGE } from '@/utils/constants';
 import { UPDATE_REPEAT_MODE, TOGGLE_SHUFFLE_MODE } from '@/store/actions.type';
 import { Song, Nullable, ShuffleMode } from '@/@types/model/model';
@@ -157,7 +159,8 @@ import { getArtworkUrl } from '@/utils/utils';
     PlayPreviousButton,
     PlayButton,
     PlayerVolume,
-    ArtworkSlide
+    ArtworkSlide,
+    UpNext
   }
 })
 export default class PlayerFullScreen extends Mixins(

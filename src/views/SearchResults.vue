@@ -34,7 +34,15 @@
         </v-flex>
         <SongListLarge
           :songs="getFirstNResults(songs, 5)"
-          sourceName="Search results"
+          :sourceInfo="{
+            name: `Search results for '${queryString}'`,
+            path: {
+              name: 'search',
+              query: {
+                q: queryString
+              }
+            }
+          }"
         />
       </template>
 

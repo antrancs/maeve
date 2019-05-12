@@ -21,14 +21,13 @@ import { Action, Getter } from 'vuex-class';
 
 import PlayerBarColorMixin from '@/mixins/PlayerBarColorMixin';
 import { PLAY_NEXT } from '@/store/actions.type';
-import { PlayNextPayload } from '@/store/types';
 
 @Component
 export default class PlayNextButton extends Mixins(PlayerBarColorMixin) {
   @Prop() size!: number;
 
   @Action
-  [PLAY_NEXT]: (payload: PlayNextPayload) => void;
+  [PLAY_NEXT]: () => void;
 
   @Getter canGoNext!: boolean;
 
@@ -38,9 +37,7 @@ export default class PlayNextButton extends Mixins(PlayerBarColorMixin) {
 
   handlePlayNext() {
     if (this.canGoNext) {
-      this.playNext({
-        forceSkip: true
-      });
+      this.playNext();
       this.$emit('on-next');
     }
   }

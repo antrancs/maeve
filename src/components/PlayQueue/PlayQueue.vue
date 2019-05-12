@@ -4,18 +4,28 @@
       <v-layout column class="primary lighten-1">
         <v-flex shrink>
           <v-layout row justify-space-between align-center class="px-2">
-            <h2>Play queue</h2>
+            <h2>Up Next</h2>
             <v-btn icon @click="toggleQueueVisibility">
               <v-icon large>close</v-icon>
             </v-btn>
           </v-layout>
         </v-flex>
 
-        <v-flex :class="$style['items']">
-          <PlayQueueHistory />
-          <CurrentPlaying />
-          <YourQueue />
-          <PlayQueueUpNext />
+        <v-flex :class="$style['items']" v-if="upNext.length > 0">
+          <VirtualList :size="60" :remain="15" :bench="10" :debounce="15">
+            <PlayQueueSongItem
+              :key="`${item.id}-${index}`"
+              v-for="(item, index) in upNext"
+              :song="{
+                id: item.id,
+                type: `${item.type}s`,
+                attributes: item.attributes
+              }"
+              :index="index"
+              @remove-from-queue="removeFromQueue"
+              @queue-song-item-clicked="moveToIndexInQueue"
+            />
+          </VirtualList>
         </v-flex>
       </v-layout>
     </div>
@@ -26,26 +36,29 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { State, Action, Getter, Mutation } from 'vuex-class';
+// @ts-ignore
+import VirtualList from 'vue-virtual-scroll-list';
 
-import PlayQueueHistory from './PlayQueueHistory.vue';
-import PlayQueueUpNext from './PlayQueueUpNext.vue';
-import CurrentPlaying from './CurrentPlaying.vue';
-import YourQueue from './YourQueue.vue';
+import PlayQueueSongItem from './PlayQueueSongItem.vue';
 import { TOGGLE_QUEUE_VISIBILITY } from '@/store/actions.type';
 
 @Component({
   components: {
-    PlayQueueHistory,
-    PlayQueueUpNext,
-    CurrentPlaying,
-    YourQueue
+    PlayQueueSongItem,
+    VirtualList
   }
 })
 export default class PlayQueue extends Vue {
   @State(state => state.playQueue.visibility) visibility!: boolean;
 
+  @Getter
+  upNext!: MusicKit.MediaItem[];
+
   @Action
   [TOGGLE_QUEUE_VISIBILITY]: () => void;
+
+  @Action removeFromQueue!: (index: number) => void;
+  @Action moveToIndexInQueue!: (index: number) => void;
 }
 </script>
 

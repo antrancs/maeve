@@ -40,7 +40,6 @@
             </div>
 
             <MediaArtworkOverlay
-              v-if="!isSongBlocked && !isArtistBlocked"
               :is-active="isActive"
               :is-playing="isPlaying"
               :show-background="!isFromAlbum"
@@ -145,12 +144,11 @@ export default class SongListSmallItem extends Mixins(
   SongItemMixin,
   GoToArtistPageMixin
 ) {
+  @Prop()
+  song!: Song;
   @Prop() textColor!: Nullable<string>;
 
   get songNameColor() {
-    if (this.isSongBlocked || this.isArtistBlocked) {
-      return this.$vuetify.theme.secondaryText;
-    }
     return this.isActive
       ? this.$vuetify.theme.accent
       : this.textColor || this.$vuetify.theme.primaryText;

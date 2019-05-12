@@ -4,7 +4,15 @@
       <v-flex xs12 sm6 md7 class="pr-3">
         <template v-if="recentTracks">
           <h2>Recent Tracks</h2>
-          <SongListSmall :songs="recentTracks" />
+          <SongListSmall
+            :songs="recentTracks"
+            :sourceInfo="{
+              name: 'Lastfm top songs',
+              path: {
+                name: 'lastfm'
+              }
+            }"
+          />
         </template>
       </v-flex>
       <v-flex xs12 sm6 md5>

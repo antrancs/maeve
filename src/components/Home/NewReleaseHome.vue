@@ -17,8 +17,7 @@
         v-if="showExpandView"
         :songs="songs"
         :fromAlbum="true"
-        :sourceName="release.name"
-        :collectionId="release.id"
+        :onSongClicked="handleSongClicked"
       />
     </div>
 
@@ -94,8 +93,16 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Action } from 'vuex-class';
 
-import { FETCH_ONE_ALBUM_CATALOG, PLAY_SONGS } from '../../store/actions.type';
-import { FetchOneAlbumCatalogAction, PlaySongsAction } from '../../store/types';
+import {
+  FETCH_ONE_ALBUM_CATALOG,
+  PLAY_SONGS,
+  PLAY_COLLECTION
+} from '../../store/actions.type';
+import {
+  FetchOneAlbumCatalogAction,
+  PlaySongsAction,
+  PlayCollectionAction
+} from '../../store/types';
 import {
   getSongsFromCollection,
   getGradientBackgroundColorsFromArtwork
@@ -115,7 +122,7 @@ export default class NewReleaseHome extends Vue {
   @Prop() release: any;
 
   @Action [FETCH_ONE_ALBUM_CATALOG]: FetchOneAlbumCatalogAction;
-  @Action [PLAY_SONGS]: PlaySongsAction;
+  @Action [PLAY_COLLECTION]: PlayCollectionAction;
 
   get wrapperStyle() {
     return {
@@ -193,11 +200,21 @@ export default class NewReleaseHome extends Vue {
   }
 
   playAlbum() {
-    this.playSongs({
+    this.playCollection({
+      collectionId: this.release.id,
+      collectionType: 'albums'
+    });
+  }
+
+  handleSongClicked(songId: string, songIndex: number) {
+    if (!this.release) {
+      return;
+    }
+
+    this.playCollection({
       collectionId: this.release.id,
       collectionType: 'albums',
-      songs: this.songs,
-      songsSourceName: this.release.name
+      startPosition: songIndex
     });
   }
 }

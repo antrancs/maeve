@@ -1,12 +1,5 @@
 export type Nullable<T> = T | null | undefined;
 
-// export interface Artist {
-//   id: string;
-//   name: string;
-//   artwork: string;
-//   url: string;
-// }
-
 export enum CollectionType {
   album = 'albums',
   playlist = 'playlists',
@@ -33,11 +26,11 @@ export type LastfmSong = MusicKit.Song & {
 
 export type Song = MusicKit.Song | MusicKit.LibrarySong | LastfmSong;
 
-export type PlayQueueSong = {
-  // qId is the unique id of the song in the queue. We can't rely on the song id
-  // as the unique identifier as it's possible to add the same song to the queue
-  qId: string;
-} & Song;
+// export type PlayQueueSong = {
+//   // qId is the unique id of the song in the queue. We can't rely on the song id
+//   // as the unique identifier as it's possible to add the same song to the queue
+//   qId: string;
+// } & Song;
 
 export type Artist = MusicKit.Artist | MusicKit.LibraryArtist;
 
@@ -52,11 +45,6 @@ export enum ShuffleMode {
   Off = 0,
   On = 1
 }
-
-export type PlayQueueNextSongToPlay = {
-  song: PlayQueueSong;
-  source: string;
-};
 
 // Methods
 export type HandleSongClicked = (index: number, songId: string) => void;
@@ -76,4 +64,13 @@ export type GenreItem = {
   name: string;
   id: string;
   colors: string[];
+};
+
+export type SongSourceInfo = {
+  name: String;
+  path: {
+    name: String;
+    params?: Object;
+    query?: Object;
+  };
 };

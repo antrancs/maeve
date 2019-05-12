@@ -11,7 +11,7 @@
           <v-btn
             icon
             round
-            @click.prevent.stop="playCollection"
+            @click.prevent.stop="onPlayButtonClicked"
             color="accent elevation-5"
             class="play-button"
           >
@@ -66,22 +66,11 @@ import { State, Action, Getter } from 'vuex-class';
 
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import { Collection, Nullable, Song } from '@/@types/model/model';
-import {
-  MusicPlayerState,
-  FetchOneAlbumCatalogAction,
-  FetchOnePlaylistCatalogAction,
-  PlaySongsAction,
-  FetchOneAlbumLibraryAction,
-  FetchOnePlaylistLibraryAction
-} from '@/store/types';
+import { MusicPlayerState, PlayCollectionAction } from '@/store/types';
 import {
   TOGGLE_CURRENT_TRACK,
   PAUSE_CURRENT_TRACK,
-  FETCH_ONE_ALBUM_CATALOG,
-  FETCH_ONE_PLAYLIST_CATALOG,
-  PLAY_SONGS,
-  FETCH_ONE_ALBUM_LIBRARY,
-  FETCH_ONE_PLAYLIST_LIBRARY
+  PLAY_COLLECTION
 } from '@/store/actions.type';
 import {
   isLight,
@@ -90,7 +79,7 @@ import {
   TEXT_SECONDARY_LIGHT,
   TEXT_SECONDARY_DARK
 } from '@/themes';
-import { getSongsFromCollection, getArtworkSize } from '@/utils/utils';
+import { getArtworkSize } from '@/utils/utils';
 
 @Component({
   components: { MediaArtwork }
@@ -103,20 +92,19 @@ export default class CollectionItemCard extends Vue {
   musicPlayer!: MusicPlayerState;
 
   @Action
-  [PLAY_SONGS]: PlaySongsAction;
-  @Action
   [TOGGLE_CURRENT_TRACK]: () => void;
   @Action [PAUSE_CURRENT_TRACK]: () => Promise<void>;
-  @Action [FETCH_ONE_ALBUM_CATALOG]: FetchOneAlbumCatalogAction;
-  @Action [FETCH_ONE_PLAYLIST_CATALOG]: FetchOnePlaylistCatalogAction;
-  @Action [FETCH_ONE_ALBUM_LIBRARY]: FetchOneAlbumLibraryAction;
-  @Action [FETCH_ONE_PLAYLIST_LIBRARY]: FetchOnePlaylistLibraryAction;
+  @Action [PLAY_COLLECTION]: PlayCollectionAction;
 
   get isCollectionBeingPlayed(): boolean {
-    if (!this.musicPlayer.currentCollectionId) {
+    if (
+      !this.musicPlayer.currentPlaying ||
+      !this.musicPlayer.currentPlaying.container
+    ) {
       return false;
     }
-    return this.musicPlayer.currentCollectionId === this.collection.id;
+
+    return this.musicPlayer.currentPlaying.container.id === this.collection.id;
   }
 
   get artworkSize() {
@@ -148,65 +136,18 @@ export default class CollectionItemCard extends Vue {
       : TEXT_SECONDARY_DARK;
   }
 
-  async playCollection() {
+  async onPlayButtonClicked() {
     if (this.isCollectionBeingPlayed) {
       this.toggleCurrentTrack();
       return;
     }
 
-    await this.pauseCurrentTrack();
-
-    // if this collection already has a 'tracks' relationship, just play it
-    if (
-      this.collection &&
-      this.collection.relationships &&
-      this.collection.relationships.tracks
-    ) {
-      this.$_playTracksFromCollection(this.collection);
-      return;
-    }
-
-    // fetch 'tracks' relationships of the current collection to play
-
-    let collection: Nullable<Collection> = null;
-    switch (this.collection.type) {
-      case 'albums':
-        collection = await this.fetchOneAlbumCatalog(this.collection.id);
-        break;
-
-      case 'playlists':
-        collection = await this.fetchOnePlaylistCatalog(this.collection.id);
-        break;
-
-      case 'library-albums':
-        collection = await this.fetchOneAlbumLibrary(this.collection.id);
-        break;
-
-      case 'library-playlists':
-        collection = await this.fetchOnePlaylistLibrary(this.collection.id);
-        break;
-    }
-
-    const songs = getSongsFromCollection(collection);
-    this.playSongs({
+    this.playCollection({
       collectionId: this.collection.id,
-      collectionType: this.collection.type,
-      songs: songs,
-      songsSourceName: this.collection.attributes
-        ? this.collection.attributes.name
-        : ''
+      collectionType: this.collection.type
     });
-  }
 
-  $_playTracksFromCollection(collection: Collection) {
-    if (collection.relationships && collection.relationships.tracks) {
-      this.playSongs({
-        collectionId: collection.id,
-        collectionType: collection.type,
-        songs: collection.relationships.tracks.data,
-        songsSourceName: collection.attributes ? collection.attributes.name : ''
-      });
-    }
+    // await this.pauseCurrentTrack();
   }
 }
 </script>

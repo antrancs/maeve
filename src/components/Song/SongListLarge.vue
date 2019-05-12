@@ -9,6 +9,8 @@
         :is-from-album="fromAlbum"
         @song-item-clicked="handleSongClicked"
         @actions-icon-click="handleActionIconClick"
+        @go-to-album-page="goToAlbumPage"
+        @go-to-artist-page="goToArtistPage"
       />
     </v-flex>
   </v-layout>

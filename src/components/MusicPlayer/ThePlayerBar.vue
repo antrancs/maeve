@@ -24,7 +24,7 @@
               >
                 <div
                   :class="[$style['song-name'], 'long-text-truncated', 'mb-1']"
-                  @click.stop="goToSongAlbumPage"
+                  @click.stop="() => goToAlbumPage(musicPlayer.currentPlaying)"
                 >
                   {{ songName }}
                 </div>
@@ -40,33 +40,21 @@
                   >
                 </div>
 
-                <div class="long-text-truncated" style="cursor: default">
+                <div
+                  v-if="songContainerPath"
+                  class="long-text-truncated"
+                  style="cursor: default"
+                >
                   <small style="cursor: default">Playing from</small>
-                  <template
-                    v-if="
-                      musicPlayer.currentCollectionId &&
-                        musicPlayer.currentPlayingSource !== 'Your Queue'
-                    "
-                  >
+                  <template>
                     <router-link
                       @click.native="$event.stopImmediatePropagation()"
-                      :to="{
-                        name: musicPlayer.currentCollectionType,
-                        params: {
-                          id: musicPlayer.currentCollectionId
-                        }
-                      }"
+                      :to="songContainerPath.path"
                     >
                       <small :class="$style['link-item']">
-                        {{ musicPlayer.currentPlayingSource }}
+                        {{ songContainerPath.name }}
                       </small>
                     </router-link>
-                  </template>
-
-                  <template v-else>
-                    <small class="ml-1" style="cursor: default">{{
-                      musicPlayer.currentPlayingSource
-                    }}</small>
                   </template>
                 </div>
               </v-flex>
@@ -160,7 +148,8 @@ import PlayButton from './PlayButton.vue';
 import PlayerVolume from './PlayerVolume.vue';
 import PlayerBarColorMixin from '@/mixins/PlayerBarColorMixin';
 import GoToArtistPageMixin from '@/mixins/GoToArtistPageMixin';
-import { MusicPlayerState, PlayNextPayload } from '@/store/types';
+import GoToAlbumPageMixin from '@/mixins/GoToAlbumPageMixin';
+import { MusicPlayerState } from '@/store/types';
 import {
   TOGGLE_QUEUE_VISIBILITY,
   UPDATE_REPEAT_MODE,
@@ -169,12 +158,10 @@ import {
   PLAY_NEXT,
   PLAY_PREVIOUS,
   CHANGE_VOLUME,
-  MUTE_VOLUME,
-  FETCH_CATALOG_SONG_DETAILS
+  MUTE_VOLUME
 } from '@/store/actions.type';
 import { Nullable, ShuffleMode, Artist } from '@/@types/model/model';
 import { RepeatMode, PLACEHOLDER_IMAGE } from '@/utils/constants';
-import { getArtworkUrl } from '@/utils/utils';
 import {
   SET_IS_MUTED,
   SET_PLAYBACK_PROGESS,
@@ -196,7 +183,8 @@ import {
 })
 export default class PlayerBar extends Mixins(
   PlayerBarColorMixin,
-  GoToArtistPageMixin
+  GoToArtistPageMixin,
+  GoToAlbumPageMixin
 ) {
   private playerFullScreenVisible = false;
   private musicKitInstance = musicKit.getInstance();
@@ -217,14 +205,11 @@ export default class PlayerBar extends Mixins(
   @Action
   [TOGGLE_CURRENT_TRACK]: () => void;
   @Action
-  [PLAY_NEXT]: (payload: PlayNextPayload) => void;
+  [PLAY_NEXT]: () => void;
   @Action
   [PLAY_PREVIOUS]: () => void;
   @Action [CHANGE_VOLUME]: (volume: number) => void;
   @Action [MUTE_VOLUME]: () => void;
-  @Action [FETCH_CATALOG_SONG_DETAILS]: (
-    ids?: string[]
-  ) => Promise<MusicKit.Song[]>;
 
   @Mutation
   [SET_PLAYBACK_PROGESS]: (progress: number) => void;
@@ -278,11 +263,43 @@ export default class PlayerBar extends Mixins(
       return PLACEHOLDER_IMAGE;
     }
 
-    return getArtworkUrl(
-      this.musicPlayer.currentPlaying.attributes.artwork.url,
-      120,
-      120
+    return this.musicPlayer.currentPlaying.attributes.artwork.url.replace(
+      '2000x2000bb',
+      '120x120bb'
     );
+  }
+
+  /* path to the container of the currently playing song,
+It can be an album/playlist or the original song lists where this song is from
+*/
+  get songContainerPath() {
+    if (!this.musicPlayer.currentPlaying) {
+      return null;
+    }
+
+    const { container } = this.musicPlayer.currentPlaying;
+
+    if (!container) {
+      return null;
+    }
+
+    if (container.additionalInfo) {
+      return container.additionalInfo.source;
+    }
+
+    if (!container.attributes) {
+      return null;
+    }
+
+    return {
+      name: container.attributes.name,
+      path: {
+        name: container.type,
+        params: {
+          id: container.id
+        }
+      }
+    };
   }
 
   handleShuffleClicked() {
@@ -328,38 +345,6 @@ export default class PlayerBar extends Mixins(
     );
   }
 
-  goToSongAlbumPage() {
-    const { currentPlaying } = this.musicPlayer;
-    if (!currentPlaying) {
-      return;
-    }
-    let songId: string | undefined;
-
-    switch (currentPlaying.type) {
-      case 'songs':
-        songId = currentPlaying.id;
-        break;
-      case 'library-songs':
-        if (currentPlaying.attributes && currentPlaying.attributes.playParams) {
-          songId = currentPlaying.attributes.playParams.catalogId;
-        }
-    }
-
-    if (!songId) {
-      return;
-    }
-
-    this.fetchCatalogSongsDetails([songId]).then(songs => {
-      const song = songs[0];
-
-      if (song && song.relationships && song.relationships.albums) {
-        const album = song.relationships.albums.data[0];
-
-        this.$router.push({ name: 'albums', params: { id: album.id } });
-      }
-    });
-  }
-
   handleKeyDown(event: KeyboardEvent) {
     const key = event.which || event.keyCode;
     if (key === 32) {
@@ -370,9 +355,7 @@ export default class PlayerBar extends Mixins(
       event.preventDefault();
       // right arrow
       if (this.canGoNext) {
-        this.playNext({
-          forceSkip: true
-        });
+        this.playNext();
       }
     } else if ((event.ctrlKey || event.metaKey) && key === 37) {
       event.preventDefault();
@@ -441,9 +424,6 @@ export default class PlayerBar extends Mixins(
         break;
       case MusicKit.PlaybackStates.completed:
         document.title = DEFAULT_PAGE_TITLE;
-        this.playNext({
-          forceSkip: false
-        });
     }
   };
 

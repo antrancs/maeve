@@ -9,8 +9,20 @@
         <SongCollectionList :collections="collections" />
       </v-flex>
 
-      <v-flex xs12 v-if="songs.length > 0">
-        <SongListLarge :songs="songs" />
+      <v-flex xs12 v-if="songs.length > 0 && genreDetailName">
+        <SongListLarge
+          :songs="songs"
+          :sourceInfo="{
+            name: genreDetailName,
+            path: {
+              name: 'genresViewAll',
+              params: {
+                id,
+                resource
+              }
+            }
+          }"
+        />
       </v-flex>
     </v-layout>
   </v-container>

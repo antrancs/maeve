@@ -98,8 +98,6 @@
                   </v-expansion-panel-content>
                 </v-expansion-panel>
                 <h2 class="my-2">Play Queue</h2>
-                <YourQueue />
-                <PlayQueueUpNext />
               </v-flex>
 
               <v-flex
@@ -134,8 +132,6 @@
 import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { State, Getter, Action } from 'vuex-class';
 
-import YourQueue from '@/components/PlayQueue/YourQueue.vue';
-import PlayQueueUpNext from '@/components/PlayQueue/PlayQueueUpNext.vue';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import PlayNextButton from './PlayNextButton.vue';
 import PlayPreviousButton from './PlayPreviousButton.vue';
@@ -149,12 +145,7 @@ import { MusicPlayerState } from '@/store/types';
 import { Watch } from 'vue-property-decorator';
 import { RepeatMode, PLACEHOLDER_IMAGE } from '@/utils/constants';
 import { UPDATE_REPEAT_MODE, TOGGLE_SHUFFLE_MODE } from '@/store/actions.type';
-import {
-  Song,
-  Nullable,
-  ShuffleMode,
-  PlayQueueSong
-} from '@/@types/model/model';
+import { Song, Nullable, ShuffleMode } from '@/@types/model/model';
 import { TEXT_PRIMARY_DARK, TEXT_PRIMARY_LIGHT } from '@/themes';
 import { getArtworkUrl } from '@/utils/utils';
 
@@ -166,9 +157,7 @@ import { getArtworkUrl } from '@/utils/utils';
     PlayPreviousButton,
     PlayButton,
     PlayerVolume,
-    ArtworkSlide,
-    YourQueue,
-    PlayQueueUpNext
+    ArtworkSlide
   }
 })
 export default class PlayerFullScreen extends Mixins(
@@ -198,7 +187,7 @@ export default class PlayerFullScreen extends Mixins(
   }
 
   @Watch('musicPlayer.currentPlaying')
-  onCurrentPlayingChanged(newValue: PlayQueueSong) {
+  onCurrentPlayingChanged(newValue: MusicKit.MediaItem) {
     if (newValue && this.dialog) {
       this.$_fetchLyrics();
     }

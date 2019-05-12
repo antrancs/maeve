@@ -14,7 +14,18 @@
       <SongListLarge
         v-else-if="type === 'songs'"
         :songs="items"
-        sourceName="Search results"
+        :sourceInfo="{
+          name: `Search results for '${query}'`,
+          path: {
+            name: 'searchViewAll',
+            params: {
+              type: 'songs'
+            },
+            query: {
+              q: query
+            }
+          }
+        }"
       />
     </v-layout>
   </v-container>

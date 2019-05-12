@@ -94,7 +94,15 @@
 
           <SongListLarge
             :songs="topSongs"
-            :sourceName="`${artist.attributes.name}'s top songs`"
+            :sourceInfo="{
+              name: `${artist.attributes.name}'s top songs`,
+              path: {
+                name: 'artists',
+                params: {
+                  id
+                }
+              }
+            }"
           />
         </template>
 
@@ -210,6 +218,8 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
   private albums: MusicKit.Album[] = [];
   private singles: MusicKit.Album[] = [];
 
+  @Prop() id!: string;
+
   @Action [FETCH_ONE_ARTIST_LIBRARY]!: (
     id: string
   ) => Promise<MusicKit.LibraryArtist>;
@@ -280,17 +290,6 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
     return this.artist.relationships.playlists!.data;
   }
 
-  // get singles(): Album[] {
-  //   if (!this.artist || this.artist.type === 'library-artists') {
-  //     return [];
-  //   }
-
-  //   return this.albums.filter(
-  //     album =>
-  //       album.type === 'albums' && album.attributes && album.attributes.isSingle
-  //   );
-  // }
-
   get nonSingles(): Album[] {
     return this.albums.filter(
       album =>
@@ -327,7 +326,7 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
 
   // Helper methods
   private $_getArtistInfo() {
-    const artistId = this.$route.params.id;
+    const artistId = this.id;
     if (this.artistType === 'artists') {
       musicApiService
         .getArtist(artistId)

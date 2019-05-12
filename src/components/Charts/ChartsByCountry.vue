@@ -35,7 +35,7 @@
             :isChart="true"
             :textColor="textColor"
             :collectionId="playlist.id"
-            :sourceName="playlist.attributes.name"
+            :onSongClicked="handleSongClicked"
           />
         </template>
 
@@ -63,11 +63,13 @@ import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import SongListSmall from '@/components/Song/SongListSmall.vue';
 import {
   FETCH_ONE_PLAYLIST_CATALOG,
-  FETCH_MULTIPLE_PLAYLISTS_CATALOG
+  FETCH_MULTIPLE_PLAYLISTS_CATALOG,
+  PLAY_COLLECTION
 } from '@/store/actions.type';
 import {
   FetchOnePlaylistCatalogAction,
-  FetchMultiplePlaylistsCatalogAction
+  FetchMultiplePlaylistsCatalogAction,
+  PlayCollectionAction
 } from '@/store/types';
 import { Nullable } from '@/@types/model/model';
 import { SET_FOOTER_VISIBILITY } from '@/store/mutations.type';
@@ -100,6 +102,7 @@ export default class ChartsByCountry extends Vue {
   @Action [FETCH_ONE_PLAYLIST_CATALOG]: FetchOnePlaylistCatalogAction;
   @Action
   [FETCH_MULTIPLE_PLAYLISTS_CATALOG]: FetchMultiplePlaylistsCatalogAction;
+  @Action [PLAY_COLLECTION]: PlayCollectionAction;
 
   get topPlaylistIds(): string[] {
     return this.topCountries.map(country => DAILY_TOP_100_COUNTRY_MAP[country]);
@@ -198,6 +201,18 @@ export default class ChartsByCountry extends Vue {
       // @ts-ignore
       this.$refs.worldMap.zoomOut(this.countryId);
     }
+  }
+
+  handleSongClicked(songId: string, songIndex: number) {
+    if (!this.playlist) {
+      return;
+    }
+
+    this.playCollection({
+      collectionId: this.playlist.id,
+      collectionType: 'playlists',
+      startPosition: songIndex
+    });
   }
 }
 </script>

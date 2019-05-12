@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
-import { State, Action, Getter } from 'vuex-class';
+import { State, Action, Getter, Mutation } from 'vuex-class';
 import NProgress from 'nprogress';
 
 import musicKit from '@/services/musicKit';
@@ -47,13 +47,14 @@ import AppSnackbar from '@/components/TheSnackbar.vue';
 import MediaActionMenu from '@/components/MediaActionMenu.vue';
 import NewPlaylistDialog from '@/components/NewPlaylistDialog.vue';
 import ThemeSetting from '@/components/Setting/ThemeSetting.vue';
-import { ThemeOption, Nullable, PlayQueueSong } from '@/@types/model/model';
+import { ThemeOption, Nullable } from '@/@types/model/model';
 import {
   LOAD_SETTINGS,
   LOAD_TOKEN_LASTFM,
   LOAD_BLOCKED_ITEMS,
   CHANGE_ROUTE
 } from '@/store/actions.type';
+import { SET_CURRENTLY_PLAYING_SONG } from './store/mutations.type';
 
 @Component({
   components: {
@@ -75,13 +76,15 @@ export default class App extends Vue {
 
   @State(state => state.settings.selectedTheme) selectedTheme!: ThemeOption;
   @State(state => state.musicPlayer.currentPlaying) currentPlaying!: Nullable<
-    PlayQueueSong
+    MusicKit.MediaItem
   >;
 
   @Action [LOAD_SETTINGS]: () => void;
   @Action [LOAD_TOKEN_LASTFM]: () => void;
   @Action [LOAD_BLOCKED_ITEMS]: () => void;
   @Action [CHANGE_ROUTE]: (routeName: string) => void;
+
+  @Mutation [SET_CURRENTLY_PLAYING_SONG]: (item: MusicKit.MediaItem) => void;
 
   @Getter darkMode!: boolean;
   @Getter isAuthenticatedLastfm!: boolean;
@@ -122,6 +125,11 @@ export default class App extends Vue {
       this.onAuthorizationStatusDidChange
     );
 
+    this.musicKitInstance.addEventListener(
+      MusicKit.Events.mediaItemDidChange,
+      this.onMediaItemDidChange
+    );
+
     NProgress.configure({
       speed: 200,
       showSpinner: false
@@ -139,6 +147,11 @@ export default class App extends Vue {
       MusicKit.Events.authorizationStatusDidChange,
       this.onAuthorizationStatusDidChange
     );
+
+    this.musicKitInstance.removeEventListener(
+      MusicKit.Events.mediaItemDidChange,
+      this.onMediaItemDidChange
+    );
   }
 
   pageLoadReady() {
@@ -153,6 +166,10 @@ export default class App extends Vue {
     this.musicKitInstance.player.stop();
     //  store.dispatch(CHANGE_ROUTE, 'home');
     this.changeRoute('home');
+  }
+
+  onMediaItemDidChange({ item }: { item: MusicKit.MediaItem }) {
+    this.setCurrentlyPlayingSong(item);
   }
 }
 </script>

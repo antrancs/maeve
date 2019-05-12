@@ -379,6 +379,8 @@ declare namespace MusicKit {
      * (Classical music only) The name of the associated work.
      */
     workName?: string;
+
+    additionalInfo?: any;
   }
 
   /**

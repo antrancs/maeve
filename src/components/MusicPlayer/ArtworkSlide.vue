@@ -21,7 +21,6 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 import { Getter, State } from 'vuex-class';
-import { PlayQueueSong } from '@/@types/model/model';
 import { getArtworkUrl } from '@/utils/utils';
 
 @Component
@@ -30,10 +29,10 @@ export default class ArtworkSlide extends Vue {
   @Prop() artworkSize!: number;
 
   @State(state => state.musicPlayer.currentPlaying)
-  currentPlaying!: PlayQueueSong;
+  currentPlaying!: MusicKit.MediaItem;
 
-  @Getter nextSong!: PlayQueueSong;
-  @Getter previousSong!: PlayQueueSong;
+  @Getter nextSong!: MusicKit.MediaItem;
+  @Getter previousSong!: MusicKit.MediaItem;
 
   get slideHeightStyle() {
     switch (this.$vuetify.breakpoint.name) {
@@ -62,7 +61,7 @@ export default class ArtworkSlide extends Vue {
       }
 
       artworks.push({
-        id: song.qId,
+        id: song.id,
         artwork: getArtworkUrl(
           song.attributes!.artwork.url,
           this.artworkSize,

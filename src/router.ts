@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import Vue from 'vue';
 import Router from 'vue-router';
 
@@ -29,7 +31,9 @@ const router = new Router({
       path: '/auth/lastfm/success',
       name: 'lastfmAuthSuccess',
       component: () =>
-        import(/* webpackChunkName: "lastfmAuthSuccess" */ './views/LastFmAuthSuccess.vue')
+        import(
+          /* webpackChunkName: "lastfmAuthSuccess" */ './views/LastFmAuthSuccess.vue'
+        )
     },
     {
       path: '/lastfm-page',
@@ -41,19 +45,25 @@ const router = new Router({
       path: '/featured-playlists',
       name: 'featuredPlaylists',
       component: () =>
-        import(/* webpackChunkName: "featuredPlaylists" */ './views/FeaturedPlaylists.vue')
+        import(
+          /* webpackChunkName: "featuredPlaylists" */ './views/FeaturedPlaylists.vue'
+        )
     },
     {
       path: '/search',
       name: 'search',
       component: () =>
-        import(/* webpackChunkName: "searchResults" */ './views/SearchResults.vue')
+        import(
+          /* webpackChunkName: "searchResults" */ './views/SearchResults.vue'
+        )
     },
     {
       path: '/search/:type',
       name: 'searchViewAll',
       component: () =>
-        import(/* webpackChunkName: "searchViewAll" */ './views/SearchViewAll.vue'),
+        import(
+          /* webpackChunkName: "searchViewAll" */ './views/SearchViewAll.vue'
+        ),
       props: true
     },
     {
@@ -67,7 +77,9 @@ const router = new Router({
       path: '/playlists/:id',
       name: 'playlists',
       component: () =>
-        import(/* webpackChunkName: "playlists" */ './views/CollectionDetail.vue'),
+        import(
+          /* webpackChunkName: "playlists" */ './views/CollectionDetail.vue'
+        ),
       props: true
     },
     {
@@ -81,7 +93,9 @@ const router = new Router({
       path: '/activities/:id',
       name: 'activities',
       component: () =>
-        import(/* webpackChunkName: "activityDetail" */ './views/ActivityDetail.vue'),
+        import(
+          /* webpackChunkName: "activityDetail" */ './views/ActivityDetail.vue'
+        ),
       props: true
     },
     {
@@ -95,7 +109,9 @@ const router = new Router({
       path: '/genres/:id/:resource',
       name: 'genresViewAll',
       component: () =>
-        import(/* webpackChunkName: "genreDetailViewAll" */ './views/GenreDetailViewAll.vue'),
+        import(
+          /* webpackChunkName: "genreDetailViewAll" */ './views/GenreDetailViewAll.vue'
+        ),
       props: true
     },
     {
@@ -109,7 +125,9 @@ const router = new Router({
       path: '/me/library-playlists/:id',
       name: 'library-playlists',
       component: () =>
-        import(/* webpackChunkName: "collectionDetail" */ './views/CollectionDetail.vue'),
+        import(
+          /* webpackChunkName: "collectionDetail" */ './views/CollectionDetail.vue'
+        ),
       props: true,
       meta: {
         auth: true
@@ -119,7 +137,9 @@ const router = new Router({
       path: '/me/library-albums/:id',
       name: 'library-albums',
       component: () =>
-        import(/* webpackChunkName: "collectionDetail" */ './views/CollectionDetail.vue'),
+        import(
+          /* webpackChunkName: "collectionDetail" */ './views/CollectionDetail.vue'
+        ),
       props: true,
       meta: {
         auth: true
@@ -129,7 +149,9 @@ const router = new Router({
       path: '/me/library-artists/:id',
       name: 'library-artists',
       component: () =>
-        import(/* webpackChunkName: "artistDetail" */ './views/ArtistDetail.vue'),
+        import(
+          /* webpackChunkName: "artistDetail" */ './views/ArtistDetail.vue'
+        ),
       props: true,
       meta: {
         auth: true
@@ -139,7 +161,9 @@ const router = new Router({
       path: '/artists/:id',
       name: 'artists',
       component: () =>
-        import(/* webpackChunkName: "artistDetail" */ './views/ArtistDetail.vue'),
+        import(
+          /* webpackChunkName: "artistDetail" */ './views/ArtistDetail.vue'
+        ),
       props: true
     },
     {
@@ -155,7 +179,21 @@ const router = new Router({
       path: '/me/library/artists',
       name: 'myLibraryArtists',
       component: () =>
-        import(/* webpackChunkName: "myLibraryArtists" */ './views/MyLibraryArtists.vue'),
+        import(
+          /* webpackChunkName: "myLibraryArtists" */ './views/MyLibraryArtists.vue'
+        ),
+      props: true,
+      meta: {
+        auth: true
+      }
+    },
+    {
+      path: '/me/library/songs',
+      name: 'myLibrarySongs',
+      component: () =>
+        import(
+          /* webpackChunkName: "myLibrarySongs" */ './views/MyLibrarySongs.vue'
+        ),
       props: true,
       meta: {
         auth: true

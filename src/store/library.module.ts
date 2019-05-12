@@ -145,7 +145,7 @@ const actions: ActionTree<UserLibraryState, any> = {
   },
 
   async [FETCH_LIBRARY_SONGS](
-    { dispatch },
+    _,
     { offset, limit }: SearchParams
   ): Promise<FetchResult<MusicKit.LibrarySong>> {
     let songs: MusicKit.LibrarySong[] = [];
@@ -155,6 +155,13 @@ const actions: ActionTree<UserLibraryState, any> = {
         offset,
         limit
       });
+      // allSongs.push(...songs);
+
+      // no more songs
+      // if (songs.length < limit) {
+      //   break;
+      // }
+      // offset += limit;
     } catch (err) {
       // force log out when forbidden
       // await dispatch(LOGOUT);

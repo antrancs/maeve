@@ -47,27 +47,13 @@
         </v-menu>
       </template>
 
-      <template v-if="!isQueue && !isSongBlocked && !isArtistBlocked">
+      <template v-if="!isQueue">
         <v-divider></v-divider>
         <v-list-tile @click="onPlayNext">
           <v-list-tile-title>Play next</v-list-tile-title>
         </v-list-tile>
         <v-list-tile @click="onAddToQueue">
           <v-list-tile-title>Add to queue</v-list-tile-title>
-        </v-list-tile>
-      </template>
-
-      <template v-if="shouldShowBlockingOption">
-        <v-divider></v-divider>
-        <v-list-tile v-if="item.type !== 'song'" @click="onBlockArtistClicked">
-          <v-list-tile-title>{{
-            isArtistBlocked ? 'Unblock artists' : 'Block artists'
-          }}</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile @click="onBlockSongClicked">
-          <v-list-tile-title>{{
-            isSongBlocked ? 'Unblock song' : 'Block song'
-          }}</v-list-tile-title>
         </v-list-tile>
       </template>
     </v-list>
@@ -128,11 +114,8 @@ export default class MediaActionMenu extends Vue {
   [ADD_TO_LIBRARY]: AddToLibraryAction;
   @Action [SHOW_SNACKBAR]: ShowSnackbarAction;
   @Action [PREPEND_SONGS_TO_QUEUE]: PrependSongsAction;
-  // @Action [PREPEND_SONGS]: PrependSongsAction;
   @Action [ADD_SONGS_TO_PLAYLIST]: AddSongsToPlaylistAction;
-
   @Action appendSongsToQueue!: AppendSongsAction;
-  // @Action [APPEND_SONGS]: AppendSongsAction;
   @Action [BLOCK_ARTISTS]: BlockArtistsAction;
   @Action [UNBLOCK_ARTISTS]: UnblockArtistsAction;
   @Action [BLOCK_SONG]: BlockSongAction;
@@ -156,12 +139,6 @@ export default class MediaActionMenu extends Vue {
     return this.item.id;
   }
 
-  get shouldShowBlockingOption() {
-    return (
-      this.item && (this.item.type === 'songs' || this.item.type === 'song')
-    );
-  }
-
   get editablePlaylists() {
     return this.playlists.filter(playlist => {
       const containerIsCurrentPlaylist =
@@ -173,32 +150,6 @@ export default class MediaActionMenu extends Vue {
         playlist.attributes.canEdit
       );
     });
-  }
-
-  get isArtistBlocked(): boolean {
-    if (!this.item) {
-      return false;
-    }
-
-    if (this.item.type === 'songs') {
-      if (this.item.relationships && this.item.relationships.artists) {
-        for (const artist of this.item.relationships.artists.data) {
-          if (!this.blockedArtists[artist.id]) {
-            return false;
-          }
-        }
-        return true;
-      }
-    }
-    return false;
-  }
-
-  get isSongBlocked(): boolean {
-    if (!this.item) {
-      return false;
-    }
-
-    return this.blockedSongs[this.item.id];
   }
 
   async onAddToLibrary() {
@@ -277,12 +228,12 @@ export default class MediaActionMenu extends Vue {
   onPlayNext() {
     const songsToAdd = this.$_getSongsToAdd();
 
-    const queueSongs = songsToAdd.map(song => {
-      return {
-        qId: song.id + '-' + Date.now(),
-        ...song
-      };
-    });
+    // const queueSongs = songsToAdd.map(song => {
+    //   return {
+    //     qId: song.id + '-' + Date.now(),
+    //     ...song
+    //   };
+    // });
 
     const mediaItems = songsToAdd.map(
       ({ id, attributes }) =>
@@ -296,10 +247,10 @@ export default class MediaActionMenu extends Vue {
         })
     );
 
-    this.prependSongsToQueue({ items: queueSongs });
+    this.prependSongsToQueue({ items: mediaItems });
 
     this.showSnackbar({
-      text: 'Song is playing next'
+      text: 'Item is playing next'
     });
   }
 
@@ -307,12 +258,12 @@ export default class MediaActionMenu extends Vue {
     // this.$emit('add-to-queue');
     const songsToAdd = this.$_getSongsToAdd();
 
-    const queueSongs = songsToAdd.map(song => {
-      return {
-        qId: song.id + '-' + Date.now(),
-        ...song
-      };
-    });
+    // const queueSongs = songsToAdd.map(song => {
+    //   return {
+    //     qId: song.id + '-' + Date.now(),
+    //     ...song
+    //   };
+    // });
 
     const mediaItems = songsToAdd.map(
       ({ id, attributes }) =>
@@ -328,7 +279,7 @@ export default class MediaActionMenu extends Vue {
 
     try {
       // appendSongs is synchronous
-      this.appendSongsToQueue({ items: queueSongs });
+      this.appendSongsToQueue({ items: mediaItems });
       this.showSnackbar({
         text: 'Item is added to queue'
       });
@@ -340,41 +291,8 @@ export default class MediaActionMenu extends Vue {
     }
   }
 
-  onBlockArtistClicked() {
-    if (!this.item) {
-      return;
-    }
-
-    if (this.item.type === 'songs') {
-      // get artist relationship
-      if (this.item.relationships && this.item.relationships.artists) {
-        const artists = this.item.relationships.artists.data.map(
-          artist => artist.id
-        );
-
-        if (!this.isArtistBlocked) {
-          this.blockArtists(artists);
-        } else {
-          this.unblockArtists(artists);
-        }
-      }
-    }
-  }
-
-  onBlockSongClicked() {
-    if (!this.item) {
-      return;
-    }
-
-    if (this.isSongBlocked) {
-      this.unblockSong(this.item.id);
-    } else {
-      this.blockSong(this.item.id);
-    }
-  }
-
   open(
-    item: Collection | Song,
+    item: Collection | Song | MusicKit.MediaItem,
     containerId: Nullable<string>,
     posX: number,
     posY: number,

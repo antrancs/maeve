@@ -467,7 +467,7 @@ declare namespace MusicKit {
      */
     attributes: SongAttributes;
 
-    container?: Playlist | Album;
+    container?: any;
 
     /**
      * A string containing the content rating for the media item.
@@ -546,8 +546,9 @@ declare namespace MusicKit {
     attributes?: any;
     id?: string;
     type: string;
-    container: {
+    container?: {
       id: string;
+      additionalInfo?: any;
     };
   }
 

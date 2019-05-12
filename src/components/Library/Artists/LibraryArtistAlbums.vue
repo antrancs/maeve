@@ -9,8 +9,8 @@
     </div>
 
     <div v-if="albums" class="text-xs-center my-2">
-      <app-button @on-click="playAllSongs">Play</app-button>
-      <app-button @on-click="shuffleAllSongs">Shuffle</app-button>
+      <app-button @on-click="() => playAllSongs(false)">Play</app-button>
+      <app-button @on-click="() => playAllSongs(true)">Shuffle</app-button>
     </div>
     <transition-group name="list" tag="div" class="layout row wrap">
       <template v-if="albums">
@@ -35,7 +35,6 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import shuffle from 'lodash/shuffle';
 
 import CollectionItemCard from '@/components/Collection/CollectionItemCard.vue';
 import { Prop, Watch } from 'vue-property-decorator';
@@ -93,19 +92,16 @@ export default class LibraryArtistAlbums extends Vue {
     });
   }
 
-  playAllSongs() {
+  playAllSongs(shuffle: boolean) {
     this.playSongs({
       songs: this.totalSongs,
-      songsSourceName: `${this.artistName}'s songs`
-    });
-  }
-
-  shuffleAllSongs() {
-    const shuffledSongs = shuffle(this.totalSongs);
-
-    this.playSongs({
-      songs: shuffledSongs,
-      songsSourceName: `${this.artistName}'s songs`
+      sourceInfo: {
+        name: `${this.artistName}'s songs`,
+        path: {
+          name: 'myLibraryArtists'
+        }
+      },
+      shuffle
     });
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <app-button class="ml-0 mb-0" @on-click="playCollection">Play</app-button>
+    <app-button class="ml-0 mb-0" @on-click="onPlayBtnClicked">Play</app-button>
     <app-button class="mb-0" @on-click="shuffleSongs">Shuffle</app-button>
     <v-btn fab dark class="accent mb-0" small @click="showActionMenu">
       <v-icon medium>more_horiz</v-icon>
@@ -14,8 +14,8 @@ import { Prop, Component } from 'vue-property-decorator';
 import { Collection, CollectionType } from '@/@types/model/model';
 import { State, Action } from 'vuex-class';
 import MediaActionMenu from '@/components/MediaActionMenu.vue';
-import { PLAY_SONGS } from '@/store/actions.type';
-import { PlaySongsAction } from '@/store/types';
+import { PLAY_COLLECTION } from '@/store/actions.type';
+import { PlayCollectionAction } from '@/store/types';
 
 @Component({
   components: {
@@ -30,20 +30,16 @@ export default class CollectionControls extends Vue {
   isPlaying!: boolean;
 
   @Action
-  [PLAY_SONGS]: PlaySongsAction;
+  [PLAY_COLLECTION]: PlayCollectionAction;
 
   /**
    * Play the entire collection
    */
-  playCollection() {
+  onPlayBtnClicked() {
     // Start with the first song by default
-    this.playSongs({
+    this.playCollection({
       collectionId: this.collection.id,
-      collectionType: this.collection.type,
-      songs: this.songs,
-      songsSourceName: this.collection.attributes
-        ? this.collection.attributes.name
-        : ''
+      collectionType: this.collection.type
     });
   }
 
@@ -51,14 +47,10 @@ export default class CollectionControls extends Vue {
    * Shuffle the collection and play
    */
   shuffleSongs() {
-    this.playSongs({
+    this.playCollection({
       collectionId: this.collection.id,
       collectionType: this.collection.type,
-      shuffle: true,
-      songs: this.songs,
-      songsSourceName: this.collection.attributes
-        ? this.collection.attributes.name
-        : ''
+      shuffle: true
     });
   }
 

@@ -131,11 +131,9 @@
         </v-layout>
         <SongListLarge
           class="mt-2"
-          :playlistId="playlistId"
-          :sourceName="collectionName"
-          :collectionId="collection.id"
           :songs="songs"
           :fromAlbum="isFromAlbum"
+          :onSongClicked="handleSongClicked"
         />
       </v-flex>
 
@@ -176,8 +174,7 @@ import {
   Artist,
   Album,
   CollectionType,
-  Song,
-  PlayQueueSong
+  Song
 } from '@/@types/model/model';
 
 import {
@@ -187,7 +184,8 @@ import {
   FETCH_ONE_ALBUM_LIBRARY,
   FETCH_ONE_PLAYLIST_LIBRARY,
   FETCH_ALBUM_EXTRA_INFO_CATALOG,
-  FETCH_LIBRARY_PLAYLIST_TRACKS
+  FETCH_LIBRARY_PLAYLIST_TRACKS,
+  PLAY_COLLECTION
 } from '@/store/actions.type';
 import {
   FetchOneAlbumCatalogAction,
@@ -195,7 +193,8 @@ import {
   FetchOnePlaylistCatalogAction,
   FetchOneAlbumLibraryAction,
   FetchOnePlaylistLibraryAction,
-  FetchLibraryPlaylistTracksAction
+  FetchLibraryPlaylistTracksAction,
+  PlayCollectionAction
 } from '@/store/types';
 import { SET_FOOTER_VISIBILITY } from '@/store/mutations.type';
 import {
@@ -225,7 +224,7 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
   @Prop() id!: string;
 
   @State(state => state.musicPlayer.currentPlaying)
-  currentPlaying!: PlayQueueSong | null;
+  currentPlaying!: MusicKit.MediaItem | null;
 
   @Action [FETCH_ONE_ALBUM_CATALOG]: FetchOneAlbumCatalogAction;
   @Action [FETCH_MULTILE_ALBUMS_CATALOG]: FetchMultipleAlbumsCatalogAction;
@@ -234,6 +233,7 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
   @Action [FETCH_ONE_PLAYLIST_LIBRARY]: FetchOnePlaylistLibraryAction;
   @Action [FETCH_LIBRARY_PLAYLIST_TRACKS]: FetchLibraryPlaylistTracksAction;
   @Action [FETCH_ALBUM_EXTRA_INFO_CATALOG]: (url: string) => Promise<any>;
+  @Action [PLAY_COLLECTION]: PlayCollectionAction;
 
   @Mutation [SET_FOOTER_VISIBILITY]: (visibility: boolean) => void;
 
@@ -528,6 +528,18 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
           this.dataLoadingDone();
         });
     }
+  }
+
+  handleSongClicked(songId: string, songIndex: number) {
+    if (!this.collection) {
+      return;
+    }
+
+    this.playCollection({
+      collectionId: this.id,
+      collectionType: this.collection.type,
+      startPosition: songIndex
+    });
   }
 
   $_getSongsFromCollection(collection: Collection) {

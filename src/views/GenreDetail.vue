@@ -31,7 +31,15 @@
         <v-flex xs12>
           <SongListLarge
             :songs="hotTracks"
-            :sourceName="`${genre.name} Hot Tracks`"
+            :sourceInfo="{
+              name: `${genre.name} Hot Tracks`,
+              path: {
+                name: 'genres',
+                params: {
+                  id
+                }
+              }
+            }"
           />
         </v-flex>
       </v-layout>

@@ -39,7 +39,6 @@
           </div>
 
           <MediaArtworkOverlay
-            v-if="!isSongBlocked && !isArtistBlocked"
             :is-active="isActive"
             :is-playing="isPlaying"
             :show-background="!isFromAlbum"
@@ -77,7 +76,7 @@
                 <div :class="['long-text-truncated']">
                   <span
                     :class="$style['artist-name']"
-                    @click="() => goToArtistPage(song)"
+                    @click="$emit('go-to-artist-page', song)"
                     >{{ song.attributes.artistName }}</span
                   >
                 </div>
@@ -89,9 +88,11 @@
             <div>
               <span v-if="$vuetify.breakpoint.smAndDown"> - </span>
               <div :class="['long-text-truncated']">
-                <span :class="$style['album-name']" @click="goToAlbumPage">{{
-                  song.attributes.albumName
-                }}</span>
+                <span
+                  :class="$style['album-name']"
+                  @click="$emit('go-to-album-page', song)"
+                  >{{ song.attributes.albumName }}</span
+                >
               </div>
             </div>
           </v-flex>
@@ -144,15 +145,21 @@ import {
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import MediaArtworkOverlay from '@/components/MediaArtworkOverlay.vue';
 import SongItemMixin from '@/mixins/SongItemMixin';
-import GoToArtistPageMixin from '@/mixins/GoToArtistPageMixin';
 
-@Component({
-  components: { MediaArtworkOverlay, MediaArtwork }
-})
-export default class SongListLargeItem extends Mixins(
-  SongItemMixin,
-  GoToArtistPageMixin
-) {}
+export default {
+  name: 'SongListLargeItem',
+  components: {
+    MediaArtworkOverlay,
+    MediaArtwork
+  },
+  props: {
+    song: {
+      type: Object,
+      required: true
+    }
+  },
+  mixins: [SongItemMixin]
+};
 </script>
 
 <style lang="scss" module>
@@ -163,6 +170,7 @@ export default class SongListLargeItem extends Mixins(
 .song-item__wrapper {
   border-bottom: 0.1rem solid rgba(0, 0, 0, 0.08);
   height: 6rem;
+  // line-height: 6rem;
   transition: background-color 0.25s ease-in-out;
 
   &.dark-mode {

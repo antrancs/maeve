@@ -18,13 +18,6 @@
               @keydown.stop=""
             ></v-text-field>
           </v-flex>
-
-          <v-flex xs12 v-if="resource === 'songs' && filteredSongs.length > 0">
-            <app-button class="ml-0" @on-click="handlePlaySongs"
-              >Play</app-button
-            >
-            <app-button @on-click="handleShuffleSongs">Shuffle</app-button>
-          </v-flex>
         </v-layout>
       </v-flex>
       <template v-if="resource === 'playlists'">
@@ -39,16 +32,6 @@
       <template v-if="resource === 'albums'">
         <v-flex xs12>
           <SongCollectionList v-if="albums" :collections="filteredAlbums" />
-        </v-flex>
-      </template>
-
-      <template v-if="resource === 'songs'">
-        <v-flex xs12>
-          <SongListLarge
-            v-if="songs"
-            :songs="filteredSongs"
-            sourceName="Library songs"
-          />
         </v-flex>
       </template>
 
@@ -68,11 +51,9 @@ import { Component, Prop, Vue, Watch, Mixins } from 'vue-property-decorator';
 import { Route } from 'vue-router';
 import { Action, Mutation } from 'vuex-class';
 import debounce from 'lodash/debounce';
-import shuffle from 'lodash/shuffle';
 
 import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import SongListLarge from '@/components/Song/SongListLarge.vue';
-import musicApiService from '@/services/musicApi.service';
 import { Nullable } from '@/@types/model/model';
 import InfiniteScrollMixin from '@/mixins/InfiniteScrollMixin';
 import DataLoadingMixin from '@/mixins/DataLoadingMixin';
@@ -80,14 +61,11 @@ import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 import {
   FETCH_LIBRARY_SONGS,
   FETCH_LIBRARY_ALBUMS,
-  FETCH_LIBRARY_PLAYLISTS,
-  PLAY_SONGS
+  FETCH_LIBRARY_PLAYLISTS
 } from '@/store/actions.type';
 import {
   FetchLibraryAlbumsActions,
-  FetchLibraryPlaylistsActions,
-  FetchLibrarySongsActions,
-  PlaySongsAction
+  FetchLibraryPlaylistsActions
 } from '@/store/types';
 
 @Component({
@@ -104,7 +82,6 @@ export default class MyLibrary extends Mixins(
   static SONG_SEARCH_LIMIT = 100;
   private playlists: MusicKit.LibraryPlaylist[] = [];
   private albums: MusicKit.LibraryAlbum[] = [];
-  private songs: MusicKit.LibrarySong[] = [];
   private loading = true;
 
   private hasNoData = false;
@@ -117,8 +94,6 @@ export default class MyLibrary extends Mixins(
 
   @Action [FETCH_LIBRARY_ALBUMS]: FetchLibraryAlbumsActions;
   @Action [FETCH_LIBRARY_PLAYLISTS]: FetchLibraryPlaylistsActions;
-  @Action [FETCH_LIBRARY_SONGS]: FetchLibrarySongsActions;
-  @Action [PLAY_SONGS]: PlaySongsAction;
   @Action searchLibrary!: (searchTerm: string) => Promise<any[]>;
 
   get filteredAlbums(): MusicKit.LibraryAlbum[] {
@@ -137,26 +112,6 @@ export default class MyLibrary extends Mixins(
         album.attributes &&
         (album.attributes.name.toLowerCase().includes(searchText) ||
           album.attributes.artistName.toLowerCase().includes(searchText))
-    );
-  }
-
-  get filteredSongs(): MusicKit.LibrarySong[] {
-    if (this.resource !== 'songs') {
-      return [];
-    }
-
-    if (!this.searchText || this.searchText.trim().length === 0) {
-      return this.songs;
-    }
-
-    const searchText = this.searchText.toLowerCase();
-
-    return this.songs.filter(
-      song =>
-        song.attributes &&
-        (song.attributes.artistName.toLowerCase().includes(searchText) ||
-          song.attributes.albumName.toLowerCase().includes(searchText) ||
-          song.attributes.name.toLowerCase().includes(searchText))
     );
   }
 
@@ -206,7 +161,6 @@ export default class MyLibrary extends Mixins(
     this.searchText = '';
     this.playlists = [];
     this.albums = [];
-    this.songs = [];
     this.offset = 0;
     this.shouldLoad = true;
     this.noMoreData = false;
@@ -223,21 +177,6 @@ export default class MyLibrary extends Mixins(
   @Watch('searchText')
   onSearchTextChanged(newVal: string, oldVal: string) {
     this.debouncedHandleSearchTextChanged();
-  }
-
-  handlePlaySongs() {
-    this.playSongs({
-      songs: this.filteredSongs,
-      songsSourceName: 'Library Songs'
-    });
-  }
-
-  handleShuffleSongs() {
-    const shuffledSongs = shuffle(this.filteredSongs);
-    this.playSongs({
-      songs: shuffledSongs,
-      songsSourceName: 'Library Songs'
-    });
   }
 
   async $_fetchResource() {
@@ -274,23 +213,6 @@ export default class MyLibrary extends Mixins(
             hasNoData
           },
           MyLibrary.SEARCH_LIMIT
-        );
-        break;
-      }
-
-      case 'songs': {
-        const { data, hasNext, hasNoData } = await this.fetchLibrarySongs({
-          offset: this.offset,
-          limit: MyLibrary.SONG_SEARCH_LIMIT
-        });
-        this.$_processResult<MusicKit.LibrarySong>(
-          this.songs,
-          {
-            data,
-            hasNext,
-            hasNoData
-          },
-          MyLibrary.SONG_SEARCH_LIMIT
         );
         break;
       }

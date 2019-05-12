@@ -37,14 +37,14 @@ import { State } from 'vuex-class';
 import LyricsMixin from '@/mixins/LyricsMixin';
 import { getLyrics } from '@/services/lyrics.service';
 import { Watch } from 'vue-property-decorator';
-import { Nullable, PlayQueueSong } from '@/@types/model/model';
+import { Nullable } from '@/@types/model/model';
 
 @Component
 export default class LyricsDialog extends Mixins(LyricsMixin) {
   private dialog = false;
 
   @State(state => state.musicPlayer.currentPlaying)
-  currentPlaying!: PlayQueueSong;
+  currentPlaying!: MusicKit.MediaItem;
 
   @Watch('dialog')
   onDialogVisibilityChanged(newValue: boolean, oldValue: boolean) {
@@ -61,8 +61,8 @@ export default class LyricsDialog extends Mixins(LyricsMixin) {
 
   @Watch('currentPlaying')
   onCurrentPlayingChanged(
-    newValue: Nullable<PlayQueueSong>,
-    oldValue: Nullable<PlayQueueSong>
+    newValue: Nullable<MusicKit.MediaItem>,
+    oldValue: Nullable<MusicKit.MediaItem>
   ) {
     if (newValue && this.dialog && this.currentPlaying.attributes) {
       this.lyrics = '';

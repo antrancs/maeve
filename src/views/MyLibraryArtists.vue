@@ -68,7 +68,7 @@ import {
   FetchLibraryArtistssActions,
   FetchOneAlbumLibraryAction
 } from '@/store/types';
-import { Nullable, PlayQueueSong } from '@/@types/model/model';
+import { Nullable } from '@/@types/model/model';
 import { SET_FOOTER_VISIBILITY } from '@/store/mutations.type';
 
 @Component({
@@ -87,7 +87,7 @@ export default class MyLibraryArtists extends Mixins(DataLoadingMixin) {
   private selectedArtist: Nullable<MusicKit.LibraryArtist> = null;
 
   @State(state => state.musicPlayer.currentPlaying)
-  currentPlaying!: PlayQueueSong | null;
+  currentPlaying!: MusicKit.MediaItem | null;
 
   @Action [FETCH_LIBRARY_ARTISTS]: FetchLibraryArtistssActions;
   @Action [FETCH_ONE_ARTIST_LIBRARY]!: (

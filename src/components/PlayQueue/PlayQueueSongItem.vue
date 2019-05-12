@@ -7,7 +7,6 @@
       :class="[
         'song-item__wrapper',
         {
-          'song-item--playing': isActive,
           'primary lighten-2': hover && darkMode,
           'primary darken-2': hover && !darkMode,
           'py-1': $vuetify.breakpoint.xsOnly,
@@ -31,10 +30,9 @@
             />
 
             <MediaArtworkOverlay
-              v-if="!isSongBlocked && !isArtistBlocked"
               :is-playing="isPlaying"
-              :is-active="isActive && isNowPlaying"
-              @playing-control-clicked="onSongClicked"
+              :is-active="isActive"
+              @playing-control-clicked="$emit('queue-song-item-clicked', index)"
             />
           </div>
         </div>
@@ -93,11 +91,8 @@
           <template v-if="!hover">
             {{ song.attributes.durationInMillis | formattedDuration }}
           </template>
-          <template v-else>
-            <v-icon
-              v-if="!isNowPlaying"
-              @click="$emit('remove-from-queue', index)"
-              color="red"
+          <template v-else-if="!isActive">
+            <v-icon @click="$emit('remove-from-queue', index)" color="red"
               >remove_circle</v-icon
             >
           </template>
@@ -118,31 +113,17 @@ import { TOGGLE_CURRENT_TRACK } from '@/store/actions.type';
 import { HandleSongClicked, Song } from '@/@types/model/model';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import MediaArtworkOverlay from '@/components/MediaArtworkOverlay.vue';
-import SongItemMixin from '@/mixins/SongItemMixin';
 import GoToArtistPageMixin from '@/mixins/GoToArtistPageMixin';
+import SongItemMixin from '@/mixins/SongItemMixin';
 
 @Component({
   components: { MediaArtworkOverlay, MediaArtwork }
 })
 export default class PlayQueueSongItem extends Mixins(
-  SongItemMixin,
-  GoToArtistPageMixin
+  GoToArtistPageMixin,
+  SongItemMixin
 ) {
   @Prop({ default: false }) isHistory!: boolean;
-  @Prop({ default: false }) isNowPlaying!: boolean;
-  @Prop() index!: number;
-
-  get songNameColor() {
-    if (this.isHistory) {
-      return this.$vuetify.theme.secondaryText;
-    }
-
-    if (this.isNowPlaying) {
-      return this.$vuetify.theme.accent;
-    }
-
-    return this.$vuetify.theme.primaryText;
-  }
 
   onActionsIconClicked(event: MouseEvent) {
     event.preventDefault();

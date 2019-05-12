@@ -4,22 +4,22 @@ import { Action } from 'vuex-class';
 import { Song } from '@/@types/model/model';
 
 @Component
-export default class GoToArtistPageMixin extends Vue {
+export default class GoToAlbumPageMixin extends Vue {
   @Action [FETCH_CATALOG_SONG_DETAILS]: (
     ids?: string[]
   ) => Promise<MusicKit.Song[]>;
 
-  goToArtistPage(song: Song) {
+  goToAlbumPage(item: Song | MusicKit.MediaItem) {
     let songId: string | undefined;
 
-    switch (song.type) {
+    switch (item.type) {
       case 'library-songs':
-        if (song.attributes && song.attributes.playParams) {
-          songId = song.attributes.playParams.catalogId;
+        if (item.attributes && item.attributes.playParams) {
+          songId = item.attributes.playParams.catalogId;
         }
         break;
       default:
-        songId = song.id;
+        songId = item.id;
     }
 
     if (!songId) {
@@ -29,10 +29,10 @@ export default class GoToArtistPageMixin extends Vue {
     this.fetchCatalogSongsDetails([songId]).then(songs => {
       const song = songs[0];
 
-      if (song && song.relationships && song.relationships.artists) {
-        const mainArtist = song.relationships.artists.data[0];
+      if (song && song.relationships && song.relationships.albums) {
+        const album = song.relationships.albums.data[0];
 
-        this.$router.push({ name: 'artists', params: { id: mainArtist.id } });
+        this.$router.push({ name: 'albums', params: { id: album.id } });
       }
     });
   }

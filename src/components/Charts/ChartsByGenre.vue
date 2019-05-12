@@ -20,7 +20,15 @@
       <div>
         <template v-if="songs.length > 0">
           <section-header class="ml-2">Top songs</section-header>
-          <SongListLarge :songs="songs" sourceName="Top songs" />
+          <SongListLarge
+            :songs="songs"
+            :sourceInfo="{
+              name: 'Top songs',
+              path: {
+                name: 'charts'
+              }
+            }"
+          />
         </template>
 
         <template v-if="albums.length > 0">

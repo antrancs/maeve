@@ -493,29 +493,32 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
 
     switch (this.collectionType) {
       case CollectionType.album:
-        this.fetchOneAlbumCatalog(this.id).then(collection => {
-          this.collection = collection;
-          this.$_fetchAlbumExtraInfo(collection);
-          this.$_getSongsFromCollection(collection);
-          this.dataLoadingDone();
-        });
+        this.fetchOneAlbumCatalog(this.id)
+          .then(collection => {
+            this.collection = collection;
+            this.$_fetchAlbumExtraInfo(collection);
+            this.$_getSongsFromCollection(collection);
+          })
+          .finally(() => this.dataLoadingDone());
 
         break;
 
       case CollectionType.playlist:
-        this.fetchOnePlaylistCatalog(this.id).then(collection => {
-          this.collection = collection;
-          this.$_getSongsFromCollection(collection);
-          this.dataLoadingDone();
-        });
+        this.fetchOnePlaylistCatalog(this.id)
+          .then(collection => {
+            this.collection = collection;
+            this.$_getSongsFromCollection(collection);
+          })
+          .finally(() => this.dataLoadingDone());
         break;
 
       case CollectionType.libraryAlbum:
-        this.fetchOneAlbumLibrary(this.id).then(collection => {
-          this.collection = collection;
-          this.$_getSongsFromCollection(collection);
-          this.dataLoadingDone();
-        });
+        this.fetchOneAlbumLibrary(this.id)
+          .then(collection => {
+            this.collection = collection;
+            this.$_getSongsFromCollection(collection);
+          })
+          .finally(() => this.dataLoadingDone());
         break;
 
       case CollectionType.libraryPlaylist:
@@ -523,10 +526,11 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
           this.collection = collection;
         });
 
-        this.fetchLibraryPlaylistTracks(this.id).then(tracks => {
-          this.songs = tracks;
-          this.dataLoadingDone();
-        });
+        this.fetchLibraryPlaylistTracks(this.id)
+          .then(tracks => {
+            this.songs = tracks;
+          })
+          .finally(() => this.dataLoadingDone());
     }
   }
 

@@ -1,21 +1,36 @@
 <template>
-  <v-container v-if="artist">
+  <v-container
+    v-if="artist"
+    :class="['py-0', { 'px-0': $vuetify.breakpoint.smAndDown }]"
+  >
     <v-layout row wrap style="height: 100%">
-      <v-flex xs12 lg5>
+      <v-flex xs12 lg5 :class="{ 'pl-2': $vuetify.breakpoint.lgAndUp }">
         <div
           :class="{
             'left-column-sticky': $vuetify.breakpoint.lgAndUp,
+            playing: currentPlaying,
             'left-column': $vuetify.breakpoint.mdAndDown
           }"
         >
-          <div class="banner-header pa-2" :style="bannerHeaderStyle">
-            <h2 class="artist-name long-text-truncated">
+          <div class="banner-header" :style="bannerHeaderStyle">
+            <h2
+              :class="[
+                'artist-name',
+                'pa-2',
+                'long-text-truncated',
+                { 'px-3': $vuetify.breakpoint.smAndDown }
+              ]"
+            >
               {{ artist.attributes.name }}
             </h2>
           </div>
         </div>
       </v-flex>
-      <v-flex xs12 lg7>
+      <v-flex
+        xs12
+        lg7
+        :class="['pt-2', { 'px-2': $vuetify.breakpoint.smAndDown }]"
+      >
         <template v-if="featuredRelease">
           <section-header class="mx-2">{{
             featuredReleaseTitle
@@ -52,7 +67,7 @@
             <section-header>Albums</section-header>
           </v-flex>
           <SongCollectionList
-            :itemSizes="['lg4', 'md3', 'sm3', 'xs6']"
+            :itemSizes="['xl3', 'lg4', 'md3', 'sm3', 'xs6']"
             :collections="albums"
           />
         </template>
@@ -62,7 +77,7 @@
             <section-header>EPs & Singles</section-header>
           </v-flex>
           <SongCollectionList
-            :itemSizes="['lg4', 'md3', 'sm3', 'xs6']"
+            :itemSizes="['xl3', 'lg4', 'md3', 'sm3', 'xs6']"
             :collections="singles"
           />
         </template>
@@ -72,7 +87,7 @@
             <section-header>Playlists</section-header>
           </v-flex>
           <SongCollectionList
-            :itemSizes="['lg4', 'md3', 'sm3', 'xs6']"
+            :itemSizes="['xl3', 'lg4', 'md3', 'sm3', 'xs6']"
             :collections="artistPlaylists"
           />
         </template>
@@ -93,7 +108,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch, Mixins } from 'vue-property-decorator';
-import { Action } from 'vuex-class';
+import { Action, Mutation, State } from 'vuex-class';
 
 import musicApiService from '@/services/musicApi.service';
 import DataLoadingMixin from '@/mixins/DataLoadingMixin';
@@ -129,6 +144,7 @@ import {
   FetchMultipleArtitsCatalogAction
 } from '../store/types';
 import { Route } from 'vue-router';
+import { SET_FOOTER_VISIBILITY } from '../store/mutations.type';
 
 @Component({
   components: {
@@ -153,29 +169,37 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
 
   @Prop() id!: string;
 
+  // used to adjust the height of the left column when there's a player bar
+  @State(state => state.musicPlayer.currentPlaying)
+  currentPlaying!: MusicKit.MediaItem | null;
+
   @Action [FETCH_MULTILE_ALBUMS_CATALOG]: FetchMultipleAlbumsCatalogAction;
   @Action [FETCH_ONE_ALBUM_CATALOG]: FetchOneAlbumCatalogAction;
   @Action
   [FETCH_MULTIPLE_PLAYLISTS_CATALOG]: FetchMultiplePlaylistsCatalogAction;
   @Action [FETCH_MULTIPLE_SONGS_CATALOG]: FetchMultipleSongsCatalogAction;
   @Action [FETCH_MULTIPLE_ARTISTS_CATALOG]: FetchMultipleArtitsCatalogAction;
+  @Mutation [SET_FOOTER_VISIBILITY]: (visibility: boolean) => void;
 
   get bannerHeaderStyle() {
     if (!this.bannerUrl) {
       return {};
     }
 
-    const style: any = {
-      'background-image': `url('${this.bannerUrl}')`
-    };
+    const style: any = {};
 
-    if (this.$vuetify.breakpoint.name === 'md') {
-      style.height = '50vh';
-    } else if (this.$vuetify.breakpoint.name === 'sm') {
-      style.height = '50vw';
-    } else if (this.$vuetify.breakpoint.name === 'xs') {
-      style.height = '80vw';
+    switch (this.$vuetify.breakpoint.name) {
+      case 'md':
+        style.height = '50vh';
+        break;
+      case 'sm':
+        style.height = '50vw';
+        break;
+      case 'xs':
+        style.height = '80vw';
     }
+
+    style['background-image'] = `url('${this.bannerUrl}')`;
 
     return style;
   }
@@ -199,6 +223,11 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
 
   created() {
     this.$_getArtistInfo();
+    this.setFooterVisibility(false);
+  }
+
+  beforeDestroy() {
+    this.setFooterVisibility(true);
   }
 
   // Helper methods
@@ -299,9 +328,13 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
 
 <style lang="scss" scoped>
 .left-column-sticky {
-  height: calc(100vh - 64px - 24px - 16px);
+  height: calc(100vh - 64px - 16px);
   position: sticky;
-  top: 88px;
+  top: 64px;
+}
+
+.left-column-sticky.playing {
+  height: calc(100vh - 64px - 16px - 96px);
 }
 
 .left-column-sticky .banner-header::before {
@@ -341,7 +374,6 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
 
 .artist-name {
   font-size: 3.5rem;
-  padding-top: 1rem;
   z-index: 1;
 }
 </style>

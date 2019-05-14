@@ -38,7 +38,9 @@
                   <v-layout row wrap>
                     <v-flex xs12 class="px-2 mt-4">
                       <section-header>{{
-                      subRecommendation.attributes.title.stringForDisplay
+                      subRecommendation.attributes.title ?
+                        subRecommendation.attributes.title.stringForDisplay :
+                        subRecommendation.attributes.reason.stringForDisplay
                       }}</section-header>
                     </v-flex>
                 

@@ -17,54 +17,11 @@
               </v-flex>
               <v-flex
                 xs12
-                v-if="!recommendation.attributes.isGroupRecommendation"
               >
                 <SongCollectionList
                   :collections="recommendation.relationships.contents.data"
                 />
               </v-flex>
-
-              <template v-else>
-                <v-flex
-                  xs12
-                  row
-                  wrap
-                  v-for="(subRecommendation, index) in recommendation
-                    .relationships.recommendations.data"
-                  :key="`${subRecommendation.id}-${index}`"
-                >
-                  <v-layout row wrap>
-                    <v-flex xs12 sm12 md2 class="pa-2">
-                      <div
-                        class="reason-group-recommendation px-4"
-                        :style="getGroupRecommendationStyle(index)"
-                      >
-                        {{
-                          subRecommendation.attributes.reason.stringForDisplay
-                        }}
-                      </div>
-                    </v-flex>
-
-                    <v-flex
-                      xs6
-                      sm3
-                      md2
-                      class="pa-2"
-                      v-for="(collection, index) in subRecommendation
-                        .relationships.contents.data"
-                      :key="`${collection.id}-${index}`"
-                    >
-                      <LinkComponent
-                        v-if="collection && collection.attributes"
-                        :routeName="collection.type"
-                        :routeParams="{ id: collection.id }"
-                      >
-                        <CollectionItemCard :collection="collection" />
-                      </LinkComponent>
-                    </v-flex>
-                  </v-layout>
-                </v-flex>
-              </template>
             </v-layout>
           </v-flex>
         </template>

@@ -10,57 +10,44 @@
             :class="{ 'mt-4': index > 0 }"
           >
             <v-layout row wrap>
-              <v-flex xs12 class="px-2">
-                <section-header>{{
-                  recommendation.attributes.title.stringForDisplay
-                }}</section-header>
-              </v-flex>
-              <v-flex
-                xs12
-                v-if="!recommendation.attributes.isGroupRecommendation"
-              >
-                <SongCollectionList
-                  :collections="recommendation.relationships.contents.data"
-                />
-              </v-flex>
-
+              <template  v-if="!recommendation.attributes.isGroupRecommendation">
+                  
+                <v-flex xs12 class="px-2">
+                    <section-header>{{
+                    recommendation.attributes.title.stringForDisplay
+                    }}</section-header>
+                </v-flex>
+                <v-flex
+                    xs12
+                >
+                    <SongCollectionList
+                    :collections="recommendation.relationships.contents.data"
+                    />
+                </v-flex>
+              </template>
+              
               <template v-else>
                 <v-flex
                   xs12
                   row
                   wrap
                   v-for="(subRecommendation, index) in recommendation
-                    .relationships.recommendations.data"
+                  .relationships.recommendations.data"
                   :key="`${subRecommendation.id}-${index}`"
                 >
                   <v-layout row wrap>
-                    <v-flex xs12 sm12 md2 class="pa-2">
-                      <div
-                        class="reason-group-recommendation px-4"
-                        :style="getGroupRecommendationStyle(index)"
-                      >
-                        {{
-                          subRecommendation.attributes.reason.stringForDisplay
-                        }}
-                      </div>
+                    <v-flex xs12 class="px-2 mt-4">
+                      <section-header>{{
+                      subRecommendation.attributes.title ?
+                        subRecommendation.attributes.title.stringForDisplay :
+                        subRecommendation.attributes.reason.stringForDisplay
+                      }}</section-header>
                     </v-flex>
-
-                    <v-flex
-                      xs6
-                      sm3
-                      md2
-                      class="pa-2"
-                      v-for="(collection, index) in subRecommendation
-                        .relationships.contents.data"
-                      :key="`${collection.id}-${index}`"
-                    >
-                      <LinkComponent
-                        v-if="collection && collection.attributes"
-                        :routeName="collection.type"
-                        :routeParams="{ id: collection.id }"
-                      >
-                        <CollectionItemCard :collection="collection" />
-                      </LinkComponent>
+                
+                    <v-flex xs12>
+                      <SongCollectionList
+                        :collections="subRecommendation.relationships.contents.data"
+                      />
                     </v-flex>
                   </v-layout>
                 </v-flex>

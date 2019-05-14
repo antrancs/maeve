@@ -10,36 +10,38 @@
             :class="{ 'mt-4': index > 0 }"
           >
             <v-layout row wrap>
-              <v-flex xs12 class="px-2">
-                <section-header>{{
-                  recommendation.attributes.title.stringForDisplay
-                }}</section-header>
-              </v-flex>
-              <v-flex
-                xs12
-                v-if="!recommendation.attributes.isGroupRecommendation"
-              >
-                <SongCollectionList
-                  :collections="recommendation.relationships.contents.data"
-                />
-              </v-flex>
+              <template  v-if="!recommendation.attributes.isGroupRecommendation">
+                  
+                <v-flex xs12 class="px-2">
+                    <section-header>{{
+                    recommendation.attributes.title.stringForDisplay
+                    }}</section-header>
+                </v-flex>
+                <v-flex
+                    xs12
+                >
+                    <SongCollectionList
+                    :collections="recommendation.relationships.contents.data"
+                    />
+                </v-flex>
+              </template>
               
-               <template v-else>
+              <template v-else>
                 <v-flex
                   xs12
                   row
                   wrap
                   v-for="(subRecommendation, index) in recommendation
-                    .relationships.recommendations.data"
+                  .relationships.recommendations.data"
                   :key="`${subRecommendation.id}-${index}`"
                 >
                   <v-layout row wrap>
-                     <v-flex xs12 class="px-2">
+                    <v-flex xs12 class="px-2 mt-4">
                       <section-header>{{
-                        subRecommendation.attributes.title.stringForDisplay
+                      subRecommendation.attributes.title.stringForDisplay
                       }}</section-header>
                     </v-flex>
-                    
+                
                     <v-flex xs12>
                       <SongCollectionList
                         :collections="subRecommendation.relationships.contents.data"

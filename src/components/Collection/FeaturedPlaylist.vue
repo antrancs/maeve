@@ -28,11 +28,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import differenceInCalendarDays from 'date-fns/difference_in_calendar_days';
 
-import {
-  getArtworkUrl,
-  getArtworkSize,
-  getTextColorForBackground
-} from '@/utils/utils';
+import { getArtworkUrl, getTextColorForBackground } from '@/utils/utils';
 
 @Component
 export default class FeaturedPlaylist extends Vue {

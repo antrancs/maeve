@@ -16,11 +16,11 @@
 
     <AppFooter />
     <PlayerBar v-if="currentPlaying" />
-    <PlayQueue v-if="$vuetify.breakpoint.mdAndUp" />
     <AppSnackbar />
-    <NewPlaylistDialog ref="newPlaylistDialog" />
+    <NewPlaylistDialog v-if="isAuthenticated" ref="newPlaylistDialog" />
     <MediaActionMenu ref="mediaActionMenu" />
     <v-navigation-drawer
+      v-if="isAuthenticated"
       class="primary lighten-1"
       temporary
       right
@@ -41,17 +41,13 @@ import NProgress from 'nprogress';
 import musicKit from '@/services/musicKit';
 import AppSidebar from '@/components/Layout/TheSidebar.vue';
 import AppHeader from '@/components/Header/TheHeader.vue';
-import PlayQueue from '@/components/PlayQueue/PlayQueue.vue';
 import AppFooter from '@/components/Layout/TheFooter.vue';
 import AppSnackbar from '@/components/TheSnackbar.vue';
 import MediaActionMenu from '@/components/MediaActionMenu.vue';
-import NewPlaylistDialog from '@/components/NewPlaylistDialog.vue';
-import ThemeSetting from '@/components/Setting/ThemeSetting.vue';
 import { ThemeOption, Nullable } from '@/@types/model/model';
 import {
   LOAD_SETTINGS,
   LOAD_TOKEN_LASTFM,
-  LOAD_BLOCKED_ITEMS,
   CHANGE_ROUTE
 } from '@/store/actions.type';
 import { SET_CURRENTLY_PLAYING_SONG } from './store/mutations.type';
@@ -61,11 +57,10 @@ import { SET_CURRENTLY_PLAYING_SONG } from './store/mutations.type';
     AppHeader,
     PlayerBar: () => import('@/components/MusicPlayer/ThePlayerBar.vue'),
     AppSidebar,
-    PlayQueue,
     AppFooter,
     AppSnackbar,
-    NewPlaylistDialog,
-    ThemeSetting,
+    NewPlaylistDialog: () => import('@/components/NewPlaylistDialog.vue'),
+    ThemeSetting: () => import('@/components/Setting/ThemeSetting.vue'),
     MediaActionMenu
   }
 })
@@ -81,13 +76,14 @@ export default class App extends Vue {
 
   @Action [LOAD_SETTINGS]: () => void;
   @Action [LOAD_TOKEN_LASTFM]: () => void;
-  @Action [LOAD_BLOCKED_ITEMS]: () => void;
   @Action [CHANGE_ROUTE]: (routeName: string) => void;
 
   @Mutation [SET_CURRENTLY_PLAYING_SONG]: (item: MusicKit.MediaItem) => void;
 
   @Getter darkMode!: boolean;
   @Getter isAuthenticatedLastfm!: boolean;
+  @Getter
+  isAuthenticated!: boolean;
 
   @Watch('selectedTheme', { deep: true })
   onThemeChanged(newVal: ThemeOption) {
@@ -98,14 +94,6 @@ export default class App extends Vue {
       this.$vuetify.theme.accent = accent;
       this.$vuetify.theme.primaryText = primaryText;
       this.$vuetify.theme.secondaryText = secondaryText;
-    }
-  }
-
-  @Watch('isAuthenticatedLastfm')
-  onLastfmAuthenticationChanged(newValue: boolean) {
-    // if user has logged into Lastfm, load the block items
-    if (newValue) {
-      this.loadBlockedItems();
     }
   }
 

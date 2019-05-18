@@ -82,6 +82,8 @@ import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Prop, Watch } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
+import ChromePicker from 'vue-color/src/components/Chrome.vue';
+
 import { CreateNewThemeAction, UpdateThemeAction } from '@/store/types';
 import { Nullable, ThemeOption } from '@/@types/model/model';
 import { CREATE_THEME, UPDATE_THEME } from '@/store/actions.type';
@@ -93,7 +95,9 @@ import {
   TEXT_SECONDARY_DARK
 } from '@/themes';
 
-@Component
+@Component({
+  components: { ChromePicker }
+})
 export default class ThemeEditorDialog extends Vue {
   static PRIMARY_INDEX = 0;
   static SECONDARY_INDEX = 1;

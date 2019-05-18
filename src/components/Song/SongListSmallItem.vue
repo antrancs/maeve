@@ -27,8 +27,8 @@
             <MediaArtwork
               v-if="!isFromAlbum"
               :artwork="song.attributes.artwork"
-              :width="50"
-              :height="50"
+              :width="40"
+              :height="40"
             />
 
             <div
@@ -178,7 +178,7 @@ export default class SongListSmallItem extends Mixins(
   }
 
   isLastfmSong(song: Song): song is LastfmSong {
-    return (<LastfmSong>song).lastStream !== undefined;
+    return (song as LastfmSong).lastStream !== undefined;
   }
 
   get lastfmStreamDate(): Nullable<string> {

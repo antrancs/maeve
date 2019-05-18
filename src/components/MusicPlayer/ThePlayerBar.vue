@@ -1,137 +1,148 @@
 <template>
-  <PlayerFullScreen>
-    <div
-      v-if="musicPlayer.currentPlaying"
-      :class="['secondary', $style['wrapper']]"
-    >
-      <v-layout row fill-height>
-        <img
-          v-if="currentTrackArtwork"
-          :class="['hidden-xs-only', $style['song-artwork']]"
-          :src="currentTrackArtwork"
-          alt="Song artwork"
-        />
-        <v-flex fill-height>
-          <v-layout column fill-height>
-            <PlayerProgressBar />
-            <v-layout row align-center class="mx-2">
-              <v-flex
-                xs8
-                sm8
-                md3
-                :class="{ 'pr-2': $vuetify.breakpoint.xsOnly }"
-                :style="primaryStyle"
-              >
-                <div
-                  :class="[$style['song-name'], 'long-text-truncated', 'mb-1']"
-                  @click.stop="() => goToAlbumPage(musicPlayer.currentPlaying)"
+  <div style="height: 0">
+    <PlayQueue v-if="$vuetify.breakpoint.mdAndUp" />
+    <PlayerFullScreen>
+      <div
+        v-if="musicPlayer.currentPlaying"
+        :class="['secondary', $style['wrapper']]"
+      >
+        <v-layout row fill-height>
+          <img
+            v-if="currentTrackArtwork"
+            :class="['hidden-xs-only', $style['song-artwork']]"
+            :src="currentTrackArtwork"
+            alt="Song artwork"
+          />
+          <v-flex fill-height>
+            <v-layout column fill-height>
+              <PlayerProgressBar />
+              <v-layout row align-center class="mx-2">
+                <v-flex
+                  xs8
+                  sm8
+                  md3
+                  :class="{ 'pr-2': $vuetify.breakpoint.xsOnly }"
+                  :style="primaryStyle"
                 >
-                  {{ songName }}
-                </div>
-
-                <div :class="['long-text-truncated']">
-                  <span
-                    :class="$style['link-item']"
+                  <div
+                    :class="[
+                      $style['song-name'],
+                      'long-text-truncated',
+                      'mb-1'
+                    ]"
                     @click.stop="
-                      () => goToArtistPage(musicPlayer.currentPlaying)
+                      () => goToAlbumPage(musicPlayer.currentPlaying)
                     "
                   >
-                    {{ artistName }}</span
-                  >
-                </div>
-
-                <div
-                  v-if="songContainerPath"
-                  class="long-text-truncated"
-                  style="cursor: default"
-                >
-                  <small style="cursor: default">Playing from</small>
-                  <template>
-                    <router-link
-                      @click.native="$event.stopImmediatePropagation()"
-                      :to="songContainerPath.path"
-                    >
-                      <small :class="$style['link-item']">
-                        {{ songContainerPath.name }}
-                      </small>
-                    </router-link>
-                  </template>
-                </div>
-              </v-flex>
-
-              <v-flex xs4 sm4 md4>
-                <v-layout
-                  row
-                  align-center
-                  :justify-center="$vuetify.breakpoint.mdAndUp"
-                  :justify-end="$vuetify.breakpoint.smAndDown"
-                  :class="{
-                    [$style['btn-groups-small-device']]:
-                      $vuetify.breakpoint.xsOnly
-                  }"
-                >
-                  <v-btn
-                    v-if="$vuetify.breakpoint.mdAndUp"
-                    icon
-                    @click.stop="handleShuffleClicked"
-                    title="Shuffle"
-                  >
-                    <v-icon
-                      medium
-                      :style="primaryStyle"
-                      :color="shuffleIconColor"
-                      >shuffle</v-icon
-                    >
-                  </v-btn>
-                  <PlayPreviousButton v-if="$vuetify.breakpoint.mdAndUp" />
-                  <PlayButton :size="50" />
-                  <PlayNextButton />
-
-                  <v-btn
-                    v-if="$vuetify.breakpoint.mdAndUp"
-                    icon
-                    @click.stop="updateRepeatMode"
-                    title="Repeat"
-                  >
-                    <v-icon
-                      medium
-                      :color="repeatIconColor"
-                      :style="primaryStyle"
-                      >{{ repeatIcon }}</v-icon
-                    >
-                  </v-btn>
-                </v-layout>
-              </v-flex>
-
-              <v-flex md5 v-if="$vuetify.breakpoint.mdAndUp">
-                <v-layout row align-center justify-end>
-                  <LyricsDialog v-if="isAuthenticated">
-                    <v-btn small round outline color="accent">Lyrics</v-btn>
-                  </LyricsDialog>
-                  <div :style="secondaryTextStyle">
-                    {{
-                      musicPlayer.currentPlaybackTimeInMilliSeconds
-                        | formattedDuration
-                    }}
-                    /
-                    <span>
-                      {{ currentPlayingDuration | formattedDuration }}
-                    </span>
+                    {{ songName }}
                   </div>
 
-                  <PlayerVolume :width="110" />
+                  <div :class="['long-text-truncated']">
+                    <span
+                      :class="$style['link-item']"
+                      @click.stop="
+                        () => goToArtistPage(musicPlayer.currentPlaying)
+                      "
+                    >
+                      {{ artistName }}</span
+                    >
+                  </div>
 
-                  <v-btn icon @click.stop="toggleQueueVisibility">
-                    <v-icon medium :style="primaryStyle">playlist_play</v-icon>
-                  </v-btn>
-                </v-layout>
-              </v-flex>
+                  <div
+                    v-if="songContainerPath"
+                    class="long-text-truncated"
+                    style="cursor: default"
+                  >
+                    <small style="cursor: default">Playing from</small>
+                    <template>
+                      <router-link
+                        @click.native="$event.stopImmediatePropagation()"
+                        :to="songContainerPath.path"
+                      >
+                        <small :class="$style['link-item']">
+                          {{ songContainerPath.name }}
+                        </small>
+                      </router-link>
+                    </template>
+                  </div>
+                </v-flex>
+
+                <v-flex xs4 sm4 md4>
+                  <v-layout
+                    row
+                    align-center
+                    :justify-center="$vuetify.breakpoint.mdAndUp"
+                    :justify-end="$vuetify.breakpoint.smAndDown"
+                    :class="{
+                      [$style['btn-groups-small-device']]:
+                        $vuetify.breakpoint.xsOnly
+                    }"
+                  >
+                    <v-btn
+                      v-if="$vuetify.breakpoint.mdAndUp"
+                      icon
+                      @click.stop="handleShuffleClicked"
+                      title="Shuffle"
+                    >
+                      <v-icon
+                        medium
+                        :style="primaryStyle"
+                        :color="shuffleIconColor"
+                        >shuffle</v-icon
+                      >
+                    </v-btn>
+                    <PlayPreviousButton v-if="$vuetify.breakpoint.mdAndUp" />
+                    <PlayButton :size="50" />
+                    <PlayNextButton />
+
+                    <v-btn
+                      v-if="$vuetify.breakpoint.mdAndUp"
+                      icon
+                      @click.stop="updateRepeatMode"
+                      title="Repeat"
+                    >
+                      <v-icon
+                        medium
+                        :color="repeatIconColor"
+                        :style="primaryStyle"
+                        >{{ repeatIcon }}</v-icon
+                      >
+                    </v-btn>
+                  </v-layout>
+                </v-flex>
+
+                <v-flex md5 v-if="$vuetify.breakpoint.mdAndUp">
+                  <v-layout row align-center justify-end>
+                    <LyricsDialog v-if="isAuthenticated">
+                      <v-btn small round outline color="accent">Lyrics</v-btn>
+                    </LyricsDialog>
+                    <div :style="secondaryTextStyle">
+                      {{
+                        musicPlayer.currentPlaybackTimeInMilliSeconds
+                          | formattedDuration
+                      }}
+                      /
+                      <span>
+                        {{ currentPlayingDuration | formattedDuration }}
+                      </span>
+                    </div>
+
+                    <PlayerVolume :width="110" />
+
+                    <v-btn icon @click.stop="toggleQueueVisibility">
+                      <v-icon medium :style="primaryStyle"
+                        >playlist_play</v-icon
+                      >
+                    </v-btn>
+                  </v-layout>
+                </v-flex>
+              </v-layout>
             </v-layout>
-          </v-layout>
-        </v-flex>
-      </v-layout>
-    </div>
-  </PlayerFullScreen>
+          </v-flex>
+        </v-layout>
+      </div>
+    </PlayerFullScreen>
+  </div>
 </template>
 
 <script lang="ts">
@@ -140,6 +151,7 @@ import { State, Action, Getter, Mutation } from 'vuex-class';
 
 import musicKit from '@/services/musicKit';
 import LyricsDialog from '@/components/LyricsDialog.vue';
+import PlayQueue from '@/components/PlayQueue/PlayQueue.vue';
 import PlayerProgressBar from './PlayerProgressBar.vue';
 import PlayerFullScreen from './PlayerFullScreen.vue';
 import PlayNextButton from './PlayNextButton.vue';
@@ -179,7 +191,8 @@ import { getArtworkUrl } from '../../utils/utils';
     PlayPreviousButton,
     PlayButton,
     PlayerVolume,
-    PlayerFullScreen
+    PlayerFullScreen,
+    PlayQueue
   }
 })
 export default class PlayerBar extends Mixins(
@@ -267,14 +280,14 @@ export default class PlayerBar extends Mixins(
     if (this.isAuthenticated) {
       return this.musicPlayer.currentPlaying.attributes.artwork.url.replace(
         '2000x2000bb',
-        '120x120bb'
+        '100x100bb'
       );
     }
 
     return getArtworkUrl(
       this.musicPlayer.currentPlaying.attributes.artwork.url,
-      120,
-      120
+      100,
+      100
     );
   }
 

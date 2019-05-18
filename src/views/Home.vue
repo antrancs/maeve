@@ -154,7 +154,9 @@
         <section-header>Genres</section-header>
       </v-flex>
 
-      <v-flex> <GenreList :genres="genreItems" /> </v-flex>
+      <v-flex>
+        <GenreList :genres="genreItems" />
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -181,7 +183,6 @@ import {
   FetchMultiplePlaylistsCatalogAction,
   FetchRecentPlayedAction
 } from '@/store/types';
-import { getArtworkSize } from '@/utils/utils';
 import { Nullable, GenreItem } from '@/@types/model/model';
 import {
   getAllBrowseCategories,
@@ -260,10 +261,6 @@ export default class Home extends Mixins(DataLoadingMixin) {
     }
 
     return (this.chart.albums[0].data as MusicKit.Album[]) || [];
-  }
-
-  get artworkSize() {
-    return getArtworkSize(this.$vuetify.breakpoint.name);
   }
 
   created() {

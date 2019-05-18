@@ -12,16 +12,9 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'function-paren-newline': ['error', 'consistent'],
     'object-curly-newline': ['error', { consistent: true }],
-    'prettier/prettier': [
-      'warn',
-      {
-        singleQuote: true,
-        trailingComma: 'none',
-        semi: true
-      }
-    ]
+    'prettier/prettier': 'warn'
   },
   parserOptions: {
-    parser: 'typescript-eslint-parser'
+    parser: '@typescript-eslint/parser'
   }
 };

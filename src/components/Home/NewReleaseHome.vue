@@ -179,9 +179,10 @@ export default class NewReleaseHome extends Vue {
   }
 
   get albumArtworkUrl() {
+    // the image size can be a bit smaller than the card's width for faster loading
     return this.release.artwork.url
-      .replace('{w}', 400)
-      .replace('{h}', 400)
+      .replace('{w}', this.cardWidth - 20)
+      .replace('{h}', this.cardWidth - 20)
       .replace('{f}', 'jpeg');
   }
 

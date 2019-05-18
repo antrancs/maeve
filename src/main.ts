@@ -1,7 +1,8 @@
 import Vue from 'vue';
+import Component from 'vue-class-component';
 import 'vuetify/dist/vuetify.min.css';
-import './registerServiceWorker';
 
+import './registerServiceWorker';
 import musicKit from '@/services/musicKit';
 musicKit.init();
 
@@ -11,8 +12,6 @@ import '@/plugins';
 import '@/filters';
 import App from './App.vue';
 
-import Component from 'vue-class-component';
-
 // Register the router hooks with their names
 Component.registerHooks([
   'beforeRouteEnter',
@@ -20,14 +19,12 @@ Component.registerHooks([
   'beforeRouteUpdate' // for vue-router 2.2+
 ]);
 
-import Chrome from 'vue-color/src/components/Chrome.vue';
 import AppButton from '@/components/AppButton.vue';
 import SectionHeader from '@/components/SectionHeader.vue';
 
 Vue.config.productionTip = false;
 // Vue.config.performance = true;
 
-Vue.component('chrome-picker', Chrome);
 Vue.component('app-button', AppButton);
 Vue.component('section-header', SectionHeader);
 

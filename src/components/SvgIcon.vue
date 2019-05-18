@@ -12,9 +12,9 @@ export default class SvgIcon extends Vue {
 
   get svgIconComponent() {
     return () =>
-      import(/* webpackMode: "lazy-once" */ `@/assets/svg/${
-        this.iconName
-      }.svg`);
+      import(
+        /* webpackMode: "lazy-once" */ `@/assets/svg/${this.iconName}.svg`
+      );
   }
 }
 </script>

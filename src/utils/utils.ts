@@ -35,13 +35,13 @@ const getArtworkSize = (screenSize: string) => {
     case 'xl':
       return 300;
     case 'lg':
-      return 270;
-    case 'md':
-      return 240;
-    case 'sm':
       return 210;
-    default:
+    case 'md':
+      return 200;
+    case 'sm':
       return 180;
+    default:
+      return 160;
   }
 };
 

@@ -595,7 +595,9 @@ declare namespace MusicKit {
     /**
      * (Required) The localized title for the recommendation.
      */
-    title: string;
+    title: {
+      stringForDisplay: string;
+    };
   }
 
   /**

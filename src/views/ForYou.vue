@@ -14,6 +14,7 @@
       >
         <h3
           :class="[
+            'px-1',
             'recommendation-header',
             { 'large-screen': $vuetify.breakpoint.lgAndUp }
           ]"

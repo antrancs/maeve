@@ -7,15 +7,15 @@
       <v-flex xs12 lg5 :class="{ 'pl-2': $vuetify.breakpoint.lgAndUp }">
         <div
           :class="{
-            'left-column-sticky': $vuetify.breakpoint.lgAndUp,
-            playing: currentPlaying,
-            'left-column': $vuetify.breakpoint.mdAndDown
+            [$style['left-column-sticky']]: $vuetify.breakpoint.lgAndUp,
+            [$style['playing']]: currentPlaying,
+            [$style['left-column']]: $vuetify.breakpoint.mdAndDown
           }"
         >
-          <div class="banner-header" :style="bannerHeaderStyle">
+          <div :class="$style['banner-header']" :style="bannerHeaderStyle">
             <h2
               :class="[
-                'artist-name',
+                $style['artist-name'],
                 'pa-2',
                 'long-text-truncated',
                 { 'px-3': $vuetify.breakpoint.smAndDown }
@@ -23,6 +23,29 @@
             >
               {{ artist.attributes.name }}
             </h2>
+
+            <nav
+              v-if="$vuetify.breakpoint.lgAndUp"
+              v-show="loadingDone"
+              :class="['absolute-fit', 'pr-2', $style['nav']]"
+            >
+              <ul>
+                <li
+                  v-for="item in visibleNavigationItems"
+                  :key="item.value"
+                  :class="[
+                    'mb-2',
+                    $style['nav-item'],
+                    { [$style['active']]: currentTab === item.value }
+                  ]"
+                  @click="currentTab = item.value"
+                >
+                  <span :class="[$style['nav-item-text'], 'pb-1']">{{
+                    item.text
+                  }}</span>
+                </li>
+              </ul>
+            </nav>
           </div>
         </div>
       </v-flex>
@@ -31,76 +54,12 @@
         lg7
         :class="['pt-2', { 'px-2': $vuetify.breakpoint.smAndDown }]"
       >
-        <template v-if="featuredRelease">
-          <section-header class="mx-2">{{
-            featuredReleaseTitle
-          }}</section-header>
-          <v-flex xs6 sm3 md3 lg4 class="px-2">
-            <LinkComponent
-              :routeName="featuredRelease.type"
-              :routeParams="{ id: featuredRelease.id }"
-            >
-              <CollectionItemCard :collection="featuredRelease" />
-            </LinkComponent>
-          </v-flex>
-        </template>
-        <template v-if="topSongs.length > 0">
-          <v-flex xs12 :class="['px-2', { 'pt-4': featuredRelease }]">
-            <section-header>Top Songs</section-header>
-          </v-flex>
-          <SongListSmall
-            :songs="topSongs"
-            :sourceInfo="{
-              name: `${artist.attributes.name}'s top songs`,
-              path: {
-                name: 'artists',
-                params: {
-                  id
-                }
-              }
-            }"
-          />
-        </template>
-
-        <template v-if="albums.length > 0">
-          <v-flex xs12 class="px-2 pt-4">
-            <section-header>Albums</section-header>
-          </v-flex>
-          <SongCollectionList
-            :itemSizes="['xl3', 'lg4', 'md3', 'sm3', 'xs6']"
-            :collections="albums"
-          />
-        </template>
-
-        <template v-if="singles.length > 0">
-          <v-flex xs12 class="px-2 pt-4">
-            <section-header>EPs & Singles</section-header>
-          </v-flex>
-          <SongCollectionList
-            :itemSizes="['xl3', 'lg4', 'md3', 'sm3', 'xs6']"
-            :collections="singles"
-          />
-        </template>
-
-        <template v-if="artistPlaylists.length > 0">
-          <v-flex xs12 class="px-2 pt-4">
-            <section-header>Playlists</section-header>
-          </v-flex>
-          <SongCollectionList
-            :itemSizes="['xl3', 'lg4', 'md3', 'sm3', 'xs6']"
-            :collections="artistPlaylists"
-          />
-        </template>
-
-        <template v-if="relatedArtists.length > 0">
-          <v-flex xs12 class="px-2 pt-4">
-            <section-header>Related artists</section-header>
-          </v-flex>
-          <ArtistList
-            :artists="relatedArtists"
-            :itemSizes="['lg3', 'md3', 'sm3', 'xs6']"
-          />
-        </template>
+        <keep-alive>
+          <component
+            :is="currentTabComponent"
+            v-bind="currentTabProps"
+          ></component>
+        </keep-alive>
       </v-flex>
     </v-layout>
   </v-container>
@@ -109,14 +68,11 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch, Mixins } from 'vue-property-decorator';
 import { Action, Mutation, State } from 'vuex-class';
+import { Route } from 'vue-router';
 
+import ArtistDetailOverview from '@/components/Artist/ArtistDetailOverview.vue';
 import musicApiService from '@/services/musicApi.service';
 import DataLoadingMixin from '@/mixins/DataLoadingMixin';
-import SongListSmall from '@/components/Song/SongListSmall.vue';
-import LinkComponent from '@/components/LinkComponent.vue';
-import ArtistList from '@/components/ArtistList.vue';
-import SongCollectionList from '@/components/Song/SongCollectionList.vue';
-import CollectionItemCard from '@/components/Collection/CollectionItemCard.vue';
 import { formatArtworkUrl } from '@/utils/utils';
 import {
   Nullable,
@@ -126,7 +82,6 @@ import {
   Collection
 } from '@/@types/model/model';
 import { TEXT_PRIMARY_DARK } from '@/themes';
-
 import { PLACEHOLDER_IMAGE } from '@/utils/constants';
 import { getArtistDetails } from '../services/catalog.service';
 import {
@@ -143,16 +98,12 @@ import {
   FetchMultipleSongsCatalogAction,
   FetchMultipleArtitsCatalogAction
 } from '../store/types';
-import { Route } from 'vue-router';
 import { SET_FOOTER_VISIBILITY } from '../store/mutations.type';
 
 @Component({
   components: {
-    CollectionItemCard,
-    SongCollectionList,
-    SongListSmall,
-    LinkComponent,
-    ArtistList
+    ArtistDetailOverview,
+    ArtistDetailAbout: () => import('@/components/Artist/ArtistDetailAbout.vue')
   }
 })
 export default class ArtistDetail extends Mixins(DataLoadingMixin) {
@@ -166,6 +117,32 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
   private bannerUrl: Nullable<string> = null;
   private artworkUrl: Nullable<string> = PLACEHOLDER_IMAGE;
   private topSongs: MusicKit.Song[] = [];
+  private bio: Nullable<string> = null;
+  private origin: Nullable<string> = null;
+  private birthday: Nullable<string> = null;
+  private loadingDone = false;
+  private currentTab = 'overview';
+  private navigationItems: {
+    [id: string]: {
+      value: string;
+      component: string;
+      text: string;
+      shouldShow: boolean;
+    };
+  } = {
+    overview: {
+      text: 'Overview',
+      value: 'overview',
+      component: 'ArtistDetailOverview',
+      shouldShow: true
+    },
+    about: {
+      text: 'About',
+      value: 'about',
+      component: 'ArtistDetailAbout',
+      shouldShow: true
+    }
+  };
 
   @Prop() id!: string;
 
@@ -180,6 +157,35 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
   @Action [FETCH_MULTIPLE_SONGS_CATALOG]: FetchMultipleSongsCatalogAction;
   @Action [FETCH_MULTIPLE_ARTISTS_CATALOG]: FetchMultipleArtitsCatalogAction;
   @Mutation [SET_FOOTER_VISIBILITY]: (visibility: boolean) => void;
+
+  get visibleNavigationItems() {
+    return Object.values(this.navigationItems).filter(item => item.shouldShow);
+  }
+
+  get currentTabComponent(): string {
+    return this.navigationItems[this.currentTab].component;
+  }
+
+  get currentTabProps() {
+    if (this.currentTab === 'overview') {
+      return {
+        featuredRelease: this.featuredRelease,
+        featuredReleaseTitle: this.featuredReleaseTitle,
+        artistName: this.artist!.attributes!.name,
+        artistId: this.artist!.id,
+        artistPlaylists: this.artistPlaylists,
+        relatedArtists: this.relatedArtists,
+        singles: this.singles,
+        albums: this.albums,
+        topSongs: this.topSongs
+      };
+    }
+    return {
+      bio: this.bio,
+      birthday: this.birthday,
+      origin: this.origin
+    };
+  }
 
   get bannerHeaderStyle() {
     if (!this.bannerUrl) {
@@ -211,12 +217,13 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
     this.bannerUrl = null;
     this.artistPlaylists = [];
     this.topSongs = [];
-    // this.bio = null;
-    // this.birthday = null;
-    // this.origin = null;
+    this.bio = null;
+    this.birthday = null;
+    this.origin = null;
     this.albums = [];
     this.singles = [];
     this.relatedArtists = [];
+    this.loadingDone = false;
     window.scrollTo(0, 0);
     this.$_getArtistInfo();
   }
@@ -277,9 +284,18 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
         this.bannerUrl = bannerUrl;
 
         this.artworkUrl = artworkUrl;
-        // this.bio = bio;
-        // this.birthday = birthday;
-        // this.origin = origin;
+
+        this.bio = bio;
+        this.birthday = birthday;
+        this.origin = origin;
+
+        if (!this.bio && !this.birthday && !this.origin) {
+          this.navigationItems['about'].shouldShow = false;
+        } else {
+          this.navigationItems['about'].shouldShow = true;
+        }
+
+        this.loadingDone = true;
 
         if (relatedArtists && relatedArtists.length > 0) {
           this.fetchMultipleArtistsCatalog(relatedArtists).then(artists => {
@@ -295,7 +311,7 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
         }
 
         if (artistPlaylists && artistPlaylists.length > 0) {
-          this.fetchMultiplePlaylistsCatalog(artistPlaylists).then(
+          this.fetchMultiplePlaylistsCatalog(artistPlaylists.slice(0, 8)).then(
             playlists => {
               this.artistPlaylists = playlists;
             }
@@ -310,14 +326,14 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
         }
 
         if (albums && albums.length > 0) {
-          this.fetchMultipleAlbumsCatalog(albums).then(albums => {
-            this.albums = albums.slice(0, 6);
+          this.fetchMultipleAlbumsCatalog(albums.slice(0, 8)).then(albums => {
+            this.albums = albums;
           });
         }
 
         if (singles && singles.length > 0) {
-          this.fetchMultipleAlbumsCatalog(singles).then(singles => {
-            this.singles = singles.slice(0, 6);
+          this.fetchMultipleAlbumsCatalog(singles.slice(0, 8)).then(singles => {
+            this.singles = singles;
           });
         }
       })
@@ -326,7 +342,7 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
 .left-column-sticky {
   height: calc(100vh - 64px - 16px);
   position: sticky;
@@ -358,6 +374,7 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
   width: 100%;
   height: 100%;
   background-size: cover;
+  background-position: 50%;
   position: relative;
   display: flex;
   flex-direction: row;
@@ -375,5 +392,36 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
 .artist-name {
   font-size: 3.5rem;
   z-index: 1;
+}
+
+.nav {
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.nav ul {
+  list-style-type: none;
+}
+
+.nav-item {
+  color: rgba($color: #fff, $alpha: 0.7);
+  cursor: pointer;
+  font-weight: 500;
+  text-transform: uppercase;
+  text-align: right;
+}
+
+.nav-item.active {
+  color: white;
+}
+
+.nav-item-text {
+  position: relative;
+}
+
+.active .nav-item-text {
+  border-bottom: 0.3rem solid var(--v-accent-base);
 }
 </style>

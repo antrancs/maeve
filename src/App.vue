@@ -38,7 +38,6 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 import { State, Action, Getter, Mutation } from 'vuex-class';
 import NProgress from 'nprogress';
 
-import musicKit from '@/services/musicKit';
 import AppSidebar from '@/components/Layout/TheSidebar.vue';
 import AppHeader from '@/components/Header/TheHeader.vue';
 import AppFooter from '@/components/Layout/TheFooter.vue';
@@ -50,7 +49,15 @@ import {
   LOAD_TOKEN_LASTFM,
   CHANGE_ROUTE
 } from '@/store/actions.type';
-import { SET_CURRENTLY_PLAYING_SONG } from './store/mutations.type';
+import {
+  SET_CURRENTLY_PLAYING_SONG,
+  SET_QUEUE_VISIBILITY,
+  SET_USER_TOKEN
+} from './store/mutations.type';
+import {
+  updateUserStorefront,
+  setUserStorefront
+} from './services/musicApi.service';
 
 @Component({
   components: {
@@ -67,7 +74,6 @@ import { SET_CURRENTLY_PLAYING_SONG } from './store/mutations.type';
 export default class App extends Vue {
   private showSidebar = this.$vuetify.breakpoint.lgAndUp;
   private themeSetting = false;
-  private musicKitInstance = musicKit.getInstance();
 
   @State(state => state.settings.selectedTheme) selectedTheme!: ThemeOption;
   @State(state => state.musicPlayer.currentPlaying) currentPlaying!: Nullable<
@@ -78,7 +84,11 @@ export default class App extends Vue {
   @Action [LOAD_TOKEN_LASTFM]: () => void;
   @Action [CHANGE_ROUTE]: (routeName: string) => void;
 
-  @Mutation [SET_CURRENTLY_PLAYING_SONG]: (item: MusicKit.MediaItem) => void;
+  @Mutation [SET_CURRENTLY_PLAYING_SONG]: (
+    item: MusicKit.MediaItem | null
+  ) => void;
+  @Mutation [SET_USER_TOKEN]: (token: string | null) => void;
+  @Mutation [SET_QUEUE_VISIBILITY]: (visibility: boolean) => void;
 
   @Getter darkMode!: boolean;
   @Getter isAuthenticatedLastfm!: boolean;
@@ -107,15 +117,23 @@ export default class App extends Vue {
   created() {
     this.loadTokenLastfm();
     this.loadSettings();
+    const musicKitInstance = MusicKit.getInstance();
 
-    this.musicKitInstance.addEventListener(
+    this.setUserToken(musicKitInstance.musicUserToken);
+
+    musicKitInstance.addEventListener(
       MusicKit.Events.authorizationStatusDidChange,
       this.onAuthorizationStatusDidChange
     );
 
-    this.musicKitInstance.addEventListener(
+    musicKitInstance.addEventListener(
       MusicKit.Events.mediaItemDidChange,
       this.onMediaItemDidChange
+    );
+
+    musicKitInstance.addEventListener(
+      MusicKit.Events.storefrontCountryCodeDidChange,
+      this.onStorefrontChanged
     );
 
     NProgress.configure({
@@ -131,14 +149,20 @@ export default class App extends Vue {
   }
 
   beforeDestroy() {
-    this.musicKitInstance.removeEventListener(
+    const musicKitInstance = MusicKit.getInstance();
+    musicKitInstance.removeEventListener(
       MusicKit.Events.authorizationStatusDidChange,
       this.onAuthorizationStatusDidChange
     );
 
-    this.musicKitInstance.removeEventListener(
+    musicKitInstance.removeEventListener(
       MusicKit.Events.mediaItemDidChange,
       this.onMediaItemDidChange
+    );
+
+    musicKitInstance.removeEventListener(
+      MusicKit.Events.storefrontCountryCodeDidChange,
+      this.onStorefrontChanged
     );
   }
 
@@ -150,14 +174,31 @@ export default class App extends Vue {
     this.showSidebar = value;
   }
 
-  onAuthorizationStatusDidChange({ authorizationStatus }: any) {
-    this.musicKitInstance.player.stop();
-    //  store.dispatch(CHANGE_ROUTE, 'home');
-    this.changeRoute('home');
+  async onAuthorizationStatusDidChange({ authorizationStatus }: any) {
+    const musicKitInstance = MusicKit.getInstance();
+
+    musicKitInstance.player.stop();
+
+    this.setCurrentlyPlayingSong(null);
+    this.setQueueVisibility(false);
+
+    this.setUserToken(musicKitInstance.musicUserToken);
+
+    if (!authorizationStatus) {
+      this.changeRoute('home');
+    }
   }
 
   onMediaItemDidChange({ item }: { item: MusicKit.MediaItem }) {
     this.setCurrentlyPlayingSong(item);
+    //   setUserStorefront('us');
+  }
+
+  onStorefrontChanged(event: any) {
+    const musicKitInstance = MusicKit.getInstance();
+
+    this.setUserToken(musicKitInstance.musicUserToken);
+    this.changeRoute('home');
   }
 }
 </script>

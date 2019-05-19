@@ -71,7 +71,6 @@ import { Action, Mutation, State } from 'vuex-class';
 import { Route } from 'vue-router';
 
 import ArtistDetailOverview from '@/components/Artist/ArtistDetailOverview.vue';
-import musicApiService from '@/services/musicApi.service';
 import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 import { formatArtworkUrl } from '@/utils/utils';
 import {
@@ -99,6 +98,7 @@ import {
   FetchMultipleArtitsCatalogAction
 } from '../store/types';
 import { SET_FOOTER_VISIBILITY } from '../store/mutations.type';
+import { getArtist } from '../services/musicApi.service';
 
 @Component({
   components: {
@@ -241,8 +241,7 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
   private $_getArtistInfo() {
     const artistId = this.id;
 
-    musicApiService
-      .getArtist(artistId)
+    getArtist(artistId)
       .then(artist => {
         this.artist = artist;
         this.$_getArtistDetails();

@@ -1,8 +1,5 @@
 import { ActionTree, MutationTree } from 'vuex';
 
-import musicKit from '@/services/musicKit';
-import musicApiService from '@/services/musicApi.service';
-
 import {
   UserLibraryState,
   AddToLibraryPayload,
@@ -34,6 +31,14 @@ import {
   SET_LIBRARY_PLAYLISTS,
   APPEND_LIBRARY_PLAYLISTS
 } from './mutations.type';
+import {
+  getLibraryPlaylist,
+  getLibraryPlaylistTracks,
+  getHeavyRotation,
+  getRecentlyAdded,
+  addSongsToPlaylist,
+  createNewPlaylist
+} from '@/services/musicApi.service';
 
 const initialState: UserLibraryState = {
   albums: [],
@@ -43,21 +48,21 @@ const initialState: UserLibraryState = {
 
 const actions: ActionTree<UserLibraryState, any> = {
   async [FETCH_ONE_ALBUM_LIBRARY](_, id: string) {
-    return await musicKit
-      .getApiInstance()
-      .library.album(id, { include: 'tracks' });
+    return await MusicKit.getInstance().api.library.album(id, {
+      include: 'tracks'
+    });
   },
 
   [FETCH_ONE_PLAYLIST_LIBRARY](_, id: string) {
-    return musicApiService.getLibraryPlaylist(id);
+    return getLibraryPlaylist(id);
   },
 
   [FETCH_LIBRARY_PLAYLIST_TRACKS](_, id: string) {
-    return musicApiService.getLibraryPlaylistTracks(id);
+    return getLibraryPlaylistTracks(id);
   },
 
   async [FETCH_ONE_ARTIST_LIBRARY](_, id: string) {
-    return await musicKit.getApiInstance().library.artist(id, {
+    return await MusicKit.getInstance().api.library.artist(id, {
       include: 'albums,playlists'
     });
   },
@@ -69,7 +74,7 @@ const actions: ActionTree<UserLibraryState, any> = {
     let albums: MusicKit.LibraryAlbum[] = [];
 
     try {
-      albums = await musicKit.getApiInstance().library.albums(undefined, {
+      albums = await MusicKit.getInstance().api.library.albums(undefined, {
         offset,
         limit
       });
@@ -94,10 +99,13 @@ const actions: ActionTree<UserLibraryState, any> = {
   ): Promise<FetchResult<MusicKit.LibraryPlaylist>> {
     let playlists: MusicKit.LibraryPlaylist[] = [];
     try {
-      playlists = await musicKit.getApiInstance().library.playlists(undefined, {
-        offset,
-        limit
-      });
+      playlists = await MusicKit.getInstance().api.library.playlists(
+        undefined,
+        {
+          offset,
+          limit
+        }
+      );
     } catch (err) {
       // force log out when forbidden
       // await dispatch(LOGOUT);
@@ -125,7 +133,7 @@ const actions: ActionTree<UserLibraryState, any> = {
     let artists: MusicKit.LibraryArtist[] = [];
 
     try {
-      artists = await musicKit.getApiInstance().library.artists(undefined, {
+      artists = await MusicKit.getInstance().api.library.artists(undefined, {
         offset,
         limit
       });
@@ -151,7 +159,7 @@ const actions: ActionTree<UserLibraryState, any> = {
     let songs: MusicKit.LibrarySong[] = [];
 
     try {
-      songs = await musicKit.getApiInstance().library.songs(undefined, {
+      songs = await MusicKit.getInstance().api.library.songs(undefined, {
         offset,
         limit
       });
@@ -178,58 +186,52 @@ const actions: ActionTree<UserLibraryState, any> = {
   },
 
   [ADD_TO_LIBRARY](_, { itemIds, type }: AddToLibraryPayload) {
-    return musicKit.getApiInstance().addToLibrary({
+    return MusicKit.getInstance().api.addToLibrary({
       [type]: itemIds
     });
   },
 
   [FETCH_HEAVY_ROTATION](_) {
-    return musicApiService.getHeavyRotation();
+    return getHeavyRotation();
   },
 
   [FETCH_RECOMMENDATIONS]() {
-    return musicKit.getApiInstance().recommendations();
+    return MusicKit.getInstance().api.recommendations();
   },
 
   [FETCH_RECENT_PLAYED]() {
-    return musicKit.getApiInstance().recentPlayed({
+    return MusicKit.getInstance().api.recentPlayed({
       offset: 0
     });
   },
 
   [FETCH_RECENTLY_ADDED]() {
-    return musicApiService.getRecentlyAdded();
+    return getRecentlyAdded();
   },
 
   [ADD_SONGS_TO_PLAYLIST](
     _,
     { songItems, playlistId }: AddSongsToPlaylistPayload
   ) {
-    return musicApiService
-      .addSongsToPlaylist(songItems, playlistId)
-      .then(res => {
-        if (res.status < 200 || res.status >= 300) {
-          throw new Error('Cannot add songs to library');
-        }
-        return Promise.resolve();
-      });
+    return addSongsToPlaylist(songItems, playlistId).then(res => {
+      if (res.status < 200 || res.status >= 300) {
+        throw new Error('Cannot add songs to library');
+      }
+      return Promise.resolve();
+    });
   },
 
   async [CREATE_NEW_PLAYLIST](
     { commit },
     { name, description, items }: CreateNewPlaylistPayload
   ) {
-    const playlist = await musicApiService.createNewPlaylist(
-      name,
-      description,
-      items
-    );
+    const playlist = await createNewPlaylist(name, description, items);
 
     commit(APPEND_LIBRARY_PLAYLISTS, playlist);
   },
 
   searchLibrary(_, searchTerm: string) {
-    return musicKit.getApiInstance().library.search(searchTerm, {
+    return MusicKit.getInstance().api.library.search(searchTerm, {
       types: ['library-albums'],
       limit: 25,
       offset: 0

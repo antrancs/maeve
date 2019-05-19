@@ -145,6 +145,31 @@ function getCuratorsByGenre(genreId: string) {
   });
 }
 
+function getNewReleases(genre: string) {
+  return axiosInstance
+    .get('/newReleases/', {
+      params: {
+        country: MusicKit.getInstance().storefrontId,
+        genre
+      }
+    })
+    .then(res => {
+      return res.data;
+    });
+}
+
+function getNewReleasesGenres() {
+  return axiosInstance
+    .get('/newReleases/genres', {
+      params: {
+        country: MusicKit.getInstance().storefrontId
+      }
+    })
+    .then(res => {
+      return res.data;
+    });
+}
+
 export {
   getGenresForCountry,
   getAllBrowseCategories,
@@ -158,5 +183,7 @@ export {
   getArtistDetails,
   getAlbumExtraInfo,
   getCuratorBanner,
-  getCuratorsByGenre
+  getCuratorsByGenre,
+  getNewReleases,
+  getNewReleasesGenres
 };

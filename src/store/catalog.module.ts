@@ -1,6 +1,5 @@
 import { ActionTree, MutationTree, GetterTree } from 'vuex';
 
-import musicKit from '@/services/musicKit';
 import {
   FETCH_ONE_ALBUM_CATALOG,
   FETCH_ONE_PLAYLIST_CATALOG,
@@ -26,8 +25,13 @@ import {
   FetchCuratorPlaylistsPayload,
   FetchActivityPlaylistsPayload
 } from './types';
-import musicApiService from '@/services/musicApi.service';
 import { getAlbumExtraInfo } from '@/services/catalog.service';
+import {
+  getCatalogPlaylistTracks,
+  searchCatalog,
+  getActivityPlaylists,
+  getCuratorRelationship
+} from '@/services/musicApi.service';
 
 const initialState: CatalogState = {};
 
@@ -49,12 +53,12 @@ function getOffsetFromNext(next: string): number {
 
 const actions: ActionTree<CatalogState, any> = {
   async [FETCH_ONE_ALBUM_CATALOG](_, id: string) {
-    return await musicKit.getApiInstance().album(id, { include: 'tracks' });
+    return await MusicKit.getInstance().api.album(id, { include: 'tracks' });
   },
 
   async [FETCH_ONE_PLAYLIST_CATALOG](_, id: string) {
     // by default, the call already includes 'tracks' and 'curator' relationships
-    const playlist = await musicKit.getApiInstance().playlist(id);
+    const playlist = await MusicKit.getInstance().api.playlist(id);
 
     // if there's 'next' property, there are more than 100 songs in the playlists --> fetch the remaining songs
     if (
@@ -65,10 +69,7 @@ const actions: ActionTree<CatalogState, any> = {
       const remainingSongs = [];
       let offset = 100;
       for (;;) {
-        const { data, next } = await musicApiService.getCatalogPlaylistTracks(
-          id,
-          offset
-        );
+        const { data, next } = await getCatalogPlaylistTracks(id, offset);
 
         remainingSongs.push(...data);
         if (!next) {
@@ -85,42 +86,38 @@ const actions: ActionTree<CatalogState, any> = {
   },
 
   [FETCH_MULTIPLE_PLAYLISTS_CATALOG](_, ids: string[]) {
-    return musicKit.getApiInstance().playlists(ids);
+    return MusicKit.getInstance().api.playlists(ids);
   },
 
   [FETCH_MULTILE_ALBUMS_CATALOG](_, ids: string[]) {
-    return musicKit.getApiInstance().albums(ids);
+    return MusicKit.getInstance().api.albums(ids);
   },
 
   [FETCH_MULTIPLE_SONGS_CATALOG](_, ids: string[]) {
-    return musicKit.getApiInstance().songs(ids);
+    return MusicKit.getInstance().api.songs(ids);
   },
 
   [FETCH_ONE_SONG_CATALOG](_, id: string) {
-    return musicKit.getApiInstance().song(id);
+    return MusicKit.getInstance().api.song(id);
   },
 
   [FETCH_MULTIPLE_ARTISTS_CATALOG](_, ids: string[]) {
-    return musicKit.getApiInstance().artists(ids);
+    return MusicKit.getInstance().api.artists(ids);
   },
 
   [FETCH_ONE_RECOMMENDATION](_, id: string) {
-    return musicKit.getApiInstance().recommendation(id);
+    return MusicKit.getInstance().api.recommendation(id);
   },
 
   [FETCH_ONE_CURATOR](_, id: string) {
-    return musicKit.getApiInstance().curator(id);
+    return MusicKit.getInstance().api.curator(id);
   },
 
   async [FETCH_CURATOR_PLAYLISTS](
     _,
     { id, limit, offset }: FetchCuratorPlaylistsPayload
   ): Promise<FetchResult<MusicKit.Playlist>> {
-    const result = await musicApiService.getCuratorRelationship(
-      id,
-      limit,
-      offset
-    );
+    const result = await getCuratorRelationship(id, limit, offset);
 
     const data = result.data;
     const hasNext = data.length === limit;
@@ -134,7 +131,7 @@ const actions: ActionTree<CatalogState, any> = {
   },
 
   [FETCH_MULTIPLE_CURATORS](_, ids: string[]) {
-    return musicKit.getApiInstance().curators(ids);
+    return MusicKit.getInstance().api.curators(ids);
   },
 
   async [SEARCH_CATALOG](
@@ -146,12 +143,7 @@ const actions: ActionTree<CatalogState, any> = {
     >
   > {
     try {
-      const searchResult = await musicApiService.searchCatalog(
-        term,
-        [type],
-        limit,
-        offset
-      );
+      const searchResult = await searchCatalog(term, [type], limit, offset);
       const items = searchResult[type] ? searchResult[type]!.data : [];
 
       const hasNext = items.length === limit;
@@ -174,7 +166,7 @@ const actions: ActionTree<CatalogState, any> = {
   },
 
   async [FETCH_CATALOG_SONG_DETAILS](_, ids?: string[]) {
-    return await musicKit.getApiInstance().songs(ids || []);
+    return await MusicKit.getInstance().api.songs(ids || []);
   },
 
   [FETCH_ALBUM_EXTRA_INFO_CATALOG](_, url: string) {
@@ -182,7 +174,7 @@ const actions: ActionTree<CatalogState, any> = {
   },
 
   [FETCH_ONE_ACTIVITY_CATALOG](_, id: string): Promise<MusicKit.Activity> {
-    return musicKit.getApiInstance().activity(id, {
+    return MusicKit.getInstance().api.activity(id, {
       include: 'playlists'
     });
   },
@@ -191,11 +183,7 @@ const actions: ActionTree<CatalogState, any> = {
     _,
     { id, limit, offset }: FetchActivityPlaylistsPayload
   ) {
-    const result = await musicApiService.getActivityPlaylists(
-      id,
-      limit,
-      offset
-    );
+    const result = await getActivityPlaylists(id, limit, offset);
 
     const data = result.data;
     const hasNext = data.length === limit;

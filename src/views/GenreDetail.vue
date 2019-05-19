@@ -62,7 +62,9 @@
           >
         </v-flex>
 
-        <v-flex xs12> <CollectionCarousel :collections="playlists" /> </v-flex>
+        <v-flex xs12>
+          <CollectionCarousel :collections="playlists" />
+        </v-flex>
       </v-layout>
     </v-container>
 
@@ -135,7 +137,9 @@
           <section-header>Curators</section-header>
         </v-flex>
 
-        <v-flex xs12> <CuratorList :curators="curators" /> </v-flex>
+        <v-flex xs12>
+          <CuratorList :curators="curators" />
+        </v-flex>
       </v-layout>
     </v-container>
   </div>
@@ -150,7 +154,6 @@ import CuratorList from '@/components/CuratorList.vue';
 import TriangleSVG from '@/components/TriangleSVG.vue';
 import SongListLarge from '@/components/Song/SongListLarge.vue';
 import CollectionCarousel from '@/components/Collection/CollectionCarousel.vue';
-import musicApiService from '@/services/musicApi.service';
 import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 import { Nullable } from '@/@types/model/model';
 import { Genre, GENRES } from '@/utils/constants';

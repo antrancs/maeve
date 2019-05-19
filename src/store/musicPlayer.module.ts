@@ -1,8 +1,5 @@
 import { GetterTree, MutationTree, ActionTree } from 'vuex';
 
-// import musicPlayerService from '@/services/musicPlayer.service';
-import musicKit from '@/services/musicKit';
-
 import {
   PAUSE_CURRENT_TRACK,
   PLAY_NEXT,
@@ -40,9 +37,6 @@ import {
 import { RepeatMode } from '@/utils/constants';
 import { ShuffleMode } from '@/@types/model/model';
 
-const musicKitInstance = musicKit.getInstance();
-const musicKitPlayer = musicKit.getPlayerInstance();
-
 const initialState: MusicPlayerState = {
   currentPlaying: null,
   isPlaying: false,
@@ -76,15 +70,15 @@ const getters: GetterTree<MusicPlayerState, any> = {
 
 const actions: ActionTree<MusicPlayerState, any> = {
   [PLAY_NEXT]() {
-    return musicKitPlayer.skipToNextItem();
+    return MusicKit.getInstance().player.skipToNextItem();
   },
 
   [PLAY_PREVIOUS]() {
-    return musicKitPlayer.skipToPreviousItem();
+    return MusicKit.getInstance().player.skipToPreviousItem();
   },
 
   [TOGGLE_CURRENT_TRACK]({ dispatch }) {
-    if (musicKitPlayer.isPlaying) {
+    if (MusicKit.getInstance().player.isPlaying) {
       dispatch(PAUSE_CURRENT_TRACK);
     } else {
       dispatch(RESUME_CURRENT_TRACK);
@@ -92,13 +86,15 @@ const actions: ActionTree<MusicPlayerState, any> = {
   },
 
   [PAUSE_CURRENT_TRACK]() {
-    return musicKitPlayer.pause();
+    return MusicKit.getInstance().player.pause();
   },
 
   [RESUME_CURRENT_TRACK]() {
-    return musicKitPlayer.play().catch(err => {
-      // console.log(err);
-    });
+    return MusicKit.getInstance()
+      .player.play()
+      .catch(err => {
+        // console.log(err);
+      });
   },
 
   async [PLAY_COLLECTION](
@@ -117,17 +113,18 @@ const actions: ActionTree<MusicPlayerState, any> = {
 
     dispatch('changeShuffleMode', shuffle);
 
+    const musicKitInstance = MusicKit.getInstance();
     await musicKitInstance.setQueue({
       [type]: collectionId
     });
 
     if (startPosition) {
-      await musicKitPlayer.changeToMediaAtIndex(startPosition);
+      await musicKitInstance.player.changeToMediaAtIndex(startPosition);
     }
 
-    commit(SET_QUEUE, musicKitPlayer.queue, { root: true });
+    commit(SET_QUEUE, musicKitInstance.player.queue, { root: true });
 
-    return musicKitPlayer.play();
+    return musicKitInstance.player.play();
   },
 
   async [PLAY_SONGS](
@@ -150,17 +147,18 @@ const actions: ActionTree<MusicPlayerState, any> = {
     );
 
     dispatch('changeShuffleMode', shuffle);
+    const musicKitInstance = MusicKit.getInstance();
 
     await musicKitInstance.setQueue({
       items: mediaItems
     });
 
     if (startPosition) {
-      await musicKitPlayer.changeToMediaAtIndex(startPosition);
+      await musicKitInstance.player.changeToMediaAtIndex(startPosition);
     }
 
-    commit(SET_QUEUE, musicKitPlayer.queue, { root: true });
-    return musicKitPlayer.play();
+    commit(SET_QUEUE, musicKitInstance.player.queue, { root: true });
+    return musicKitInstance.player.play();
   },
 
   // [PLAY_CURRENT_SONG]({ state, dispatch }, song: PlayQueueSong) {
@@ -192,12 +190,13 @@ const actions: ActionTree<MusicPlayerState, any> = {
   // },
 
   [SKIP_TO_SONG_AT_INDEX](_, { index }: SkipToSongAtIndexPayload) {
-    return musicKitPlayer.changeToMediaAtIndex(index);
+    return MusicKit.getInstance().player.changeToMediaAtIndex(index);
   },
 
   [UPDATE_REPEAT_MODE]({ state, commit }) {
     const currentRepeatMode = state.repeatMode;
     let nextRepeatMode = (currentRepeatMode + 1) % 3;
+    const musicKitPlayer = MusicKit.getInstance().player;
 
     // Repeat mode of MusicKit is 0: Off, 1: One, 2: All, so we need to switch up
     if (nextRepeatMode === RepeatMode.All) {
@@ -213,17 +212,18 @@ const actions: ActionTree<MusicPlayerState, any> = {
   // while toggleShuffle shuffles/unshuffles the mainSongs in playQueue module
   [TOGGLE_SHUFFLE_MODE]({ state, commit, dispatch }) {
     const newMode = +!state.shuffleMode;
-    musicKitPlayer.shuffleMode = newMode;
+    MusicKit.getInstance().player.shuffleMode = newMode;
     commit(SET_SHUFFLE_MODE, newMode);
   },
 
   changeShuffleMode({ commit }, shuffle: boolean) {
+    const musicKitPlayer = MusicKit.getInstance().player;
     musicKitPlayer.shuffleMode = shuffle ? 1 : 0;
     commit(SET_SHUFFLE_MODE, musicKitPlayer.shuffleMode);
   },
 
   async [SEEK_TO_TIME]({ commit }, time) {
-    await musicKitPlayer.seekToTime(time);
+    await MusicKit.getInstance().player.seekToTime(time);
     commit(SET_CURRENT_PLAYBACK_TIME_AFTER_SKIP, time);
   },
 
@@ -232,7 +232,7 @@ const actions: ActionTree<MusicPlayerState, any> = {
       return;
     }
 
-    musicKitPlayer.volume = volume;
+    MusicKit.getInstance().player.volume = volume;
 
     commit(SET_VOLUME, volume);
     if (state.isMuted) {
@@ -242,7 +242,7 @@ const actions: ActionTree<MusicPlayerState, any> = {
 
   [MUTE_VOLUME]({ state, commit }) {
     const volume = state.isMuted ? state.volume : 0;
-    musicKitPlayer.volume = volume;
+    MusicKit.getInstance().player.volume = volume;
 
     commit(SET_IS_MUTED);
   }

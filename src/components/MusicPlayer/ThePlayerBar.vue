@@ -149,7 +149,6 @@
 import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { State, Action, Getter, Mutation } from 'vuex-class';
 
-import musicKit from '@/services/musicKit';
 import LyricsDialog from '@/components/LyricsDialog.vue';
 import PlayQueue from '@/components/PlayQueue/PlayQueue.vue';
 import PlayerProgressBar from './PlayerProgressBar.vue';
@@ -201,7 +200,6 @@ export default class PlayerBar extends Mixins(
   GoToAlbumPageMixin
 ) {
   private playerFullScreenVisible = false;
-  private musicKitInstance = musicKit.getInstance();
 
   @State musicPlayer!: MusicPlayerState;
   @State(state => state.musicPlayer.volume) volume!: number;
@@ -330,19 +328,19 @@ It can be an album/playlist or the original song lists where this song is from
 
   created() {
     window.addEventListener('keydown', this.handleKeyDown);
-
+    const musicKitInstance = MusicKit.getInstance();
     // set up musicKit
-    this.musicKitInstance.addEventListener(
+    musicKitInstance.addEventListener(
       MusicKit.Events.playbackProgressDidChange,
       this.onPlaybackProgressDidChange
     );
 
-    this.musicKitInstance.addEventListener(
+    musicKitInstance.addEventListener(
       MusicKit.Events.playbackStateDidChange,
       this.onPlaybackStateDidChange
     );
 
-    this.musicKitInstance.addEventListener(
+    musicKitInstance.addEventListener(
       MusicKit.Events.playbackTimeDidChange,
       this.onPlaybackTimeDidChange
     );
@@ -351,17 +349,18 @@ It can be an album/playlist or the original song lists where this song is from
   beforeDestroy() {
     window.removeEventListener('keydown', this.handleKeyDown);
 
-    this.musicKitInstance.removeEventListener(
+    const musicKitInstance = MusicKit.getInstance();
+    musicKitInstance.removeEventListener(
       MusicKit.Events.playbackProgressDidChange,
       this.onPlaybackProgressDidChange
     );
 
-    this.musicKitInstance.addEventListener(
+    musicKitInstance.addEventListener(
       MusicKit.Events.playbackStateDidChange,
       this.onPlaybackStateDidChange
     );
 
-    this.musicKitInstance.removeEventListener(
+    musicKitInstance.removeEventListener(
       MusicKit.Events.playbackTimeDidChange,
       this.onPlaybackTimeDidChange
     );
@@ -418,8 +417,8 @@ It can be an album/playlist or the original song lists where this song is from
 
   onPlaybackStateDidChange = (event: any) => {
     const DEFAULT_PAGE_TITLE = 'Maeve - An Apple Music web player';
-    const musicKitInstance = musicKit.getInstance();
-    switch (musicKitInstance.player.playbackState) {
+    const musicKitInstace = MusicKit.getInstance();
+    switch (musicKitInstace.player.playbackState) {
       case MusicKit.PlaybackStates.stopped:
         this.setIsPlaying(false);
         document.title = DEFAULT_PAGE_TITLE;
@@ -432,7 +431,7 @@ It can be an album/playlist or the original song lists where this song is from
         this.setIsPlaying(true);
         this.setSongLoading(false);
 
-        const { nowPlayingItem } = musicKitInstance.player;
+        const { nowPlayingItem } = musicKitInstace.player;
 
         if (nowPlayingItem) {
           document.title = `${nowPlayingItem.attributes.name} - ${

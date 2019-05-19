@@ -8,9 +8,6 @@ import {
   RESET_QUEUE
 } from './actions.type';
 import { SET_QUEUE_VISIBILITY, SET_QUEUE } from './mutations.type';
-import musicKit from '@/services/musicKit';
-
-const musicKitPlayer = musicKit.getPlayerInstance();
 
 const initialState: PlayQueueState = {
   queue: null,
@@ -44,10 +41,7 @@ const getters: GetterTree<PlayQueueState, any> = {
 };
 
 const actions: ActionTree<PlayQueueState, any> = {
-  [PREPEND_SONGS_TO_QUEUE](
-    { state, rootGetters },
-    { items }: AppendSongsPayload
-  ) {
+  [PREPEND_SONGS_TO_QUEUE]({ state }, { items }: AppendSongsPayload) {
     if (!state.queue) {
       return;
     }
@@ -84,7 +78,9 @@ const actions: ActionTree<PlayQueueState, any> = {
       return;
     }
 
-    musicKitPlayer.changeToMediaAtIndex(state.queue.position + index);
+    MusicKit.getInstance().player.changeToMediaAtIndex(
+      state.queue.position + index
+    );
   },
 
   [RESET_QUEUE]({ commit }) {

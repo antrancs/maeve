@@ -1,24 +1,24 @@
-import musicKit from '@/services/musicKit';
+// import musicKit from '@/services/musicKit';
 
 const authService = {
   get isAuthorized(): boolean {
-    return musicKit.getInstance().isAuthorized;
+    return MusicKit.getInstance().isAuthorized;
   },
 
   get userToken(): string {
-    return musicKit.getInstance().musicUserToken;
+    return MusicKit.getInstance().musicUserToken;
   },
 
   get developerToken(): string {
-    return musicKit.getInstance().developerToken;
+    return MusicKit.getInstance().developerToken;
   },
 
   login() {
-    return musicKit.getInstance().authorize();
+    return MusicKit.getInstance().authorize();
   },
 
   logout() {
-    return musicKit.getInstance().unauthorize();
+    return MusicKit.getInstance().unauthorize();
   }
 };
 

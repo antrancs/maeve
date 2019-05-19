@@ -50,10 +50,10 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 
 import SongListLarge from '@/components/Song/SongListLarge.vue';
 import SongCollectionList from '@/components/Song/SongCollectionList.vue';
-import musicApiService from '@/services/musicApi.service';
 import { Nullable } from '@/@types/model/model';
 import { GENRES } from '@/utils/constants';
 import { isLight, TEXT_PRIMARY_LIGHT, TEXT_PRIMARY_DARK } from '@/themes';
+import { getCharts } from '../../services/musicApi.service';
 
 @Component({
   components: {
@@ -132,16 +132,15 @@ export default class ChartsByGenre extends Vue {
       // fetch just 5 items on mobile
       limit = 5;
     }
-    musicApiService
-      .getCharts(
-        ['albums', 'songs', 'playlists'],
-        limit,
-        genreId !== '0' ? genreId : undefined
-      )
-      .then(chart => {
-        this.chart = chart;
-        this.$emit('ready');
-      });
+
+    getCharts(
+      ['albums', 'songs', 'playlists'],
+      limit,
+      genreId !== '0' ? genreId : undefined
+    ).then(chart => {
+      this.chart = chart;
+      this.$emit('ready');
+    });
   }
 }
 </script>

@@ -3,8 +3,8 @@ import Component from 'vue-class-component';
 import 'vuetify/dist/vuetify.min.css';
 
 import './registerServiceWorker';
-import musicKit from '@/services/musicKit';
-musicKit.init();
+import setupMusicKit from '@/utils/musicKit';
+setupMusicKit();
 
 import store from '@/store';
 import router from '@/router';

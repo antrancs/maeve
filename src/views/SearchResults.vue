@@ -80,7 +80,9 @@
         <SongCollectionList :collections="getFirstNResults(playlists, 10)" />
       </template>
     </v-layout>
-    <div v-else><h3>No results</h3></div>
+    <div v-else>
+      <h3>No results</h3>
+    </div>
   </v-container>
 </template>
 
@@ -92,11 +94,11 @@ import { Route } from 'vue-router';
 import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import SongListLarge from '@/components/Song/SongListLarge.vue';
 import ArtistList from '@/components/ArtistList.vue';
-import musicApiService from '@/services/musicApi.service';
 import { PLAY_SONGS, SHOW_SNACKBAR } from '@/store/actions.type';
 import { HandleSongClicked } from '@/@types/model/model';
 import { PlaySongsAction, ShowSnackbarAction } from '@/store/types';
 import DataLoadingMixin from '@/mixins/DataLoadingMixin';
+import { searchAll } from '../services/musicApi.service';
 
 @Component({
   components: {
@@ -136,8 +138,7 @@ export default class SearchResults extends Mixins(DataLoadingMixin) {
   }
 
   private $_search() {
-    return musicApiService
-      .searchAll(this.queryString)
+    return searchAll(this.queryString)
       .then(result => {
         if (!result) {
           // TODO: display no results found

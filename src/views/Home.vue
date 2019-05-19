@@ -171,7 +171,6 @@ import ActivityItem from '@/components/ActivityItem.vue';
 import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import GenreList from '@/components/GenreList.vue';
 import NewReleaseHomeList from '@/components/Home/NewReleaseHomeList.vue';
-import musicApiService from '@/services/musicApi.service';
 import { activityIds } from '@/utils/constants';
 import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 import {
@@ -188,8 +187,11 @@ import {
   getAllBrowseCategories,
   getGenresForCountry,
   getMainFeaturedPlaylists,
-  getFeaturedAlbums
+  getFeaturedAlbums,
+  getNewReleases,
+  getNewReleasesGenres
 } from '../services/catalog.service';
+import { getActivities, getCharts } from '../services/musicApi.service';
 
 @Component({
   components: {
@@ -237,7 +239,7 @@ export default class Home extends Mixins(DataLoadingMixin) {
       this.$_getGenres();
     });
 
-    this.$_getNewReleasesGenres().then(genres => {
+    getNewReleasesGenres().then(genres => {
       this.genres = genres;
 
       if (this.genres.length > 0) {
@@ -274,7 +276,7 @@ export default class Home extends Mixins(DataLoadingMixin) {
 
     this.$_fetchCharts();
 
-    this.$_getNewReleasesGenres().then(genres => {
+    getNewReleasesGenres().then(genres => {
       this.genres = genres;
 
       if (this.genres.length > 0) {
@@ -301,30 +303,23 @@ export default class Home extends Mixins(DataLoadingMixin) {
     this.featuredPlaylists = playlists;
   }
 
-  $_getNewReleasesGenres() {
-    return musicApiService.getNewReleasesGenres();
-  }
-
   $_getNewReleases() {
     if (!this.selectedNewReleasesGenre) {
       return;
     }
 
-    return musicApiService
-      .getNewReleases(this.selectedNewReleasesGenre)
-      .then(releases => {
-        // display just first 12 items
-        if (Array.isArray(releases)) {
-          this.newReleases = releases.slice(0, 12);
-        } else {
-          this.newReleases = [];
-        }
-      });
+    return getNewReleases(this.selectedNewReleasesGenre).then(releases => {
+      // display just first 12 items
+      if (Array.isArray(releases)) {
+        this.newReleases = releases.slice(0, 12);
+      } else {
+        this.newReleases = [];
+      }
+    });
   }
 
   $_fetchActivities() {
-    musicApiService
-      .getActivities(activityIds)
+    getActivities(activityIds)
       .then(activities => {
         this.activities = Object.freeze(activities);
       })
@@ -341,9 +336,9 @@ export default class Home extends Mixins(DataLoadingMixin) {
   }
 
   $_fetchCharts() {
-    return musicApiService
-      .getCharts(['albums', 'playlists'], 10)
-      .then(chart => (this.chart = chart));
+    return getCharts(['albums', 'playlists'], 10).then(
+      chart => (this.chart = chart)
+    );
   }
 
   $_getFeaturedReleases() {

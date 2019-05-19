@@ -10,7 +10,7 @@
     </v-flex>
     <v-flex class="pl-3">
       <v-layout column justify-end fill-height>
-        <h2 :style="headerOverlayTextStyle">
+        <h2 class="long-text-truncated" :style="headerOverlayTextStyle">
           {{ collectionName }}
           <v-icon dark v-if="collection.attributes.contentRating === 'explicit'"
             >explicit</v-icon

@@ -162,20 +162,22 @@ export default class MyLibraryArtists extends Mixins(DataLoadingMixin) {
   }
 
   async $_fetchArtists() {
-    for (;;) {
-      const { hasNext, hasNoData, data } = await this.fetchLibraryArtists({
-        offset: this.offset,
-        limit: this.searchLimit
-      });
+    try {
+      for (;;) {
+        const { hasNext, hasNoData, data } = await this.fetchLibraryArtists({
+          offset: this.offset,
+          limit: this.searchLimit
+        });
 
-      this.artists.push(...data);
-      this.offset += this.searchLimit;
-      if (!hasNext) {
-        break;
+        this.artists.push(...data);
+        this.offset += this.searchLimit;
+        if (!hasNext) {
+          break;
+        }
       }
+    } finally {
+      this.dataLoadingDone();
     }
-
-    this.dataLoadingDone();
   }
 }
 </script>

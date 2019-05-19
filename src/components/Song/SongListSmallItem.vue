@@ -25,14 +25,14 @@
           ></v-progress-circular>
           <div v-else class="size-fit">
             <MediaArtwork
-              v-if="!isFromAlbum"
+              v-if="!fromAlbum"
               :artwork="song.attributes.artwork"
               :width="40"
               :height="40"
             />
 
             <div
-              v-if="isFromAlbum && !isActive"
+              v-if="fromAlbum && !isActive"
               class="track-number flex-center size-fit"
               :style="{ opacity: hover ? 0 : 1 }"
             >
@@ -41,14 +41,14 @@
 
             <MediaArtworkOverlay
               :is-active="isActive"
-              :is-playing="isPlaying"
-              :show-background="!isFromAlbum"
+              :is-playing="isMusicPlaying"
+              :show-background="!fromAlbum"
               @playing-control-clicked="onSongClicked"
             />
           </div>
         </div>
 
-        <div v-if="isChart" :style="chartIndex">{{ index + 1 }}</div>
+        <slot name="leftIndex"></slot>
 
         <v-flex :class="$style['middle-items']">
           <v-layout row wrap>
@@ -72,7 +72,7 @@
               </v-layout>
             </v-flex>
 
-            <v-flex xs12 class="pr-2" v-if="!isFromAlbum">
+            <v-flex xs12 class="pr-2" v-if="!fromAlbum">
               <div :class="['long-text-truncated']">
                 <span
                   :class="$style['artist-name']"
@@ -95,15 +95,22 @@
         </v-btn>
 
         <div
-          :style="rightItemWidthStyle"
-          :class="['sub-info-text', 'hidden-xs-only', $style['right-items']]"
+          :class="[
+            'pr-2',
+            'sub-info-text',
+            'hidden-xs-only',
+            $style['right-items']
+          ]"
         >
-          <template v-if="!isLastfm">
-            {{ song.attributes.durationInMillis | formattedDuration }}
-          </template>
-          <template v-else>
-            {{ lastfmStreamDate }}
-          </template>
+          <slot name="rightIndex">
+            <div style="flex-basis: 5rem">
+              <slot name="hoverRightIndex" :hover="hover">
+                <template>
+                  {{ song.attributes.durationInMillis | formattedDuration }}
+                </template>
+              </slot>
+            </div>
+          </slot>
         </div>
       </template>
 
@@ -113,25 +120,9 @@
 </template>
 
 <script lang="ts">
-import {
-  Component,
-  Prop,
-  Vue,
-  Inject,
-  Watch,
-  Mixins
-} from 'vue-property-decorator';
-import { State, Action, Getter } from 'vuex-class';
-import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
+import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 
-import { MusicPlayerState } from '@/store/types';
-import { TOGGLE_CURRENT_TRACK } from '@/store/actions.type';
-import {
-  HandleSongClicked,
-  Nullable,
-  Song,
-  LastfmSong
-} from '@/@types/model/model';
+import { Nullable } from '@/@types/model/model';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import MediaArtworkOverlay from '@/components/MediaArtworkOverlay.vue';
 import SongItemMixin from '@/mixins/SongItemMixin';
@@ -144,48 +135,12 @@ export default class SongListSmallItem extends Mixins(
   SongItemMixin,
   GoToArtistPageMixin
 ) {
-  @Prop()
-  song!: Song;
   @Prop() textColor!: Nullable<string>;
 
   get songNameColor() {
     return this.isActive
       ? this.$vuetify.theme.accent
       : this.textColor || this.$vuetify.theme.primaryText;
-  }
-
-  get chartIndex() {
-    return {
-      width: '3.2rem',
-      'font-weight': 'bold',
-      color: this.textColor || undefined
-    };
-  }
-
-  get rightItemWidthStyle() {
-    if (this.isLastfmSong(this.song)) {
-      return {
-        'flex-basis': '10rem'
-      };
-    }
-    return {
-      'flex-basis': '5rem'
-    };
-  }
-
-  get isLastfm() {
-    return this.isLastfmSong(this.song);
-  }
-
-  isLastfmSong(song: Song): song is LastfmSong {
-    return (song as LastfmSong).lastStream !== undefined;
-  }
-
-  get lastfmStreamDate(): Nullable<string> {
-    if (this.isLastfmSong(this.song)) {
-      return distanceInWordsToNow(Date.parse(this.song.lastStream + ' UTC'));
-    }
-    return null;
   }
 }
 </script>

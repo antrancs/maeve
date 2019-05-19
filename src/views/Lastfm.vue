@@ -4,7 +4,7 @@
       <v-flex xs12 sm6 md7 class="pr-3">
         <template v-if="recentTracks">
           <h2>Recent Tracks</h2>
-          <SongListSmall
+          <LastfmSongList
             :songs="recentTracks"
             :sourceInfo="{
               name: 'Lastfm top songs',
@@ -30,7 +30,7 @@ import { Component, Vue, Mixins } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 
 import ArtistListLastfm from '@/components/Lastfm/ArtistListLastfm.vue';
-import SongListSmall from '@/components/Song/SongListSmall.vue';
+import LastfmSongList from '@/components/Song/LastfmSongList.vue';
 import {
   FETCH_TOP_ARTISTS_LASTFM,
   FETCH_RECENT_TRACKS_LASTFM
@@ -41,7 +41,7 @@ import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 @Component({
   components: {
     ArtistListLastfm,
-    SongListSmall
+    LastfmSongList
   }
 })
 export default class Lastfm extends Mixins(DataLoadingMixin) {

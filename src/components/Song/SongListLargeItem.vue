@@ -24,14 +24,14 @@
         ></v-progress-circular>
         <div v-else class="size-fit">
           <MediaArtwork
-            v-if="!isFromAlbum"
+            v-if="!fromAlbum"
             :artwork="song.attributes.artwork"
             :width="40"
             :height="40"
           />
 
           <div
-            v-if="isFromAlbum && !isActive"
+            v-if="fromAlbum && !isActive"
             class="track-number flex-center size-fit"
             :style="{ opacity: hover ? 0 : 1 }"
           >
@@ -40,8 +40,8 @@
 
           <MediaArtworkOverlay
             :is-active="isActive"
-            :is-playing="isPlaying"
-            :show-background="!isFromAlbum"
+            :is-playing="isMusicPlaying"
+            :show-background="!fromAlbum"
             @playing-control-clicked="onSongClicked"
           />
         </div>
@@ -51,9 +51,9 @@
 
       <v-flex :class="$style['middle-items']">
         <v-layout row wrap align-center>
-          <v-flex :class="isFromAlbum ? 'xs12' : 'lg6 xs12'">
+          <v-flex :class="fromAlbum ? 'xs12' : 'lg6 xs12'">
             <v-layout row wrap>
-              <v-flex xs12 :class="['pr-2', isFromAlbum ? 'lg6' : 'lg12']">
+              <v-flex xs12 :class="['pr-2', fromAlbum ? 'lg6' : 'lg12']">
                 <v-layout>
                   <div
                     class="long-text-truncated main-info-text"
@@ -72,7 +72,7 @@
                 </v-layout>
               </v-flex>
 
-              <v-flex xs12 :class="['pr-2', isFromAlbum ? 'lg6' : 'lg12']">
+              <v-flex xs12 :class="['pr-2', fromAlbum ? 'lg6' : 'lg12']">
                 <div :class="['long-text-truncated']">
                   <span
                     :class="$style['artist-name']"
@@ -84,7 +84,7 @@
             </v-layout>
           </v-flex>
 
-          <v-flex v-if="!isFromAlbum && $vuetify.breakpoint.lgAndUp" xs6>
+          <v-flex v-if="!fromAlbum && $vuetify.breakpoint.lgAndUp" xs6>
             <div>
               <span v-if="$vuetify.breakpoint.smAndDown"> - </span>
               <div :class="['long-text-truncated']">

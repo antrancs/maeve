@@ -10842,6 +10842,11 @@ vue-class-component@^6.2.0:
   resolved "https://registry.yarnpkg.com/vue-class-component/-/vue-class-component-6.3.2.tgz#e6037e84d1df2af3bde4f455e50ca1b9eec02be6"
   integrity sha512-cH208IoM+jgZyEf/g7mnFyofwPDJTM/QvBNhYMjqGB8fCsRyTf68rH2ISw/G20tJv+5mIThQ3upKwoL4jLTr1A==
 
+vue-class-component@^7.1.0:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/vue-class-component/-/vue-class-component-7.1.0.tgz#b33efcb10e17236d684f70b1e96f1946ec793e87"
+  integrity sha512-G9152NzUkz0i0xTfhk0Afc8vzdXxDR1pfN4dTwE72cskkgJtdXfrKBkMfGvDuxUh35U500g5Ve4xL8PEGdWeHg==
+
 vue-color@^2.7.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/vue-color/-/vue-color-2.7.0.tgz#31e898370a5786fd6c3007388cb7242db6ba6988"
@@ -10941,10 +10946,10 @@ vue-svg-loader@^0.12.0:
     loader-utils "^1.2.3"
     svg-to-vue "^0.4.0"
 
-vue-template-compiler@^2.5.18:
-  version "2.5.21"
-  resolved "https://registry.yarnpkg.com/vue-template-compiler/-/vue-template-compiler-2.5.21.tgz#a57ceb903177e8f643560a8d639a0f8db647054a"
-  integrity sha512-Vmk5Cv7UcmI99B9nXJEkaK262IQNnHp5rJYo+EwYpe2epTAXqcVyExhV6pk8jTkxQK2vRc8v8KmZBAwdmUZvvw==
+vue-template-compiler@^2.6.10:
+  version "2.6.10"
+  resolved "https://registry.yarnpkg.com/vue-template-compiler/-/vue-template-compiler-2.6.10.tgz#323b4f3495f04faa3503337a82f5d6507799c9cc"
+  integrity sha512-jVZkw4/I/HT5ZMvRnhv78okGusqe0+qH2A0Em0Cp8aq78+NK9TII263CDVz2QXZsIT+yyV/gZc/j/vlwa+Epyg==
   dependencies:
     de-indent "^1.0.2"
     he "^1.1.0"
@@ -10964,22 +10969,22 @@ vue-virtual-scroll-list@^1.3.7:
   resolved "https://registry.yarnpkg.com/vue-virtual-scroll-list/-/vue-virtual-scroll-list-1.3.7.tgz#1ea0d54007b2ca1d4438d400676fa2ad1eb335db"
   integrity sha512-xtoshLjXnps2gzqHtHH7X8KDOkSeMAHYC4cGyr4LjONO1++QKjbOARpvXC4VpD8uZ88xiPsK4cPRZA0M/uBSkQ==
 
-vue@^2.5.18:
-  version "2.5.21"
-  resolved "https://registry.yarnpkg.com/vue/-/vue-2.5.21.tgz#3d33dcd03bb813912ce894a8303ab553699c4a85"
-  integrity sha512-Aejvyyfhn0zjVeLvXd70h4hrE4zZDx1wfZqia6ekkobLmUZ+vNFQer53B4fu0EjWBSiqApxPejzkO1Znt3joxQ==
+vue@^2.6.10:
+  version "2.6.10"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.10.tgz#a72b1a42a4d82a721ea438d1b6bf55e66195c637"
+  integrity sha512-ImThpeNU9HbdZL3utgMCq0oiMzAkt1mcgy3/E6zWC/G6AaQoeuFdsl9nDhTDU3X1R6FK7nsIUuRACVcjI+A2GQ==
 
-vuetify-loader@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/vuetify-loader/-/vuetify-loader-1.1.1.tgz#3e3a553c9be038d642092cd87715b5bc10602c6d"
-  integrity sha512-ham+JNmVY7L+nSJSY8DeMLhLZq4ognl4db6sm8j5aKVbeaZTDPNmmoeFxogSfSpRQ5Ly50rWwO6gPbSOvCoodg==
+vuetify-loader@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/vuetify-loader/-/vuetify-loader-1.2.2.tgz#7c221dcfd8482344518818d598f9cef8ddd85b6b"
+  integrity sha512-j6KWPuwQ4xTxPDksbFwbSJle7+3oSjNvJ/CViTEgbPLFPqnNsR8JUtRldURIQ0cmAmr0/CoLSZkj0B8JKqOBMA==
   dependencies:
     loader-utils "^1.1.0"
 
-vuetify@^1.3.15:
-  version "1.3.15"
-  resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-1.3.15.tgz#8ef70a931d38093072775fd5a323b7ec882a45c6"
-  integrity sha512-4xpSvvz2OPwf8L9grz4clsgRswvw8xRJKe1xGmUi26gvbXllqPAMtiMt84vwXoGWYCb7dhnj/bWZ6h3Wj8lNLg==
+vuetify@^1.5.14:
+  version "1.5.14"
+  resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-1.5.14.tgz#ff67d0b8a398be5297da159b6cd1b31f4d2898b8"
+  integrity sha512-7iM+TfghR/wu/Gl+k37lKr0N8Ddr6SxzqHtoK1dIyHgCH6SJRkpaXPw2MC5/FsAg9aUDJbYNWrzSeu5eHw+Q/w==
 
 vuex-class@^0.3.1:
   version "0.3.1"

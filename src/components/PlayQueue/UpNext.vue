@@ -1,17 +1,10 @@
 <template>
   <v-flex :class="$style['items']" v-if="upNext.length > 0">
     <VirtualList :size="60" :remain="15" :bench="10" :debounce="15">
-      <PlayQueueSongItem
-        :key="`${item.id}-${index}`"
-        v-for="(item, index) in upNext"
-        :song="{
-          id: item.id,
-          type: `${item.type}s`,
-          attributes: item.attributes
-        }"
-        :index="index"
+      <PlayQueueSongList
+        :songs="upNext"
+        :onSongClicked="(songId, songIndex) => moveToIndexInQueue(songIndex)"
         @remove-from-queue="removeFromQueue"
-        @queue-song-item-clicked="moveToIndexInQueue"
       />
     </VirtualList>
   </v-flex>
@@ -24,11 +17,11 @@ import Component from 'vue-class-component';
 // @ts-ignore
 import VirtualList from 'vue-virtual-scroll-list';
 
-import PlayQueueSongItem from './PlayQueueSongItem.vue';
+import PlayQueueSongList from './PlayQueueSongList.vue';
 
 @Component({
   components: {
-    PlayQueueSongItem,
+    PlayQueueSongList,
     VirtualList
   }
 })

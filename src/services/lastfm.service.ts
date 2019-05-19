@@ -61,9 +61,7 @@ function logout(token: string) {
         }
       }
     )
-    .catch(err => {
-      console.log('Err logging out');
-    });
+    .catch(err => err);
 }
 
 function blockSong(songId: string, token: string) {

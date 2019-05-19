@@ -14,24 +14,33 @@
         @actions-icon-click="handleActionIconClick"
         @go-to-album-page="goToAlbumPage"
         @go-to-artist-page="goToArtistPage"
-      />
+      >
+        <template v-slot:leftIndex>
+          <div class="left-index">{{ index + 1 }}</div>
+        </template>
+      </SongListSmallItem>
     </v-flex>
   </v-layout>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
-import { Action, State } from 'vuex-class';
-
-import { Nullable } from '@/@types/model/model';
+import Vue from 'vue';
 
 import SongListSmallItem from './SongListSmallItem.vue';
 import SongListMixin from '@/mixins/SongListMixin';
 
-@Component({
-  components: { SongListSmallItem }
-})
-export default class SongListSmall extends Mixins(SongListMixin) {
-  @Prop() textColor!: Nullable<string>;
-}
+export default Vue.extend({
+  components: {
+    SongListSmallItem
+  },
+  mixins: [SongListMixin]
+});
 </script>
+
+<style lang="scss" scoped>
+.left-index {
+  width: 3.2rem;
+  font-weight: bold;
+  color: white;
+}
+</style>

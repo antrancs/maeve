@@ -6,7 +6,9 @@
         v-for="(song, index) in songs"
         :song="song"
         :index="index"
-        :is-from-album="fromAlbum"
+        :fromAlbum="fromAlbum"
+        :isMusicPlaying="musicPlayer.isPlaying"
+        :isActive="isSongActive(song)"
         @song-item-clicked="handleSongClicked"
         @actions-icon-click="handleActionIconClick"
         @go-to-album-page="goToAlbumPage"
@@ -17,13 +19,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Mixins } from 'vue-property-decorator';
+import Vue from 'vue';
 
 import SongListLargeItem from './SongListLargeItem.vue';
 import SongListMixin from '@/mixins/SongListMixin';
 
-@Component({
-  components: { SongListLargeItem }
-})
-export default class SongListLarge extends Mixins(SongListMixin) {}
+export default Vue.extend({
+  mixins: [SongListMixin],
+  components: {
+    SongListLargeItem
+  }
+});
 </script>

@@ -38,29 +38,23 @@ module.exports = {
       clientsClaim: true,
       runtimeCaching: [
         {
-          urlPattern: /https:\/\/js-cdn.music.apple.com\/musickit/,
-          handler: 'staleWhileRevalidate'
-          // options: {
-          //   cacheName: 'musickit-js-cache',
-          //   expiration: {
-          //     maxEntries: 1,
-          //     maxAgeSeconds: 24 * 60 * 60 // 1 day
-          //   }
-          // }
-        },
-        {
-          urlPattern: /https:\/\/fonts.googleapis.com/,
-          handler: 'cacheFirst',
+          urlPattern: /https:\/\/js-cdn\.music\.apple\.com\/.*\/musickit\.js/,
+          handler: 'staleWhileRevalidate',
           options: {
-            cacheName: 'font-cache',
-            expiration: {
-              maxEntries: 100,
-              maxAgeSeconds: 30 * 24 * 60 * 60 // 30 days
-            }
+            cacheName: 'musickit-js-cache'
           }
         },
         {
-          urlPattern: /https:\/\/is\d-ssl.mzstatic.com\/image/,
+          urlPattern: new RegExp(
+            'https://fonts.(?:googleapis|gstatic).com/(.*)'
+          ),
+          handler: 'staleWhileRevalidate',
+          options: {
+            cacheName: 'font-cache'
+          }
+        },
+        {
+          urlPattern: /https:\/\/is\d-ssl\.mzstatic\.com\/image/,
           handler: 'cacheFirst',
           options: {
             cacheName: 'image-cache',
@@ -74,7 +68,7 @@ module.exports = {
           }
         },
         {
-          urlPattern: /https:\/\/api.music.apple.com/,
+          urlPattern: /https:\/\/api\.music\.apple\.com/,
           // Apply a network-first strategy.
           handler: 'networkFirst',
           options: {
@@ -90,13 +84,12 @@ module.exports = {
           }
         },
         {
-          urlPattern: /https:\/\/maevemusic.app\/api\/catalog\/albums\/featuredAlbums/,
+          urlPattern: /https:\/\/maevemusic\.app\/api\/catalog\/albums\/featuredAlbums/,
           handler: 'staleWhileRevalidate',
           options: {
             cacheName: 'catalog-featured-albums',
             expiration: {
-              maxEntries: 1,
-              maxAgeSeconds: 24 * 60 * 60 // 1 day
+              maxEntries: 1
             },
             cacheableResponse: {
               statuses: [0, 200]
@@ -104,13 +97,12 @@ module.exports = {
           }
         },
         {
-          urlPattern: /https:\/\/maevemusic.app\/api\/catalog\/genres/,
+          urlPattern: /https:\/\/maevemusic\.app\/api\/catalog\/genres/,
           handler: 'staleWhileRevalidate',
           options: {
             cacheName: 'catalog-genres',
             expiration: {
-              maxEntries: 1,
-              maxAgeSeconds: 24 * 60 * 60 // 1 day
+              maxEntries: 1
             },
             cacheableResponse: {
               statuses: [0, 200]
@@ -118,13 +110,12 @@ module.exports = {
           }
         },
         {
-          urlPattern: /https:\/\/maevemusic.app\/api\/catalog\/playlists\/featured/,
+          urlPattern: /https:\/\/maevemusic\.app\/api\/catalog\/playlists\/featured/,
           handler: 'staleWhileRevalidate',
           options: {
             cacheName: 'catalog-featured-playlists',
             expiration: {
-              maxEntries: 2,
-              maxAgeSeconds: 24 * 60 * 60 // 1 day
+              maxEntries: 2
             },
             cacheableResponse: {
               statuses: [0, 200]

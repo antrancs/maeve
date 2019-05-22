@@ -1,19 +1,23 @@
 <template>
   <v-hover>
-    <v-card class="secondary elevation-4 item-card" slot-scope="{ hover }">
+    <v-card
+      :tile="true"
+      :class="['secondary', 'elevation-4', $style['item-card']]"
+      slot-scope="{ hover }"
+    >
       <MediaArtwork
         :artwork="artwork"
         :width="artworkSize"
         :height="artworkSize"
       >
         <template v-if="hover || isCollectionBeingPlayed">
-          <div class="overlay"></div>
+          <div :class="$style['overlay']"></div>
           <v-btn
             icon
             round
             @click.prevent.stop="onPlayButtonClicked"
             color="accent elevation-5"
-            class="play-button"
+            :class="$style['play-button']"
           >
             <v-icon v-if="isCollectionBeingPlayed && musicPlayer.isPlaying"
               >pause</v-icon
@@ -21,14 +25,20 @@
             <v-icon v-else>play_arrow</v-icon>
           </v-btn>
         </template>
-        <div class="top-icon pa-2"><slot></slot></div>
+        <div :class="['pa-2', $style['top-icon']]">
+          <slot></slot>
+        </div>
       </MediaArtwork>
 
       <v-card-title primary-title class="py-2 px-2">
         <div>
-          <div class="media-details__title">
+          <div :class="$style['media-details__title']">
             <div
-              class="long-text-truncated main-info-text card-text"
+              :class="[
+                'long-text-truncated',
+                'main-info-text',
+                $style['card-text']
+              ]"
               :style="{ color: primaryTextSecondaryColor }"
               :title="collection.attributes.name"
             >
@@ -42,7 +52,11 @@
             >
           </div>
           <div
-            class="long-text-truncated sub-info-text card-text"
+            :class="[
+              'long-text-truncated',
+              'sub-info-text',
+              $style['card-text']
+            ]"
             :style="{ color: secondaryTextSecondaryColor }"
             :title="
               collection.attributes.artistName ||
@@ -152,7 +166,14 @@ export default class CollectionItemCard extends Vue {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
+@import '@/styles/components/_card.scss';
+
+.item-card img {
+  border-top-left-radius: $card-border-radius;
+  border-top-right-radius: $card-border-radius;
+}
+
 .overlay {
   border-top-left-radius: $card-border-radius;
   border-top-right-radius: $card-border-radius;
@@ -172,11 +193,5 @@ export default class CollectionItemCard extends Vue {
 .media-details__title {
   align-items: center;
   display: flex;
-}
-
-.top-icon {
-  position: absolute;
-  right: 0;
-  top: 0;
 }
 </style>

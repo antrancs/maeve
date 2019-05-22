@@ -224,17 +224,8 @@ export default class App extends Vue {
   min-width: 30px;
 }
 
-.item-card {
-  height: 100%;
-  border-radius: $card-border-radius;
-}
-
 .white-text {
   color: white;
-}
-
-.card-text {
-  font-size: 1.5rem;
 }
 
 .fade-enter-active,

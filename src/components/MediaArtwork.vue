@@ -77,9 +77,7 @@ export default class MediaArtwork extends Vue {
 
 <style scoped lang="scss">
 .artwork {
-  // height: 100%;
   position: relative;
-  // overflow: hidden;
   width: 100%;
 }
 
@@ -94,10 +92,5 @@ export default class MediaArtwork extends Vue {
   display: block;
   height: 100%;
   width: 100%;
-}
-
-.item-card .artwork__image {
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
 }
 </style>

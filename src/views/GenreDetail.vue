@@ -131,7 +131,7 @@
       </v-layout>
     </v-container>
 
-    <v-container class="genre-content pt-0" v-if="curators.length > 0">
+    <!-- <v-container class="genre-content pt-0" v-if="curators.length > 0">
       <v-layout row wrap style="z-index: 2">
         <v-flex xs12 class="px-2">
           <section-header>Curators</section-header>
@@ -141,7 +141,7 @@
           <CuratorList :curators="curators" />
         </v-flex>
       </v-layout>
-    </v-container>
+    </v-container> -->
   </div>
 </template>
 
@@ -150,7 +150,7 @@ import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 
 import SongCollectionList from '@/components/Song/SongCollectionList.vue';
-import CuratorList from '@/components/CuratorList.vue';
+// import CuratorList from '@/components/CuratorList.vue';
 import TriangleSVG from '@/components/TriangleSVG.vue';
 import SongListLarge from '@/components/Song/SongListLarge.vue';
 import CollectionCarousel from '@/components/Collection/CollectionCarousel.vue';
@@ -170,7 +170,6 @@ import { getOneGenreForCountry } from '../services/catalog.service';
 @Component({
   components: {
     SongCollectionList,
-    CuratorList,
     SongListLarge,
     CollectionCarousel,
     TriangleSVG
@@ -179,7 +178,7 @@ import { getOneGenreForCountry } from '../services/catalog.service';
 export default class GenreDetail extends Mixins(DataLoadingMixin) {
   private genre: Nullable<Genre> = null;
   private playlists: MusicKit.Playlist[] = [];
-  private curators: MusicKit.Curator[] = [];
+  // private curators: MusicKit.Curator[] = [];
   private hotTracks: MusicKit.Song[] = [];
   private newReleases: MusicKit.Album[] = [];
   private essentialAlbums: MusicKit.Album[] = [];

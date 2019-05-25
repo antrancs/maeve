@@ -25,10 +25,21 @@ export default class SongItemMixin extends Vue {
 
   @Mutation [SET_SONG_LOADING]: (isLoading: boolean) => void;
 
-  get songNameColor() {
-    return this.isActive
-      ? this.$vuetify.theme.accent
-      : this.$vuetify.theme.primaryText;
+  // get songNameColor() {
+  //   if (!this.isAvailable) {
+  //     return this.$vuetify.theme.secondaryText;
+  //   }
+
+  //   return this.isActive
+  //     ? this.$vuetify.theme.accent
+  //     : this.$vuetify.theme.primaryText;
+  // }
+
+  get isAvailable(): boolean {
+    return (
+      this.song.attributes !== undefined &&
+      this.song.attributes.playParams !== undefined
+    );
   }
 
   @Watch('musicPlayer.isLoading')

@@ -1,3 +1,18 @@
+.wrapper {
+  border-bottom: 0.1rem solid rgba(0, 0, 0, 0.08);
+  height: 6rem;
+  // line-height: 6rem;
+  transition: background-color 0.25s ease-in-out;
+
+  &.dark-mode {
+    border-bottom: 0.1rem solid rgba(255, 255, 255, 0.08);
+  }
+}
+
+.unavailable.wrapper {
+  color: var(--v-secondaryText-base);
+}
+
 .left-items {
   border-radius: 0.2rem;
   height: 4rem;
@@ -12,6 +27,14 @@
 
 .middle-items {
   flex-basis: 0;
+}
+
+.song-name {
+  font-weight: bold;
+}
+
+.active .song-name {
+  color: var(--v-accent-base);
 }
 
 .artist-name,

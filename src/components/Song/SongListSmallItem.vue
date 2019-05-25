@@ -5,13 +5,14 @@
       align-center
       @click.right.prevent="handleRightClick"
       :class="[
-        'song-item__wrapper',
+        $style['wrapper'],
         {
-          'song-item--playing': isActive,
           'primary lighten-2': hover && !textColor && darkMode,
           'primary darken-2': hover && !textColor && !darkMode,
           'py-1': $vuetify.breakpoint.xsOnly,
-          'dark-mode': darkMode
+          'dark-mode': darkMode,
+          [$style['unavailable']]: !isAvailable,
+          [$style['active']]: isActive
         }
       ]"
       slot-scope="{ hover }"
@@ -40,6 +41,7 @@
             </div>
 
             <MediaArtworkOverlay
+              v-if="(isAvailable && hover) || isActive"
               :is-active="isActive"
               :is-playing="isMusicPlaying"
               :show-background="!fromAlbum"
@@ -55,8 +57,7 @@
             <v-flex xs12 class="pr-2">
               <v-layout>
                 <div
-                  class="long-text-truncated main-info-text"
-                  :style="{ color: songNameColor }"
+                  :class="['long-text-truncated', $style['song-name']]"
                   :title="song.attributes.name"
                 >
                   {{ song.attributes.name }}
@@ -147,16 +148,4 @@ export default class SongListSmallItem extends Mixins(
 
 <style lang="scss" module>
 @import '@/styles/components/_song-list-item.scss';
-</style>
-
-<style lang="scss" scoped>
-.song-item__wrapper {
-  border-bottom: 0.1rem solid rgba(0, 0, 0, 0.08);
-  height: 6rem;
-  transition: background-color 0.25s ease-in-out;
-
-  &.dark-mode {
-    border-bottom: 0.1rem solid rgba(255, 255, 255, 0.08);
-  }
-}
 </style>

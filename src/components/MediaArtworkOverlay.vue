@@ -1,5 +1,5 @@
 <template>
-  <div :class="[{ 'artwork-overlay--active': isActive }, 'artwork-overlay']">
+  <div class="artwork-overlay">
     <div v-if="showBackground" class="artwork-overlay__background"></div>
     <div class="content">
       <div class="content-wrapper">
@@ -41,7 +41,6 @@ export default class ArtworkOverlay extends Vue {
 
 <style scoped lang="scss">
 .artwork-overlay {
-  display: none;
   height: 100%;
   width: 100%;
 }
@@ -69,14 +68,6 @@ export default class ArtworkOverlay extends Vue {
   height: 4rem;
   justify-content: center;
   width: 4rem;
-}
-
-.song-item__wrapper:hover .artwork-overlay {
-  display: block;
-}
-
-.artwork-overlay--active {
-  display: block;
 }
 
 .playing-control {

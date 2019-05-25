@@ -410,14 +410,15 @@ It can be an album/playlist or the original song lists where this song is from
     }
   }
 
-  onPlaybackProgressDidChange = (event: any) => {
+  onPlaybackProgressDidChange(event: any) {
     this.setPlaybackProgress(event.progress);
     // store.commit(SET_PLAYBACK_PROGESS, event.progress);
-  };
+  }
 
-  onPlaybackStateDidChange = (event: any) => {
+  onPlaybackStateDidChange(event: any) {
     const DEFAULT_PAGE_TITLE = 'Maeve - An Apple Music web player';
     const musicKitInstace = MusicKit.getInstance();
+
     switch (musicKitInstace.player.playbackState) {
       case MusicKit.PlaybackStates.stopped:
         this.setIsPlaying(false);
@@ -431,11 +432,11 @@ It can be an album/playlist or the original song lists where this song is from
         this.setIsPlaying(true);
         this.setSongLoading(false);
 
-        const { nowPlayingItem } = musicKitInstace.player;
+        const { currentPlaying } = this.musicPlayer;
 
-        if (nowPlayingItem) {
-          document.title = `${nowPlayingItem.attributes.name} - ${
-            nowPlayingItem.attributes.artistName
+        if (currentPlaying) {
+          document.title = `${currentPlaying.attributes.name} - ${
+            currentPlaying.attributes.artistName
           }`;
         }
         break;
@@ -446,7 +447,7 @@ It can be an album/playlist or the original song lists where this song is from
       case MusicKit.PlaybackStates.completed:
         document.title = DEFAULT_PAGE_TITLE;
     }
-  };
+  }
 
   onPlaybackTimeDidChange = (event: any) => {
     this.setCurrentPlaybackTime(event.currentPlaybackTime);

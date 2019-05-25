@@ -12,18 +12,19 @@
       >
         <template v-if="hover || isCollectionBeingPlayed">
           <div :class="$style['overlay']"></div>
-          <v-btn
-            icon
-            round
-            @click.prevent.stop="onPlayButtonClicked"
-            color="accent elevation-5"
-            :class="$style['play-button']"
-          >
-            <v-icon v-if="isCollectionBeingPlayed && musicPlayer.isPlaying"
-              >pause</v-icon
+          <div :class="$style['play-button']">
+            <v-btn
+              icon
+              round
+              @click.prevent.stop="onPlayButtonClicked"
+              color="accent elevation-5"
             >
-            <v-icon v-else>play_arrow</v-icon>
-          </v-btn>
+              <v-icon v-if="isCollectionBeingPlayed && musicPlayer.isPlaying"
+                >pause</v-icon
+              >
+              <v-icon v-else>play_arrow</v-icon>
+            </v-btn>
+          </div>
         </template>
         <div :class="['pa-2', $style['top-icon']]">
           <slot></slot>

@@ -47,7 +47,9 @@ import { ThemeOption, Nullable } from '@/@types/model/model';
 import {
   LOAD_SETTINGS,
   LOAD_TOKEN_LASTFM,
-  CHANGE_ROUTE
+  CHANGE_ROUTE,
+  SHOW_SNACKBAR,
+  CLOSE_SNACKBAR
 } from '@/store/actions.type';
 import {
   SET_CURRENTLY_PLAYING_SONG,
@@ -58,6 +60,7 @@ import {
   updateUserStorefront,
   setUserStorefront
 } from './services/musicApi.service';
+import { ShowSnackbarAction } from './store/types';
 
 @Component({
   components: {
@@ -74,6 +77,8 @@ import {
 export default class App extends Vue {
   private showSidebar = this.$vuetify.breakpoint.lgAndUp;
   private themeSetting = false;
+  private refreshing = false;
+  private registration: any = null;
 
   @State(state => state.settings.selectedTheme) selectedTheme!: ThemeOption;
   @State(state => state.musicPlayer.currentPlaying) currentPlaying!: Nullable<
@@ -83,6 +88,8 @@ export default class App extends Vue {
   @Action [LOAD_SETTINGS]: () => void;
   @Action [LOAD_TOKEN_LASTFM]: () => void;
   @Action [CHANGE_ROUTE]: (routeName: string) => void;
+  @Action [SHOW_SNACKBAR]: ShowSnackbarAction;
+  @Action [CLOSE_SNACKBAR]: () => void;
 
   @Mutation [SET_CURRENTLY_PLAYING_SONG]: (
     item: MusicKit.MediaItem | null
@@ -115,6 +122,19 @@ export default class App extends Vue {
   }
 
   created() {
+    // a new service worker has been updated
+    document.addEventListener('swUpdated', this.showRefreshSnackbar, {
+      once: true
+    });
+
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (this.refreshing) {
+        return;
+      }
+      this.refreshing = true;
+      window.location.reload();
+    });
+
     this.loadTokenLastfm();
     this.loadSettings();
     const musicKitInstance = MusicKit.getInstance();
@@ -199,6 +219,30 @@ export default class App extends Vue {
 
     this.setUserToken(musicKitInstance.musicUserToken);
     this.changeRoute('home');
+  }
+
+  showRefreshSnackbar(e: any) {
+    this.registration = e.detail;
+
+    this.showSnackbar({
+      text: 'New version available',
+      timeout: 0,
+      action: {
+        text: 'Refresh',
+        handler: this.refreshApp
+      }
+    });
+  }
+
+  refreshApp() {
+    this.closeSnackbar();
+
+    if (!this.registration || !this.registration.waiting) {
+      return;
+    }
+    this.registration.waiting.postMessage({
+      type: 'SKIP_WAITING'
+    });
   }
 }
 </script>

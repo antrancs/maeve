@@ -95,7 +95,7 @@ import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import SongListLarge from '@/components/Song/SongListLarge.vue';
 import ArtistList from '@/components/ArtistList.vue';
 import { PLAY_SONGS, SHOW_SNACKBAR } from '@/store/actions.type';
-import { HandleSongClicked } from '@/@types/model/model';
+import { HandleSongClicked, SnackbarMode } from '@/@types/model/model';
 import { PlaySongsAction, ShowSnackbarAction } from '@/store/types';
 import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 import { searchAll } from '../services/musicApi.service';
@@ -155,7 +155,8 @@ export default class SearchResults extends Mixins(DataLoadingMixin) {
       })
       .catch(err => {
         this.showSnackbar({
-          text: 'Something went wrong.'
+          text: 'Something went wrong.',
+          type: SnackbarMode.error
         });
       })
       .finally(() => {

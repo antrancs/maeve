@@ -27,7 +27,9 @@ if (process.env.NODE_ENV === 'production') {
       //   text: 'New content is available'
       // });
       console.log('New content is available; please refresh.');
-      window.location.reload(true);
+      document.dispatchEvent(
+        new CustomEvent('swUpdated', { detail: registration })
+      );
     },
     offline() {
       // store.dispatch(SHOW_SNACKBAR, {

@@ -34,8 +34,9 @@ module.exports = {
     },
     workboxPluginMode: 'GenerateSW',
     workboxOptions: {
-      skipWaiting: true,
+      skipWaiting: false,
       clientsClaim: true,
+      importScripts: ['./sw-skip-waiting.js'],
       runtimeCaching: [
         {
           urlPattern: /https:\/\/js-cdn\.music\.apple\.com\/.*\/musickit\.js/,

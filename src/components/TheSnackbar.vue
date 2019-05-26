@@ -1,15 +1,24 @@
 <template>
   <v-snackbar
-    top
+    bottom
     v-model="snackbar.visibility"
     :color="snackbar.type"
     :timeout="snackbar.timeout"
   >
     {{ snackbar.text }}
 
-    <v-btn flat dark @click="handleClick">{{
-      snackbar.action ? snackbar.action.text : 'Close'
-    }}</v-btn>
+    <v-spacer />
+    <v-btn
+      v-if="snackbar.action"
+      flat
+      dark
+      @click.native="snackbar.action.handler"
+      >{{ snackbar.action.text }}</v-btn
+    >
+
+    <v-btn flat dark @click="closeSnackbar">
+      <v-icon>close</v-icon>
+    </v-btn>
   </v-snackbar>
 </template>
 
@@ -20,17 +29,9 @@ import { State, Action } from 'vuex-class';
 import { SnackbarState } from '@/store/types';
 import { CLOSE_SNACKBAR } from '@/store/actions.type';
 
-@Component({})
+@Component
 export default class Snackbar extends Vue {
   @State snackbar!: SnackbarState;
   @Action [CLOSE_SNACKBAR]: () => void;
-
-  handleClick() {
-    if (this.snackbar.action) {
-      this.snackbar.action.handler();
-    } else {
-      this.closeSnackbar();
-    }
-  }
 }
 </script>

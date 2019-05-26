@@ -283,7 +283,7 @@ export default class PlayerBar extends Mixins(
     }
 
     return getArtworkUrl(
-      this.musicPlayer.currentPlaying.attributes.artwork.url,
+      this.musicPlayer.currentPlaying.attributes.artwork,
       100,
       100
     );

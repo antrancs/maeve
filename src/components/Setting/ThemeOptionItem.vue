@@ -1,69 +1,58 @@
 <template>
-  <v-hover>
-    <v-layout
-      row
-      wrap
-      @click="onThemeOptionClicked"
-      :class="$style['wrapper']"
-      slot-scope="{ hover }"
-    >
-      <v-flex xs12 style="position: relative">
-        <v-flex
-          v-if="option.id === selectedOptionId"
-          d-flex
-          :class="$style['overlay']"
-          align-center
-        >
-          <v-icon medium dark>check</v-icon>
-        </v-flex>
+  <v-layout row wrap @click="onThemeOptionClicked" :class="$style['wrapper']">
+    <v-flex xs12 style="position: relative">
+      <v-flex
+        v-if="option.id === selectedOptionId"
+        d-flex
+        :class="$style['overlay']"
+        align-center
+      >
+        <v-icon medium dark>check</v-icon>
+      </v-flex>
 
-        <v-flex
-          :class="[$style['overlay'], $style['overlay-edit']]"
-          v-show="hover"
+      <v-flex :class="[$style['overlay'], $style['overlay-edit']]">
+        <v-layout
+          column
+          align-end
+          fill-height
+          justify-space-between
+          class="pr-1"
         >
-          <v-layout
-            column
-            align-end
-            fill-height
-            justify-space-between
-            class="pr-1"
-          >
-            <template v-if="option.editable">
-              <v-icon small dark class="mt-1" @click.stop="editTheme"
-                >edit</v-icon
-              >
-              <v-icon small dark class="mb-1" @click.stop="deleteTheme"
-                >delete</v-icon
-              >
-            </template>
-          </v-layout>
-        </v-flex>
-
-        <v-layout row wrap>
-          <v-flex xs12>
-            <div
-              :style="{ 'background-color': option.primary }"
-              :class="$style['color-block']"
-            ></div>
-          </v-flex>
-          <v-flex xs6>
-            <div
-              :style="{ 'background-color': option.secondary }"
-              :class="$style['color-block']"
-            ></div>
-          </v-flex>
-          <v-flex xs6>
-            <div
-              :style="{ 'background-color': option.accent }"
-              :class="$style['color-block']"
-            ></div>
-          </v-flex>
+          <template v-if="option.editable">
+            <v-icon small dark class="mt-1" @click.stop="editTheme"
+              >edit</v-icon
+            >
+            <v-icon small dark class="mb-1" @click.stop="deleteTheme"
+              >delete</v-icon
+            >
+          </template>
         </v-layout>
       </v-flex>
 
-      <v-flex class="text-xs-center mt-1">{{ option.name }}</v-flex>
-    </v-layout>
-  </v-hover>
+      <v-layout row wrap>
+        <v-flex xs12>
+          <div
+            :style="{ 'background-color': option.primary }"
+            :class="$style['color-block']"
+          ></div>
+        </v-flex>
+        <v-flex xs6>
+          <div
+            :style="{ 'background-color': option.secondary }"
+            :class="$style['color-block']"
+          ></div>
+        </v-flex>
+        <v-flex xs6>
+          <div
+            :style="{ 'background-color': option.accent }"
+            :class="$style['color-block']"
+          ></div>
+        </v-flex>
+      </v-layout>
+    </v-flex>
+
+    <v-flex class="text-xs-center mt-1">{{ option.name }}</v-flex>
+  </v-layout>
 </template>
 
 <script lang="ts">

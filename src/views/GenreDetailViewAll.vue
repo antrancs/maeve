@@ -32,8 +32,6 @@
 import { Prop, Component, Vue, Mixins } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 
-import SongListLarge from '@/components/Song/SongListLarge.vue';
-import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import { Collection, Nullable } from '@/@types/model/model';
 import { FETCH_MULTIPLE_SONGS_CATALOG } from '@/store/actions.type';
 import { FetchMultipleSongsCatalogAction } from '@/store/types';
@@ -43,8 +41,8 @@ import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 
 @Component({
   components: {
-    SongListLarge,
-    SongCollectionList
+    SongListLarge: () => import('@/components/Song/SongListLarge.vue'),
+    SongCollectionList: () => import('@/components/Song/SongCollectionList.vue')
   }
 })
 export default class GenreDetailViewAll extends Mixins(DataLoadingMixin) {

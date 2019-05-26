@@ -56,11 +56,6 @@
       </v-flex>
       <v-flex xs12 v-else class="mb-3">
         <v-layout row v-if="collection">
-          <!-- <img
-            
-            :style="artworkStyle"
-            :src="artworkUrl"
-          /> -->
           <div :class="$style['cover-sm']">
             <CollectionDetailArtwork
               :class="$style['cover']"
@@ -163,9 +158,7 @@ import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
 
 import ResourceLinkList from '@/components/ResourceLinkList.vue';
 import SongListLarge from '@/components/Song/SongListLarge.vue';
-import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import CollectionControls from '@/components/Collection/CollectionControls.vue';
-import MediaArtwork from '@/components/MediaArtwork.vue';
 import CollectionDetailArtwork from '@/components/Collection/CollectionDetailArtwork.vue';
 import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 import {
@@ -197,18 +190,15 @@ import {
   PlayCollectionAction
 } from '@/store/types';
 import { SET_FOOTER_VISIBILITY } from '@/store/mutations.type';
-import {
-  getArtworkUrl,
-  getGradientBackgroundColorsFromArtwork
-} from '@/utils/utils';
+import { getGradientBackgroundColorsFromArtwork } from '@/utils/utils';
 import { PLACEHOLDER_IMAGE } from '@/utils/constants';
 import { isLight } from '@/themes';
 
 @Component({
   components: {
-    MediaArtwork,
     SongListLarge,
-    SongCollectionList,
+    SongCollectionList: () =>
+      import('@/components/Song/SongCollectionList.vue'),
     CollectionControls,
     ResourceLinkList,
     CollectionDetailArtwork
@@ -280,28 +270,31 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
 
   get artworks() {
     if (!this.collection || !this.collection.attributes) {
-      return [PLACEHOLDER_IMAGE];
+      return [];
     }
     switch (this.collection.type) {
       case 'albums':
       case 'library-albums':
       case 'playlists':
-        return [this.collection.attributes.artwork!.url];
+        return [this.collection.attributes.artwork];
 
       case 'library-playlists': {
         if (!this.collection.attributes.canEdit) {
           return [this.collection.attributes.artwork!.url];
         }
-        const artworks: Set<string> = new Set<string>();
+        const artworkSet: Set<string> = new Set<string>();
+        const artworks: MusicKit.Artwork[] = [];
+
         for (const song of this.songs) {
-          if (artworks.size === 4) {
+          if (artworks.length === 4) {
             break;
           }
           if (!song.attributes || !song.attributes.artwork) {
             continue;
           }
-          if (!artworks.has(song.attributes.artwork.url)) {
-            artworks.add(song.attributes!.artwork!.url);
+          if (!artworkSet.has(song.attributes.artwork.url)) {
+            artworks.push(song.attributes.artwork);
+            artworkSet.add(song.attributes.artwork.url);
           }
         }
 
@@ -342,17 +335,6 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
     return {
       background: `linear-gradient(45deg, ${colorsForGradient.join(',')})`
     };
-  }
-
-  get artworkUrl(): string {
-    if (
-      !this.collection ||
-      !this.collection.attributes ||
-      !this.collection.attributes.artwork
-    ) {
-      return PLACEHOLDER_IMAGE;
-    }
-    return getArtworkUrl(this.collection.attributes.artwork.url, 400, 400);
   }
 
   get artists(): Nullable<Artist[]> {

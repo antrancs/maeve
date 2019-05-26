@@ -3,10 +3,12 @@ import { Getter, Mutation } from 'vuex-class';
 
 import { Song } from '@/@types/model/model';
 import { SET_SONG_LOADING } from '@/store/mutations.type';
+import { getArtworkUrl } from '@/utils/utils';
 
 @Component
 export default class SongItemMixin extends Vue {
   private showLoading = false;
+  private playingControlHovered: boolean = false;
 
   @Prop()
   song!: Song | MusicKit.MediaItem;
@@ -25,21 +27,34 @@ export default class SongItemMixin extends Vue {
 
   @Mutation [SET_SONG_LOADING]: (isLoading: boolean) => void;
 
-  // get songNameColor() {
-  //   if (!this.isAvailable) {
-  //     return this.$vuetify.theme.secondaryText;
-  //   }
-
-  //   return this.isActive
-  //     ? this.$vuetify.theme.accent
-  //     : this.$vuetify.theme.primaryText;
-  // }
-
   get isAvailable(): boolean {
     return (
       this.song.attributes !== undefined &&
       this.song.attributes.playParams !== undefined
     );
+  }
+
+  get leftItemsStyle() {
+    if (!this.song || !this.song.attributes) {
+      return {};
+    }
+
+    if (this.fromAlbum) {
+      return {};
+    }
+
+    const artworkUrl = getArtworkUrl(this.song.attributes.artwork, 40, 40);
+
+    return {
+      background: `url(${artworkUrl})`
+    };
+  }
+
+  get contentIcon(): string {
+    if (this.isMusicPlaying && this.isActive) {
+      return this.playingControlHovered ? 'pause' : 'headset';
+    }
+    return 'play_arrow';
   }
 
   @Watch('musicPlayer.isLoading')
@@ -65,5 +80,9 @@ export default class SongItemMixin extends Vue {
 
   handleRightClick(event: MouseEvent) {
     this.$emit('actions-icon-click', this.song, event.clientX, event.clientY);
+  }
+
+  onRowClicked() {
+    this.$emit('song-item-clicked', this.song.id, this.index);
   }
 }

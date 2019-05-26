@@ -53,7 +53,7 @@ import { getArtworkUrl } from '@/utils/utils';
 
 @Component
 export default class CollectionDetailArtwork extends Vue {
-  @Prop() artworks!: string[];
+  @Prop() artworks!: MusicKit.Artwork[];
 
   get artwork1() {
     if (this.artworks.length === 0) {

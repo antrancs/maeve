@@ -1,149 +1,116 @@
 <template>
-  <v-hover>
-    <v-layout
-      row
-      align-center
-      @click.right.prevent="handleRightClick"
-      :class="[
-        $style['wrapper'],
-        {
-          'primary lighten-2': hover && !textColor && darkMode,
-          'primary darken-2': hover && !textColor && !darkMode,
-          'py-1': $vuetify.breakpoint.xsOnly,
-          'dark-mode': darkMode,
-          [$style['unavailable']]: !isAvailable,
-          [$style['active']]: isActive
-        }
-      ]"
-      slot-scope="{ hover }"
-    >
-      <template v-if="song && song.attributes">
-        <div :class="['ml-2', 'mr-3', $style['left-items']]">
-          <v-progress-circular
-            v-if="showLoading"
-            indeterminate
-            color="accent"
-          ></v-progress-circular>
-          <div v-else class="size-fit">
-            <MediaArtwork
-              v-if="!fromAlbum"
-              :artwork="song.attributes.artwork"
-              :width="40"
-              :height="40"
-            />
-
-            <div
-              v-if="fromAlbum && !isActive"
-              class="track-number flex-center size-fit"
-              :style="{ opacity: hover ? 0 : 1 }"
-            >
-              {{ song.attributes.trackNumber }}
-            </div>
-
-            <MediaArtworkOverlay
-              v-if="(isAvailable && hover) || isActive"
-              :is-active="isActive"
-              :is-playing="isMusicPlaying"
-              :show-background="!fromAlbum"
-              @playing-control-clicked="onSongClicked"
-            />
-          </div>
+  <v-layout
+    row
+    align-center
+    @click.right.prevent="handleRightClick"
+    :class="[
+      $style['wrapper'],
+      {
+        'py-1': $vuetify.breakpoint.xsOnly,
+        'dark-mode': darkMode,
+        [$style['unavailable']]: !isAvailable,
+        [$style['active']]: isActive
+      }
+    ]"
+  >
+    <template v-if="song && song.attributes">
+      <div
+        @click.stop="onRowClicked"
+        :class="['absolute-fit', $style['interactive-layer']]"
+      ></div>
+      <div
+        :class="['ml-2', 'mr-3', $style['left-items']]"
+        :style="leftItemsStyle"
+      >
+        <div v-if="fromAlbum" :class="[$style['track-number']]">
+          {{ song.attributes.trackNumber }}
         </div>
 
-        <slot name="leftIndex"></slot>
+        <div :class="$style['playing-control']">
+          <button
+            class="btn btn--icon"
+            @mouseover="playingControlHovered = true"
+            @mouseout="playingControlHovered = false"
+            @click.stop="onSongClicked"
+          >
+            <v-icon color="white">{{ contentIcon }}</v-icon>
+          </button>
+        </div>
+      </div>
 
-        <v-flex :class="$style['middle-items']">
-          <v-layout row wrap>
-            <v-flex xs12 class="pr-2">
-              <v-layout>
-                <div
-                  :class="['long-text-truncated', $style['song-name']]"
-                  :title="song.attributes.name"
-                >
-                  {{ song.attributes.name }}
-                </div>
+      <slot name="leftIndex"></slot>
 
-                <v-icon
-                  class="ml-1"
-                  small
-                  :color="textColor || ''"
-                  v-if="song.attributes.contentRating === 'explicit'"
-                  >explicit</v-icon
-                >
-              </v-layout>
-            </v-flex>
-
-            <v-flex xs12 class="pr-2" v-if="!fromAlbum">
-              <div :class="['long-text-truncated']">
-                <span
-                  :class="$style['artist-name']"
-                  @click="() => goToArtistPage(song)"
-                  >{{ song.attributes.artistName }}</span
-                >
+      <v-flex :class="$style['middle-items']">
+        <v-layout row wrap>
+          <v-flex xs12 class="pr-2">
+            <v-layout>
+              <div
+                :class="['long-text-truncated', $style['song-name']]"
+                :title="song.attributes.name"
+              >
+                {{ song.attributes.name }}
               </div>
-            </v-flex>
-          </v-layout>
-        </v-flex>
 
-        <v-btn
-          slot="activator"
-          class="song-actions"
-          :style="{ opacity: hover ? 1 : 0 }"
-          icon
-          @click.stop="onActionsIconClicked"
-        >
-          <v-icon :color="textColor || undefined">more_horiz</v-icon>
-        </v-btn>
+              <v-icon
+                class="ml-1"
+                small
+                v-if="song.attributes.contentRating === 'explicit'"
+                >explicit</v-icon
+              >
+            </v-layout>
+          </v-flex>
 
-        <div
-          :class="[
-            'pr-2',
-            'sub-info-text',
-            'hidden-xs-only',
-            $style['right-items']
-          ]"
-        >
-          <slot name="rightIndex">
-            <div style="flex-basis: 5rem">
-              <slot name="hoverRightIndex" :hover="hover">
-                <template>
-                  {{ song.attributes.durationInMillis | formattedDuration }}
-                </template>
-              </slot>
+          <v-flex xs12 class="pr-2" v-if="!fromAlbum">
+            <div :class="['long-text-truncated']">
+              <span
+                :class="$style['artist-name']"
+                @click="$emit('go-to-artist-page', song)"
+                >{{ song.attributes.artistName }}</span
+              >
             </div>
-          </slot>
-        </div>
-      </template>
+          </v-flex>
+        </v-layout>
+      </v-flex>
 
-      <div v-else class="pa-2">Item not available</div>
-    </v-layout>
-  </v-hover>
+      <v-btn
+        slot="activator"
+        :class="$style['song-actions']"
+        icon
+        @click.stop="onActionsIconClicked"
+      >
+        <v-icon>more_horiz</v-icon>
+      </v-btn>
+
+      <div
+        :class="[
+          'pr-2',
+          'sub-info-text',
+          'hidden-xs-only',
+          $style['right-items']
+        ]"
+      >
+        <slot name="rightIndex">
+          <div style="flex-basis: 5rem">
+            <slot name="hoverRightIndex">
+              <template>
+                {{ song.attributes.durationInMillis | formattedDuration }}
+              </template>
+            </slot>
+          </div>
+        </slot>
+      </div>
+    </template>
+
+    <div v-else class="pa-2">Item not available</div>
+  </v-layout>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
-
-import { Nullable } from '@/@types/model/model';
-import MediaArtwork from '@/components/MediaArtwork.vue';
-import MediaArtworkOverlay from '@/components/MediaArtworkOverlay.vue';
 import SongItemMixin from '@/mixins/SongItemMixin';
-import GoToArtistPageMixin from '@/mixins/GoToArtistPageMixin';
 
-@Component({
-  components: { MediaArtworkOverlay, MediaArtwork }
-})
-export default class SongListSmallItem extends Mixins(
-  SongItemMixin,
-  GoToArtistPageMixin
-) {
-  @Prop() textColor!: Nullable<string>;
-
-  get songNameColor() {
-    return this.isActive
-      ? this.$vuetify.theme.accent
-      : this.textColor || this.$vuetify.theme.primaryText;
-  }
-}
+export default {
+  mixins: [SongItemMixin]
+};
 </script>
 
 <style lang="scss" module>

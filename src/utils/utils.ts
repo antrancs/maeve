@@ -2,6 +2,7 @@ import random from 'lodash/random';
 
 import { Collection, Song, Nullable } from '@/@types/model/model';
 import { isLight, TEXT_PRIMARY_DARK, TEXT_PRIMARY_LIGHT } from '@/themes';
+import { PLACEHOLDER_IMAGE } from './constants';
 
 const bgColors = [
   ['#556270', '#4ECDC4'],
@@ -11,12 +12,18 @@ const bgColors = [
 ]; // used when the artwork doesn't have bgColor properties
 
 const getArtworkUrl = (
-  originalUrl: string,
+  artwork: MusicKit.Artwork | undefined,
   width: number,
   height: number
 ): string => {
-  if (!originalUrl) {
-    return '';
+  if (!artwork) {
+    return PLACEHOLDER_IMAGE;
+  }
+
+  const url = artwork.url;
+
+  if (!url) {
+    return PLACEHOLDER_IMAGE;
   }
 
   const replace: { [key: string]: string } = {
@@ -25,7 +32,7 @@ const getArtworkUrl = (
     'bb.jpeg': 'sr.jpeg'
   };
 
-  return originalUrl.replace(/{w}|{h}|bb.jpeg/gi, matched => {
+  return url.replace(/{w}|{h}|bb.jpeg/gi, matched => {
     return replace[matched].toString();
   });
 };

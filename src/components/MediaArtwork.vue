@@ -70,7 +70,7 @@ export default class MediaArtwork extends Vue {
     if (!this.artwork) {
       return PLACEHOLDER_IMAGE;
     }
-    return getArtworkUrl(this.artwork.url, this.width, this.height);
+    return getArtworkUrl(this.artwork, this.width, this.height);
   }
 }
 </script>

@@ -149,8 +149,6 @@
 import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 
-import SongCollectionList from '@/components/Song/SongCollectionList.vue';
-// import CuratorList from '@/components/CuratorList.vue';
 import TriangleSVG from '@/components/TriangleSVG.vue';
 import SongListLarge from '@/components/Song/SongListLarge.vue';
 import CollectionCarousel from '@/components/Collection/CollectionCarousel.vue';
@@ -169,7 +167,6 @@ import { getOneGenreForCountry } from '../services/catalog.service';
 
 @Component({
   components: {
-    SongCollectionList,
     SongListLarge,
     CollectionCarousel,
     TriangleSVG

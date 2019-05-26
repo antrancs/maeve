@@ -93,6 +93,7 @@
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import { Action } from 'vuex-class';
+import { Prop } from 'vue-property-decorator';
 
 import {
   FETCH_ONE_ALBUM_CATALOG,
@@ -108,12 +109,10 @@ import {
   getSongsFromCollection,
   getGradientBackgroundColorsFromArtwork
 } from '../../utils/utils';
-import SongListSmall from '@/components/Song/SongListSmall.vue';
-import { Prop } from 'vue-property-decorator';
 
 @Component({
   components: {
-    SongListSmall
+    SongListSmall: () => import('@/components/Song/SongListSmall.vue')
   }
 })
 export default class NewReleaseHome extends Vue {

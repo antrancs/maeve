@@ -1,78 +1,68 @@
 <template>
-  <v-hover>
-    <v-card
-      :tile="true"
-      :class="['secondary', 'elevation-4', $style['item-card']]"
-      slot-scope="{ hover }"
-    >
-      <MediaArtwork
-        :artwork="artwork"
-        :width="artworkSize"
-        :height="artworkSize"
+  <v-card
+    :tile="true"
+    :class="['secondary', 'elevation-4', $style['item-card']]"
+  >
+    <MediaArtwork :artwork="artwork" :width="artworkSize" :height="artworkSize">
+      <div
+        :class="[
+          { [$style['playing']]: isCollectionBeingPlayed },
+          $style['overlay']
+        ]"
       >
-        <template v-if="hover || isCollectionBeingPlayed">
-          <div :class="$style['overlay']"></div>
-          <div :class="$style['play-button']">
-            <v-btn
-              icon
-              round
-              @click.prevent.stop="onPlayButtonClicked"
-              color="accent elevation-5"
+        <div :class="$style['play-button']">
+          <v-btn
+            icon
+            round
+            @click.prevent.stop="onPlayButtonClicked"
+            color="accent elevation-5"
+          >
+            <v-icon v-if="isCollectionBeingPlayed && musicPlayer.isPlaying"
+              >pause</v-icon
             >
-              <v-icon v-if="isCollectionBeingPlayed && musicPlayer.isPlaying"
-                >pause</v-icon
-              >
-              <v-icon v-else>play_arrow</v-icon>
-            </v-btn>
-          </div>
-        </template>
-        <div :class="['pa-2', $style['top-icon']]">
-          <slot></slot>
+            <v-icon v-else>play_arrow</v-icon>
+          </v-btn>
         </div>
-      </MediaArtwork>
+      </div>
+    </MediaArtwork>
 
-      <v-card-title primary-title class="py-2 px-2">
-        <div>
-          <div :class="$style['media-details__title']">
-            <div
-              :class="[
-                'long-text-truncated',
-                'main-info-text',
-                $style['card-text']
-              ]"
-              :style="{ color: primaryTextSecondaryColor }"
-              :title="collection.attributes.name"
-            >
-              {{ collection.attributes.name }}
-            </div>
-            <v-icon
-              v-if="collection.attributes.contentRating === 'explicit'"
-              class="ml-1"
-              small
-              >explicit</v-icon
-            >
-          </div>
+    <v-card-title primary-title class="py-2 px-2">
+      <div>
+        <div :class="$style['media-details__title']">
           <div
             :class="[
               'long-text-truncated',
-              'sub-info-text',
+              'main-info-text',
               $style['card-text']
             ]"
-            :style="{ color: secondaryTextSecondaryColor }"
-            :title="
-              collection.attributes.artistName ||
-                collection.attributes.curatorName
-            "
+            :style="{ color: primaryTextSecondaryColor }"
+            :title="collection.attributes.name"
           >
-            {{
-              collection.attributes.artistName ||
-                collection.attributes.curatorName
-            }}
+            {{ collection.attributes.name }}
           </div>
+          <v-icon
+            v-if="collection.attributes.contentRating === 'explicit'"
+            class="ml-1"
+            small
+            >explicit</v-icon
+          >
         </div>
-      </v-card-title>
-    </v-card>
-  </v-hover>
+        <div
+          :class="['long-text-truncated', 'sub-info-text', $style['card-text']]"
+          :style="{ color: secondaryTextSecondaryColor }"
+          :title="
+            collection.attributes.artistName ||
+              collection.attributes.curatorName
+          "
+        >
+          {{
+            collection.attributes.artistName ||
+              collection.attributes.curatorName
+          }}
+        </div>
+      </div>
+    </v-card-title>
+  </v-card>
 </template>
 
 <script lang="ts">
@@ -175,6 +165,23 @@ export default class CollectionItemCard extends Vue {
   border-top-right-radius: $card-border-radius;
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .item-card:hover {
+    .overlay,
+    .play-button {
+      display: block;
+    }
+  }
+}
+
+.playing.overlay {
+  display: block;
+
+  & .play-button {
+    display: block;
+  }
+}
+
 .overlay {
   border-top-left-radius: $card-border-radius;
   border-top-right-radius: $card-border-radius;
@@ -183,12 +190,14 @@ export default class CollectionItemCard extends Vue {
   width: 100%;
   background: rgba(0, 0, 0, 0.4);
   bottom: 0;
+  display: none;
 }
 
 .play-button {
   position: absolute;
   bottom: 0;
   right: 0;
+  display: none;
 }
 
 .media-details__title {

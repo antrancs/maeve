@@ -35,9 +35,6 @@
 import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { Action } from 'vuex-class';
 
-import SongCollectionList from '@/components/Song/SongCollectionList.vue';
-import ArtistList from '@/components/ArtistList.vue';
-import SongListLarge from '@/components/Song/SongListLarge.vue';
 import InfiniteScrollMixin from '@/mixins/InfiniteScrollMixin';
 import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 import { HandleSongClicked } from '@/@types/model/model';
@@ -46,9 +43,10 @@ import { PlaySongsAction, SearchCatalogAction } from '@/store/types';
 
 @Component({
   components: {
-    SongCollectionList,
-    ArtistList,
-    SongListLarge
+    SongCollectionList: () =>
+      import('@/components/Song/SongCollectionList.vue'),
+    ArtistList: () => import('@/components/ArtistList.vue'),
+    SongListLarge: () => import('@/components/Song/SongListLarge.vue')
   }
 })
 export default class SearchViewAll extends Mixins(

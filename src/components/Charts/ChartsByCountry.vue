@@ -32,7 +32,6 @@
           </div>
           <ChartSongList
             :songs="songs"
-            :textColor="textColor"
             :collectionId="playlist.id"
             :onSongClicked="handleSongClicked"
           />
@@ -89,8 +88,7 @@ export default class ChartsByCountry extends Vue {
     height: 0,
     top: '100%'
   };
-  // the text is white because the background is always dark
-  private textColor = TEXT_PRIMARY_DARK;
+
   private countryName = '';
   private countryId: Nullable<string> = null;
   private topCountries = ['us', 'ca', 'gb', 'mx', 'kr', 'cn', 'au', 'fr'];

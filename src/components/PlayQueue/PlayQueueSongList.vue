@@ -15,11 +15,12 @@
       >
         <template v-slot:hoverRightIndex="{ hover }">
           <v-icon
-            v-if="hover && index > 0"
+            v-if="index > 0"
             @click="$emit('remove-from-queue', index)"
             color="red"
             >remove_circle</v-icon
           >
+          <div v-else></div>
         </template>
       </SongListSmallItem>
     </v-flex>

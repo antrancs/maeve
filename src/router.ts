@@ -68,7 +68,9 @@ const router = new Router({
       path: '/albums/:id',
       name: 'albums',
       component: () =>
-        import(/* webpackChunkName: "albums" */ './views/CollectionDetail.vue'),
+        import(
+          /* webpackChunkName: "collectionDetail" */ './views/CollectionDetail.vue'
+        ),
       props: true
     },
     {
@@ -76,7 +78,7 @@ const router = new Router({
       name: 'playlists',
       component: () =>
         import(
-          /* webpackChunkName: "playlists" */ './views/CollectionDetail.vue'
+          /* webpackChunkName: "collectionDetail" */ './views/CollectionDetail.vue'
         ),
       props: true
     },

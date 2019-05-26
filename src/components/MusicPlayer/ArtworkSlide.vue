@@ -63,7 +63,7 @@ export default class ArtworkSlide extends Vue {
       artworks.push({
         id: song.id,
         artwork: getArtworkUrl(
-          song.attributes!.artwork.url,
+          song.attributes!.artwork,
           this.artworkSize,
           this.artworkSize
         ),

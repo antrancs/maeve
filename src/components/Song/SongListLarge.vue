@@ -19,15 +19,13 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-
 import SongListLargeItem from './SongListLargeItem.vue';
 import SongListMixin from '@/mixins/SongListMixin';
 
-export default Vue.extend({
+export default {
   mixins: [SongListMixin],
   components: {
     SongListLargeItem
   }
-});
+};
 </script>

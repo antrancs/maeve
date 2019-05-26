@@ -83,7 +83,7 @@ export default class CuratorDetail extends Mixins(InfiniteScrollMixin) {
       return PLACEHOLDER_IMAGE;
     }
 
-    return getArtworkUrl(this.curator.attributes.artwork.url, 150, 150);
+    return getArtworkUrl(this.curator.attributes.artwork, 150, 150);
   }
 
   get bannerStyle(): object {

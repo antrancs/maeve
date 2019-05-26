@@ -6,7 +6,6 @@
         v-for="(song, index) in songs"
         :song="song"
         :index="index"
-        :textColor="textColor"
         :fromAlbum="fromAlbum"
         :isMusicPlaying="musicPlayer.isPlaying"
         :isActive="isSongActive(song)"
@@ -20,18 +19,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
-import { Action, State } from 'vuex-class';
-
-import { Nullable } from '@/@types/model/model';
-
 import SongListSmallItem from './SongListSmallItem.vue';
 import SongListMixin from '@/mixins/SongListMixin';
 
-@Component({
-  components: { SongListSmallItem }
-})
-export default class SongListSmall extends Mixins(SongListMixin) {
-  @Prop() textColor!: Nullable<string>;
-}
+export default {
+  mixins: [SongListMixin],
+  components: {
+    SongListSmallItem
+  }
+};
 </script>

@@ -19,7 +19,9 @@
           <section-header>Popular playlists</section-header>
         </v-flex>
 
-        <v-flex xs12> <SongCollectionList :collections="playlists" /> </v-flex>
+        <v-flex xs12>
+          <SongCollectionList :collections="playlists" />
+        </v-flex>
       </v-layout>
     </v-container>
   </div>
@@ -68,7 +70,7 @@ export default class ActivityDetail extends Mixins(
       return '';
     }
 
-    return getArtworkUrl(this.activity.attributes.artwork.url, 1000, 1000);
+    return getArtworkUrl(this.activity.attributes.artwork, 1000, 1000);
   }
 
   get bannerStyle(): object {

@@ -168,7 +168,6 @@ import { Action, Getter } from 'vuex-class';
 import CollectionCarousel from '@/components/Collection/CollectionCarousel.vue';
 import FeaturedPlaylist from '@/components/Collection/FeaturedPlaylist.vue';
 import ActivityItem from '@/components/ActivityItem.vue';
-import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import GenreList from '@/components/GenreList.vue';
 import NewReleaseHomeList from '@/components/Home/NewReleaseHomeList.vue';
 import { activityIds } from '@/utils/constants';
@@ -198,7 +197,6 @@ import { getActivities, getCharts } from '../services/musicApi.service';
     FeaturedPlaylist,
     ActivityItem,
     GenreList,
-    SongCollectionList,
     CollectionCarousel,
     NewReleaseHomeList
   }

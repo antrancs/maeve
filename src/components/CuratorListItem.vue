@@ -80,7 +80,7 @@ export default class CuratorListItem extends Vue {
     }
 
     return getArtworkUrl(
-      this.curator.attributes.artwork.url,
+      this.curator.attributes.artwork,
       curatorArtwork,
       curatorArtwork
     );

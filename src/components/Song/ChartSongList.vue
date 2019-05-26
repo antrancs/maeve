@@ -6,7 +6,6 @@
         v-for="(song, index) in songs"
         :song="song"
         :index="index"
-        :textColor="textColor"
         :fromAlbum="fromAlbum"
         :isMusicPlaying="musicPlayer.isPlaying"
         :isActive="isSongActive(song)"
@@ -24,17 +23,15 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-
 import SongListSmallItem from './SongListSmallItem.vue';
 import SongListMixin from '@/mixins/SongListMixin';
 
-export default Vue.extend({
+export default {
   components: {
     SongListSmallItem
   },
   mixins: [SongListMixin]
-});
+};
 </script>
 
 <style lang="scss" scoped>

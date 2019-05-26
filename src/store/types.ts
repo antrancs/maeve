@@ -43,7 +43,9 @@ export type FetchCollectionPayload = {
 };
 
 // Action
-export type PlayCollectionAction = (payload: PlayCollectionPayload) => void;
+export type PlayCollectionAction = (
+  payload: PlayCollectionPayload
+) => Promise<void>;
 export type AddToLibraryAction = (
   payload: AddToLibraryPayload
 ) => Promise<void>;

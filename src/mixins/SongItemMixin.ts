@@ -68,6 +68,10 @@ export default class SongItemMixin extends Vue {
    * Event handler when a song row is clicked
    */
   onSongClicked() {
+    if (!this.isAvailable) {
+      return;
+    }
+
     this.$emit('song-item-clicked', this.song.id, this.index);
   }
 

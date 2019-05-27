@@ -23,6 +23,10 @@
       opacity: 1;
     }
 
+    &.unavailable .playing-control {
+      display: none;
+    }
+
     .playing-control {
       display: block;
     }

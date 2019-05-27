@@ -268,7 +268,7 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
     return null;
   }
 
-  get artworks() {
+  get artworks(): (MusicKit.Artwork | undefined)[] {
     if (!this.collection || !this.collection.attributes) {
       return [];
     }
@@ -280,7 +280,7 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
 
       case 'library-playlists': {
         if (!this.collection.attributes.canEdit) {
-          return [this.collection.attributes.artwork!.url];
+          return [this.collection.attributes.artwork];
         }
         const artworkSet: Set<string> = new Set<string>();
         const artworks: MusicKit.Artwork[] = [];

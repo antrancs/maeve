@@ -14,8 +14,8 @@ import { Prop, Component } from 'vue-property-decorator';
 import { Collection, CollectionType } from '@/@types/model/model';
 import { State, Action } from 'vuex-class';
 import MediaActionMenu from '@/components/MediaActionMenu.vue';
-import { PLAY_COLLECTION } from '@/store/actions.type';
-import { PlayCollectionAction } from '@/store/types';
+import { PLAY_SONGS } from '@/store/actions.type';
+import { PlaySongsAction } from '@/store/types';
 
 @Component({
   components: {
@@ -29,17 +29,33 @@ export default class CollectionControls extends Vue {
   @State(state => state.musicPlayer.isPlaying)
   isPlaying!: boolean;
 
+  // @Action
+  // [PLAY_COLLECTION]: PlayCollectionAction;
   @Action
-  [PLAY_COLLECTION]: PlayCollectionAction;
+  [PLAY_SONGS]: PlaySongsAction;
 
   /**
    * Play the entire collection
    */
   onPlayBtnClicked() {
     // Start with the first song by default
-    this.playCollection({
-      collectionId: this.collection.id,
-      collectionType: this.collection.type
+    // this.playCollection({
+    //   collectionId: this.collection.id,
+    //   collectionType: this.collection.type,
+    //   collection: this.collection
+    // });
+
+    this.playSongs({
+      songs: this.songs,
+      sourceInfo: {
+        name: this.collection.attributes!.name,
+        path: {
+          name: this.collection.type,
+          params: {
+            id: this.collection.id
+          }
+        }
+      }
     });
   }
 
@@ -47,9 +63,22 @@ export default class CollectionControls extends Vue {
    * Shuffle the collection and play
    */
   shuffleSongs() {
-    this.playCollection({
-      collectionId: this.collection.id,
-      collectionType: this.collection.type,
+    // this.playCollection({
+    //   collectionId: this.collection.id,
+    //   collectionType: this.collection.type,
+    //   shuffle: true
+    // });
+    this.playSongs({
+      songs: this.songs,
+      sourceInfo: {
+        name: this.collection.attributes!.name,
+        path: {
+          name: this.collection.type,
+          params: {
+            id: this.collection.id
+          }
+        }
+      },
       shuffle: true
     });
   }

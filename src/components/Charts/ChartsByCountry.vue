@@ -62,12 +62,14 @@ import ChartSongList from '@/components/Song/ChartSongList.vue';
 import {
   FETCH_ONE_PLAYLIST_CATALOG,
   FETCH_MULTIPLE_PLAYLISTS_CATALOG,
-  PLAY_COLLECTION
+  // PLAY_COLLECTION,
+  PLAY_SONGS
 } from '@/store/actions.type';
 import {
   FetchOnePlaylistCatalogAction,
   FetchMultiplePlaylistsCatalogAction,
-  PlayCollectionAction
+  // PlayCollectionAction,
+  PlaySongsAction
 } from '@/store/types';
 import { Nullable } from '@/@types/model/model';
 import { SET_FOOTER_VISIBILITY } from '@/store/mutations.type';
@@ -99,7 +101,8 @@ export default class ChartsByCountry extends Vue {
   @Action [FETCH_ONE_PLAYLIST_CATALOG]: FetchOnePlaylistCatalogAction;
   @Action
   [FETCH_MULTIPLE_PLAYLISTS_CATALOG]: FetchMultiplePlaylistsCatalogAction;
-  @Action [PLAY_COLLECTION]: PlayCollectionAction;
+  // @Action [PLAY_COLLECTION]: PlayCollectionAction;
+  @Action [PLAY_SONGS]: PlaySongsAction;
 
   get topPlaylistIds(): string[] {
     return this.topCountries.map(country => DAILY_TOP_100_COUNTRY_MAP[country]);
@@ -205,10 +208,23 @@ export default class ChartsByCountry extends Vue {
       return;
     }
 
-    this.playCollection({
-      collectionId: this.playlist.id,
-      collectionType: 'playlists',
-      startPosition: songIndex
+    // this.playCollection({
+    //   collectionId: this.playlist.id,
+    //   collectionType: 'playlists',
+    //   startPosition: songIndex
+    // });
+
+    this.playSongs({
+      songs: this.songs,
+      sourceInfo: {
+        name: this.playlist.attributes!.name,
+        path: {
+          name: 'playlists',
+          params: {
+            id: this.playlist.id
+          }
+        }
+      }
     });
   }
 }

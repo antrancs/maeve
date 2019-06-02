@@ -1,7 +1,12 @@
 <template>
   <v-container fill-height class="pb-0">
-    <v-layout row wrap>
-      <v-flex md4 lg3 v-if="$vuetify.breakpoint.mdAndUp">
+    <v-layout
+      :class="{
+        'row wrap': $vuetify.breakpoint.lgAndUp,
+        column: $vuetify.breakpoint.mdAndDown
+      }"
+    >
+      <v-flex class="pl-2" lg3 v-if="$vuetify.breakpoint.lgAndUp">
         <div
           :class="$style['left-column']"
           :style="[leftColumnBackgroundStyle]"
@@ -11,9 +16,9 @@
             <div
               :class="$style['collection-name']"
               :style="collectionNameStyle"
+              :title="collectionName"
             >
               {{ collectionName }}
-
               <v-icon
                 dark
                 size="22"
@@ -54,7 +59,7 @@
           </div>
         </div>
       </v-flex>
-      <v-flex xs12 v-else class="mb-3">
+      <v-flex v-else :class="['mb-3', { xs12: $vuetify.breakpoint.lgAndUp }]">
         <v-layout row v-if="collection">
           <div :class="$style['cover-sm']">
             <CollectionDetailArtwork
@@ -67,6 +72,7 @@
               <div
                 :class="$style['collection-name']"
                 :style="collectionNameStyle"
+                :title="collectionName"
               >
                 {{ collectionName }}
 
@@ -97,10 +103,10 @@
       <v-flex
         xs12
         sm12
-        md8
+        md12
         lg9
         v-if="collection"
-        :class="{ [$style['right-column']]: $vuetify.breakpoint.mdAndUp }"
+        :class="{ [$style['right-column']]: $vuetify.breakpoint.lgAndUp }"
       >
         <template v-if="collectionDescription">
           <p
@@ -117,7 +123,7 @@
           </p>
         </template>
 
-        <v-layout row justify-end v-if="$vuetify.breakpoint.mdAndUp">
+        <v-layout row justify-end v-if="$vuetify.breakpoint.lgAndUp">
           <CollectionControls
             v-if="songs.length > 0"
             :collection="collection"
@@ -178,7 +184,7 @@ import {
   FETCH_ONE_PLAYLIST_LIBRARY,
   FETCH_ALBUM_EXTRA_INFO_CATALOG,
   FETCH_LIBRARY_PLAYLIST_TRACKS,
-  PLAY_COLLECTION
+  PLAY_SONGS
 } from '@/store/actions.type';
 import {
   FetchOneAlbumCatalogAction,
@@ -187,7 +193,8 @@ import {
   FetchOneAlbumLibraryAction,
   FetchOnePlaylistLibraryAction,
   FetchLibraryPlaylistTracksAction,
-  PlayCollectionAction
+  PlayCollectionAction,
+  PlaySongsAction
 } from '@/store/types';
 import { SET_FOOTER_VISIBILITY } from '@/store/mutations.type';
 import { getGradientBackgroundColorsFromArtwork } from '@/utils/utils';
@@ -223,7 +230,8 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
   @Action [FETCH_ONE_PLAYLIST_LIBRARY]: FetchOnePlaylistLibraryAction;
   @Action [FETCH_LIBRARY_PLAYLIST_TRACKS]: FetchLibraryPlaylistTracksAction;
   @Action [FETCH_ALBUM_EXTRA_INFO_CATALOG]: (url: string) => Promise<any>;
-  @Action [PLAY_COLLECTION]: PlayCollectionAction;
+  // @Action [PLAY_COLLECTION]: PlayCollectionAction;
+  @Action [PLAY_SONGS]: PlaySongsAction;
 
   @Mutation [SET_FOOTER_VISIBILITY]: (visibility: boolean) => void;
 
@@ -521,9 +529,23 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
       return;
     }
 
-    this.playCollection({
-      collectionId: this.id,
-      collectionType: this.collection.type,
+    // this.playCollection({
+    //   collectionId: this.id,
+    //   collectionType: this.collection.type,
+    //   startPosition: songIndex
+    // });
+
+    this.playSongs({
+      songs: this.songs,
+      sourceInfo: {
+        name: this.collection.attributes!.name,
+        path: {
+          name: this.collection.type,
+          params: {
+            id: this.collection.id
+          }
+        }
+      },
       startPosition: songIndex
     });
   }
@@ -631,6 +653,23 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
 .collection-name {
   font-weight: bold;
   color: white;
+  overflow: hidden;
+}
+
+@supports (-webkit-line-clamp: 2) {
+  .collection-name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    margin-bottom: 0.8rem;
+  }
+}
+
+@supports not (-webkit-line-clamp: 2) {
+  .collection-name {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 
 .artist-name {

@@ -1,8 +1,12 @@
 <template>
-  <transition-group name="list" tag="div" class="layout row wrap">
+  <transition-group
+    name="list"
+    tag="div"
+    class="layout row wrap section-offset"
+  >
     <v-flex
       v-bind="itemSizeAttributes"
-      class="pa-2"
+      class="px-2 pb-3"
       v-for="(collection, index) in collections"
       :key="`${collection.id}-${index}`"
     >

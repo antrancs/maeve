@@ -260,16 +260,22 @@ export default class App extends Vue {
   -webkit-overflow-scrolling: touch;
 }
 
-.flex-basis-0 {
-  flex-basis: 0;
-}
-
 .small-list-tile-action {
   min-width: 30px;
 }
 
 .white-text {
   color: white;
+}
+
+.section-offset {
+  margin-left: -0.8rem;
+  margin-right: -0.8rem;
+}
+
+.page-title {
+  font-size: 3.6rem;
+  margin: 0;
 }
 
 .fade-enter-active,

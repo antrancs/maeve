@@ -1,7 +1,9 @@
 <template>
   <v-container>
     <v-layout row wrap>
-      <v-flex xs8> <section-header>My songs</section-header> </v-flex>
+      <v-flex xs8>
+        <h1 class="page-title">My songs</h1>
+      </v-flex>
       <v-flex xs4 v-if="!loading && songs.length > 0" style="text-align: right">
         <app-button class="ml-0" @on-click="handlePlaySongs">Play</app-button>
         <app-button @on-click="() => handlePlaySongs(0, true)"

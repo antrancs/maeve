@@ -9,7 +9,6 @@
     v-model="searchText"
     clearable
     @keydown.stop=""
-    class="pl-2"
     @blur="onBlur"
   ></v-text-field>
 </template>

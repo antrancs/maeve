@@ -1,73 +1,96 @@
 <template>
   <div>
-    <template v-if="featuredRelease">
-      <section-header class="mx-2">{{ featuredReleaseTitle }}</section-header>
-      <v-flex xs6 sm3 md3 lg4 class="px-2">
-        <LinkComponent
-          :routeName="featuredRelease.type"
-          :routeParams="{ id: featuredRelease.id }"
-        >
-          <CollectionItemCard :collection="featuredRelease" />
-        </LinkComponent>
-      </v-flex>
-    </template>
-    <template v-if="topSongs.length > 0">
-      <v-flex xs12 :class="['px-2', { 'pt-4': featuredRelease }]">
-        <section-header>Top Songs</section-header>
-      </v-flex>
-      <SongListSmall
-        :songs="topSongs"
-        :sourceInfo="{
-          name: `${artistName}'s top songs`,
-          path: {
-            name: 'artists',
-            params: {
-              id: artistId
+    <content-section v-if="featuredRelease">
+      <template #section-header>
+        {{ featuredReleaseTitle }}
+      </template>
+
+      <template #section-content>
+        <div class="section-offset">
+          <v-flex xs6 sm3 md3 lg4 class="px-2">
+            <LinkComponent
+              :routeName="featuredRelease.type"
+              :routeParams="{ id: featuredRelease.id }"
+            >
+              <CollectionItemCard :collection="featuredRelease" />
+            </LinkComponent>
+          </v-flex>
+        </div>
+      </template>
+    </content-section>
+
+    <content-section v-if="topSongs.length > 0">
+      <template #section-header>
+        Top Songs
+      </template>
+
+      <template #section-content>
+        <SongListSmall
+          :songs="topSongs"
+          :sourceInfo="{
+            name: `${artistName}'s top songs`,
+            path: {
+              name: 'artists',
+              params: {
+                id: artistId
+              }
             }
-          }
-        }"
-      />
-    </template>
+          }"
+        />
+      </template>
+    </content-section>
 
-    <template v-if="albums.length > 0">
-      <v-flex xs12 class="px-2 pt-4">
-        <section-header>Albums</section-header>
-      </v-flex>
-      <SongCollectionList
-        :itemSizes="['xl3', 'lg3', 'md3', 'sm3', 'xs6']"
-        :collections="albums"
-      />
-    </template>
+    <content-section v-if="albums.length > 0">
+      <template #section-header>
+        Albums
+      </template>
 
-    <template v-if="singles.length > 0">
-      <v-flex xs12 class="px-2 pt-4">
-        <section-header>EPs & Singles</section-header>
-      </v-flex>
-      <SongCollectionList
-        :itemSizes="['xl3', 'lg3', 'md3', 'sm3', 'xs6']"
-        :collections="singles"
-      />
-    </template>
+      <template #section-content>
+        <SongCollectionList
+          :itemSizes="['xl3', 'lg3', 'md3', 'sm3', 'xs6']"
+          :collections="albums"
+        />
+      </template>
+    </content-section>
 
-    <template v-if="artistPlaylists.length > 0">
-      <v-flex xs12 class="px-2 pt-4">
-        <section-header>Playlists</section-header>
-      </v-flex>
-      <SongCollectionList
-        :itemSizes="['xl3', 'lg3', 'md3', 'sm3', 'xs6']"
-        :collections="artistPlaylists"
-      />
-    </template>
+    <content-section v-if="singles.length > 0">
+      <template #section-header>
+        EPs & Singles
+      </template>
 
-    <template v-if="relatedArtists.length > 0">
-      <v-flex xs12 class="px-2 pt-4">
-        <section-header>Related artists</section-header>
-      </v-flex>
-      <ArtistList
-        :artists="relatedArtists"
-        :itemSizes="['lg3', 'md3', 'sm3', 'xs6']"
-      />
-    </template>
+      <template #section-content>
+        <SongCollectionList
+          :itemSizes="['xl3', 'lg3', 'md3', 'sm3', 'xs6']"
+          :collections="singles"
+        />
+      </template>
+    </content-section>
+
+    <content-section v-if="artistPlaylists.length > 0">
+      <template #section-header>
+        Playlists
+      </template>
+
+      <template #section-content>
+        <SongCollectionList
+          :itemSizes="['xl3', 'lg3', 'md3', 'sm3', 'xs6']"
+          :collections="artistPlaylists"
+        />
+      </template>
+    </content-section>
+
+    <content-section v-if="relatedArtists.length > 0">
+      <template #section-header>
+        Related artists
+      </template>
+
+      <template #section-content>
+        <ArtistList
+          :artists="relatedArtists"
+          :itemSizes="['lg3', 'md3', 'sm3', 'xs6']"
+        />
+      </template>
+    </content-section>
   </div>
 </template>
 

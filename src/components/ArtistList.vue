@@ -1,13 +1,14 @@
 <template>
-  <transition-group name="list" tag="div" class="layout row wrap">
+  <transition-group
+    name="list"
+    tag="div"
+    class="layout row wrap section-offset"
+  >
     <v-flex
       v-bind="itemSizeAttributes"
       v-for="artist in artists"
       :key="artist.id"
-      :class="{
-        'pa-2': $vuetify.breakpoint.mdAndUp,
-        'pa-1': $vuetify.breakpoint.mdAndDown
-      }"
+      class="px-2 pb-3"
     >
       <ArtistItem :artist="artist" />
     </v-flex>

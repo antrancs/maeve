@@ -1,69 +1,76 @@
 <template>
   <v-container>
-    <v-layout row wrap>
-      <template>
-        <template v-if="featuredAlbums.length > 0">
-          <v-flex xs12 class="px-2">
-            <section-header>Featured Releases</section-header>
-          </v-flex>
+    <content-section v-if="featuredAlbums.length > 0">
+      <template #section-header>
+        Featured Releases
+      </template>
 
-          <NewReleaseHomeList class="pa-2" :releases="featuredAlbums" />
-        </template>
+      <template #section-content>
+        <NewReleaseHomeList :releases="featuredAlbums" />
+      </template>
+    </content-section>
 
-        <v-flex
-          xs12
-          class="px-2 pt-4 featured-playlist__header"
-          v-if="featuredPlaylists.length > 0"
+    <content-section v-if="featuredPlaylists.length > 0">
+      <template #section-header>
+        Featured Playlists
+      </template>
+
+      <template #section-header-right>
+        <router-link
+          :to="{
+            name: 'featuredPlaylists'
+          }"
+          class="link"
+          >View all</router-link
         >
-          <section-header>Featured Playlists</section-header>
+      </template>
 
-          <router-link
-            :to="{
-              name: 'featuredPlaylists'
-            }"
-            class="link"
-            >View all</router-link
-          >
-        </v-flex>
-
+      <template #section-content>
         <transition name="list">
-          <v-layout row wrap v-if="featuredPlaylists.length > 0">
+          <v-layout
+            row
+            wrap
+            v-if="featuredPlaylists.length > 0"
+            class="section-offset"
+          >
             <v-flex
               xs6
               sm4
               md3
               v-for="playlist in featuredPlaylists"
               :key="playlist.id"
-              :class="{
-                'pa-2': $vuetify.breakpoint.mdAndUp,
-                'pa-1': $vuetify.breakpoint.mdAndDown
-              }"
+              class="px-2"
             >
               <FeaturedPlaylist :playlist="playlist" />
             </v-flex>
           </v-layout>
         </transition>
       </template>
+    </content-section>
 
-      <template v-if="isAuthenticated && recentPlayed.length > 0">
-        <v-flex xs12 class="px-2 pt-4">
-          <section-header>Recently played</section-header>
-        </v-flex>
-
-        <CollectionCarousel :collections="recentPlayed" />
+    <content-section v-if="isAuthenticated && recentPlayed.length > 0">
+      <template #section-header>
+        Recently played
       </template>
 
-      <template xs12 v-if="browseCategories.length > 0">
-        <v-flex xs12 class="px-2 pt-4">
-          <section-header>Browse</section-header>
-        </v-flex>
+      <template #section-content>
+        <CollectionCarousel :collections="recentPlayed" />
+      </template>
+    </content-section>
+
+    <content-section v-if="browseCategories.length > 0">
+      <template #section-header>
+        Browse
+      </template>
+
+      <template #section-content>
         <v-layout row wrap>
           <v-flex
             xs6
             sm3
             md3
             lg2
-            class="pa-2"
+            class="pr-2"
             v-for="category in browseCategories"
             :key="category.name"
           >
@@ -86,61 +93,72 @@
           </v-flex>
         </v-layout>
       </template>
+    </content-section>
 
-      <template v-if="genres.length > 0">
-        <v-flex xs12>
-          <v-layout row wrap>
-            <v-flex xs12 class="px-2 pt-4">
-              <v-layout row align-center wrap>
-                <section-header class="mr-2">New releases</section-header>
-
-                <v-menu offset-y>
-                  <v-btn round color="accent" dark slot="activator">
-                    {{ selectedNewReleasesGenre }}
-                    <v-icon>keyboard_arrow_down</v-icon>
-                  </v-btn>
-                  <v-list class="primary lighten-1">
-                    <v-list-tile
-                      v-for="(genre, index) in genres"
-                      :key="index"
-                      @click="() => updateNewReleases(genre)"
-                    >
-                      <v-list-tile-title>{{ genre }}</v-list-tile-title>
-                    </v-list-tile>
-                  </v-list>
-                </v-menu>
-              </v-layout>
-            </v-flex>
-
-            <CollectionCarousel
-              v-if="newReleases.length > 0"
-              :collections="newReleases"
-            />
-          </v-layout>
-        </v-flex>
+    <content-section v-if="genres.length > 0">
+      <template #section-header>
+        New releases
       </template>
 
-      <template v-if="albums.length > 0">
-        <v-flex xs12 class="px-2 pt-4">
-          <section-header>Top Albums</section-header>
-        </v-flex>
+      <template #section-header-right>
+        <v-menu offset-y>
+          <v-btn round color="accent" dark slot="activator">
+            {{ selectedNewReleasesGenre }}
+            <v-icon>keyboard_arrow_down</v-icon>
+          </v-btn>
+          <v-list class="primary lighten-1">
+            <v-list-tile
+              v-for="(genre, index) in genres"
+              :key="index"
+              @click="() => updateNewReleases(genre)"
+            >
+              <v-list-tile-title>{{ genre }}</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
+      </template>
+
+      <template #section-content>
+        <CollectionCarousel
+          v-if="newReleases.length > 0"
+          :collections="newReleases"
+        />
+      </template>
+    </content-section>
+
+    <content-section v-if="albums.length > 0">
+      <template #section-header>
+        Top Albums
+      </template>
+
+      <template #section-content>
         <CollectionCarousel :collections="albums" />
       </template>
+    </content-section>
 
-      <template v-if="playlists.length > 0">
-        <v-flex xs12 class="px-2 pt-4">
-          <section-header>Top Playlists</section-header>
-        </v-flex>
-        <CollectionCarousel :collections="playlists" />
+    <content-section v-if="playlists.length > 0">
+      <template #section-header>
+        Top Playlists
       </template>
 
-      <template>
-        <v-flex xs12 class="px-2 pt-4" v-if="activities.length > 0">
-          <section-header>Activities & Mood</section-header>
-        </v-flex>
+      <template #section-content>
+        <CollectionCarousel :collections="playlists" />
+      </template>
+    </content-section>
 
+    <content-section v-if="activities.length > 0">
+      <template #section-header>
+        Activities & Mood
+      </template>
+
+      <template #section-content>
         <transition name="list">
-          <v-layout row wrap v-if="activities.length > 0">
+          <v-layout
+            class="section-offset"
+            row
+            wrap
+            v-if="activities.length > 0"
+          >
             <ActivityItem
               :activity="activity"
               v-for="activity in activities"
@@ -149,15 +167,17 @@
           </v-layout>
         </transition>
       </template>
+    </content-section>
 
-      <v-flex xs12 class="px-2 pt-4" v-if="genreItems.length > 0">
-        <section-header>Genres</section-header>
-      </v-flex>
+    <content-section v-if="genreItems.length > 0">
+      <template #section-header>
+        Genres
+      </template>
 
-      <v-flex>
+      <template #section-content>
         <GenreList :genres="genreItems" />
-      </v-flex>
-    </v-layout>
+      </template>
+    </content-section>
   </v-container>
 </template>
 

@@ -1,13 +1,15 @@
 <template>
   <v-container>
     <v-layout row wrap v-if="categoryData">
-      <v-flex xs12 class="px-2">
-        <section-header>{{ categoryData.name }}</section-header>
-      </v-flex>
+      <content-section>
+        <template #section-header>
+          {{ categoryData.name }}
+        </template>
 
-      <v-flex xs12>
-        <SongCollectionList :collections="categoryData.playlists" />
-      </v-flex>
+        <template #section-content>
+          <SongCollectionList :collections="categoryData.playlists" />
+        </template>
+      </content-section>
     </v-layout>
   </v-container>
 </template>

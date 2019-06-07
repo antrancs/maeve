@@ -49,7 +49,7 @@ function getMainFeaturedPlaylists() {
   return axiosInstance
     .get('/playlists/featured/main', {
       params: {
-        country: MusicKit.getInstance().storefrontId
+        country: 'pe' // MusicKit.getInstance().storefrontId
       }
     })
     .then(res => {

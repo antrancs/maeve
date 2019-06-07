@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style['wrapper']">
+  <div :class="$style['wrapper']" class="section-offset">
     <v-layout
       row
       @scroll="throttledScrollHandler"
@@ -10,7 +10,7 @@
         :style="cardWidthStyle"
         lg2
         grow
-        class="pa-2"
+        class="px-2"
         v-for="(collection, index) in collections"
         :key="`${collection.id}-${index}`"
       >

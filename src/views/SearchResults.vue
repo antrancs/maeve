@@ -1,26 +1,22 @@
 <template>
   <v-container>
-    <v-layout row wrap v-if="hasResults">
-      <template v-if="artists.length > 0">
-        <v-flex class="section-header pa-2" xs12>
-          <section-header>Artists</section-header>
-          <!-- <router-link
-            v-if="artists.length > 5"
-            :to="{
-              name: 'searchViewAll',
-              params: { type: 'artists' },
-              query: { q: queryString }
-            }"
-            class="section-header__view-all link"
-            >View all</router-link
-          > -->
-        </v-flex>
-        <ArtistList :artists="getFirstNResults(artists, 5)" />
-      </template>
+    <template v-if="hasResults">
+      <content-section v-if="artists.length > 0">
+        <template #section-header>
+          Artists
+        </template>
 
-      <template v-if="songs.length > 0">
-        <v-flex xs12 class="section-header px-2 pt-4">
-          <section-header>Songs</section-header>
+        <template #section-content>
+          <ArtistList :artists="getFirstNResults(artists, 5)" />
+        </template>
+      </content-section>
+
+      <content-section v-if="songs.length > 0">
+        <template #section-header>
+          Songs
+        </template>
+
+        <template #section-header-right>
           <router-link
             v-if="songs.length > 5"
             :to="{
@@ -31,24 +27,30 @@
             class="section-header__view-all link"
             >View all</router-link
           >
-        </v-flex>
-        <SongListLarge
-          :songs="getFirstNResults(songs, 5)"
-          :sourceInfo="{
-            name: `Search results for '${queryString}'`,
-            path: {
-              name: 'search',
-              query: {
-                q: queryString
-              }
-            }
-          }"
-        />
-      </template>
+        </template>
 
-      <template v-if="albums.length > 0">
-        <v-flex class="section-header px-2 pt-4" xs12>
-          <section-header>Albums</section-header>
+        <template #section-content>
+          <SongListLarge
+            :songs="getFirstNResults(songs, 5)"
+            :sourceInfo="{
+              name: `Search results for '${queryString}'`,
+              path: {
+                name: 'search',
+                query: {
+                  q: queryString
+                }
+              }
+            }"
+          />
+        </template>
+      </content-section>
+
+      <content-section v-if="albums.length > 0">
+        <template #section-header>
+          Albums
+        </template>
+
+        <template #section-header-right>
           <router-link
             v-if="albums.length > 10"
             :to="{
@@ -59,13 +61,19 @@
             class="section-header__view-all link"
             >View all</router-link
           >
-        </v-flex>
-        <SongCollectionList :collections="getFirstNResults(albums, 10)" />
-      </template>
+        </template>
 
-      <template v-if="playlists.length > 0">
-        <v-flex xs12 class="section-header px-2 pt-4">
-          <section-header>Playlists</section-header>
+        <template #section-content>
+          <SongCollectionList :collections="getFirstNResults(albums, 10)" />
+        </template>
+      </content-section>
+
+      <content-section v-if="playlists.length > 0">
+        <template #section-header>
+          Playlists
+        </template>
+
+        <template #section-header-right>
           <router-link
             v-if="playlists.length > 10"
             :to="{
@@ -76,13 +84,15 @@
             class="section-header__view-all link"
             >View all</router-link
           >
-        </v-flex>
-        <SongCollectionList :collections="getFirstNResults(playlists, 10)" />
-      </template>
-    </v-layout>
-    <div v-else>
-      <h3>No results</h3>
-    </div>
+        </template>
+
+        <template #section-content>
+          <SongCollectionList :collections="getFirstNResults(playlists, 10)" />
+        </template>
+      </content-section>
+    </template>
+
+    <h3 v-else>No results</h3>
   </v-container>
 </template>
 

@@ -1,12 +1,12 @@
 <template>
   <transition name="list">
-    <v-layout v-if="genres.length > 0" row wrap>
+    <v-layout v-if="genres.length > 0" row wrap class="section-offset">
       <v-flex
         xs6
         sm3
         md3
         lg2
-        class="pa-2"
+        class="px-2 pb-3"
         v-for="genre in genres"
         :key="genre.id"
       >

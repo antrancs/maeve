@@ -13,7 +13,7 @@
           }"
         >
           <div :class="$style['banner-header']" :style="bannerHeaderStyle">
-            <h2
+            <h1
               :class="[
                 $style['artist-name'],
                 'pa-2',
@@ -22,7 +22,7 @@
               ]"
             >
               {{ artist.attributes.name }}
-            </h2>
+            </h1>
 
             <nav
               v-if="$vuetify.breakpoint.lgAndUp"
@@ -49,11 +49,7 @@
           </div>
         </div>
       </v-flex>
-      <v-flex
-        xs12
-        lg7
-        :class="['pt-2', { 'px-2': $vuetify.breakpoint.smAndDown }]"
-      >
+      <v-flex xs12 lg7 :class="['pt-2', 'px-2']">
         <keep-alive>
           <component
             :is="currentTabComponent"
@@ -390,6 +386,7 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
 
 .artist-name {
   font-size: 3.5rem;
+  margin: 0;
   z-index: 1;
 }
 

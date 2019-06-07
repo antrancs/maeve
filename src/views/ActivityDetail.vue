@@ -4,7 +4,7 @@
       <div class="banner" :style="bannerStyle"></div>
       <v-container fill-height>
         <v-layout align-end>
-          <h3 class="activity-title px-2 pb-3" :style="headerOverlayTextStyle">
+          <h3 class="activity-title pb-3" :style="headerOverlayTextStyle">
             {{ activity.attributes.name }}
           </h3>
         </v-layout>
@@ -15,13 +15,17 @@
 
     <v-container class="activity-content">
       <v-layout row wrap style="z-index: 2">
-        <v-flex xs12 class="px-2">
-          <section-header>Popular playlists</section-header>
-        </v-flex>
+        <content-section>
+          <template #section-header>
+            Popular playlists
+          </template>
 
-        <v-flex xs12>
-          <SongCollectionList :collections="playlists" />
-        </v-flex>
+          <template #section-content>
+            <v-flex xs12>
+              <SongCollectionList :collections="playlists" />
+            </v-flex>
+          </template>
+        </content-section>
       </v-layout>
     </v-container>
   </div>

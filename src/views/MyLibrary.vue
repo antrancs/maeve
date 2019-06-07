@@ -1,10 +1,10 @@
 <template>
   <v-container>
     <v-layout row wrap>
-      <v-flex xs12 class="px-2">
+      <v-flex xs12>
         <v-layout row wrap fill-height align-center>
           <v-flex xs12 md6 lg8>
-            <section-header>My {{ resource }}</section-header>
+            <h1 class="page-title">My {{ resource }}</h1>
           </v-flex>
 
           <v-flex xs12 md6 lg4>

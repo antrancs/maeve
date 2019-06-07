@@ -19,13 +19,13 @@ Component.registerHooks([
 ]);
 
 import AppButton from '@/components/AppButton.vue';
-import SectionHeader from '@/components/SectionHeader.vue';
+import ContentSection from '@/components/ContentSection.vue';
 
 Vue.config.productionTip = false;
 // Vue.config.performance = true;
 
 Vue.component('app-button', AppButton);
-Vue.component('section-header', SectionHeader);
+Vue.component('content-section', ContentSection);
 
 new Vue({
   router,

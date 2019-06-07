@@ -26,7 +26,7 @@
     >
       <v-container class="py-0">
         <v-layout row align-center>
-          <SearchTextField class="pl-2" v-if="$vuetify.breakpoint.smAndUp" />
+          <SearchTextField v-if="$vuetify.breakpoint.smAndUp" />
           <v-spacer></v-spacer>
 
           <v-icon

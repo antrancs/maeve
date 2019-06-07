@@ -1,16 +1,17 @@
 <template>
   <v-container>
-    <v-layout row wrap>
-      <v-flex xs12 class="px-2">
-        <section-header>{{ genreDetailName }}</section-header>
-      </v-flex>
+    <content-section>
+      <template #section-header>
+        {{ genreDetailName }}
+      </template>
 
-      <v-flex xs12 v-if="collections.length > 0">
-        <SongCollectionList :collections="collections" />
-      </v-flex>
-
-      <v-flex xs12 v-if="songs.length > 0 && genreDetailName">
+      <template #section-content>
+        <SongCollectionList
+          v-if="collections.length > 0"
+          :collections="collections"
+        />
         <SongListLarge
+          v-if="songs.length > 0 && genreDetailName"
           :songs="songs"
           :sourceInfo="{
             name: genreDetailName,
@@ -23,8 +24,8 @@
             }
           }"
         />
-      </v-flex>
-    </v-layout>
+      </template>
+    </content-section>
   </v-container>
 </template>
 

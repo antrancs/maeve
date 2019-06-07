@@ -3,8 +3,8 @@
     <NewReleaseHome
       v-for="release in releases"
       :key="release.id"
-      class="mr-2"
       :release="release"
+      class="mr-3"
     />
   </div>
 </template>

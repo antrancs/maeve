@@ -1,10 +1,15 @@
 <template>
   <v-container>
     <v-layout row wrap>
-      <v-flex xs12 class="px-2">
-        <section-header>Featured Playlists</section-header>
-      </v-flex>
-      <SongCollectionList :collections="playlists" />
+      <content-section>
+        <template #section-header>
+          Featured Playlists
+        </template>
+
+        <template #section-content>
+          <SongCollectionList :collections="playlists" />
+        </template>
+      </content-section>
 
       <v-flex class="text-xs-center" v-if="playlists.length === 0">
         <v-progress-circular indeterminate color="accent"></v-progress-circular>

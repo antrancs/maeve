@@ -3,7 +3,7 @@
     <div class="genre-header" :style="headerBackgroundStyle">
       <v-container fill-height>
         <v-layout align-end>
-          <h3 class="genre-title px-2 pb-3" :style="headerOverlayTextStyle">
+          <h3 class="genre-title pb-3" :style="headerOverlayTextStyle">
             {{ genre.name }}
           </h3>
         </v-layout>
@@ -11,10 +11,13 @@
       <TriangleSVG />
     </div>
 
-    <v-container class="genre-content" v-if="hotTracks.length > 0">
-      <v-layout row wrap style="z-index: 2">
-        <v-flex xs12 class="flex-row px-2" justify-space-between align-center>
-          <section-header>Hot Tracks</section-header>
+    <v-container class="genre-content">
+      <content-section v-if="hotTracks.length > 0">
+        <template #section-header>
+          Hot Tracks
+        </template>
+
+        <template #section-header-right>
           <router-link
             :to="{
               name: 'genresViewAll',
@@ -26,9 +29,9 @@
             class="link"
             >View all</router-link
           >
-        </v-flex>
+        </template>
 
-        <v-flex xs12>
+        <template #section-content>
           <SongListLarge
             :songs="hotTracks"
             :sourceInfo="{
@@ -41,14 +44,15 @@
               }
             }"
           />
-        </v-flex>
-      </v-layout>
-    </v-container>
+        </template>
+      </content-section>
 
-    <v-container class="genre-content pt-0" v-if="playlists.length > 0">
-      <v-layout row wrap>
-        <v-flex xs12 class="flex-row px-2" justify-space-between align-center>
-          <section-header>Playlists</section-header>
+      <content-section v-if="playlists.length > 0">
+        <template #section-header>
+          Playlists
+        </template>
+
+        <template #section-header-right>
           <router-link
             :to="{
               name: 'genresViewAll',
@@ -60,18 +64,19 @@
             class="link"
             >View all</router-link
           >
-        </v-flex>
+        </template>
 
-        <v-flex xs12>
+        <template #section-content>
           <CollectionCarousel :collections="playlists" />
-        </v-flex>
-      </v-layout>
-    </v-container>
+        </template>
+      </content-section>
 
-    <v-container class="genre-content pt-0" v-if="newReleases.length > 0">
-      <v-layout row wrap style="z-index: 2">
-        <v-flex xs12 class="flex-row px-2" justify-space-between align-center>
-          <section-header>New Releases</section-header>
+      <content-section v-if="newReleases.length > 0">
+        <template #section-header>
+          New Releases
+        </template>
+
+        <template #section-header-right>
           <router-link
             :to="{
               name: 'genresViewAll',
@@ -83,16 +88,19 @@
             class="link"
             >View all</router-link
           >
-        </v-flex>
+        </template>
 
-        <CollectionCarousel :collections="newReleases" />
-      </v-layout>
-    </v-container>
+        <template #section-content>
+          <CollectionCarousel :collections="newReleases" />
+        </template>
+      </content-section>
 
-    <v-container class="genre-content pt-0" v-if="essentialAlbums.length > 0">
-      <v-layout row wrap style="z-index: 2">
-        <v-flex xs12 class="flex-row px-2" justify-space-between align-center>
-          <section-header>Essential Albums</section-header>
+      <content-section v-if="essentialAlbums.length > 0">
+        <template #section-header>
+          Essential Albums
+        </template>
+
+        <template #section-header-right>
           <router-link
             :to="{
               name: 'genresViewAll',
@@ -104,16 +112,19 @@
             class="link"
             >View all</router-link
           >
-        </v-flex>
+        </template>
 
-        <CollectionCarousel :collections="essentialAlbums" />
-      </v-layout>
-    </v-container>
+        <template #section-content>
+          <CollectionCarousel :collections="essentialAlbums" />
+        </template>
+      </content-section>
 
-    <v-container class="genre-content pt-0" v-if="artistPlaylists.length > 0">
-      <v-layout row wrap style="z-index: 2">
-        <v-flex xs12 class="flex-row px-2" justify-space-between align-center>
-          <section-header>Artist Playlists</section-header>
+      <content-section v-if="artistPlaylists.length > 0">
+        <template #section-header>
+          Artist Playlists
+        </template>
+
+        <template #section-header-right>
           <router-link
             :to="{
               name: 'genresViewAll',
@@ -125,10 +136,12 @@
             class="link"
             >View all</router-link
           >
-        </v-flex>
+        </template>
 
-        <CollectionCarousel :collections="artistPlaylists" />
-      </v-layout>
+        <template #section-content>
+          <CollectionCarousel :collections="artistPlaylists" />
+        </template>
+      </content-section>
     </v-container>
 
     <!-- <v-container class="genre-content pt-0" v-if="curators.length > 0">

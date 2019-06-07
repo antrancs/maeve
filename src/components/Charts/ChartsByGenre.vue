@@ -18,28 +18,43 @@
 
     <transition name="fade" mode="out-in">
       <div>
-        <template v-if="songs.length > 0">
-          <section-header class="ml-2">Top songs</section-header>
-          <SongListLarge
-            :songs="songs"
-            :sourceInfo="{
-              name: 'Top songs',
-              path: {
-                name: 'charts'
-              }
-            }"
-          />
-        </template>
+        <content-section v-if="songs.length > 0">
+          <template #section-header>
+            Top songs
+          </template>
 
-        <template v-if="albums.length > 0">
-          <section-header class="ml-2 mt-4">Top Albums</section-header>
-          <SongCollectionList :collections="albums" />
-        </template>
+          <template #section-content>
+            <SongListLarge
+              :songs="songs"
+              :sourceInfo="{
+                name: 'Top songs',
+                path: {
+                  name: 'charts'
+                }
+              }"
+            />
+          </template>
+        </content-section>
 
-        <template v-if="playlists.length > 0">
-          <section-header class="ml-2 mt-4">Top Playlists</section-header>
-          <SongCollectionList :collections="playlists" />
-        </template>
+        <content-section v-if="albums.length > 0">
+          <template #section-header>
+            Top Albums
+          </template>
+
+          <template #section-content>
+            <SongCollectionList :collections="albums" />
+          </template>
+        </content-section>
+
+        <content-section v-if="playlists.length > 0">
+          <template #section-header>
+            Top Playlists
+          </template>
+
+          <template #section-content>
+            <SongCollectionList :collections="playlists" />
+          </template>
+        </content-section>
       </div>
     </transition>
   </div>

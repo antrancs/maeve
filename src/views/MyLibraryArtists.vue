@@ -188,6 +188,10 @@ export default class MyLibraryArtists extends Mixins(DataLoadingMixin) {
   transition: max-width 0.2s ease;
 }
 
+.column::-webkit-scrollbar {
+  display: none;
+}
+
 .album-detail-column {
   transition: opacity 0.2s ease;
 }

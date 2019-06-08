@@ -49,7 +49,7 @@ export default class LibraryArtistAlbumDetail extends Vue {
       sourceInfo: {
         name: this.album.attributes!.name,
         path: {
-          name: 'albums',
+          name: 'library-albums',
           params: {
             id: this.album.id
           }

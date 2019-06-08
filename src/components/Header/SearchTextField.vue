@@ -1,5 +1,6 @@
 <template>
   <v-text-field
+    class="search-text-field"
     label="Search"
     prepend-inner-icon="search"
     flat
@@ -49,3 +50,15 @@ export default class SearchTextField extends Vue {
   }
 }
 </script>
+
+<style lang="scss">
+.v-input.v-text-field.search-text-field .v-input__control {
+  min-height: 4rem;
+  align-items: flex-end;
+}
+
+.v-input.v-text-field.search-text-field .v-input__slot {
+  border-radius: 2rem;
+  // width: 35rem;
+}
+</style>

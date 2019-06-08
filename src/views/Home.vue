@@ -54,7 +54,12 @@
       </template>
 
       <template #section-content>
-        <CollectionCarousel :collections="recentPlayed" />
+        <CollectionCarousel
+          v-if="$vuetify.breakpoint.smAndDown"
+          :collections="recentPlayed"
+        />
+
+        <SongCollectionList v-else :collections="recentPlayed" />
       </template>
     </content-section>
 
@@ -64,13 +69,13 @@
       </template>
 
       <template #section-content>
-        <v-layout row wrap>
+        <v-layout row wrap class="section-offset">
           <v-flex
             xs6
-            sm3
+            sm4
             md3
             lg2
-            class="pr-2"
+            class="px-2 pb-2"
             v-for="category in browseCategories"
             :key="category.name"
           >
@@ -120,7 +125,12 @@
 
       <template #section-content>
         <CollectionCarousel
-          v-if="newReleases.length > 0"
+          v-if="newReleases.length > 0 && $vuetify.breakpoint.smAndDown"
+          :collections="newReleases"
+        />
+
+        <SongCollectionList
+          v-if="newReleases.length > 0 && $vuetify.breakpoint.mdAndUp"
           :collections="newReleases"
         />
       </template>
@@ -132,7 +142,11 @@
       </template>
 
       <template #section-content>
-        <CollectionCarousel :collections="albums" />
+        <CollectionCarousel
+          v-if="$vuetify.breakpoint.smAndDown"
+          :collections="albums"
+        />
+        <SongCollectionList v-else :collections="albums" />
       </template>
     </content-section>
 
@@ -142,7 +156,11 @@
       </template>
 
       <template #section-content>
-        <CollectionCarousel :collections="playlists" />
+        <CollectionCarousel
+          v-if="$vuetify.breakpoint.smAndDown"
+          :collections="playlists"
+        />
+        <SongCollectionList v-else :collections="playlists" />
       </template>
     </content-section>
 
@@ -154,10 +172,10 @@
       <template #section-content>
         <transition name="list">
           <v-layout
-            class="section-offset"
             row
             wrap
             v-if="activities.length > 0"
+            class="section-offset"
           >
             <ActivityItem
               :activity="activity"
@@ -185,7 +203,7 @@
 import { Vue, Component, Watch, Mixins } from 'vue-property-decorator';
 import { Action, Getter } from 'vuex-class';
 
-import CollectionCarousel from '@/components/Collection/CollectionCarousel.vue';
+// import CollectionCarousel from '@/components/Collection/CollectionCarousel.vue';
 import FeaturedPlaylist from '@/components/Collection/FeaturedPlaylist.vue';
 import ActivityItem from '@/components/ActivityItem.vue';
 import GenreList from '@/components/GenreList.vue';
@@ -217,8 +235,10 @@ import { getActivities, getCharts } from '../services/musicApi.service';
     FeaturedPlaylist,
     ActivityItem,
     GenreList,
-    CollectionCarousel,
-    NewReleaseHomeList
+    CollectionCarousel: () =>
+      import('@/components/Collection/CollectionCarousel.vue'),
+    NewReleaseHomeList,
+    SongCollectionList: () => import('@/components/Song/SongCollectionList.vue')
   }
 })
 export default class Home extends Mixins(DataLoadingMixin) {
@@ -257,14 +277,7 @@ export default class Home extends Mixins(DataLoadingMixin) {
       this.$_getGenres();
     });
 
-    getNewReleasesGenres().then(genres => {
-      this.genres = genres;
-
-      if (this.genres.length > 0) {
-        this.selectedNewReleasesGenre = this.genres[0];
-        this.$_getNewReleases();
-      }
-    });
+    this.$_getNewReleasesGenre();
   }
 
   get playlists(): MusicKit.Playlist[] {
@@ -283,6 +296,22 @@ export default class Home extends Mixins(DataLoadingMixin) {
     return (this.chart.albums[0].data as MusicKit.Album[]) || [];
   }
 
+  get fetchLimit(): number {
+    let fetchLimit = 8;
+    switch (this.$vuetify.breakpoint.name) {
+      case 'md':
+        fetchLimit = 10;
+        break;
+      case 'lg':
+        fetchLimit = 12;
+        break;
+      case 'xl':
+        fetchLimit = 14;
+        break;
+    }
+    return fetchLimit;
+  }
+
   created() {
     this.$_getFeaturedReleases();
 
@@ -294,15 +323,7 @@ export default class Home extends Mixins(DataLoadingMixin) {
 
     this.$_fetchCharts();
 
-    getNewReleasesGenres().then(genres => {
-      this.genres = genres;
-
-      if (this.genres.length > 0) {
-        this.selectedNewReleasesGenre = this.genres[0];
-        this.$_getNewReleases();
-      }
-    });
-
+    this.$_getNewReleasesGenre();
     getAllBrowseCategories().then(categories => {
       this.browseCategories = categories;
     });
@@ -326,14 +347,16 @@ export default class Home extends Mixins(DataLoadingMixin) {
       return;
     }
 
-    return getNewReleases(this.selectedNewReleasesGenre).then(releases => {
-      // display just first 12 items
-      if (Array.isArray(releases)) {
-        this.newReleases = releases.slice(0, 12);
-      } else {
-        this.newReleases = [];
+    return getNewReleases(this.selectedNewReleasesGenre, this.fetchLimit).then(
+      releases => {
+        // display just first 12 items
+        if (Array.isArray(releases)) {
+          this.newReleases = releases.slice(0, 12);
+        } else {
+          this.newReleases = [];
+        }
       }
-    });
+    );
   }
 
   $_fetchActivities() {
@@ -354,7 +377,7 @@ export default class Home extends Mixins(DataLoadingMixin) {
   }
 
   $_fetchCharts() {
-    return getCharts(['albums', 'playlists'], 10).then(
+    return getCharts(['albums', 'playlists'], this.fetchLimit).then(
       chart => (this.chart = chart)
     );
   }
@@ -370,6 +393,17 @@ export default class Home extends Mixins(DataLoadingMixin) {
   $_getGenres() {
     getGenresForCountry().then(genres => {
       this.genreItems = genres;
+    });
+  }
+
+  $_getNewReleasesGenre() {
+    getNewReleasesGenres().then(genres => {
+      this.genres = genres;
+
+      if (this.genres.length > 0) {
+        this.selectedNewReleasesGenre = this.genres[0];
+        this.$_getNewReleases();
+      }
     });
   }
 }

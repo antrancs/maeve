@@ -6,7 +6,7 @@
   >
     <v-flex
       v-bind="itemSizeAttributes"
-      class="px-2 pb-3"
+      class="px-2 mb-3"
       v-for="(collection, index) in collections"
       :key="`${collection.id}-${index}`"
     >
@@ -38,15 +38,29 @@ export default class SongCollectionList extends Vue {
   @Prop({ default: () => [] })
   collections!: Collection[];
 
-  @Prop({ default: () => ['xs6', 'sm3', 'md3', 'lg2'] })
+  @Prop({ default: () => ['xs6', 'sm3', 'lg2'] })
   itemSizes!: string[];
 
   get itemSizeAttributes() {
+    let hasXl = false;
+    let hasMd = false;
+
     const attrs = this.itemSizes.reduce((acc: any, current) => {
       acc[current] = true;
+      if (current.startsWith('xl')) {
+        hasXl = true;
+      } else if (current.startsWith('md')) {
+        hasMd = true;
+      }
       return acc;
     }, {});
 
+    if (!hasMd) {
+      attrs['md-5-col'] = true;
+    }
+    if (!hasXl) {
+      attrs['xl-7-col'] = true;
+    }
     return attrs;
   }
 }

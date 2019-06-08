@@ -14,7 +14,7 @@
     </div>
 
     <v-container class="activity-content">
-      <v-layout row wrap style="z-index: 2">
+      <v-layout row wrap>
         <content-section>
           <template #section-header>
             Popular playlists
@@ -140,7 +140,7 @@ export default class ActivityDetail extends Mixins(
 <style lang="scss" scoped>
 .activity-header {
   justify-content: flex-end;
-  height: 30vh;
+  height: 50vh;
   position: relative;
   width: 100%;
 }
@@ -148,18 +148,10 @@ export default class ActivityDetail extends Mixins(
 .activity-title {
   font-size: $xl-font;
   position: relative;
-  z-index: 2;
 }
 
 .activity-content {
   position: relative;
   width: 100%;
-  z-index: 2;
-}
-
-@media (min-width: $bp-phone) {
-  .activity-header {
-    height: 60vh;
-  }
 }
 </style>

@@ -6,7 +6,7 @@
         column: $vuetify.breakpoint.mdAndDown
       }"
     >
-      <v-flex class="pl-2" lg3 v-if="$vuetify.breakpoint.lgAndUp">
+      <v-flex class="mb-4" lg3 v-if="$vuetify.breakpoint.lgAndUp">
         <div
           :class="$style['left-column']"
           :style="[leftColumnBackgroundStyle]"
@@ -138,16 +138,28 @@
         />
       </v-flex>
 
-      <v-flex xs12 v-if="otherAlbumsFromArtists.length > 0" class="mt-2">
-        <h2 class="px-2">More by {{ collectionArtistName }}</h2>
+      <v-flex xs12 v-if="otherAlbumsFromArtists.length > 0">
+        <content-section>
+          <template #section-header>
+            More by {{ collectionArtistName }}
+          </template>
 
-        <SongCollectionList :collections="otherAlbumsFromArtists" />
+          <template #section-content>
+            <SongCollectionList :collections="otherAlbumsFromArtists" />
+          </template>
+        </content-section>
       </v-flex>
 
-      <v-flex xs12 v-if="relatedAlbums.length > 0" class="mt-2">
-        <h2 class="px-2">Albums you might also like</h2>
+      <v-flex xs12 v-if="relatedAlbums.length > 0">
+        <content-section>
+          <template #section-header>
+            Albums you might also like
+          </template>
 
-        <SongCollectionList :collections="relatedAlbums" />
+          <template #section-content>
+            <SongCollectionList :collections="relatedAlbums" />
+          </template>
+        </content-section>
       </v-flex>
     </v-layout>
   </v-container>

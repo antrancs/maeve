@@ -5,25 +5,27 @@
       wrap
       v-for="(recommendation, index) in recommendations"
       :key="recommendation.id"
-      class="mb-3"
+      class="mb-5"
     >
       <v-flex
         lg2
         xs12
-        :class="[{ 'my-2': $vuetify.breakpoint.lgAndUp }, 'px-2']"
+        :class="[{ 'mb-3': $vuetify.breakpoint.lgAndUp }, 'pr-3']"
       >
-        <h3
+        <h2
           :class="[
-            'px-1',
             'recommendation-header',
-            { 'large-screen': $vuetify.breakpoint.lgAndUp }
+            {
+              'large-screen px-1': $vuetify.breakpoint.lgAndUp,
+              'mb-2': $vuetify.breakpoint.mdAndDown
+            }
           ]"
           :style="[
             $vuetify.breakpoint.lgAndUp ? groupRecommendationStyle(index) : {}
           ]"
         >
           {{ recommendation.title }}
-        </h3>
+        </h2>
       </v-flex>
       <v-flex xs12 lg10>
         <v-layout row wrap>
@@ -176,11 +178,12 @@ export default class ForYou extends Mixins(DataLoadingMixin) {
 
 <style lang="scss" scoped>
 .recommendation-header {
-  font-size: 2.5rem;
+  font-size: 3rem;
   font-weight: bold;
 }
 
 .recommendation-header.large-screen {
+  font-size: 2.5rem;
   color: white;
   display: flex;
   align-items: center;

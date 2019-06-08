@@ -1,89 +1,80 @@
 <template>
-  <v-toolbar app fixed clipped-left :class="['primary lighten-1']">
-    <v-toolbar-side-icon
-      @click.stop="$emit('toggle-sidebar')"
-    ></v-toolbar-side-icon>
+  <v-toolbar app fixed color="primary" flat id="app-toolbar">
+    <v-container class="py-0">
+      <v-layout row wrap align-center>
+        <v-toolbar-side-icon
+          id="app-side-icon"
+          @click.stop="$emit('toggle-sidebar')"
+        ></v-toolbar-side-icon>
+        <v-btn dark title="Back" icon id="app-back-btn" @click="$router.back()">
+          <v-icon>arrow_back</v-icon>
+        </v-btn>
+        <v-btn
+          dark
+          title="Forward"
+          icon
+          id="app-forward-btn"
+          @click="$router.forward()"
+        >
+          <v-icon>arrow_forward</v-icon>
+        </v-btn>
 
-    <router-link :to="{ name: 'home' }">
-      <img
-        v-if="$vuetify.breakpoint.mdAndUp"
-        :class="$style['logo']"
-        src="@/assets/logo-desktop.png"
-        alt="logo"
-      />
-      <img
-        style="margin-top: 4px"
-        v-else
-        :class="$style['logo']"
-        src="@/assets/logo-mobile.png"
-        alt="logo"
-      />
-    </router-link>
-
-    <div
-      style="position: absolute; right: 0"
-      :style="searchTextAndLoginBtnWidthStyle"
-    >
-      <v-container class="py-0">
-        <v-layout row align-center>
+        <v-spacer></v-spacer>
+        <v-flex sm5 md4>
           <SearchTextField v-if="$vuetify.breakpoint.smAndUp" />
-          <v-spacer></v-spacer>
+        </v-flex>
 
-          <v-icon
-            v-if="$vuetify.breakpoint.xsOnly"
-            @click="showSearchTextFullWidth = true"
-            >search</v-icon
-          >
+        <v-icon
+          v-if="$vuetify.breakpoint.xsOnly"
+          @click="showSearchTextFullWidth = true"
+          >search</v-icon
+        >
+        <app-button v-if="!isAuthenticated" @on-click="login" class="mr-0"
+          >Log in</app-button
+        >
+        <v-menu
+          v-else
+          offset-y
+          transition="scale-transition"
+          :nudge-bottom="10"
+        >
+          <v-btn icon large flat slot="activator" class="mr-0">
+            <v-avatar color="accent" size="40px">
+              <v-icon :color="iconStyle">account_circle</v-icon>
+            </v-avatar>
+          </v-btn>
 
-          <app-button v-if="!isAuthenticated" @on-click="login" class="mr-1"
-            >Log in</app-button
-          >
-          <v-menu
-            v-else
-            offset-y
-            transition="scale-transition"
-            :nudge-bottom="10"
-          >
-            <v-btn icon large flat slot="activator" class="mr-1">
-              <v-avatar color="accent" size="40px">
-                <v-icon :color="iconStyle">account_circle</v-icon>
-              </v-avatar>
-            </v-btn>
+          <v-list class="pa-0 primary lighten-1">
+            <v-list-tile
+              v-for="(accountAction, index) in accountActions"
+              @click="accountAction.click"
+              ripple="ripple"
+              rel="noopener"
+              :key="index"
+            >
+              <v-list-tile-action>
+                <v-icon>{{ accountAction.icon }}</v-icon>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>{{ accountAction.title }}</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
 
-            <v-list class="pa-0 primary lighten-1">
-              <v-list-tile
-                v-for="(accountAction, index) in accountActions"
-                @click="accountAction.click"
-                ripple="ripple"
-                rel="noopener"
-                :key="index"
-              >
-                <v-list-tile-action>
-                  <v-icon>{{ accountAction.icon }}</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-content>
-                  <v-list-tile-title>{{
-                    accountAction.title
-                  }}</v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
-            </v-list>
-          </v-menu>
-        </v-layout>
-      </v-container>
-    </div>
-
-    <SearchTextField
-      v-if="showSearchTextFullWidth"
-      :class="$style['search-text--full-width']"
-      :autofocus="true"
-      @on-blur="showSearchTextFullWidth = false"
-    />
+        <SearchTextField
+          v-if="showSearchTextFullWidth"
+          :class="$style['search-text--full-width']"
+          :autofocus="true"
+          @on-blur="showSearchTextFullWidth = false"
+        />
+      </v-layout>
+    </v-container>
   </v-toolbar>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue, Watch, Prop } from 'vue-property-decorator';
 import { Getter, Action } from 'vuex-class';
 
 import SearchTextField from '@/components/Header/SearchTextField.vue';
@@ -97,6 +88,8 @@ import { isLight, TEXT_PRIMARY_LIGHT, TEXT_PRIMARY_DARK } from '@/themes';
 })
 export default class AppHeader extends Vue {
   private showSearchTextFullWidth = false;
+
+  @Prop({ default: false }) scrolling!: boolean;
 
   @Getter
   isAuthenticated!: boolean;
@@ -126,17 +119,17 @@ export default class AppHeader extends Vue {
       : TEXT_PRIMARY_DARK;
   }
 
-  get searchTextAndLoginBtnWidthStyle() {
-    if (this.$vuetify.breakpoint.mdAndUp) {
-      return {
-        left: '210px'
-      };
-    }
+  // get searchTextAndLoginBtnWidthStyle() {
+  //   if (this.$vuetify.breakpoint.mdAndUp) {
+  //     return {
+  //       left: '210px'
+  //     };
+  //   }
 
-    return {
-      left: '100px'
-    };
-  }
+  //   return {
+  //     left: '100px'
+  //   };
+  // }
 
   onSettingsClicked() {
     this.$emit('open-settings');
@@ -145,11 +138,28 @@ export default class AppHeader extends Vue {
 </script>
 
 <style lang="scss" module>
-@import '@/styles/components/_logo.scss';
-
 .search-text--full-width {
   position: absolute;
   left: 0;
-  right: 2rem;
+  right: 0;
+}
+</style>
+
+<style lang="scss">
+#app-toolbar .v-toolbar__content {
+  justify-content: center;
+  padding: 0;
+}
+
+#app-side-icon {
+  margin-left: -1rem;
+}
+
+#app-back-btn {
+  margin: 0;
+}
+
+#app-forward-btn {
+  margin: 0;
 }
 </style>

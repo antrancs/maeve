@@ -67,7 +67,11 @@
         </template>
 
         <template #section-content>
-          <CollectionCarousel :collections="playlists" />
+          <CollectionCarousel
+            v-if="$vuetify.breakpoint.smAndDown"
+            :collections="playlists"
+          />
+          <SongCollectionList v-else :collections="playlists" />
         </template>
       </content-section>
 
@@ -91,7 +95,11 @@
         </template>
 
         <template #section-content>
-          <CollectionCarousel :collections="newReleases" />
+          <CollectionCarousel
+            v-if="$vuetify.breakpoint.smAndDown"
+            :collections="newReleases"
+          />
+          <SongCollectionList v-else :collections="newReleases" />
         </template>
       </content-section>
 
@@ -115,7 +123,11 @@
         </template>
 
         <template #section-content>
-          <CollectionCarousel :collections="essentialAlbums" />
+          <CollectionCarousel
+            v-if="$vuetify.breakpoint.smAndDown"
+            :collections="essentialAlbums"
+          />
+          <SongCollectionList v-else :collections="essentialAlbums" />
         </template>
       </content-section>
 
@@ -139,7 +151,11 @@
         </template>
 
         <template #section-content>
-          <CollectionCarousel :collections="artistPlaylists" />
+          <CollectionCarousel
+            v-if="$vuetify.breakpoint.smAndDown"
+            :collections="artistPlaylists"
+          />
+          <SongCollectionList v-else :collections="artistPlaylists" />
         </template>
       </content-section>
     </v-container>
@@ -164,7 +180,7 @@ import { Action } from 'vuex-class';
 
 import TriangleSVG from '@/components/TriangleSVG.vue';
 import SongListLarge from '@/components/Song/SongListLarge.vue';
-import CollectionCarousel from '@/components/Collection/CollectionCarousel.vue';
+// import CollectionCarousel from '@/components/Collection/CollectionCarousel.vue';
 import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 import { Nullable } from '@/@types/model/model';
 import { Genre, GENRES } from '@/utils/constants';
@@ -181,8 +197,10 @@ import { getOneGenreForCountry } from '../services/catalog.service';
 @Component({
   components: {
     SongListLarge,
-    CollectionCarousel,
-    TriangleSVG
+    CollectionCarousel: () =>
+      import('@/components/Collection/CollectionCarousel.vue'),
+    TriangleSVG,
+    SongCollectionList: () => import('@/components/Song/SongCollectionList.vue')
   }
 })
 export default class GenreDetail extends Mixins(DataLoadingMixin) {
@@ -216,18 +234,20 @@ export default class GenreDetail extends Mixins(DataLoadingMixin) {
     };
   }
 
-  get fetchLimit() {
+  get fetchLimit(): number {
+    let fetchLimit = 8;
     switch (this.$vuetify.breakpoint.name) {
-      case 'xs':
-        return 8;
-      case 'sm':
-        return 10;
-
       case 'md':
-        return 15;
-      default:
-        return 20;
+        fetchLimit = 10;
+        break;
+      case 'lg':
+        fetchLimit = 12;
+        break;
+      case 'xl':
+        fetchLimit = 14;
+        break;
     }
+    return fetchLimit;
   }
 
   created() {
@@ -256,7 +276,7 @@ export default class GenreDetail extends Mixins(DataLoadingMixin) {
 
     const hotTrackIds = result['hotTracks'];
 
-    if (hotTrackIds && Array.isArray(hotTrackIds)) {
+    if (hotTrackIds && Array.isArray(hotTrackIds) && hotTrackIds.length > 0) {
       this.fetchMultipleSongsCatalog(hotTrackIds.slice(0, 10)).then(songs => {
         this.hotTracks = songs;
       });
@@ -288,7 +308,7 @@ export default class GenreDetail extends Mixins(DataLoadingMixin) {
 <style lang="scss" scoped>
 .genre-header {
   justify-content: flex-end;
-  height: 30vh;
+  height: 40vh;
   position: relative;
   width: 100%;
 }
@@ -296,18 +316,10 @@ export default class GenreDetail extends Mixins(DataLoadingMixin) {
 .genre-title {
   font-size: $xl-font;
   position: relative;
-  z-index: 2;
 }
 
 .genre-content {
   position: relative;
   width: 100%;
-  z-index: 2;
-}
-
-@media (min-width: $bp-phone) {
-  .genre-header {
-    height: 40vh;
-  }
 }
 </style>

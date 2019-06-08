@@ -2,7 +2,7 @@
   <v-navigation-drawer
     app
     fixed
-    clipped
+    :clipped="false"
     :width="210"
     class="primary lighten-1 elevation-10"
     v-model="sidebar"
@@ -10,6 +10,11 @@
   >
     <v-layout column fill-height justify-space-between class="sidebar-dark">
       <v-list>
+        <v-list-tile>
+          <router-link :to="{ name: 'home' }">
+            <img class="logo" src="@/assets/logo-desktop.png" alt="logo" />
+          </router-link>
+        </v-list-tile>
         <template v-for="link in navigationLinks">
           <v-list-tile
             v-if="!link.subItems"
@@ -226,9 +231,7 @@ export default class AppSidebar extends Vue {
   get sidebarStyleHeight() {
     if (this.currentPlaying) {
       return {
-        'max-height': this.$vuetify.breakpoint.lgAndUp
-          ? 'calc(100% - 64px - 96px)' // minus header + player bar height
-          : 'calc(100% - 96px)' // minus player bar height
+        'max-height': 'calc(100% - 96px)' // minus player bar height
       };
     }
     return {};
@@ -262,6 +265,7 @@ export default class AppSidebar extends Vue {
 </script>
 
 <style lang="scss" scoped>
+@import '@/styles/components/_logo.scss';
 .v-list__tile--active .v-list__tile__title {
   font-weight: bold;
 }

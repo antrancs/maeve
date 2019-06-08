@@ -198,3 +198,7 @@ export const DAILY_TOP_100_COUNTRY_MAP: { [id: string]: string } = {
   mx: 'pl.df3f10ca27b1479087de2cd3f9f6716b',
   kr: 'pl.d3d10c32fbc540b38e266367dc8cb00c'
 };
+
+export const VUETIFY_XL_MAX_WIDTH = 1785;
+export const VUETIFY_LG_MAX_WIDTH = 1185;
+export const VUETIFY_MD_MAX_WIDTH = 900;

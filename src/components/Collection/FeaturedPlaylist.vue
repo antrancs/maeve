@@ -26,7 +26,6 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import differenceInCalendarDays from 'date-fns/difference_in_calendar_days';
 
 import { getArtworkUrl, getTextColorForBackground } from '@/utils/utils';
 
@@ -138,12 +137,7 @@ export default class FeaturedPlaylist extends Vue {
       return false;
     }
 
-    return (
-      differenceInCalendarDays(
-        new Date(),
-        new Date(this.playlist.attributes.lastModifiedDate)
-      ) <= 7
-    );
+    return false;
   }
 }
 </script>

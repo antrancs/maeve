@@ -12,9 +12,15 @@ $sidebar-width: 17rem;
 $sidebar-width-collapsed: 6rem;
 $header-height: 6rem;
 
-// Break points
-$bp-tablet-landscape: 900px;
-$bp-phone: 600px;
-
 $card-border-radius: 1rem;
 $featured-card-border-radius: 1.5rem;
+
+// Vuetify breakpoints
+$xl-breakpoint: 1904px;
+$xl-max-width: 1785px;
+
+$lg-breakpoint: 1264px;
+$lg-max-width: 1185px;
+
+$md-breakpoint: 960px;
+$md-max-width: 900px;

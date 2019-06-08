@@ -49,7 +49,7 @@ import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 export default class GenreDetailViewAll extends Mixins(DataLoadingMixin) {
   private songs: MusicKit.Song[] = [];
   private collections: (MusicKit.Album | MusicKit.Playlist)[] = [];
-  private genreDetailName!: string;
+  private genreDetailName = '';
 
   @Prop() id!: string;
   @Prop() resource!: string;

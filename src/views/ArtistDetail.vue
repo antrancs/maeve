@@ -49,7 +49,14 @@
           </div>
         </div>
       </v-flex>
-      <v-flex xs12 lg7 :class="['pt-2', 'px-2']">
+      <v-flex
+        xs12
+        lg7
+        :class="[
+          { 'pt-4': $vuetify.breakpoint.mdAndDown },
+          { 'px-2 pt-2': $vuetify.breakpoint.lgAndUp }
+        ]"
+      >
         <keep-alive>
           <component
             :is="currentTabComponent"
@@ -349,8 +356,13 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
 }
 
 .left-column-sticky .banner-header::before {
-  background: linear-gradient(to right, transparent -5%, var(--v-primary-base)),
-    linear-gradient(transparent 10%, var(--v-primary-base));
+  background: linear-gradient(to right, transparent 70%, var(--v-primary-base)),
+    linear-gradient(
+      to top,
+      var(--v-primary-base) 1%,
+      transparent 70%,
+      var(--v-primary-base)
+    );
 }
 
 .left-column-sticky .banner-header {

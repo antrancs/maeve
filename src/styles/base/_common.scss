@@ -75,3 +75,19 @@ a.link:hover {
 a.link--external:hover {
   color: var(--v-accent-darken1);
 }
+
+@media only screen and (min-width: $md-breakpoint) and (max-width: $lg-breakpoint - 1) {
+  .flex.md-5-col {
+    width: 20%;
+    max-width: 20%;
+    flex-basis: 20%;
+  }
+}
+
+@media only screen and (min-width: $xl-breakpoint) {
+  .flex.xl-7-col {
+    width: 14.2857%;
+    max-width: 14.2857%;
+    flex-basis: 14.2857%;
+  }
+}

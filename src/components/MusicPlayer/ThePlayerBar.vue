@@ -149,8 +149,6 @@
 import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { State, Action, Getter, Mutation } from 'vuex-class';
 
-import LyricsDialog from '@/components/LyricsDialog.vue';
-import PlayQueue from '@/components/PlayQueue/PlayQueue.vue';
 import PlayerProgressBar from './PlayerProgressBar.vue';
 import PlayerFullScreen from './PlayerFullScreen.vue';
 import PlayNextButton from './PlayNextButton.vue';
@@ -184,14 +182,14 @@ import { getArtworkUrl } from '../../utils/utils';
 
 @Component({
   components: {
-    LyricsDialog,
+    LyricsDialog: () => import('@/components/LyricsDialog.vue'),
     PlayerProgressBar,
     PlayNextButton,
     PlayPreviousButton,
     PlayButton,
     PlayerVolume,
     PlayerFullScreen,
-    PlayQueue
+    PlayQueue: () => import('@/components/PlayQueue/PlayQueue.vue')
   }
 })
 export default class PlayerBar extends Mixins(

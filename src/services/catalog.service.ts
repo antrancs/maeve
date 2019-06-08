@@ -49,7 +49,7 @@ function getMainFeaturedPlaylists() {
   return axiosInstance
     .get('/playlists/featured/main', {
       params: {
-        country: 'pe' // MusicKit.getInstance().storefrontId
+        country: MusicKit.getInstance().storefrontId
       }
     })
     .then(res => {
@@ -145,12 +145,13 @@ function getCuratorsByGenre(genreId: string) {
   });
 }
 
-function getNewReleases(genre: string) {
+function getNewReleases(genre: string, limit: number) {
   return axiosInstance
     .get('/newReleases/', {
       params: {
         country: MusicKit.getInstance().storefrontId,
-        genre
+        genre,
+        limit
       }
     })
     .then(res => {

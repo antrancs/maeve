@@ -441,6 +441,6 @@ $padding-x: 8px;
   opacity: 0;
   position: absolute;
   transition: opacity 0.1s ease-in;
-  z-index: 2;
+  z-index: 1;
 }
 </style>

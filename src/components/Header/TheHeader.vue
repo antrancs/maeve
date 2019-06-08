@@ -6,18 +6,26 @@
           id="app-side-icon"
           @click.stop="$emit('toggle-sidebar')"
         ></v-toolbar-side-icon>
-        <v-btn dark title="Back" icon id="app-back-btn" @click="$router.back()">
-          <v-icon>arrow_back</v-icon>
-        </v-btn>
-        <v-btn
-          dark
-          title="Forward"
-          icon
-          id="app-forward-btn"
-          @click="$router.forward()"
-        >
-          <v-icon>arrow_forward</v-icon>
-        </v-btn>
+        <template v-if="standaloneMode">
+          <v-btn
+            dark
+            title="Back"
+            icon
+            id="app-back-btn"
+            @click="$router.back()"
+          >
+            <v-icon>arrow_back</v-icon>
+          </v-btn>
+          <v-btn
+            dark
+            title="Forward"
+            icon
+            id="app-forward-btn"
+            @click="$router.forward()"
+          >
+            <v-icon>arrow_forward</v-icon>
+          </v-btn>
+        </template>
 
         <v-spacer></v-spacer>
         <v-flex sm5 md4>
@@ -119,17 +127,9 @@ export default class AppHeader extends Vue {
       : TEXT_PRIMARY_DARK;
   }
 
-  // get searchTextAndLoginBtnWidthStyle() {
-  //   if (this.$vuetify.breakpoint.mdAndUp) {
-  //     return {
-  //       left: '210px'
-  //     };
-  //   }
-
-  //   return {
-  //     left: '100px'
-  //   };
-  // }
+  get standaloneMode(): boolean {
+    return window.matchMedia('(display-mode: standalone)').matches;
+  }
 
   onSettingsClicked() {
     this.$emit('open-settings');

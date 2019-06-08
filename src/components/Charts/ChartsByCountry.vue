@@ -44,8 +44,15 @@
     </template>
 
     <div v-else>
-      <h2 class="mx-2">Top playlists</h2>
-      <SongCollectionList :collections="playlists" />
+      <content-section>
+        <template #section-header>
+          Top playlists
+        </template>
+
+        <template #section-content>
+          <SongCollectionList :collections="playlists" />
+        </template>
+      </content-section>
     </div>
   </div>
 </template>
@@ -55,9 +62,7 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Action, Mutation, State } from 'vuex-class';
 
 import { DAILY_TOP_100_COUNTRY_MAP } from '@/utils/constants';
-import WorldMap from './WorldMap.vue';
 import CollectionHeader from '@/components/Collection/CollectionHeader.vue';
-import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import ChartSongList from '@/components/Song/ChartSongList.vue';
 import {
   FETCH_ONE_PLAYLIST_CATALOG,
@@ -78,10 +83,10 @@ import { getSongsFromCollection } from '@/utils/utils';
 
 @Component({
   components: {
-    WorldMap,
+    WorldMap: () => import('./WorldMap.vue'),
     ChartSongList,
     CollectionHeader,
-    SongCollectionList
+    SongCollectionList: () => import('@/components/Song/SongCollectionList.vue')
   }
 })
 export default class ChartsByCountry extends Vue {

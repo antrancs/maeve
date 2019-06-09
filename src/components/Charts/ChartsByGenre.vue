@@ -42,7 +42,11 @@
           </template>
 
           <template #section-content>
-            <SongCollectionList :collections="albums" />
+            <SongCollectionList
+              :collections="albums"
+              v-if="$vuetify.breakpoint.mdAndUp"
+            />
+            <CollectionCarousel v-else :collections="albums" />
           </template>
         </content-section>
 
@@ -52,7 +56,11 @@
           </template>
 
           <template #section-content>
-            <SongCollectionList :collections="playlists" />
+            <SongCollectionList
+              :collections="playlists"
+              v-if="$vuetify.breakpoint.mdAndUp"
+            />
+            <CollectionCarousel v-else :collections="playlists" />
           </template>
         </content-section>
       </div>
@@ -64,7 +72,6 @@
 import { Component, Vue, Watch } from 'vue-property-decorator';
 
 import SongListLarge from '@/components/Song/SongListLarge.vue';
-import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import { Nullable } from '@/@types/model/model';
 import { GENRES } from '@/utils/constants';
 import { isLight, TEXT_PRIMARY_LIGHT, TEXT_PRIMARY_DARK } from '@/themes';
@@ -73,7 +80,10 @@ import { getCharts } from '../../services/musicApi.service';
 @Component({
   components: {
     SongListLarge,
-    SongCollectionList
+    SongCollectionList: () =>
+      import('@/components/Song/SongCollectionList.vue'),
+    CollectionCarousel: () =>
+      import('@/components/Collection/CollectionCarousel.vue')
   }
 })
 export default class ChartsByGenre extends Vue {
@@ -127,6 +137,22 @@ export default class ChartsByGenre extends Vue {
       : TEXT_PRIMARY_DARK;
   }
 
+  get fetchLimit(): number {
+    let fetchLimit = 8;
+    switch (this.$vuetify.breakpoint.name) {
+      case 'md':
+        fetchLimit = 10;
+        break;
+      case 'lg':
+        fetchLimit = 12;
+        break;
+      case 'xl':
+        fetchLimit = 14;
+        break;
+    }
+    return fetchLimit;
+  }
+
   @Watch('selectedGenre')
   onGenreChanged(newValue: number) {
     const genreId = this.genres[newValue].id;
@@ -141,16 +167,9 @@ export default class ChartsByGenre extends Vue {
   $_fetchChart(genreId: string) {
     this.chart = null;
 
-    let limit = 10;
-
-    if (this.$vuetify.breakpoint.name === 'xs') {
-      // fetch just 5 items on mobile
-      limit = 5;
-    }
-
     getCharts(
       ['albums', 'songs', 'playlists'],
-      limit,
+      this.fetchLimit,
       genreId !== '0' ? genreId : undefined
     ).then(chart => {
       this.chart = chart;

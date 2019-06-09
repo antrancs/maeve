@@ -97,8 +97,6 @@ import { isLight, TEXT_PRIMARY_LIGHT, TEXT_PRIMARY_DARK } from '@/themes';
 export default class AppHeader extends Vue {
   private showSearchTextFullWidth = false;
 
-  @Prop({ default: false }) scrolling!: boolean;
-
   @Getter
   isAuthenticated!: boolean;
   @Getter darkMode!: boolean;

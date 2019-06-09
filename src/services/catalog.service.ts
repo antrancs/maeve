@@ -45,11 +45,12 @@ function getFeaturedPlaylists() {
     });
 }
 
-function getMainFeaturedPlaylists() {
+function getMainFeaturedPlaylists(limit: number) {
   return axiosInstance
     .get('/playlists/featured/main', {
       params: {
-        country: MusicKit.getInstance().storefrontId
+        country: MusicKit.getInstance().storefrontId,
+        limit
       }
     })
     .then(res => {

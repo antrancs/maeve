@@ -5,7 +5,7 @@
       :style="featuredPlaylistStyle"
     >
       <div
-        v-if="isJustUpdated"
+        v-if="playlist.attributes.justUpdated"
         :class="[$style['just-updated-tag'], 'pa-1', 'elevation-5']"
         :style="justUpdatedTagStyle"
       >
@@ -127,17 +127,6 @@ export default class FeaturedPlaylist extends Vue {
       color: textColor,
       'background-color': this.$vuetify.theme.accent
     };
-  }
-
-  get isJustUpdated() {
-    if (
-      !this.playlist.attributes ||
-      !this.playlist.attributes.lastModifiedDate
-    ) {
-      return false;
-    }
-
-    return false;
   }
 }
 </script>

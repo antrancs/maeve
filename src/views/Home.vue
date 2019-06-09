@@ -36,10 +36,11 @@
             <v-flex
               xs6
               sm4
-              md3
+              md4
+              lg3
               v-for="playlist in featuredPlaylists"
               :key="playlist.id"
-              class="px-2"
+              class="px-2 pb-3 xl-5-col"
             >
               <FeaturedPlaylist :playlist="playlist" />
             </v-flex>
@@ -338,7 +339,18 @@ export default class Home extends Mixins(DataLoadingMixin) {
   }
 
   async $_fetchFeaturedPlaylists() {
-    const playlists = await getMainFeaturedPlaylists();
+    let limit = 4;
+
+    switch (this.$vuetify.breakpoint.name) {
+      case 'sm':
+      case 'md':
+        limit = 3;
+        break;
+      case 'xl':
+        limit = 5;
+    }
+
+    const playlists = await getMainFeaturedPlaylists(limit);
     this.featuredPlaylists = playlists;
   }
 

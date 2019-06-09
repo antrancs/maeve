@@ -95,8 +95,14 @@ import Component from 'vue-class-component';
 import { Action } from 'vuex-class';
 import { Prop } from 'vue-property-decorator';
 
-import { FETCH_ONE_ALBUM_CATALOG, PLAY_SONGS } from '../../store/actions.type';
-import { FetchOneAlbumCatalogAction, PlaySongsAction } from '../../store/types';
+import {
+  FETCH_ONE_ALBUM_CATALOG,
+  PLAY_COLLECTION
+} from '../../store/actions.type';
+import {
+  FetchOneAlbumCatalogAction,
+  PlayCollectionAction
+} from '../../store/types';
 import {
   getSongsFromCollection,
   getGradientBackgroundColorsFromArtwork
@@ -114,8 +120,7 @@ export default class NewReleaseHome extends Vue {
   @Prop() release: any;
 
   @Action [FETCH_ONE_ALBUM_CATALOG]: FetchOneAlbumCatalogAction;
-  // @Action [PLAY_COLLECTION]: PlayCollectionAction;
-  @Action [PLAY_SONGS]: PlaySongsAction;
+  @Action [PLAY_COLLECTION]: PlayCollectionAction;
 
   get wrapperStyle() {
     return {
@@ -194,22 +199,9 @@ export default class NewReleaseHome extends Vue {
   }
 
   playAlbum() {
-    // this.playCollection({
-    //   collectionId: this.release.id,
-    //   collectionType: 'albums'
-    // });
-
-    this.playSongs({
-      songs: this.songs,
-      sourceInfo: {
-        name: this.release.name,
-        path: {
-          name: 'albums',
-          params: {
-            id: this.release.id
-          }
-        }
-      }
+    this.playCollection({
+      collectionId: this.release.id,
+      collectionType: 'albums'
     });
   }
 
@@ -218,23 +210,9 @@ export default class NewReleaseHome extends Vue {
       return;
     }
 
-    // this.playCollection({
-    //   collectionId: this.release.id,
-    //   collectionType: 'albums',
-    //   startPosition: songIndex
-    // });
-
-    this.playSongs({
-      songs: this.songs,
-      sourceInfo: {
-        name: this.release.name,
-        path: {
-          name: 'albums',
-          params: {
-            id: this.release.id
-          }
-        }
-      },
+    this.playCollection({
+      collectionId: this.release.id,
+      collectionType: 'albums',
       startPosition: songIndex
     });
   }

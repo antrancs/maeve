@@ -106,6 +106,12 @@ const actions: ActionTree<MusicPlayerState, any> = {
       shuffle = false
     }: PlayCollectionPayload
   ) {
+    const audioPlayer = document.getElementById('apple-music-player');
+
+    if (audioPlayer) {
+      (audioPlayer as HTMLAudioElement).load();
+    }
+
     const type =
       collectionType === 'library-albums' || collectionType === 'albums'
         ? 'album'

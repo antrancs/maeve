@@ -213,7 +213,7 @@ import {
   FETCH_ONE_PLAYLIST_LIBRARY,
   FETCH_ALBUM_EXTRA_INFO_CATALOG,
   FETCH_LIBRARY_PLAYLIST_TRACKS,
-  PLAY_SONGS
+  PLAY_COLLECTION
 } from '@/store/actions.type';
 import {
   FetchOneAlbumCatalogAction,
@@ -222,8 +222,7 @@ import {
   FetchOneAlbumLibraryAction,
   FetchOnePlaylistLibraryAction,
   FetchLibraryPlaylistTracksAction,
-  PlayCollectionAction,
-  PlaySongsAction
+  PlayCollectionAction
 } from '@/store/types';
 import { SET_FOOTER_VISIBILITY } from '@/store/mutations.type';
 import { getGradientBackgroundColorsFromArtwork } from '@/utils/utils';
@@ -260,8 +259,7 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
   @Action [FETCH_ONE_PLAYLIST_LIBRARY]: FetchOnePlaylistLibraryAction;
   @Action [FETCH_LIBRARY_PLAYLIST_TRACKS]: FetchLibraryPlaylistTracksAction;
   @Action [FETCH_ALBUM_EXTRA_INFO_CATALOG]: (url: string) => Promise<any>;
-  // @Action [PLAY_COLLECTION]: PlayCollectionAction;
-  @Action [PLAY_SONGS]: PlaySongsAction;
+  @Action [PLAY_COLLECTION]: PlayCollectionAction;
 
   @Mutation [SET_FOOTER_VISIBILITY]: (visibility: boolean) => void;
 
@@ -577,23 +575,9 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
       return;
     }
 
-    // this.playCollection({
-    //   collectionId: this.id,
-    //   collectionType: this.collection.type,
-    //   startPosition: songIndex
-    // });
-
-    this.playSongs({
-      songs: this.songs,
-      sourceInfo: {
-        name: this.collection.attributes!.name,
-        path: {
-          name: this.collection.type,
-          params: {
-            id: this.collection.id
-          }
-        }
-      },
+    this.playCollection({
+      collectionId: this.id,
+      collectionType: this.collection.type,
       startPosition: songIndex
     });
   }

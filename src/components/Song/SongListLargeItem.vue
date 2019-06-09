@@ -48,7 +48,7 @@
       <v-layout row wrap align-center>
         <v-flex :class="fromAlbum ? 'xs12' : 'lg6 xs12'">
           <v-layout row wrap>
-            <v-flex xs12 :class="['pr-2', fromAlbum ? 'lg6' : 'lg12']">
+            <v-flex xs12 :class="['pr-4', 'lg12']">
               <v-layout>
                 <div
                   :class="['long-text-truncated', $style['song-name']]"
@@ -66,7 +66,7 @@
               </v-layout>
             </v-flex>
 
-            <v-flex xs12 :class="['pr-2', fromAlbum ? 'lg6' : 'lg12']">
+            <v-flex v-if="!fromAlbum" xs12 class="pr-2 lg12">
               <div :class="['long-text-truncated']">
                 <span
                   :class="$style['artist-name']"

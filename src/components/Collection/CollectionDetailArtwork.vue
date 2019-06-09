@@ -1,10 +1,14 @@
 <template>
-  <div :class="$style['wrapper']">
+  <div
+    :class="[$style['wrapper'], { [$style['album']]: isAlbum }]"
+    :style="cssProps"
+  >
     <img
       v-if="artworks.length <= 2"
       :src="artwork1"
       :class="$style['artwork-one']"
       alt="Artwork"
+      v-lazy="artwork1"
     />
 
     <template v-else>
@@ -41,6 +45,10 @@
         alt=""
       />
     </template>
+
+    <div v-if="isAlbum" :class="[$style['round-cd'], 'elevation-8']">
+      <img :src="artwork1" alt="Artwork" v-lazy="artwork1" />
+    </div>
   </div>
 </template>
 
@@ -54,15 +62,28 @@ import { getArtworkUrl } from '@/utils/utils';
 @Component
 export default class CollectionDetailArtwork extends Vue {
   @Prop() artworks!: MusicKit.Artwork[];
+  @Prop({ default: false }) isAlbum!: boolean;
+  @Prop() backgroundGradients!: string[];
 
+  get artworkSize() {
+    if (this.$vuetify.breakpoint.name === 'xl') {
+      return 200;
+    }
+
+    return 150;
+  }
   get artwork1() {
     if (this.artworks.length === 0) {
       return PLACEHOLDER_IMAGE;
     } else if (this.artworks.length === 1) {
-      return getArtworkUrl(this.artworks[0], 400, 400);
+      return getArtworkUrl(
+        this.artworks[0],
+        this.artworkSize * 2,
+        this.artworkSize * 2
+      );
     }
 
-    return getArtworkUrl(this.artworks[0], 200, 200);
+    return getArtworkUrl(this.artworks[0], this.artworkSize, this.artworkSize);
   }
 
   get artwork2() {
@@ -70,7 +91,7 @@ export default class CollectionDetailArtwork extends Vue {
       return PLACEHOLDER_IMAGE;
     }
 
-    return getArtworkUrl(this.artworks[1], 200, 200);
+    return getArtworkUrl(this.artworks[1], this.artworkSize, this.artworkSize);
   }
 
   get artwork3() {
@@ -78,7 +99,7 @@ export default class CollectionDetailArtwork extends Vue {
       return PLACEHOLDER_IMAGE;
     }
 
-    return getArtworkUrl(this.artworks[2], 200, 200);
+    return getArtworkUrl(this.artworks[2], this.artworkSize, this.artworkSize);
   }
 
   get artwork4() {
@@ -87,10 +108,29 @@ export default class CollectionDetailArtwork extends Vue {
     }
 
     if (this.artworks.length === 3) {
-      return getArtworkUrl(this.artworks[0], 200, 200);
+      return getArtworkUrl(
+        this.artworks[0],
+        this.artworkSize,
+        this.artworkSize
+      );
     }
 
-    return getArtworkUrl(this.artworks[3], 200, 200);
+    return getArtworkUrl(this.artworks[3], this.artworkSize, this.artworkSize);
+  }
+
+  get cssProps() {
+    if (!this.backgroundGradients || !this.isAlbum) {
+      return {};
+    }
+
+    if (this.backgroundGradients.length < 2) {
+      return {};
+    }
+
+    return {
+      '--gradient-color-1': this.backgroundGradients[0],
+      '--gradient-color-2': this.backgroundGradients[1]
+    };
   }
 }
 </script>
@@ -101,6 +141,54 @@ export default class CollectionDetailArtwork extends Vue {
   height: 100%;
   display: flex;
   flex-wrap: wrap;
+  position: relative;
+}
+
+.round-cd::before {
+  content: '';
+  position: absolute;
+  width: 25%;
+  height: 25%;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  background: linear-gradient(
+    45deg,
+    var(--gradient-color-1, white),
+    var(--gradient-color-2, rgb(207, 201, 201))
+  );
+  margin-left: -12.5%;
+  margin-top: -12.5%;
+}
+
+.round-cd::after {
+  content: '';
+  position: absolute;
+  width: 10%;
+  height: 10%;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  background-color: var(--v-primary-base);
+  margin-left: -5%;
+  margin-top: -5%;
+}
+
+.round-cd {
+  position: absolute;
+  top: 2.5%;
+  border-radius: 50%;
+  bottom: 2.5%;
+  left: 53%;
+  // background: red;
+  width: 95%;
+  z-index: 0;
+}
+
+.round-cd img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
 }
 
 .artwork-one {
@@ -108,6 +196,11 @@ export default class CollectionDetailArtwork extends Vue {
   height: 100%;
   width: 100%;
   object-fit: contain;
+  z-index: 1;
+}
+
+.album .artwork-one {
+  border-radius: 0;
 }
 
 .artwork-one-fourth {

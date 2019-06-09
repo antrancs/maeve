@@ -36,9 +36,11 @@
 
           <div :class="$style['cover-wrapper']">
             <CollectionDetailArtwork
-              :class="$style['cover']"
+              :class="[$style['cover'], { 'elevation-5': isFromAlbum }]"
               :style="artworkStyle"
               :artworks="artworks"
+              :isAlbum="isFromAlbum"
+              :backgroundGradients="backgroundGradients"
             />
           </div>
 
@@ -60,15 +62,29 @@
         </div>
       </v-flex>
       <v-flex v-else :class="['mb-3', { xs12: $vuetify.breakpoint.lgAndUp }]">
-        <v-layout row v-if="collection">
-          <div :class="$style['cover-sm']">
+        <v-layout
+          row
+          wrap
+          v-if="collection"
+          :justify-center="$vuetify.breakpoint.xsOnly"
+        >
+          <v-flex :class="$style['cover-sm']" :style="coverSmStyle">
             <CollectionDetailArtwork
               :class="$style['cover']"
               :artworks="artworks"
+              :isAlbum="isFromAlbum"
+              :backgroundGradients="backgroundGradients"
             />
-          </div>
-          <v-flex class="pl-3">
-            <v-layout column>
+          </v-flex>
+          <v-flex
+            xs12
+            sm6
+            :class="{
+              'pl-3': $vuetify.breakpoint.smAndUp,
+              'pt-3': $vuetify.breakpoint.xsOnly
+            }"
+          >
+            <v-layout column :align-center="$vuetify.breakpoint.xsOnly">
               <div
                 :class="$style['collection-name']"
                 :style="collectionNameStyle"
@@ -100,13 +116,14 @@
         />
       </v-flex>
 
+      <v-spacer v-if="isFromAlbum && $vuetify.breakpoint.lgAndUp"></v-spacer>
       <v-flex
-        xs12
-        sm12
-        md12
-        lg9
         v-if="collection"
-        :class="{ [$style['right-column']]: $vuetify.breakpoint.lgAndUp }"
+        :class="{
+          [$style['right-column']]: $vuetify.breakpoint.lgAndUp,
+          lg7: isFromAlbum,
+          lg9: !isFromAlbum
+        }"
       >
         <template v-if="collectionDescription">
           <p
@@ -228,6 +245,7 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
   private relatedAlbums: MusicKit.Album[] = [];
   private otherAlbumsFromArtists: MusicKit.Album[] = [];
   private editorialNoteCollapse = true;
+  private backgroundGradients: string[] = [];
   private songs: Song[] = [];
 
   @Prop() id!: string;
@@ -340,20 +358,10 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
   }
 
   get leftColumnBackgroundStyle() {
-    if (
-      !this.collection ||
-      !this.collection.attributes ||
-      !this.collection.attributes.artwork
-    ) {
-      return {};
-    }
-
-    const colorsForGradient = getGradientBackgroundColorsFromArtwork(
-      this.collection.attributes.artwork
-    );
-
     return {
-      background: `linear-gradient(45deg, ${colorsForGradient.join(',')})`
+      background: `linear-gradient(45deg, ${this.backgroundGradients.join(
+        ','
+      )})`
     };
   }
 
@@ -390,6 +398,10 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
   }
 
   get artworkStyle() {
+    // Only add box-shadow for playlist artwork
+    if (this.isFromAlbum) {
+      return {};
+    }
     if (
       !this.collection ||
       !this.collection.attributes ||
@@ -473,6 +485,12 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
     return this.id;
   }
 
+  get coverSmStyle() {
+    return {
+      'margin-right': this.isFromAlbum ? '10rem' : '0'
+    };
+  }
+
   @Watch('$route')
   onRouteChange(to: Route, from: Route) {
     this.relatedAlbums = [];
@@ -500,6 +518,7 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
             this.collection = collection;
             this.$_fetchAlbumExtraInfo(collection);
             this.$_getSongsFromCollection(collection);
+            this.$_getBackgroundGradients();
           })
           .finally(() => this.dataLoadingDone());
 
@@ -510,6 +529,7 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
           .then(collection => {
             this.collection = collection;
             this.$_getSongsFromCollection(collection);
+            this.$_getBackgroundGradients();
           })
           .finally(() => this.dataLoadingDone());
         break;
@@ -519,6 +539,7 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
           .then(collection => {
             this.collection = collection;
             this.$_getSongsFromCollection(collection);
+            this.$_getBackgroundGradients();
           })
           .finally(() => this.dataLoadingDone());
         break;
@@ -526,6 +547,7 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
       case CollectionType.libraryPlaylist:
         this.fetchOnePlaylistLibrary(this.id).then(collection => {
           this.collection = collection;
+          this.$_getBackgroundGradients();
         });
 
         this.fetchLibraryPlaylistTracks(this.id)
@@ -534,6 +556,20 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
           })
           .finally(() => this.dataLoadingDone());
     }
+  }
+
+  $_getBackgroundGradients() {
+    if (
+      !this.collection ||
+      !this.collection.attributes ||
+      !this.collection.attributes.artwork
+    ) {
+      return {};
+    }
+
+    this.backgroundGradients = getGradientBackgroundColorsFromArtwork(
+      this.collection.attributes.artwork
+    );
   }
 
   handleSongClicked(songId: string, songIndex: number) {
@@ -598,6 +634,7 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
   display: flex;
   border-radius: 20px;
   height: calc(100vh - 64px - 24px - 16px);
+  max-height: 80rem;
   position: sticky;
   top: 88px;
   flex-wrap: nowrap;
@@ -625,7 +662,6 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
   max-width: 50vh;
   margin-right: -4rem;
   margin-left: 4rem;
-  // background-color: red;
 }
 
 .cover-wrapper:before {
@@ -669,16 +705,19 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
 }
 
 @supports (-webkit-line-clamp: 2) {
-  .collection-name {
+  .collection-name,
+  .artist-name {
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    /* autoprefixer: ignore next */
     -webkit-box-orient: vertical;
     margin-bottom: 0.8rem;
   }
 }
 
 @supports not (-webkit-line-clamp: 2) {
-  .collection-name {
+  .collection-name,
+  .artist-name {
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -686,6 +725,7 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
 
 .artist-name {
   color: white;
+  overflow: hidden;
 }
 
 .artist-name a {
@@ -698,10 +738,11 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
 }
 
 .cover-sm {
-  width: 15rem;
-  height: 15rem;
+  width: 20rem;
+  height: 20rem;
   flex-shrink: 0;
   position: relative;
+  max-width: 20rem;
 }
 
 .cover-sm:before {

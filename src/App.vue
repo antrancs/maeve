@@ -127,13 +127,15 @@ export default class App extends Vue {
       once: true
     });
 
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (this.refreshing) {
-        return;
-      }
-      this.refreshing = true;
-      window.location.reload();
-    });
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (this.refreshing) {
+          return;
+        }
+        this.refreshing = true;
+        window.location.reload();
+      });
+    }
 
     this.loadTokenLastfm();
     this.loadSettings();

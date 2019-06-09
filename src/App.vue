@@ -141,8 +141,6 @@ export default class App extends Vue {
     this.loadSettings();
     const musicKitInstance = MusicKit.getInstance();
 
-    this.setUserToken(musicKitInstance.musicUserToken);
-
     musicKitInstance.addEventListener(
       MusicKit.Events.authorizationStatusDidChange,
       this.onAuthorizationStatusDidChange

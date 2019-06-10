@@ -4,7 +4,7 @@
     :class="['py-0', { 'px-0': $vuetify.breakpoint.smAndDown }]"
   >
     <v-layout row wrap style="height: 100%">
-      <v-flex xs12 lg5 :class="{ 'pl-2': $vuetify.breakpoint.lgAndUp }">
+      <v-flex xs12 lg5>
         <div
           :class="{
             [$style['left-column-sticky']]: $vuetify.breakpoint.lgAndUp,
@@ -54,7 +54,8 @@
         lg7
         :class="[
           { 'pt-4': $vuetify.breakpoint.mdAndDown },
-          { 'px-2 pt-2': $vuetify.breakpoint.lgAndUp }
+          { 'pl-2 pt-2': $vuetify.breakpoint.lgAndUp },
+          { 'px-3': $vuetify.breakpoint.smAndDown }
         ]"
       >
         <keep-alive>

@@ -2,8 +2,8 @@
 
 https://maevemusic.app
 
-![alt text](https://user-images.githubusercontent.com/14043840/53006840-a1f5e280-3468-11e9-936c-a58fa3421aa5.png 'Maeve screenshot')
-![alt text](https://user-images.githubusercontent.com/14043840/53491825-e9641a80-3ac9-11e9-84e2-fee4d3d9298a.png 'Album page')
+![alt text](https://user-images.githubusercontent.com/14043840/59222759-86a31480-8bca-11e9-8103-e5d8d7214549.png 'Maeve screenshot')
+![alt text](https://user-images.githubusercontent.com/14043840/59222799-9fabc580-8bca-11e9-9fb7-fc8cef4af9bd.png 'Album page')
 
 ## Run locally
 

@@ -618,7 +618,7 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
   display: flex;
   border-radius: 20px;
   height: calc(100vh - 64px - 24px - 16px);
-  max-height: 80rem;
+  max-height: 100rem;
   position: sticky;
   top: 88px;
   flex-wrap: nowrap;

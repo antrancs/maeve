@@ -58,6 +58,56 @@ function getMainFeaturedPlaylists(limit: number) {
     });
 }
 
+function getFeaturedAlbums() {
+  return axiosInstance
+    .get('/albums/featuredAlbums', {
+      params: {
+        country: MusicKit.getInstance().storefrontId
+      }
+    })
+    .then(res => {
+      return res.data;
+    });
+}
+
+function getGenreOneResource(id: string, resource: string) {
+  return axiosInstance
+    .get(`/genres/${id}/${resource}`, {
+      params: {
+        country: MusicKit.getInstance().storefrontId
+      }
+    })
+    .then(res => {
+      return res.data;
+    });
+}
+
+function getNewReleases(genre: string, limit: number) {
+  return axiosInstance
+    .get('/newReleases/', {
+      params: {
+        country: MusicKit.getInstance().storefrontId,
+        genre,
+        limit
+      }
+    })
+    .then(res => {
+      return res.data;
+    });
+}
+
+function getNewReleasesGenres() {
+  return axiosInstance
+    .get('/newReleases/genres', {
+      params: {
+        country: MusicKit.getInstance().storefrontId
+      }
+    })
+    .then(res => {
+      return res.data;
+    });
+}
+
 function getArtistArtwork(
   itunesUrl: string,
   artistId: string,
@@ -76,18 +126,6 @@ function getArtistArtwork(
     });
 }
 
-function getFeaturedAlbums() {
-  return axiosInstance
-    .get('/albums/featuredAlbums', {
-      params: {
-        country: MusicKit.getInstance().storefrontId
-      }
-    })
-    .then(res => {
-      return res.data;
-    });
-}
-
 function getArtistDetails(url: string, artistId: string, size: string) {
   return axiosInstance
     .get('/artists/details', {
@@ -95,18 +133,6 @@ function getArtistDetails(url: string, artistId: string, size: string) {
         url,
         artistId,
         size
-      }
-    })
-    .then(res => {
-      return res.data;
-    });
-}
-
-function getGenreOneResource(id: string, resource: string) {
-  return axiosInstance
-    .get(`/genres/${id}/${resource}`, {
-      params: {
-        country: MusicKit.getInstance().storefrontId
       }
     })
     .then(res => {
@@ -144,32 +170,6 @@ function getCuratorsByGenre(genreId: string) {
   return axiosInstance.get(`/curators/genre/${genreId}`).then(res => {
     return res.data;
   });
-}
-
-function getNewReleases(genre: string, limit: number) {
-  return axiosInstance
-    .get('/newReleases/', {
-      params: {
-        country: MusicKit.getInstance().storefrontId,
-        genre,
-        limit
-      }
-    })
-    .then(res => {
-      return res.data;
-    });
-}
-
-function getNewReleasesGenres() {
-  return axiosInstance
-    .get('/newReleases/genres', {
-      params: {
-        country: MusicKit.getInstance().storefrontId
-      }
-    })
-    .then(res => {
-      return res.data;
-    });
 }
 
 export {

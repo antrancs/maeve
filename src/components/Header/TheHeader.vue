@@ -47,9 +47,11 @@
           :nudge-bottom="10"
         >
           <v-btn icon large flat slot="activator" class="mr-0">
-            <v-avatar color="accent" size="40px">
-              <v-icon :color="iconStyle">account_circle</v-icon>
-            </v-avatar>
+            <div :class="$style['flag']" :style="flagStyle">
+              <v-icon small :color="iconStyle" style="z-index: 1"
+                >account_circle</v-icon
+              >
+            </div>
           </v-btn>
 
           <v-list class="pa-0 primary lighten-1">
@@ -129,6 +131,14 @@ export default class AppHeader extends Vue {
     return window.matchMedia('(display-mode: standalone)').matches;
   }
 
+  get flagStyle() {
+    const storefront = MusicKit.getInstance().storefrontId;
+
+    return {
+      background: `url('https://lipis.github.io/flag-icon-css/flags/1x1/${storefront}.svg')`
+    };
+  }
+
   onSettingsClicked() {
     this.$emit('open-settings');
   }
@@ -140,6 +150,29 @@ export default class AppHeader extends Vue {
   position: absolute;
   left: 0;
   right: 0;
+}
+
+.flag {
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 4rem;
+  height: 4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  position: relative;
+}
+
+.flag::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  border-radius: 50%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 </style>
 

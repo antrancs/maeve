@@ -376,7 +376,7 @@ export type MoveNextPlayQueuePayload = {
 };
 
 /**
- * Dialog state
+ * New Playlist Dialog state
  */
 export interface NewPlaylistDialogState {
   visibility: boolean;
@@ -389,4 +389,20 @@ export type OpenNewPlaylistDialogPayload = {
 
 export type OpenNewPlaylistDialogAction = (
   payload?: OpenNewPlaylistDialogPayload
+) => void;
+
+/**
+ * Theme Editor Dialog
+ */
+export interface ThemeEditorDialogState {
+  visibility: boolean;
+  themeToEdit?: ThemeOption;
+}
+
+export type OpenThemeEditorDialogPayload = {
+  themeToEdit?: ThemeOption;
+};
+
+export type OpenThemeEditorDialogAction = (
+  payload?: OpenThemeEditorDialogPayload
 ) => void;

@@ -89,3 +89,6 @@ export const FETCH_RECENT_TRACKS_LASTFM = 'fetchRecentTracksLastfm';
 
 export const OPEN_NEW_PLAYLIST_DIALOG = 'openNewPlaylistDialog';
 export const CLOSE_NEW_PLAYLIST_DIALOG = 'closeNewPlaylistDialog';
+
+export const OPEN_THEME_EDITOR_DIALOG = 'openThemeEditorDialog';
+export const CLOSE_THEME_EDITOR_DIALOG = 'closeThemeEditorDialog';

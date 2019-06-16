@@ -70,7 +70,7 @@
       <v-divider></v-divider>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn flat @click="themePreview = false">Cancel</v-btn>
+        <v-btn flat @click="handleClose">Cancel</v-btn>
         <v-btn flat @click="handleSave">Looks good</v-btn>
       </v-card-actions>
     </v-card>
@@ -80,13 +80,17 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Prop, Watch } from 'vue-property-decorator';
-import { Action } from 'vuex-class';
+import { Prop } from 'vue-property-decorator';
+import { Action, State } from 'vuex-class';
 import ChromePicker from 'vue-color/src/components/Chrome.vue';
 
 import { CreateNewThemeAction, UpdateThemeAction } from '@/store/types';
 import { Nullable, ThemeOption } from '@/@types/model/model';
-import { CREATE_THEME, UPDATE_THEME } from '@/store/actions.type';
+import {
+  CREATE_THEME,
+  UPDATE_THEME,
+  CLOSE_THEME_EDITOR_DIALOG
+} from '@/store/actions.type';
 import {
   isLight,
   TEXT_PRIMARY_DARK,
@@ -103,10 +107,9 @@ export default class ThemeEditorDialog extends Vue {
   static SECONDARY_INDEX = 1;
   static ACCENT_INDEX = 2;
 
-  private themePreview = false;
+  private themePreview = true;
   private form = false;
   private themeName = '';
-  private theme: Nullable<ThemeOption> = null;
   private colorPreviews = [
     {
       name: 'Primary',
@@ -133,8 +136,12 @@ export default class ThemeEditorDialog extends Vue {
   };
   private active = 1;
 
+  @State(state => state.themeEditorDialog.themeToEdit) themeToEdit:
+    | ThemeOption
+    | undefined;
+
   get isUpdate(): boolean {
-    return !!this.theme;
+    return !!this.themeToEdit;
   }
 
   get themePreviewStyle() {
@@ -204,37 +211,30 @@ export default class ThemeEditorDialog extends Vue {
 
   @Action [CREATE_THEME]: CreateNewThemeAction;
   @Action [UPDATE_THEME]: UpdateThemeAction;
+  @Action [CLOSE_THEME_EDITOR_DIALOG]: () => void;
 
-  @Watch('themePreview')
-  onThemeChanged(newVal: boolean, oldVal: boolean) {
-    // Dialog is open
-    if (newVal) {
-      this.active = 0;
-      this.colorPreviews[ThemeEditorDialog.PRIMARY_INDEX].color = {
-        hex: this.isUpdate ? this.theme!.primary : this.$vuetify.theme.primary
-      };
-      this.colorPreviews[ThemeEditorDialog.SECONDARY_INDEX].color = {
-        hex: this.isUpdate
-          ? this.theme!.secondary
-          : this.$vuetify.theme.secondary
-      };
-      this.colorPreviews[ThemeEditorDialog.ACCENT_INDEX].color = {
-        hex: this.isUpdate ? this.theme!.accent : this.$vuetify.theme.accent
-      };
+  created() {
+    this.active = 0;
+    this.colorPreviews[ThemeEditorDialog.PRIMARY_INDEX].color = {
+      hex: this.isUpdate
+        ? this.themeToEdit!.primary
+        : this.$vuetify.theme.primary
+    };
+    this.colorPreviews[ThemeEditorDialog.SECONDARY_INDEX].color = {
+      hex: this.isUpdate
+        ? this.themeToEdit!.secondary
+        : this.$vuetify.theme.secondary
+    };
+    this.colorPreviews[ThemeEditorDialog.ACCENT_INDEX].color = {
+      hex: this.isUpdate ? this.themeToEdit!.accent : this.$vuetify.theme.accent
+    };
 
-      this.themeName = this.isUpdate ? this.theme!.name : '';
-    } else {
-      this.theme = null;
-    }
-  }
-
-  open(theme: ThemeOption) {
-    this.themePreview = true;
-    this.theme = theme;
+    this.themeName = this.isUpdate ? this.themeToEdit!.name : '';
   }
 
   handleSave() {
-    if (!this.form) {
+    // @ts-ignore
+    if (!this.$refs.form.validate()) {
       return;
     }
 
@@ -253,7 +253,7 @@ export default class ThemeEditorDialog extends Vue {
     if (this.isUpdate) {
       this.updateTheme({
         theme: {
-          id: this.theme!.id,
+          id: this.themeToEdit!.id,
           ...themeValue,
           editable: true
         }
@@ -263,6 +263,11 @@ export default class ThemeEditorDialog extends Vue {
     }
 
     this.themePreview = false;
+    this.closeThemeEditorDialog();
+  }
+
+  handleClose() {
+    this.closeThemeEditorDialog();
   }
 }
 </script>

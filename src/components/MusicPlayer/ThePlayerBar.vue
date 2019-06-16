@@ -519,7 +519,6 @@ It can be an album/playlist or the original song lists where this song is from
   };
 
   showPlayerFullScreen() {
-    console.log('Show full scfreen');
     this.$emit('show-player-fullscreen');
   }
 
@@ -558,6 +557,7 @@ It can be an album/playlist or the original song lists where this song is from
 @import '@/styles/components/_link-item.scss';
 .wrapper {
   bottom: 0.8rem;
+  cursor: pointer;
   position: sticky;
   z-index: 5;
   display: flex;

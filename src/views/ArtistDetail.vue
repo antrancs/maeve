@@ -421,7 +421,7 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
 }
 
 .nav-item {
-  color: rgba($color: #fff, $alpha: 0.7);
+  color: var(--v-secondaryText-base);
   cursor: pointer;
   font-weight: 500;
   text-transform: uppercase;
@@ -429,7 +429,7 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
 }
 
 .nav-item.active {
-  color: white;
+  color: var(--v-primaryText-base);
 }
 
 .nav-item-text {

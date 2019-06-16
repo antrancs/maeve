@@ -25,7 +25,7 @@
                       'song-artwork elevation-8',
                       { playing: musicPlayer.isPlaying }
                     ]"
-                    :src="artworkUrl"
+                    v-lazy="artworkUrl"
                     alt="Song artwork"
                   />
 

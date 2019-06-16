@@ -6,7 +6,6 @@
     :width="210"
     class="primary lighten-1 elevation-10"
     v-model="sidebar"
-    :style="sidebarStyleHeight"
   >
     <v-layout column fill-height justify-space-between class="sidebar-dark">
       <v-list>
@@ -226,15 +225,6 @@ export default class AppSidebar extends Vue {
     }
 
     return links;
-  }
-
-  get sidebarStyleHeight() {
-    if (this.currentPlaying) {
-      return {
-        'max-height': 'calc(100% - 96px)' // minus player bar height
-      };
-    }
-    return {};
   }
 
   @Watch('isAuthenticated')

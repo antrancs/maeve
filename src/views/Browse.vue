@@ -1,16 +1,14 @@
 <template>
-  <v-container>
-    <v-layout row wrap v-if="categoryData">
-      <content-section>
-        <template #section-header>
-          {{ categoryData.name }}
-        </template>
+  <v-container class="page-content">
+    <content-section v-if="categoryData">
+      <template #section-header>
+        {{ categoryData.name }}
+      </template>
 
-        <template #section-content>
-          <SongCollectionList :collections="categoryData.playlists" />
-        </template>
-      </content-section>
-    </v-layout>
+      <template #section-content>
+        <SongCollectionList :collections="categoryData.playlists" />
+      </template>
+    </content-section>
   </v-container>
 </template>
 

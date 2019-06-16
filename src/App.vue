@@ -12,10 +12,11 @@
       <transition name="fade" mode="out-in">
         <router-view @ready="pageLoadReady"></router-view>
       </transition>
+
+      <PlayerBar v-if="currentPlaying" />
     </v-content>
 
     <AppFooter />
-    <PlayerBar v-if="currentPlaying" />
     <AppSnackbar />
     <NewPlaylistDialog v-if="isAuthenticated" ref="newPlaylistDialog" />
     <MediaActionMenu ref="mediaActionMenu" />
@@ -302,5 +303,13 @@ export default class App extends Vue {
 
 #nprogress .bar {
   background: var(--v-accent-base);
+}
+
+.page-content {
+  min-height: 100vh;
+}
+
+.page-content > :last-child {
+  margin-bottom: 0 !important;
 }
 </style>

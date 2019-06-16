@@ -39,10 +39,13 @@ export default class PlayButton extends Mixins(PlayerBarColorMixin) {
     const accent = this.$vuetify.theme.accent as string;
     const accentLighten2 = lighten(accent, 20);
     const accentLighten1 = lighten(accent, 10);
+    const size = this.size || 50;
 
     return {
       background: `linear-gradient(-45deg, ${accent}, #${accentLighten1})`,
-      'box-shadow': `0px 0px 15px #${accentLighten2}`
+      'box-shadow': `0px 0px 15px #${accentLighten2}`,
+      width: `${this.size}px`,
+      height: `${this.size}px`
     };
   }
 
@@ -61,8 +64,6 @@ export default class PlayButton extends Mixins(PlayerBarColorMixin) {
 }
 
 .play-button {
-  width: 50px;
-  height: 50px;
   border-radius: 25px;
   display: flex;
   align-items: center;

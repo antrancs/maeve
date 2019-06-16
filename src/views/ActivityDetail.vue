@@ -1,5 +1,5 @@
 <template>
-  <div v-if="activity" class="activity">
+  <div class="activity page-content" v-if="activity">
     <div class="activity-header">
       <div class="banner" :style="bannerStyle"></div>
       <v-container fill-height>
@@ -14,7 +14,7 @@
     </div>
 
     <v-container class="activity-content">
-      <v-layout row wrap>
+      <v-layout row wrap class="page-content">
         <content-section>
           <template #section-header>
             Popular playlists

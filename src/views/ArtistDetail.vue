@@ -1,14 +1,14 @@
 <template>
   <v-container
-    v-if="artist"
-    :class="['py-0', { 'px-0': $vuetify.breakpoint.smAndDown }]"
+    :class="['py-0', 'page-content', { 'px-0': $vuetify.breakpoint.smAndDown }]"
   >
-    <v-layout row wrap style="height: 100%">
+    <v-layout v-if="artist" row wrap style="height: 100%">
       <v-flex xs12 lg5>
         <div
           :class="{
             [$style['left-column-sticky']]: $vuetify.breakpoint.lgAndUp,
             [$style['playing']]: currentPlaying,
+            [$style['minimized']]: playerBarMinimized,
             [$style['left-column']]: $vuetify.breakpoint.mdAndDown
           }"
         >
@@ -153,6 +153,7 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
   // used to adjust the height of the left column when there's a player bar
   @State(state => state.musicPlayer.currentPlaying)
   currentPlaying!: MusicKit.MediaItem | null;
+  @State(state => state.musicPlayer.minimized) playerBarMinimized!: boolean;
 
   @Action [FETCH_MULTILE_ALBUMS_CATALOG]: FetchMultipleAlbumsCatalogAction;
   @Action [FETCH_ONE_ALBUM_CATALOG]: FetchOneAlbumCatalogAction;
@@ -350,10 +351,15 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
   height: calc(100vh - 64px - 16px);
   position: sticky;
   top: 64px;
+  transition: height 0.25s ease-out;
 }
 
 .left-column-sticky.playing {
-  height: calc(100vh - 64px - 16px - 96px);
+  height: calc(100vh - 64px - 16px - 86px);
+}
+
+.left-column-sticky.playing.minimized {
+  height: calc(100vh - 64px - 16px);
 }
 
 .left-column-sticky .banner-header::before {

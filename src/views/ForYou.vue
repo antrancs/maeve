@@ -1,41 +1,43 @@
 <template>
-  <v-container v-if="recommendations.length > 0">
-    <v-layout
-      row
-      wrap
-      v-for="(recommendation, index) in recommendations"
-      :key="recommendation.id"
-      class="mb-5"
-    >
-      <v-flex
-        lg2
-        xs12
-        :class="[{ 'mb-3': $vuetify.breakpoint.lgAndUp }, 'pr-3']"
+  <v-container class="page-content">
+    <template v-if="recommendations.length > 0">
+      <v-layout
+        row
+        wrap
+        v-for="(recommendation, index) in recommendations"
+        :key="recommendation.id"
+        class="mb-5"
       >
-        <h2
-          :class="[
-            'recommendation-header',
-            {
-              'large-screen px-1': $vuetify.breakpoint.lgAndUp,
-              'mb-2': $vuetify.breakpoint.mdAndDown
-            }
-          ]"
-          :style="[
-            $vuetify.breakpoint.lgAndUp ? groupRecommendationStyle(index) : {}
-          ]"
+        <v-flex
+          lg2
+          xs12
+          :class="[{ 'mb-3': $vuetify.breakpoint.lgAndUp }, 'pr-3']"
         >
-          {{ recommendation.title }}
-        </h2>
-      </v-flex>
-      <v-flex xs12 lg10>
-        <v-layout row wrap>
-          <SongCollectionList
-            :collections="recommendation.resources"
-            :itemSizes="['xs6', 'sm3', 'md3', 'lg2']"
-          />
-        </v-layout>
-      </v-flex>
-    </v-layout>
+          <h2
+            :class="[
+              'recommendation-header',
+              {
+                'large-screen px-1': $vuetify.breakpoint.lgAndUp,
+                'mb-2': $vuetify.breakpoint.mdAndDown
+              }
+            ]"
+            :style="[
+              $vuetify.breakpoint.lgAndUp ? groupRecommendationStyle(index) : {}
+            ]"
+          >
+            {{ recommendation.title }}
+          </h2>
+        </v-flex>
+        <v-flex xs12 lg10>
+          <v-layout row wrap>
+            <SongCollectionList
+              :collections="recommendation.resources"
+              :itemSizes="['xs6', 'sm3', 'md3', 'lg2']"
+            />
+          </v-layout>
+        </v-flex>
+      </v-layout>
+    </template>
   </v-container>
 </template>
 

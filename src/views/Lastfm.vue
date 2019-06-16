@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="page-content">
     <v-layout row wrap>
       <v-flex xs12 sm6 md7 class="pr-3">
         <template v-if="recentTracks">

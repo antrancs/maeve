@@ -1,12 +1,12 @@
 <template>
-  <v-container fill-height class="pb-0">
+  <v-container class="page-content pb-0 pt-2">
     <v-layout
       :class="{
         'row wrap': $vuetify.breakpoint.lgAndUp,
         column: $vuetify.breakpoint.mdAndDown
       }"
     >
-      <v-flex class="mb-4" lg3 v-if="$vuetify.breakpoint.lgAndUp">
+      <v-flex lg3 class="mb-2" v-if="$vuetify.breakpoint.lgAndUp">
         <div
           :class="$style['left-column']"
           :style="[leftColumnBackgroundStyle]"
@@ -154,31 +154,27 @@
           :onSongClicked="handleSongClicked"
         />
       </v-flex>
-
-      <v-flex xs12 v-if="otherAlbumsFromArtists.length > 0">
-        <content-section>
-          <template #section-header>
-            More by {{ collectionArtistName }}
-          </template>
-
-          <template #section-content>
-            <SongCollectionList :collections="otherAlbumsFromArtists" />
-          </template>
-        </content-section>
-      </v-flex>
-
-      <v-flex xs12 v-if="relatedAlbums.length > 0">
-        <content-section>
-          <template #section-header>
-            Albums you might also like
-          </template>
-
-          <template #section-content>
-            <SongCollectionList :collections="relatedAlbums" />
-          </template>
-        </content-section>
-      </v-flex>
     </v-layout>
+
+    <content-section v-if="otherAlbumsFromArtists.length > 0">
+      <template #section-header>
+        More by {{ collectionArtistName }}
+      </template>
+
+      <template #section-content>
+        <SongCollectionList :collections="otherAlbumsFromArtists" />
+      </template>
+    </content-section>
+
+    <content-section v-if="relatedAlbums.length > 0">
+      <template #section-header>
+        Albums you might also like
+      </template>
+
+      <template #section-content>
+        <SongCollectionList :collections="relatedAlbums" />
+      </template>
+    </content-section>
   </v-container>
 </template>
 
@@ -617,10 +613,10 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
 .left-column {
   display: flex;
   border-radius: 20px;
-  height: calc(100vh - 64px - 24px - 16px);
+  height: calc(100vh - 64px - 8px - 8px);
   max-height: 100rem;
   position: sticky;
-  top: 88px;
+  top: 72px;
   flex-wrap: nowrap;
   flex-direction: column;
 }

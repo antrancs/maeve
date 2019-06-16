@@ -2,9 +2,8 @@
   <svg
     ref="worldMap"
     :width="width"
-    :height="height"
+    height="100%"
     :viewBox="`0 0 ${width} ${height}`"
-    preserveAspectRatio="xMinYMin"
   >
     <g ref="countriesGroup" class="countriesGroup" :transform="mapTransform">
       <path
@@ -262,6 +261,6 @@ path {
 
 svg {
   width: 100%;
-  height: auto;
+  // height: auto;
 }
 </style>

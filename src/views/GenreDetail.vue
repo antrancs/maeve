@@ -1,6 +1,6 @@
 <template>
-  <div v-if="genre" class="genre">
-    <div class="genre-header" :style="headerBackgroundStyle">
+  <div class="genre page-content">
+    <div class="genre-header" :style="headerBackgroundStyle" v-if="genre">
       <v-container fill-height>
         <v-layout align-end>
           <h3 class="genre-title pb-3" :style="headerOverlayTextStyle">
@@ -11,7 +11,7 @@
       <TriangleSVG />
     </div>
 
-    <v-container class="genre-content">
+    <v-container class="genre-content page-content" v-if="genre">
       <content-section v-if="hotTracks.length > 0">
         <template #section-header>
           Hot Tracks

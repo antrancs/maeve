@@ -1,20 +1,18 @@
 <template>
-  <v-container>
-    <v-layout row wrap>
-      <content-section>
-        <template #section-header>
-          Featured Playlists
-        </template>
+  <v-container class="page-content">
+    <content-section>
+      <template #section-header>
+        Featured Playlists
+      </template>
 
-        <template #section-content>
-          <SongCollectionList :collections="playlists" />
-        </template>
-      </content-section>
+      <template #section-content>
+        <SongCollectionList :collections="playlists" />
+      </template>
+    </content-section>
 
-      <v-flex class="text-xs-center" v-if="playlists.length === 0">
-        <v-progress-circular indeterminate color="accent"></v-progress-circular>
-      </v-flex>
-    </v-layout>
+    <div class="text-xs-center" v-if="playlists.length === 0">
+      <v-progress-circular indeterminate color="accent"></v-progress-circular>
+    </div>
   </v-container>
 </template>
 

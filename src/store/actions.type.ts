@@ -8,6 +8,7 @@ export const TOGGLE_CURRENT_TRACK = 'toggleCurrentTrack'; // play or pause the c
 export const SEEK_TO_TIME = 'seekToTime';
 export const CHANGE_VOLUME = 'changeVolume';
 export const MUTE_VOLUME = 'muteVolume';
+export const TOGGLE_MINIMIZED = 'toggleMinimized';
 export const UPDATE_REPEAT_MODE = 'updateRepeatMode';
 export const TOGGLE_SHUFFLE_MODE = 'toggleShuffleMode';
 export const PLAY_COLLECTION = 'playCollection';

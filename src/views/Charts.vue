@@ -1,31 +1,28 @@
 <template>
-  <v-container fill-height class="pt-3 pb-2">
-    <v-layout column>
-      <v-flex shrink class="mb-2">
-        <v-layout row justify-center>
-          <div
-            class="button-tab"
-            v-for="(tab, key) in tabs"
-            :key="tab.id"
-            :class="{ active: currentTab === key }"
-          >
-            <button color="accent" outline @click="currentTab = key">
-              {{ tab.name }}
-            </button>
-            <div class="line"></div>
-          </div>
-        </v-layout>
-      </v-flex>
-      <v-flex>
-        <transition name="fade" mode="out-in">
-          <component
-            @ready="componentLoadReady"
-            v-bind:is="currentTabComponent"
-            class="tab"
-          ></component>
-        </transition>
-      </v-flex>
+  <v-container class="pt-3 pb-2 page-content">
+    <v-layout row justify-center>
+      <div
+        class="button-tab"
+        v-for="(tab, key) in tabs"
+        :key="tab.id"
+        :class="{ active: currentTab === key }"
+      >
+        <button color="accent" outline @click="currentTab = key">
+          {{ tab.name }}
+        </button>
+        <div class="line"></div>
+      </div>
     </v-layout>
+
+    <div class="mt-3" :class="{ 'charts-country': currentTab === 'country' }">
+      <transition name="fade" mode="out-in">
+        <component
+          @ready="componentLoadReady"
+          v-bind:is="currentTabComponent"
+          class="tab"
+        ></component>
+      </transition>
+    </div>
   </v-container>
 </template>
 
@@ -86,10 +83,14 @@ export default class Charts extends Vue {
   overflow-y: scroll;
 }
 
+.charts-country {
+  height: calc(100vh - 230px);
+}
+
 .button-tab button {
   color: var(--v-secondaryText-base);
   font-weight: bold;
-  padding: 0.8rem;
+  padding: 0.4rem 0.8rem;
   text-transform: uppercase;
   transition: color 0.2s ease;
 }

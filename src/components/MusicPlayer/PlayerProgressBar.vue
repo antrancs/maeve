@@ -13,15 +13,6 @@
         :class="$style['current-progress']"
         :style="{ width: playbackProgress + '%' }"
       ></div>
-
-      <!-- <v-tooltip
-        top
-        :position-x="tooltipPosX"
-        :position-y="tooltipPosY"
-        :value="hover"
-      >
-        <span>{{ timeAtHoverPosition | formattedDuration }}</span>
-      </v-tooltip> -->
     </div>
   </div>
 </template>
@@ -44,11 +35,7 @@ import { Nullable } from '@/@types/model/model';
   }
 })
 export default class PlayerProgressBar extends Vue {
-  private progress = 0;
-  private tooltipPosX = 0;
-  private tooltipPosY = 0;
   private timeAtHoverPosition = 0;
-  // private setIntervalProgressId: Nullable<NodeJS.Timeout>;
 
   @State
   musicPlayer!: MusicPlayerState;
@@ -62,15 +49,6 @@ export default class PlayerProgressBar extends Vue {
   get playbackProgress(): number {
     return this.musicPlayer.playbackProgress * 100;
   }
-
-  // @Watch('musicPlayer.isPlaying')
-  // onPlayingChanged(newValue: boolean, oldValue: boolean) {
-  //   if (!newValue) {
-  //     this.$_clearInterval();
-  //   } else {
-  //     this.$_setInterval();
-  //   }
-  // }
 
   @Watch('musicPlayer.playbackProgress')
   onPlaybackProgresshanged(newValue: number, oldValue: number) {
@@ -89,42 +67,11 @@ export default class PlayerProgressBar extends Vue {
     }
   }
 
-  // @Watch('musicPlayer.currentPlaybackTimeAfterSkip')
-  // onCurrentPlaybackTimeAfterSkipChanged(newValue: number) {
-  //   // current playing in millisecond while currentPlaybackTimeAfterSkip in seconds
-  //   this.progress = (newValue / (this.currentPlayingDuration / 1000)) * 100; // to percentage
-  // }
-
-  // $_setInterval() {
-  //   this.progress = this.musicPlayer.playbackProgress * 100;
-  //   if (this.progress >= 100) {
-  //     this.progress = this.musicPlayer.playbackProgress * 100;
-  //   }
-  //   this.setIntervalProgressId = setInterval(() => {
-  //     this.progress += 100 / (this.currentPlayingDuration / 1000) / 10;
-  //     if (this.progress >= 100) {
-  //       this.progress = this.musicPlayer.playbackProgress * 100;
-  //     }
-  //   }, 100);
-  // }
-
-  // $_clearInterval() {
-  //   if (this.setIntervalProgressId) {
-  //     clearInterval(this.setIntervalProgressId);
-  //   }
-  // }
-
-  // beforeDestroy() {
-  //   this.$_clearInterval();
-  // }
-
   handleMouseDown(event: MouseEvent) {
     // @ts-ignore
     const bounds = event.target!.getBoundingClientRect();
 
     var x = event.clientX - bounds.left;
-    this.tooltipPosX = event.clientX;
-    this.tooltipPosY = event.clientY;
 
     // @ts-ignore
     const wrapperWidth = this.$refs.wrapperDiv.clientWidth;

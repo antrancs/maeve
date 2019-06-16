@@ -13,7 +13,8 @@ import {
   MUTE_VOLUME,
   UPDATE_REPEAT_MODE,
   TOGGLE_SHUFFLE_MODE,
-  PLAY_COLLECTION
+  PLAY_COLLECTION,
+  TOGGLE_MINIMIZED
 } from '@/store/actions.type';
 import {
   SET_CURRENTLY_PLAYING_SONG,
@@ -26,7 +27,8 @@ import {
   SET_IS_MUTED,
   SET_CURRENT_PLAYBACK_TIME_AFTER_SKIP,
   SET_SHUFFLE_MODE,
-  SET_QUEUE
+  SET_QUEUE,
+  SET_MINIMIZED_STATE
 } from '@/store/mutations.type';
 import {
   MusicPlayerState,
@@ -47,7 +49,8 @@ const initialState: MusicPlayerState = {
   volume: 1,
   isMuted: false,
   currentPlaybackTimeAfterSkip: 0,
-  shuffleMode: ShuffleMode.Off
+  shuffleMode: ShuffleMode.Off,
+  minimized: false
 };
 
 const getters: GetterTree<MusicPlayerState, any> = {
@@ -251,6 +254,10 @@ const actions: ActionTree<MusicPlayerState, any> = {
     MusicKit.getInstance().player.volume = volume;
 
     commit(SET_IS_MUTED);
+  },
+
+  [TOGGLE_MINIMIZED]({ state, commit }) {
+    commit(SET_MINIMIZED_STATE, !state.minimized);
   }
 };
 
@@ -293,6 +300,10 @@ const mutations: MutationTree<MusicPlayerState> = {
 
   [SET_CURRENT_PLAYBACK_TIME_AFTER_SKIP](state, time: number) {
     state.currentPlaybackTimeAfterSkip = time;
+  },
+
+  [SET_MINIMIZED_STATE](state, value: boolean) {
+    state.minimized = value;
   }
 };
 

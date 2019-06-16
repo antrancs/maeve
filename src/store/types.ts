@@ -22,6 +22,7 @@ export interface MusicPlayerState {
   isMuted: boolean;
   currentPlaybackTimeAfterSkip: number;
   shuffleMode: ShuffleMode;
+  minimized: boolean;
 }
 
 // Payload

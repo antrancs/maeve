@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="page-content">
     <v-layout v-if="artists.length > 0" row wrap>
       <v-flex
         sm5

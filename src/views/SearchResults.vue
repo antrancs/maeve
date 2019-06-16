@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="page-content">
     <template v-if="hasResults">
       <content-section v-if="artists.length > 0">
         <template #section-header>

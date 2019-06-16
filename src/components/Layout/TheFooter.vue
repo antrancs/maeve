@@ -17,6 +17,7 @@
       Feedback & bug report @
       <a
         target="_blank"
+        rel="noopener"
         class="link link--external"
         href="https://github.com/antrancs/maeve/issues"
         >Github</a
@@ -25,12 +26,14 @@
       <a
         target="_blank"
         class="link link--external"
+        rel="noopener"
         href="mailto:an.tran.cs@gmail.com"
         >email</a
       >. Like this site?
       <a
         class="link link--external"
         target="_blank"
+        rel="noopener"
         href="https://buymeacoff.ee/maeve"
         >Buy me a coffee ☕️
       </a>

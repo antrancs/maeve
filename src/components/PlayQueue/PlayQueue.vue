@@ -1,6 +1,6 @@
 <template>
   <transition name="slide-fade">
-    <div v-if="visibility" class="mx-2 container">
+    <div v-if="visibility" class="mx-2 container pa-0">
       <v-layout column class="primary lighten-1">
         <v-flex shrink>
           <v-layout row justify-space-between align-center class="px-2">

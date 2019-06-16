@@ -40,10 +40,18 @@ export default class SongItemMixin extends Vue {
       return {};
     }
 
-    const artworkUrl = getArtworkUrl(this.song.attributes.artwork, 40, 40);
+    let artworkUrl: string;
+    if (this.song.attributes.artwork.url.endsWith('2000x2000bb.jpg')) {
+      artworkUrl = this.song.attributes.artwork.url.replace(
+        '2000x2000bb.jpg',
+        '40x40bb.jpg'
+      );
+    } else {
+      artworkUrl = getArtworkUrl(this.song.attributes.artwork, 40, 40);
+    }
 
     return {
-      background: `url(${artworkUrl})`
+      'background-image': `url(${artworkUrl})`
     };
   }
 

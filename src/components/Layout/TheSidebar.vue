@@ -115,8 +115,15 @@ import { Vue, Prop, Component, Watch } from 'vue-property-decorator';
 import { Getter, State, Action } from 'vuex-class';
 
 import SvgIcon from '@/components/SvgIcon.vue';
-import { MusicPlayerState, FetchLibraryPlaylistsActions } from '@/store/types';
-import { FETCH_LIBRARY_PLAYLISTS } from '@/store/actions.type';
+import {
+  MusicPlayerState,
+  FetchLibraryPlaylistsActions,
+  OpenNewPlaylistDialogAction
+} from '@/store/types';
+import {
+  FETCH_LIBRARY_PLAYLISTS,
+  OPEN_NEW_PLAYLIST_DIALOG
+} from '@/store/actions.type';
 import { isLight, TEXT_PRIMARY_LIGHT, TEXT_PRIMARY_DARK } from '@/themes';
 
 @Component({
@@ -199,6 +206,7 @@ export default class AppSidebar extends Vue {
   currentPlaying!: MusicKit.MediaItem | null;
 
   @Action [FETCH_LIBRARY_PLAYLISTS]: FetchLibraryPlaylistsActions;
+  @Action [OPEN_NEW_PLAYLIST_DIALOG]: OpenNewPlaylistDialogAction;
 
   get sidebar(): boolean {
     return this.showSidebar;
@@ -248,8 +256,7 @@ export default class AppSidebar extends Vue {
   }
 
   handleNewPlaylistClicked() {
-    // @ts-ignore
-    this.$root.$newPlaylistDialog.open();
+    this.openNewPlaylistDialog();
   }
 }
 </script>

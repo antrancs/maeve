@@ -86,3 +86,6 @@ export const LOAD_TOKEN_LASTFM = 'loadTokenLastfm';
 export const LOGOUT_LASTFM = 'logoutLastfm';
 export const FETCH_TOP_ARTISTS_LASTFM = 'fetchTopArtistsLastFm';
 export const FETCH_RECENT_TRACKS_LASTFM = 'fetchRecentTracksLastfm';
+
+export const OPEN_NEW_PLAYLIST_DIALOG = 'openNewPlaylistDialog';
+export const CLOSE_NEW_PLAYLIST_DIALOG = 'closeNewPlaylistDialog';

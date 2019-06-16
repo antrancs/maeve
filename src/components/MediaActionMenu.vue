@@ -73,7 +73,8 @@ import {
   UNBLOCK_ARTISTS,
   BLOCK_SONG,
   UNBLOCK_SONG,
-  PREPEND_SONGS_TO_QUEUE
+  PREPEND_SONGS_TO_QUEUE,
+  OPEN_NEW_PLAYLIST_DIALOG
 } from '@/store/actions.type';
 import {
   AddToLibraryAction,
@@ -84,7 +85,8 @@ import {
   BlockArtistsAction,
   UnblockArtistsAction,
   BlockSongAction,
-  UnblockSongAction
+  UnblockSongAction,
+  OpenNewPlaylistDialogAction
 } from '@/store/types';
 import { getSongsFromCollection } from '@/utils/utils';
 
@@ -120,6 +122,7 @@ export default class MediaActionMenu extends Vue {
   @Action [UNBLOCK_ARTISTS]: UnblockArtistsAction;
   @Action [BLOCK_SONG]: BlockSongAction;
   @Action [UNBLOCK_SONG]: UnblockSongAction;
+  @Action [OPEN_NEW_PLAYLIST_DIALOG]: OpenNewPlaylistDialogAction;
 
   get isLibraryItem() {
     if (!this.item) {
@@ -186,8 +189,9 @@ export default class MediaActionMenu extends Vue {
       itemsToAdd = this.$_getSongsToAdd();
     }
 
-    // @ts-ignore
-    this.$root.$newPlaylistDialog.open(itemsToAdd);
+    this.openNewPlaylistDialog({
+      itemsToAdd
+    });
   }
 
   async onAddToExistingPlaylist(playlistId: string) {

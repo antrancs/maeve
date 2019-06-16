@@ -11,6 +11,7 @@ import catalog from './catalog.module';
 import settings from './settings.module';
 import layout from './layout.module';
 import lastfm from './lastfm.module';
+import newPlaylistDialog from './newPlaylistDialog.module';
 
 Vue.use(Vuex);
 
@@ -25,6 +26,7 @@ export default new Vuex.Store({
     catalog,
     settings,
     layout,
-    lastfm
+    lastfm,
+    newPlaylistDialog
   }
 });

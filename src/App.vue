@@ -18,7 +18,7 @@
 
     <AppFooter />
     <AppSnackbar />
-    <NewPlaylistDialog v-if="isAuthenticated" ref="newPlaylistDialog" />
+    <NewPlaylistDialog v-if="isAuthenticated && newPlaylistDialogVisibility" />
     <MediaActionMenu ref="mediaActionMenu" />
     <v-navigation-drawer
       v-if="isAuthenticated"
@@ -85,6 +85,8 @@ export default class App extends Vue {
   @State(state => state.musicPlayer.currentPlaying) currentPlaying!: Nullable<
     MusicKit.MediaItem
   >;
+  @State(state => state.newPlaylistDialog.visibility)
+  newPlaylistDialogVisibility!: boolean;
 
   @Action [LOAD_SETTINGS]: () => void;
   @Action [LOAD_TOKEN_LASTFM]: () => void;
@@ -116,8 +118,6 @@ export default class App extends Vue {
   }
 
   mounted() {
-    // @ts-ignore
-    this.$root.$newPlaylistDialog = this.$refs.newPlaylistDialog;
     // @ts-ignore
     this.$root.$mediaActionMenu = this.$refs.mediaActionMenu;
   }

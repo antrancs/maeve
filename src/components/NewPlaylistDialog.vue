@@ -29,7 +29,7 @@
       <v-divider></v-divider>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn flat @click="dialog = false">Close</v-btn>
+        <v-btn flat @click="handleClose">Close</v-btn>
         <v-btn flat @click="handleSave">Save</v-btn>
       </v-card-actions>
     </v-card>
@@ -39,31 +39,39 @@
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
-import { Action } from 'vuex-class';
-import { CREATE_NEW_PLAYLIST, SHOW_SNACKBAR } from '@/store/actions.type';
+import { Action, State } from 'vuex-class';
+import {
+  CREATE_NEW_PLAYLIST,
+  SHOW_SNACKBAR,
+  CLOSE_NEW_PLAYLIST_DIALOG
+} from '@/store/actions.type';
 import { CreateNewPlaylistAction, ShowSnackbarAction } from '@/store/types';
 import { SnackbarMode, Nullable, Song } from '@/@types/model/model';
 import { Prop } from 'vue-property-decorator';
 
 @Component
 export default class NewPlaylistDialog extends Vue {
-  private dialog = false;
+  private dialog = true;
   private form = false;
   private name = '';
   private description = '';
-  private items: (Song | MusicKit.MediaItem)[] = [];
 
   private rules = {
     name: (value: string) =>
       (value && value.trim().length > 0) || 'A name must be provided'
   };
 
+  @State(state => state.newPlaylistDialog.itemsToAdd)
+  itemsToAdd: (Song | MusicKit.MediaItem)[] | undefined;
+
   @Action [CREATE_NEW_PLAYLIST]: CreateNewPlaylistAction;
   @Action [SHOW_SNACKBAR]: ShowSnackbarAction;
+  @Action [CLOSE_NEW_PLAYLIST_DIALOG]: () => void;
 
   async handleSave() {
-    // there are input validation errors
-    if (!this.form) {
+    // @ts-ignore
+    if (!this.$refs.form.validate()) {
+      // there are input validation errors
       return;
     }
 
@@ -73,8 +81,8 @@ export default class NewPlaylistDialog extends Vue {
       await this.createNewPlaylist({
         name: this.name,
         items:
-          this.items.length > 0
-            ? this.items.map(item => ({
+          this.itemsToAdd && this.itemsToAdd.length > 0
+            ? this.itemsToAdd.map(item => ({
                 id: item.id,
                 type: item.type
               }))
@@ -93,18 +101,16 @@ export default class NewPlaylistDialog extends Vue {
         text: 'Cannot create the playlist. Please try again later',
         type: SnackbarMode.error
       });
+    } finally {
+      this.closeNewPlaylistDialog();
     }
 
     this.name = '';
     this.description = '';
-    this.items = [];
   }
 
-  open(items: Song[] | MusicKit.MediaItem[] = []) {
-    this.items = items;
-    this.name = '';
-    this.description = '';
-    this.dialog = true;
+  handleClose() {
+    this.closeNewPlaylistDialog();
   }
 }
 </script>

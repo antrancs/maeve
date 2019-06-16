@@ -49,3 +49,9 @@ export const SET_FOOTER_VISIBILITY = 'setFooterVisibility';
 
 // Lastfm
 export const SET_LASTFM_TOKEN = 'setLastfmToken';
+
+// Dialog
+export const SET_NEW_PLAYLIST_DIALOG_VISIBILITY =
+  'setNewPlaylistDialogVisibility';
+export const SET_NEW_PLAYLIST_DIALOG_ITEMS_TO_ADD =
+  'newPlaylistDialogItemsToAdd';

@@ -374,3 +374,19 @@ export interface PlayQueueState {
 export type MoveNextPlayQueuePayload = {
   forceSkip: boolean;
 };
+
+/**
+ * Dialog state
+ */
+export interface NewPlaylistDialogState {
+  visibility: boolean;
+  itemsToAdd?: (Song | MusicKit.MediaItem)[];
+}
+
+export type OpenNewPlaylistDialogPayload = {
+  itemsToAdd?: (Song | MusicKit.MediaItem)[];
+};
+
+export type OpenNewPlaylistDialogAction = (
+  payload?: OpenNewPlaylistDialogPayload
+) => void;

@@ -9,6 +9,7 @@
       }
     ]"
     :style="cssProps"
+    @click.stop="showPlayerFullScreen"
   >
     <div
       v-if="musicPlayer.minimized"
@@ -153,7 +154,7 @@
               </span>
             </div>
 
-            <PlayerVolume :width="110" />
+            <PlayerVolume :width="110" v-if="$vuetify.breakpoint.lgAndUp" />
 
             <v-btn
               title="Show play queue"
@@ -170,8 +171,6 @@
         </v-flex>
       </v-layout>
     </div>
-
-    <PlayQueue v-if="$vuetify.breakpoint.mdAndUp" />
   </v-container>
 </template>
 
@@ -180,7 +179,6 @@ import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { State, Action, Getter, Mutation } from 'vuex-class';
 
 import PlayerProgressBar from './PlayerProgressBar.vue';
-// import PlayerFullScreen from './PlayerFullScreen.vue';
 import PlayNextButton from './PlayNextButton.vue';
 import PlayPreviousButton from './PlayPreviousButton.vue';
 import PlayButton from './PlayButton.vue';
@@ -218,9 +216,7 @@ import { getArtworkUrl } from '../../utils/utils';
     PlayNextButton,
     PlayPreviousButton,
     PlayButton,
-    PlayerVolume,
-    // PlayerFullScreen,
-    PlayQueue: () => import('@/components/PlayQueue/PlayQueue.vue')
+    PlayerVolume
   }
 })
 export default class PlayerBar extends Mixins(
@@ -521,6 +517,11 @@ It can be an album/playlist or the original song lists where this song is from
   onPlaybackTimeDidChange = (event: any) => {
     this.setCurrentPlaybackTime(event.currentPlaybackTime);
   };
+
+  showPlayerFullScreen() {
+    console.log('Show full scfreen');
+    this.$emit('show-player-fullscreen');
+  }
 
   $_turnDownVolume() {
     // Ctrl Down / Cmd Down

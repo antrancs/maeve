@@ -1,6 +1,6 @@
 <template>
   <div style="width: 100%">
-    <transition-group
+    <!-- <transition-group
       :name="direction"
       style="position: relative; overflow: hidden; display: flex; align-items: center"
       :style="slideHeightStyle"
@@ -12,7 +12,8 @@
         :class="`artwork ${artwork.class}`"
         alt="Song artwork"
       />
-    </transition-group>
+    </transition-group> -->
+    <img v-lazy="artwork" alt="Song artwork" />
   </div>
 </template>
 
@@ -31,8 +32,8 @@ export default class ArtworkSlide extends Vue {
   @State(state => state.musicPlayer.currentPlaying)
   currentPlaying!: MusicKit.MediaItem;
 
-  @Getter nextSong!: MusicKit.MediaItem;
-  @Getter previousSong!: MusicKit.MediaItem;
+  // @Getter nextSong!: MusicKit.MediaItem;
+  // @Getter previousSong!: MusicKit.MediaItem;
 
   get slideHeightStyle() {
     switch (this.$vuetify.breakpoint.name) {
@@ -51,27 +52,35 @@ export default class ArtworkSlide extends Vue {
     }
   }
 
-  get artworks() {
-    const artworks = [];
-    const songs = [this.previousSong, this.currentPlaying, this.nextSong];
-    for (let i = 0; i < songs.length; i++) {
-      const song = songs[i];
-      if (!song) {
-        continue;
-      }
-
-      artworks.push({
-        id: song.id,
-        artwork: getArtworkUrl(
-          song.attributes!.artwork,
-          this.artworkSize,
-          this.artworkSize
-        ),
-        class: `artwork${i}`
-      });
-    }
-    return artworks;
+  get artwork() {
+    return getArtworkUrl(
+      this.currentPlaying.attributes!.artwork,
+      this.artworkSize,
+      this.artworkSize
+    );
   }
+
+  // get artworks() {
+  //   const artworks = [];
+  //   const songs = [this.previousSong, this.currentPlaying, this.nextSong];
+  //   for (let i = 0; i < songs.length; i++) {
+  //     const song = songs[i];
+  //     if (!song) {
+  //       continue;
+  //     }
+
+  //     artworks.push({
+  //       id: song.id,
+  //       artwork: getArtworkUrl(
+  //         song.attributes!.artwork,
+  //         this.artworkSize,
+  //         this.artworkSize
+  //       ),
+  //       class: `artwork${i}`
+  //     });
+  //   }
+  //   return artworks;
+  // }
 }
 </script>
 

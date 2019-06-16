@@ -13,11 +13,19 @@
         <router-view @ready="pageLoadReady"></router-view>
       </transition>
 
-      <PlayerBar v-if="currentPlaying" />
+      <PlayerBar
+        v-if="currentPlaying"
+        @show-player-fullscreen="showPlayerFullScreen = true"
+      />
     </v-content>
 
     <AppFooter />
     <AppSnackbar />
+    <PlayerFullScreen
+      v-if="showPlayerFullScreen"
+      @close-dialog="showPlayerFullScreen = false"
+    />
+    <PlayQueue v-if="$vuetify.breakpoint.mdAndUp" />
     <NewPlaylistDialog v-if="isAuthenticated && newPlaylistDialogVisibility" />
     <MediaActionMenu v-if="mediaActionMenuVisibility" />
     <v-navigation-drawer
@@ -71,7 +79,10 @@ import { ShowSnackbarAction } from './store/types';
     AppSnackbar,
     NewPlaylistDialog: () => import('@/components/NewPlaylistDialog.vue'),
     ThemeSetting: () => import('@/components/Setting/ThemeSetting.vue'),
-    MediaActionMenu: () => import('@/components/MediaActionMenu.vue')
+    MediaActionMenu: () => import('@/components/MediaActionMenu.vue'),
+    PlayQueue: () => import('@/components/PlayQueue/PlayQueue.vue'),
+    PlayerFullScreen: () =>
+      import('@/components/MusicPlayer/PlayerFullScreen.vue')
   }
 })
 export default class App extends Vue {
@@ -79,6 +90,7 @@ export default class App extends Vue {
   private themeSetting = false;
   private refreshing = false;
   private registration: any = null;
+  private showPlayerFullScreen = false;
 
   @State(state => state.settings.selectedTheme) selectedTheme!: ThemeOption;
   @State(state => state.musicPlayer.currentPlaying) currentPlaying!: Nullable<

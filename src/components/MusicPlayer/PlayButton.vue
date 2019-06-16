@@ -45,7 +45,8 @@ export default class PlayButton extends Mixins(PlayerBarColorMixin) {
       background: `linear-gradient(-45deg, ${accent}, #${accentLighten1})`,
       'box-shadow': `0px 0px 15px #${accentLighten2}`,
       width: `${this.size}px`,
-      height: `${this.size}px`
+      height: `${this.size}px`,
+      'border-radius': `${this.size / 2}px`
     };
   }
 
@@ -64,7 +65,6 @@ export default class PlayButton extends Mixins(PlayerBarColorMixin) {
 }
 
 .play-button {
-  border-radius: 25px;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -20,9 +20,13 @@
             <v-layout row wrap>
               <v-flex xs12 sm12 md6>
                 <v-layout column wrap align-center>
-                  <ArtworkSlide
-                    :direction="artworkSlideDirection"
-                    :artworkSize="artworkSize"
+                  <img
+                    :class="[
+                      'song-artwork elevation-8',
+                      { playing: musicPlayer.isPlaying }
+                    ]"
+                    :src="artworkUrl"
+                    alt="Song artwork"
                   />
 
                   <PlayerProgressBar class="mt-3" />
@@ -89,7 +93,9 @@
 
                 <v-expansion-panel popout v-if="$vuetify.breakpoint.smAndDown">
                   <v-expansion-panel-content class="secondary">
-                    <div slot="header"><h3>Lyrics</h3></div>
+                    <div slot="header">
+                      <h3>Lyrics</h3>
+                    </div>
                     <v-card class="secondary">
                       <v-card-text style="white-space: pre-wrap;">{{
                         lyrics
@@ -139,7 +145,6 @@ import UpNext from '@/components/PlayQueue/UpNext.vue';
 import PlayNextButton from './PlayNextButton.vue';
 import PlayPreviousButton from './PlayPreviousButton.vue';
 import PlayButton from './PlayButton.vue';
-import ArtworkSlide from './ArtworkSlide.vue';
 import PlayerProgressBar from './PlayerProgressBar.vue';
 import PlayerVolume from './PlayerVolume.vue';
 import PlayerBarColorMixin from '@/mixins/PlayerBarColorMixin';
@@ -159,7 +164,6 @@ import { getArtworkUrl } from '@/utils/utils';
     PlayPreviousButton,
     PlayButton,
     PlayerVolume,
-    ArtworkSlide,
     UpNext
   }
 })
@@ -167,7 +171,7 @@ export default class PlayerFullScreen extends Mixins(
   PlayerBarColorMixin,
   LyricsMixin
 ) {
-  private dialog = false;
+  private dialog = true;
   private artworkSlideDirection = 'right';
 
   @State
@@ -186,6 +190,8 @@ export default class PlayerFullScreen extends Mixins(
   onDialogVisibilityChanged(newValue: boolean) {
     if (newValue) {
       this.$_fetchLyrics();
+    } else {
+      this.$emit('close-dialog');
     }
   }
 
@@ -203,9 +209,9 @@ export default class PlayerFullScreen extends Mixins(
       case 'sm':
         return 500;
       case 'xl':
-        return 400;
+        return 500;
       default:
-        return 300;
+        return 400;
     }
   }
 
@@ -273,6 +279,32 @@ export default class PlayerFullScreen extends Mixins(
     };
   }
 
+  get artworkUrl() {
+    if (
+      !this.musicPlayer.currentPlaying ||
+      !this.musicPlayer.currentPlaying.attributes
+    ) {
+      return PLACEHOLDER_IMAGE;
+    }
+
+    if (
+      this.musicPlayer.currentPlaying.attributes.artwork.url.endsWith(
+        '2000x2000bb.jpg'
+      )
+    ) {
+      return this.musicPlayer.currentPlaying.attributes!.artwork.url.replace(
+        '2000x2000bb',
+        `${this.artworkSize}x${this.artworkSize}bb`
+      );
+    }
+
+    return getArtworkUrl(
+      this.musicPlayer.currentPlaying.attributes.artwork,
+      this.artworkSize,
+      this.artworkSize
+    );
+  }
+
   open() {
     this.dialog = true;
   }
@@ -320,6 +352,11 @@ export default class PlayerFullScreen extends Mixins(
 }
 
 .song-artwork {
+  transition: transform 0.4s ease-out;
   width: 50%;
+}
+
+.song-artwork:not(.playing) {
+  transform: scale(0.8);
 }
 </style>

@@ -39,12 +39,6 @@ export const DELETE_THEME_MUTATION = 'deleteThemeMutation';
 export const SET_SELECTED_THEME = 'setSelectedTheme';
 export const SET_BUTTON_STYLE = 'setButtonStyle';
 export const SET_PLAYBACK_BITRATE = 'setPlaybackBitrate';
-export const ADD_BLOCKED_ARTISTS = 'addBlockedArtist';
-export const REMOVE_BLOCKED_ARTISTS = 'removeBlockedArtists';
-export const SET_BLOCKED_ARTISTS = 'setBlockedArtists';
-export const ADD_BLOCKED_SONG = 'addBlockedSong';
-export const REMOVE_BLOCKED_SONG = 'removeBlockedSong';
-export const SET_BLOCKED_SONGS = 'setBlockedSongs';
 export const SET_FOOTER_VISIBILITY = 'setFooterVisibility';
 
 // Lastfm
@@ -61,3 +55,9 @@ export const SET_THEME_EDITOR_DIALOG_VISIBILITY =
   'setThemeEditorDialogVisibility';
 export const SET_THEME_EDITOR_DIALOG_THEME_TO_EDIT =
   'setThemeEditorDialogThemeToEdit';
+
+//
+export const SET_MEDIA_ACTION_MENU_POSITION = 'setMediaActionMenuPosition';
+export const SET_MEDIA_ACTION_MENU_VISIBILITY = 'setMediaActionMenuVisibility';
+export const SET_MEDIA_ACTION_MENU_ITEM = 'setMediaActionMenuItem';
+export const SET_MEDIA_ACTION_MENU_IS_QUEUE = 'setMediaActionMenuIsQueue';

@@ -19,7 +19,7 @@
     <AppFooter />
     <AppSnackbar />
     <NewPlaylistDialog v-if="isAuthenticated && newPlaylistDialogVisibility" />
-    <MediaActionMenu ref="mediaActionMenu" />
+    <MediaActionMenu v-if="mediaActionMenuVisibility" />
     <v-navigation-drawer
       v-if="isAuthenticated"
       class="primary lighten-1"
@@ -43,7 +43,6 @@ import AppSidebar from '@/components/Layout/TheSidebar.vue';
 import AppHeader from '@/components/Header/TheHeader.vue';
 import AppFooter from '@/components/Layout/TheFooter.vue';
 import AppSnackbar from '@/components/TheSnackbar.vue';
-import MediaActionMenu from '@/components/MediaActionMenu.vue';
 import { ThemeOption, Nullable } from '@/@types/model/model';
 import {
   LOAD_SETTINGS,
@@ -72,7 +71,7 @@ import { ShowSnackbarAction } from './store/types';
     AppSnackbar,
     NewPlaylistDialog: () => import('@/components/NewPlaylistDialog.vue'),
     ThemeSetting: () => import('@/components/Setting/ThemeSetting.vue'),
-    MediaActionMenu
+    MediaActionMenu: () => import('@/components/MediaActionMenu.vue')
   }
 })
 export default class App extends Vue {
@@ -87,6 +86,8 @@ export default class App extends Vue {
   >;
   @State(state => state.newPlaylistDialog.visibility)
   newPlaylistDialogVisibility!: boolean;
+  @State(state => state.mediaActionMenu.visibility)
+  mediaActionMenuVisibility!: boolean;
 
   @Action [LOAD_SETTINGS]: () => void;
   @Action [LOAD_TOKEN_LASTFM]: () => void;
@@ -115,11 +116,6 @@ export default class App extends Vue {
       this.$vuetify.theme.primaryText = primaryText;
       this.$vuetify.theme.secondaryText = secondaryText;
     }
-  }
-
-  mounted() {
-    // @ts-ignore
-    this.$root.$mediaActionMenu = this.$refs.mediaActionMenu;
   }
 
   created() {

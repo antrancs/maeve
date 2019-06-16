@@ -31,11 +31,6 @@ export const RESET_QUEUE = 'resetQueue';
 export const SHUFFLE_MAIN_SONGS = 'shuffleMainSongs';
 export const SHUFFLE_YOUR_QUEUE = 'shuffleYourQueue';
 
-export const BLOCK_ARTISTS = 'blockArtists';
-export const UNBLOCK_ARTISTS = 'unblockArtists';
-export const BLOCK_SONG = 'blockSong';
-export const UNBLOCK_SONG = 'unblockSong';
-
 export const ADD_TO_LIBRARY = 'addToLibrary';
 export const ADD_SONGS_TO_PLAYLIST = 'addSongsToPlaylist';
 export const CREATE_NEW_PLAYLIST = 'createNewPlaylist';
@@ -55,7 +50,6 @@ export const LOAD_CUSTOM_THEME = 'loadCustomThemes';
 export const SELECT_THEME = 'selectTheme';
 export const LOAD_SETTINGS = 'loadSettings';
 export const SELECT_BUTTON_STYLES = 'selectButtonStyle';
-export const LOAD_BLOCKED_ITEMS = 'loadBlockedItems';
 export const SELECT_PLAYBACK_BITRATE = 'selectPlaybackBitrate';
 
 export const FETCH_ONE_ALBUM_CATALOG = 'fetchOneAlbumCatalog';
@@ -92,3 +86,6 @@ export const CLOSE_NEW_PLAYLIST_DIALOG = 'closeNewPlaylistDialog';
 
 export const OPEN_THEME_EDITOR_DIALOG = 'openThemeEditorDialog';
 export const CLOSE_THEME_EDITOR_DIALOG = 'closeThemeEditorDialog';
+
+export const SHOW_MEDIA_ACTION_MENU = 'showMediaActionMenu';
+export const CLOSE_MEDIA_ACTION_MENU = 'closeMediaActionMenu';

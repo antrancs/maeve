@@ -55,22 +55,11 @@ export type AppendSongsAction = (payload: AppendSongsPayload) => void;
 
 export type PrependSongsAction = (payload: PrependSongsPayload) => void;
 
-// export type PlayCollectionWithSongAction = (
-//   payload: PlayCollectionWithSongPayload
-// ) => void;
-
 export type SkipToSongAtIndexAction = (
   payload: SkipToSongAtIndexPayload
 ) => void;
 
 export type PlaySongsAction = (payload: PlaySongsPayload) => Promise<void>;
-
-export type BlockArtistsAction = (artistIds: string[]) => void;
-export type UnblockArtistsAction = (artistIds: string[]) => void;
-
-export type BlockSongAction = (songId: string) => void;
-export type UnblockSongAction = (songId: string) => void;
-// export type FetchCollectionAction = (payload: FetchCollectionPayload) => void;
 
 export type PlayCollectionPayload = {
   collectionId: string;
@@ -138,12 +127,6 @@ export interface SettingsState {
   customThemes: ThemeOption[];
   selectedTheme: ThemeOption;
   buttonStyle: ButtonStyle;
-  blockedArtists: {
-    [id: string]: boolean;
-  };
-  blockedSongs: {
-    [id: string]: boolean;
-  };
   playbackBitrate: PlaybackBitrate;
 }
 
@@ -405,4 +388,26 @@ export type OpenThemeEditorDialogPayload = {
 
 export type OpenThemeEditorDialogAction = (
   payload?: OpenThemeEditorDialogPayload
+) => void;
+
+/**
+ *
+ */
+export interface MediaActionMenuState {
+  visibility: boolean;
+  posX: number;
+  posY: number;
+  item?: Collection | Song | MusicKit.MediaItem;
+  isQueue: boolean;
+}
+
+export type ShowMediaActionMenuPayload = {
+  posX: number;
+  posY: number;
+  item: Collection | Song | MusicKit.MediaItem;
+  isQueue: boolean;
+};
+
+export type ShowMediaActionMenuAction = (
+  payload: ShowMediaActionMenuPayload
 ) => void;

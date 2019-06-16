@@ -32,6 +32,7 @@ import Vue from 'vue';
 
 import SongListSmallItem from '@/components/Song/SongListSmallItem.vue';
 import SongListMixin from '@/mixins/SongListMixin';
+import { SHOW_MEDIA_ACTION_MENU } from '../../store/actions.type';
 
 export default Vue.extend({
   mixins: [SongListMixin],
@@ -49,8 +50,12 @@ export default Vue.extend({
       posX: number,
       posY: number
     ) {
-      // @ts-ignore
-      this.$root.$mediaActionMenu.open(song, null, posX, posY, true);
+      this.$store.dispatch(SHOW_MEDIA_ACTION_MENU, {
+        posX,
+        posY,
+        isQueue: true,
+        item: song
+      });
     }
   }
 });

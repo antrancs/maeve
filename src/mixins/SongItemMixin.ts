@@ -1,5 +1,5 @@
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
-import { Getter, Mutation } from 'vuex-class';
+import { Getter, Mutation, Action } from 'vuex-class';
 
 import { Song } from '@/@types/model/model';
 import { SET_SONG_LOADING } from '@/store/mutations.type';
@@ -18,9 +18,6 @@ export default class SongItemMixin extends Vue {
   fromAlbum!: boolean;
   @Prop({ default: false }) isMusicPlaying!: boolean;
   @Prop({ default: false }) isActive!: boolean;
-
-  // @State
-  // musicPlayer!: MusicPlayerState;
 
   @Getter darkMode!: boolean;
   @Getter isAuthenticated!: boolean;
@@ -78,7 +75,6 @@ export default class SongItemMixin extends Vue {
   onActionsIconClicked(event: MouseEvent) {
     event.preventDefault();
 
-    // this.$root.$mediaActionMenu.open(this.song, event.clientX, event.clientY);
     this.$emit('actions-icon-click', this.song, event.clientX, event.clientY);
   }
 

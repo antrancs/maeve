@@ -14,8 +14,8 @@ import { Prop, Component } from 'vue-property-decorator';
 import { Collection, CollectionType } from '@/@types/model/model';
 import { State, Action } from 'vuex-class';
 import MediaActionMenu from '@/components/MediaActionMenu.vue';
-import { PLAY_COLLECTION } from '@/store/actions.type';
-import { PlayCollectionAction } from '@/store/types';
+import { PLAY_COLLECTION, SHOW_MEDIA_ACTION_MENU } from '@/store/actions.type';
+import { PlayCollectionAction, ShowMediaActionMenuAction } from '@/store/types';
 
 @Component({
   components: {
@@ -31,6 +31,7 @@ export default class CollectionControls extends Vue {
 
   @Action
   [PLAY_COLLECTION]: PlayCollectionAction;
+  @Action [SHOW_MEDIA_ACTION_MENU]: ShowMediaActionMenuAction;
 
   /**
    * Play the entire collection
@@ -55,13 +56,12 @@ export default class CollectionControls extends Vue {
   }
 
   showActionMenu(event: MouseEvent) {
-    // @ts-ignore
-    this.$root.$mediaActionMenu.open(
-      this.collection,
-      null,
-      event.clientX,
-      event.clientY
-    );
+    this.showMediaActionMenu({
+      posX: event.clientX,
+      posY: event.clientY,
+      item: this.collection,
+      isQueue: false
+    });
   }
 }
 </script>

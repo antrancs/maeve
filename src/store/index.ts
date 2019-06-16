@@ -13,6 +13,7 @@ import layout from './layout.module';
 import lastfm from './lastfm.module';
 import newPlaylistDialog from './newPlaylistDialog.module';
 import themeEditorDialog from './themeEditorDialog.module';
+import mediaActionMenu from './mediaActionMenu.module';
 
 Vue.use(Vuex);
 
@@ -29,6 +30,7 @@ export default new Vuex.Store({
     layout,
     lastfm,
     newPlaylistDialog,
-    themeEditorDialog
+    themeEditorDialog,
+    mediaActionMenu
   }
 });

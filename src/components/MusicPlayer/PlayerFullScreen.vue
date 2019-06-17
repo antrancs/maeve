@@ -26,6 +26,7 @@
                       { playing: musicPlayer.isPlaying }
                     ]"
                     v-lazy="artworkUrl"
+                    :key="artworkUrl"
                     alt="Song artwork"
                   />
 
@@ -188,9 +189,7 @@ export default class PlayerFullScreen extends Mixins(
 
   @Watch('dialog')
   onDialogVisibilityChanged(newValue: boolean) {
-    if (newValue) {
-      this.$_fetchLyrics();
-    } else {
+    if (!newValue) {
       this.$emit('close-dialog');
     }
   }
@@ -303,6 +302,10 @@ export default class PlayerFullScreen extends Mixins(
       this.artworkSize,
       this.artworkSize
     );
+  }
+
+  created() {
+    this.$_fetchLyrics();
   }
 
   open() {

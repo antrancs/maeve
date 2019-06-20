@@ -112,7 +112,7 @@ module.exports = {
         },
         {
           urlPattern: /https:\/\/maevemusic\.app\/api\/catalog\/playlists\/featured/,
-          handler: 'staleWhileRevalidate',
+          handler: 'networkFirst',
           options: {
             cacheName: 'catalog-featured-playlists',
             expiration: {

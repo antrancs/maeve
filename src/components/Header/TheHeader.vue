@@ -47,11 +47,10 @@
           :nudge-bottom="10"
         >
           <v-btn icon large flat slot="activator" class="mr-0">
-            <div :class="$style['flag']" :style="flagStyle">
-              <v-icon small :color="iconStyle" style="z-index: 1"
-                >account_circle</v-icon
-              >
-            </div>
+            <v-avatar color="accent" size="40px">
+              <div :class="$style['flag']" :style="flagStyle"></div>
+              <v-icon :color="iconStyle" small>account_circle</v-icon>
+            </v-avatar>
           </v-btn>
 
           <v-list class="pa-0 primary lighten-1">
@@ -153,26 +152,13 @@ export default class AppHeader extends Vue {
 }
 
 .flag {
-  background-size: cover;
-  background-repeat: no-repeat;
-  width: 4rem;
-  height: 4rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  border: 1px solid white;
   border-radius: 50%;
-  position: relative;
-}
-
-.flag::before {
-  content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  border-radius: 50%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  width: 14px;
+  height: 14px;
+  bottom: 0;
+  right: 0;
 }
 </style>
 

@@ -72,12 +72,26 @@ const getters: GetterTree<MusicPlayerState, any> = {
 };
 
 const actions: ActionTree<MusicPlayerState, any> = {
-  [PLAY_NEXT]() {
-    return MusicKit.getInstance().player.skipToNextItem();
+  async [PLAY_NEXT]() {
+    const musicKitPlayer = MusicKit.getInstance().player;
+
+    if (musicKitPlayer.isPlaying) {
+      await musicKitPlayer.stop();
+    }
+
+    return musicKitPlayer.skipToNextItem().catch(() => musicKitPlayer.play());
   },
 
-  [PLAY_PREVIOUS]() {
-    return MusicKit.getInstance().player.skipToPreviousItem();
+  async [PLAY_PREVIOUS]() {
+    const musicKitPlayer = MusicKit.getInstance().player;
+
+    if (musicKitPlayer.isPlaying) {
+      await musicKitPlayer.stop();
+    }
+
+    return musicKitPlayer
+      .skipToPreviousItem()
+      .catch(() => musicKitPlayer.play());
   },
 
   [TOGGLE_CURRENT_TRACK]({ dispatch }) {
@@ -93,15 +107,11 @@ const actions: ActionTree<MusicPlayerState, any> = {
   },
 
   [RESUME_CURRENT_TRACK]() {
-    return MusicKit.getInstance()
-      .player.play()
-      .catch(err => {
-        // console.log(err);
-      });
+    return MusicKit.getInstance().player.play();
   },
 
   async [PLAY_COLLECTION](
-    { commit, dispatch },
+    { commit, dispatch, state },
     {
       collectionId,
       collectionType,
@@ -109,10 +119,16 @@ const actions: ActionTree<MusicPlayerState, any> = {
       shuffle = false
     }: PlayCollectionPayload
   ) {
-    const audioPlayer = document.getElementById('apple-music-player');
+    const musicKitInstance = MusicKit.getInstance();
+    if (!state.currentPlaying) {
+      const audioPlayer = document.getElementById('apple-music-player');
+      if (audioPlayer) {
+        (audioPlayer as HTMLAudioElement).load();
+      }
+    }
 
-    if (audioPlayer) {
-      (audioPlayer as HTMLAudioElement).load();
+    if (musicKitInstance.player.isPlaying) {
+      await musicKitInstance.player.stop();
     }
 
     const type =
@@ -122,7 +138,6 @@ const actions: ActionTree<MusicPlayerState, any> = {
 
     dispatch('changeShuffleMode', shuffle);
 
-    const musicKitInstance = MusicKit.getInstance();
     await musicKitInstance.setQueue({
       [type]: collectionId
     });
@@ -137,9 +152,20 @@ const actions: ActionTree<MusicPlayerState, any> = {
   },
 
   async [PLAY_SONGS](
-    { commit, dispatch },
+    { commit, dispatch, state },
     { shuffle = false, songs, sourceInfo, startPosition }: PlaySongsPayload
   ) {
+    if (!state.currentPlaying) {
+      const audioPlayer = document.getElementById('apple-music-player');
+
+      if (audioPlayer) {
+        (audioPlayer as HTMLAudioElement).load();
+      }
+    }
+
+    const musicKitInstance = MusicKit.getInstance();
+
+    await musicKitInstance.player.stop();
     const mediaItems = songs.map(
       song =>
         new MusicKit.MediaItem({
@@ -156,7 +182,6 @@ const actions: ActionTree<MusicPlayerState, any> = {
     );
 
     dispatch('changeShuffleMode', shuffle);
-    const musicKitInstance = MusicKit.getInstance();
 
     await musicKitInstance.setQueue({
       items: mediaItems
@@ -167,36 +192,9 @@ const actions: ActionTree<MusicPlayerState, any> = {
     }
 
     commit(SET_QUEUE, musicKitInstance.player.queue, { root: true });
+
     return musicKitInstance.player.play();
   },
-
-  // [PLAY_CURRENT_SONG]({ state, dispatch }, song: PlayQueueSong) {
-  //   const mediaItems = new MusicKit.MediaItem({
-  //     id: song.id,
-  //     attributes: song.attributes,
-  //     type: 'song',
-  //     container: {
-  //       id: song.id
-  //     }
-  //   });
-
-  //   const music = MusicKit.getInstance();
-
-  //   return music
-  //     .setQueue({
-  //       items: [mediaItems]
-  //     })
-  //     .then(() => {
-  //       if (music.player.playbackState === MusicKit.PlaybackStates.playing) {
-  //         return music.player.pause();
-  //       }
-  //       return Promise.resolve();
-  //     })
-  //     .then(() => {
-  //       return music.player.play();
-  //     })
-  //     .catch(err => err);
-  // },
 
   [SKIP_TO_SONG_AT_INDEX](_, { index }: SkipToSongAtIndexPayload) {
     return MusicKit.getInstance().player.changeToMediaAtIndex(index);

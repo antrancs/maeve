@@ -23,6 +23,7 @@ export interface MusicPlayerState {
   currentPlaybackTimeAfterSkip: number;
   shuffleMode: ShuffleMode;
   minimized: boolean;
+  pauseTime: number | null;
 }
 
 // Payload

@@ -196,7 +196,8 @@ import {
   PLAY_PREVIOUS,
   CHANGE_VOLUME,
   MUTE_VOLUME,
-  TOGGLE_MINIMIZED
+  TOGGLE_MINIMIZED,
+  CHECK_IF_SONG_PLAY_SUCCESSFUL
 } from '@/store/actions.type';
 import { Nullable, ShuffleMode, Artist } from '@/@types/model/model';
 import { RepeatMode, PLACEHOLDER_IMAGE } from '@/utils/constants';
@@ -228,8 +229,6 @@ export default class PlayerBar extends Mixins(
   private circularProgressWidth = 3;
 
   @State musicPlayer!: MusicPlayerState;
-  // @State(state => state.musicPlayer.volume) volume!: number;
-  // @State(state => state.musicPlayer.isMuted) isMuted!: boolean;
 
   @Getter currentPlayingDuration!: number;
   @Getter isAuthenticated!: boolean;
@@ -249,6 +248,7 @@ export default class PlayerBar extends Mixins(
   @Action [CHANGE_VOLUME]: (volume: number) => void;
   @Action [MUTE_VOLUME]: () => void;
   @Action [TOGGLE_MINIMIZED]: () => void;
+  @Action [CHECK_IF_SONG_PLAY_SUCCESSFUL]: () => void;
 
   @Mutation
   [SET_PLAYBACK_PROGESS]: (progress: number) => void;
@@ -480,11 +480,11 @@ It can be an album/playlist or the original song lists where this song is from
     // store.commit(SET_PLAYBACK_PROGESS, event.progress);
   }
 
-  onPlaybackStateDidChange(event: any) {
+  async onPlaybackStateDidChange(event: any) {
     const DEFAULT_PAGE_TITLE = 'Maeve - An Apple Music web player';
-    const musicKitInstace = MusicKit.getInstance();
+    const musicKitInstance = MusicKit.getInstance();
 
-    switch (musicKitInstace.player.playbackState) {
+    switch (musicKitInstance.player.playbackState) {
       case MusicKit.PlaybackStates.stopped:
         this.setIsPlaying(false);
         document.title = DEFAULT_PAGE_TITLE;
@@ -507,10 +507,17 @@ It can be an album/playlist or the original song lists where this song is from
         break;
       }
       case MusicKit.PlaybackStates.loading:
+        this.setIsPlaying(false);
         this.setSongLoading(true);
         break;
       case MusicKit.PlaybackStates.completed:
+        this.setIsPlaying(false);
         document.title = DEFAULT_PAGE_TITLE;
+        break;
+
+      case MusicKit.PlaybackStates.ended:
+        this.setIsPlaying(false);
+        this.checkIfSongPlaySuccessful();
     }
   }
 

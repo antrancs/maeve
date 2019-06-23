@@ -160,7 +160,7 @@ declare namespace MusicKit {
     /**
      * Stops the currently playing media item.
      */
-    stop(): void;
+    stop(): Promise<void>;
   }
 
   /**

@@ -14,7 +14,8 @@ import {
   UPDATE_REPEAT_MODE,
   TOGGLE_SHUFFLE_MODE,
   PLAY_COLLECTION,
-  TOGGLE_MINIMIZED
+  TOGGLE_MINIMIZED,
+  CHECK_IF_SONG_PLAY_SUCCESSFUL
 } from '@/store/actions.type';
 import {
   SET_CURRENTLY_PLAYING_SONG,
@@ -28,7 +29,8 @@ import {
   SET_CURRENT_PLAYBACK_TIME_AFTER_SKIP,
   SET_SHUFFLE_MODE,
   SET_QUEUE,
-  SET_MINIMIZED_STATE
+  SET_MINIMIZED_STATE,
+  SET_PAUSE_TIME
 } from '@/store/mutations.type';
 import {
   MusicPlayerState,
@@ -50,7 +52,8 @@ const initialState: MusicPlayerState = {
   isMuted: false,
   currentPlaybackTimeAfterSkip: 0,
   shuffleMode: ShuffleMode.Off,
-  minimized: false
+  minimized: false,
+  pauseTime: null
 };
 
 const getters: GetterTree<MusicPlayerState, any> = {
@@ -72,42 +75,62 @@ const getters: GetterTree<MusicPlayerState, any> = {
 };
 
 const actions: ActionTree<MusicPlayerState, any> = {
-  async [PLAY_NEXT]() {
+  async [PLAY_NEXT]({ dispatch }) {
     const musicKitPlayer = MusicKit.getInstance().player;
 
-    if (musicKitPlayer.isPlaying) {
-      await musicKitPlayer.stop();
-    }
-
-    return musicKitPlayer.skipToNextItem().catch(() => musicKitPlayer.play());
+    musicKitPlayer.skipToNextItem().catch(() => {});
+    dispatch(CHECK_IF_SONG_PLAY_SUCCESSFUL);
   },
 
-  async [PLAY_PREVIOUS]() {
+  async [PLAY_PREVIOUS]({ dispatch }) {
     const musicKitPlayer = MusicKit.getInstance().player;
 
-    if (musicKitPlayer.isPlaying) {
-      await musicKitPlayer.stop();
-    }
-
-    return musicKitPlayer
-      .skipToPreviousItem()
-      .catch(() => musicKitPlayer.play());
+    musicKitPlayer.skipToPreviousItem().catch(() => {});
+    dispatch(CHECK_IF_SONG_PLAY_SUCCESSFUL);
   },
 
-  [TOGGLE_CURRENT_TRACK]({ dispatch }) {
-    if (MusicKit.getInstance().player.isPlaying) {
+  [TOGGLE_CURRENT_TRACK]({ state, dispatch }) {
+    if (state.isPlaying) {
       dispatch(PAUSE_CURRENT_TRACK);
     } else {
       dispatch(RESUME_CURRENT_TRACK);
     }
   },
 
-  [PAUSE_CURRENT_TRACK]() {
-    return MusicKit.getInstance().player.pause();
+  [PAUSE_CURRENT_TRACK]({ commit }) {
+    commit(SET_PAUSE_TIME, Date.now());
+    // return MusicKit.getInstance().player.pause();
+    const audioPlayer = document.getElementById('apple-music-player');
+    if (audioPlayer) {
+      (audioPlayer as HTMLAudioElement).pause();
+    }
+
+    commit(SET_IS_PLAYING, false);
   },
 
-  [RESUME_CURRENT_TRACK]() {
-    return MusicKit.getInstance().player.play();
+  async [RESUME_CURRENT_TRACK]({ state, dispatch, commit }) {
+    const timelapse = state.pauseTime ? Date.now() - state.pauseTime : 0;
+
+    // 6 mins in milliseconds
+    if (timelapse > 6 * 60 * 1000) {
+      const currentTime = state.currentPlaybackTimeInMilliSeconds / 1000;
+
+      await dispatch(SKIP_TO_SONG_AT_INDEX, {
+        index: MusicKit.getInstance().player.nowPlayingItemIndex
+      });
+      await dispatch(SEEK_TO_TIME, currentTime);
+    } else {
+      // there's a bug with the MusicKit.getInstance().player.play() method that
+      // skips to the next song instead of resuming the current song.
+      // So use the native <audio> element's play() method instead
+      const audioPlayer = document.getElementById('apple-music-player');
+      if (audioPlayer) {
+        (audioPlayer as HTMLAudioElement).play();
+      }
+    }
+
+    commit(SET_IS_PLAYING, true);
+    commit(SET_PAUSE_TIME, null);
   },
 
   async [PLAY_COLLECTION](
@@ -127,8 +150,12 @@ const actions: ActionTree<MusicPlayerState, any> = {
       }
     }
 
-    if (musicKitInstance.player.isPlaying) {
-      await musicKitInstance.player.stop();
+    try {
+      if (musicKitInstance.player.isPlaying) {
+        await musicKitInstance.player.stop();
+      }
+    } catch (err) {
+      // err here
     }
 
     const type =
@@ -143,12 +170,16 @@ const actions: ActionTree<MusicPlayerState, any> = {
     });
 
     if (startPosition) {
-      await musicKitInstance.player.changeToMediaAtIndex(startPosition);
+      await dispatch(SKIP_TO_SONG_AT_INDEX, {
+        index: startPosition
+      });
     }
 
     commit(SET_QUEUE, musicKitInstance.player.queue, { root: true });
 
-    return musicKitInstance.player.play();
+    musicKitInstance.player.play();
+
+    dispatch(CHECK_IF_SONG_PLAY_SUCCESSFUL);
   },
 
   async [PLAY_SONGS](
@@ -188,7 +219,9 @@ const actions: ActionTree<MusicPlayerState, any> = {
     });
 
     if (startPosition) {
-      await musicKitInstance.player.changeToMediaAtIndex(startPosition);
+      await dispatch(SKIP_TO_SONG_AT_INDEX, {
+        index: startPosition
+      });
     }
 
     commit(SET_QUEUE, musicKitInstance.player.queue, { root: true });
@@ -256,6 +289,23 @@ const actions: ActionTree<MusicPlayerState, any> = {
 
   [TOGGLE_MINIMIZED]({ state, commit }) {
     commit(SET_MINIMIZED_STATE, !state.minimized);
+  },
+
+  [CHECK_IF_SONG_PLAY_SUCCESSFUL]({ dispatch }) {
+    // a temporary workaround for the issue of failing to load resource
+    setTimeout(async () => {
+      const musicKitPlayer = MusicKit.getInstance().player;
+      if (
+        musicKitPlayer.playbackState !== MusicKit.PlaybackStates.playing &&
+        musicKitPlayer.playbackState !== MusicKit.PlaybackStates.completed
+      ) {
+        setTimeout(() => {
+          dispatch(SKIP_TO_SONG_AT_INDEX, {
+            index: musicKitPlayer.nowPlayingItemIndex
+          });
+        }, 2000);
+      }
+    }, 4000);
   }
 };
 
@@ -302,6 +352,10 @@ const mutations: MutationTree<MusicPlayerState> = {
 
   [SET_MINIMIZED_STATE](state, value: boolean) {
     state.minimized = value;
+  },
+
+  [SET_PAUSE_TIME](state, value: number | null) {
+    state.pauseTime = value;
   }
 };
 

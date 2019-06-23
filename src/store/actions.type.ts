@@ -12,6 +12,7 @@ export const TOGGLE_MINIMIZED = 'toggleMinimized';
 export const UPDATE_REPEAT_MODE = 'updateRepeatMode';
 export const TOGGLE_SHUFFLE_MODE = 'toggleShuffleMode';
 export const PLAY_COLLECTION = 'playCollection';
+export const CHECK_IF_SONG_PLAY_SUCCESSFUL = 'checkIfSongPlaySuccessful';
 
 export const CHANGE_ROUTE = 'changeRoute';
 

@@ -10,6 +10,7 @@ export const SET_SHUFFLE_MODE = 'setShuffleMode';
 export const SET_VOLUME = 'setVolume';
 export const SET_IS_MUTED = 'setIsMuted';
 export const SET_MINIMIZED_STATE = 'setMinimizedState';
+export const SET_PAUSE_TIME = 'setPauseTime';
 export const SET_CURRENT_PLAYBACK_TIME_AFTER_SKIP =
   'setCurrentPlaybackTimeAfterSkip';
 

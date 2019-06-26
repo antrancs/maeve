@@ -393,6 +393,20 @@ It can be an album/playlist or the original song lists where this song is from
 
   created() {
     window.addEventListener('keydown', this.handleKeyDown);
+
+    //Add MediaKey Support using MediaSession
+    navigator.mediaSession.setActionHandler("nexttrack", _ => {
+      if (this.canGoNext) {
+        this.playNext();
+      }
+    })
+
+    navigator.mediaSession.setActionHandler("previoustrack", _ => {
+      if (this.canGoBack) {
+        this.playPrevious();
+      }
+    })
+
     const musicKitInstance = MusicKit.getInstance();
     // set up musicKit
     musicKitInstance.addEventListener(

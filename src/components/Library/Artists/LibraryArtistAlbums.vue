@@ -34,11 +34,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Component from 'vue-class-component';
+import { Prop, Watch, Component } from 'vue-property-decorator';
+import { Action } from 'vuex-class';
 
 import CollectionItemCard from '@/components/Collection/CollectionItemCard.vue';
-import { Prop, Watch } from 'vue-property-decorator';
-import { Action } from 'vuex-class';
 import { FETCH_ONE_ALBUM_LIBRARY, PLAY_SONGS } from '@/store/actions.type';
 import { FetchOneAlbumLibraryAction, PlaySongsAction } from '@/store/types';
 import { Nullable, Song } from '@/@types/model/model';

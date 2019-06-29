@@ -61,10 +61,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Component from 'vue-class-component';
-import CollectionControls from './CollectionControls.vue';
-import { Prop } from 'vue-property-decorator';
+import { Prop, Component } from 'vue-property-decorator';
 
+import CollectionControls from './CollectionControls.vue';
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import {
   Collection,

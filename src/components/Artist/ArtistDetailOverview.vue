@@ -96,8 +96,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { Prop } from 'vue-property-decorator';
-import Component from 'vue-class-component';
+import { Prop, Component } from 'vue-property-decorator';
 
 import SongListSmall from '@/components/Song/SongListSmall.vue';
 import LinkComponent from '@/components/LinkComponent.vue';

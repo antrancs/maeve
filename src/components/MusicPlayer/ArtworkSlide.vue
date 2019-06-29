@@ -19,9 +19,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { Prop, Component } from 'vue-property-decorator';
 import { Getter, State } from 'vuex-class';
+
 import { getArtworkUrl } from '@/utils/utils';
 
 @Component

@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import Component from 'vue-class-component';
 
 import AppButton from '@/components/AppButton.vue';
 import ContentSection from '@/components/ContentSection.vue';
@@ -13,13 +12,6 @@ import '@/filters';
 import App from './App.vue';
 
 setupMusicKit();
-// Register the router hooks with their names
-Component.registerHooks([
-  'beforeRouteEnter',
-  'beforeRouteLeave',
-  'beforeRouteUpdate' // for vue-router 2.2+
-]);
-
 Vue.config.productionTip = false;
 // Vue.config.performance = true;
 

@@ -11,8 +11,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { Prop, Component } from 'vue-property-decorator';
 import { Nullable } from '@/@types/model/model';
 
 @Component

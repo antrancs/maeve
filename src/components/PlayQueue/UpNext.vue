@@ -12,8 +12,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { Component } from 'vue-property-decorator';
 import { Getter, Action } from 'vuex-class';
-import Component from 'vue-class-component';
+
 // @ts-ignore
 import VirtualList from 'vue-virtual-scroll-list';
 

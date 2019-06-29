@@ -16,8 +16,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Component from 'vue-class-component';
-import { Watch, Prop } from 'vue-property-decorator';
+import { Watch, Prop, Component } from 'vue-property-decorator';
 import debounce from 'lodash/debounce';
 
 @Component

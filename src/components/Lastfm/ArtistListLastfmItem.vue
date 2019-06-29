@@ -32,8 +32,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Component from 'vue-class-component';
-import { Prop } from 'vue-property-decorator';
+import { Prop, Component } from 'vue-property-decorator';
 
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import LinkComponent from '@/components/LinkComponent.vue';

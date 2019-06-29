@@ -19,13 +19,11 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Component from 'vue-class-component';
 import { State, Getter, Action, Mutation } from 'vuex-class';
+import { Watch, Component } from 'vue-property-decorator';
 
 import MediaArtwork from '@/components/MediaArtwork.vue';
 import { MusicPlayerState, ScobbleLastfmAction } from '@/store/types';
-import { setInterval, clearInterval } from 'timers';
-import { Watch } from 'vue-property-decorator';
 import { SEEK_TO_TIME, SCROBBLE_LASTFM } from '@/store/actions.type';
 import { Nullable } from '@/@types/model/model';
 

@@ -11,10 +11,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Component from 'vue-class-component';
+import { Prop, Component } from 'vue-property-decorator';
 
 import NewReleaseHome from './NewReleaseHome.vue';
-import { Prop } from 'vue-property-decorator';
 
 @Component({
   components: {

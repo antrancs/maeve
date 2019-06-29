@@ -57,9 +57,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Component from 'vue-class-component';
+import { Prop, Component } from 'vue-property-decorator';
+
 import { ThemeOption } from '@/@types/model/model';
-import { Prop } from 'vue-property-decorator';
 
 @Component
 export default class ThemeSetting extends Vue {

@@ -38,8 +38,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Component from 'vue-class-component';
 import { Action, State } from 'vuex-class';
+import { Prop, Component } from 'vue-property-decorator';
+
 import {
   CREATE_NEW_PLAYLIST,
   SHOW_SNACKBAR,
@@ -47,7 +48,6 @@ import {
 } from '@/store/actions.type';
 import { CreateNewPlaylistAction, ShowSnackbarAction } from '@/store/types';
 import { SnackbarMode, Nullable, Song } from '@/@types/model/model';
-import { Prop } from 'vue-property-decorator';
 
 @Component
 export default class NewPlaylistDialog extends Vue {

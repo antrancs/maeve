@@ -99,15 +99,28 @@ const getGradientBackgroundColorsFromArtwork = (artwork: MusicKit.Artwork) => {
 
     return bgColors[bgColorIndex];
   }
-  if (isLight(bgColor)) {
-    const firstColor = textColor1 || '000000';
-    const secondColor = textColor3 || textColor2 || '000000';
 
-    return [`#${firstColor}`, `#${secondColor}`];
+  const colors = [bgColor, textColor1, textColor2, textColor3, textColor4];
+  const gradientColors = [];
+
+  for (const color of colors) {
+    if (!color) {
+      continue;
+    }
+
+    if (!isLight(color)) {
+      gradientColors.push(`#${color}`);
+    }
+    if (gradientColors.length === 2) {
+      break;
+    }
   }
 
-  const secondColor = textColor2 || textColor1 || '000000';
-  return [`#${bgColor}`, `#${secondColor}`];
+  if (gradientColors.length < 2) {
+    gradientColors.push('#000000');
+  }
+
+  return gradientColors;
 };
 
 export {

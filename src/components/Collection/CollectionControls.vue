@@ -1,8 +1,8 @@
 <template>
   <div>
     <app-button class="ml-0 mb-0" @on-click="onPlayBtnClicked">Play</app-button>
-    <app-button class="mb-0" @on-click="shuffleSongs">Shuffle</app-button>
-    <v-btn fab dark class="accent mb-0" small @click="showActionMenu">
+    <app-button class="mb-0 ml-0" @on-click="shuffleSongs">Shuffle</app-button>
+    <v-btn fab dark class="accent mb-0 mx-0" small @click="showActionMenu">
       <v-icon medium>more_horiz</v-icon>
     </v-btn>
   </div>

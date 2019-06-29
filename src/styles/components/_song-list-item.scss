@@ -4,10 +4,6 @@
   position: relative;
   // line-height: 6rem;
   transition: background-color 0.25s ease-in-out;
-
-  &.dark-mode {
-    border-bottom: 0.1rem solid rgba(255, 255, 255, 0.08);
-  }
 }
 
 /* mouse, touch pad */
@@ -99,6 +95,11 @@
 
 .right-items {
   flex-shrink: 0;
+}
+
+.album .right-items,
+.album .track-number {
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .middle-items {

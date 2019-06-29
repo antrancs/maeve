@@ -1,154 +1,75 @@
 <template>
-  <v-container class="page-content pb-0 pt-2">
-    <v-layout
-      :class="{
-        'row wrap': $vuetify.breakpoint.lgAndUp,
-        column: $vuetify.breakpoint.mdAndDown
-      }"
-    >
-      <v-flex lg3 class="mb-2" v-if="$vuetify.breakpoint.lgAndUp">
-        <div
-          :class="$style['left-column']"
-          :style="[leftColumnBackgroundStyle]"
-          v-if="collection"
+  <v-container class="mt-2 pt-0" :class="$style['wrapper']">
+    <v-layout v-if="collection" row wrap class="mb-4" align-start>
+      <v-flex xs12 style="position: relative" v-if="collectionDescription">
+        <p
+          ref="collectionDescriptionRef"
+          :class="[
+            $style['collection-description'],
+            {
+              'long-text-truncated': editorialNoteCollapse,
+              [$style[
+                'collection-description--max-height'
+              ]]: editorialNoteCollapse
+            },
+            'mb-3'
+          ]"
+          v-html="collectionDescription"
+        ></p>
+        <button
+          v-if="isCollectionDescriptionOverflow"
+          :class="[
+            $style['more-button'],
+            { [$style['expanded']]: !editorialNoteCollapse }
+          ]"
+          @click="editorialNoteCollapse = !editorialNoteCollapse"
         >
-          <div :class="[$style['left-column__top'], 'pr-2 py-2']">
-            <div
-              :class="$style['collection-name']"
-              :style="collectionNameStyle"
-              :title="collectionName"
-            >
-              {{ collectionName }}
-              <v-icon
-                dark
-                size="22"
-                v-if="collection.attributes.contentRating === 'explicit'"
-                >explicit</v-icon
-              >
-            </div>
-
-            <ResourceLinkList
-              :resources="artists"
-              :class="$style['artist-name']"
-              :name="collectionArtistName"
-            />
-          </div>
-
-          <div :class="$style['cover-wrapper']">
-            <CollectionDetailArtwork
-              :class="[$style['cover'], { 'elevation-5': isFromAlbum }]"
-              :style="artworkStyle"
-              :artworks="artworks"
-              :isAlbum="isFromAlbum"
-              :backgroundGradients="backgroundGradients"
-            />
-          </div>
-
-          <div :class="[$style['left-column__bottom'], 'pt-3']">
-            <div :class="$style['song-info']">
-              {{ songs.length }} {{ songs.length > 1 ? 'tracks' : 'track' }}
-            </div>
-            <div :class="$style['collection-date']">
-              <template v-if="collection.type === 'albums'">
-                {{ releaseDate }}
-              </template>
-              <template
-                v-else-if="collection.type === 'playlists' && updatedDate"
-              >
-                Updated {{ updatedDate }}
-              </template>
-            </div>
-          </div>
-        </div>
+          {{ editorialNoteCollapse ? 'more' : 'less' }}
+        </button>
       </v-flex>
-      <v-flex v-else :class="['mb-3', { xs12: $vuetify.breakpoint.lgAndUp }]">
-        <v-layout
-          row
-          wrap
-          v-if="collection"
-          :justify-center="$vuetify.breakpoint.xsOnly"
-        >
-          <v-flex :class="$style['cover-sm']" :style="coverSmStyle">
-            <CollectionDetailArtwork
-              :class="$style['cover']"
-              :artworks="artworks"
-              :isAlbum="isFromAlbum"
-              :backgroundGradients="backgroundGradients"
-            />
-          </v-flex>
-          <v-flex
-            xs12
-            sm6
-            :class="{
-              'pl-3': $vuetify.breakpoint.smAndUp,
-              'pt-3': $vuetify.breakpoint.xsOnly
-            }"
-          >
-            <v-layout column :align-center="$vuetify.breakpoint.xsOnly">
-              <div
-                :class="$style['collection-name']"
-                :style="collectionNameStyle"
-                :title="collectionName"
-              >
-                {{ collectionName }}
+      <v-flex
+        :class="[
+          $style['left-col'],
+          $vuetify.breakpoint.mdAndUp ? 'md3' : 'xs12'
+        ]"
+      >
+        <CollectionDetailArtwork
+          :class="[$style['cover']]"
+          :artworks="artworks"
+          :isAlbum="isFromAlbum"
+          :backgroundGradients="backgroundGradients"
+        />
 
-                <v-icon
-                  dark
-                  v-if="collection.attributes.contentRating === 'explicit'"
-                  >explicit</v-icon
-                >
-              </div>
-
-              <ResourceLinkList
-                :resources="artists"
-                :class="$style['artist-name']"
-                :name="collectionArtistName"
-              />
-            </v-layout>
-          </v-flex>
-        </v-layout>
+        <div :class="[$style['song-info'], 'mt-2']">
+          {{ songs.length }} {{ songs.length > 1 ? 'tracks' : 'track' }}
+        </div>
+        <div :class="$style['collection-date']">
+          <template v-if="collection.type === 'albums'">
+            {{ releaseDate }}
+          </template>
+          <template v-else-if="collection.type === 'playlists' && updatedDate">
+            Updated {{ updatedDate }}
+          </template>
+        </div>
 
         <CollectionControls
           v-if="songs.length > 0"
-          class="mt-2"
           :collection="collection"
           :songs="songs"
         />
       </v-flex>
 
-      <v-spacer v-if="isFromAlbum && $vuetify.breakpoint.lgAndUp"></v-spacer>
-      <v-flex
-        v-if="collection"
-        :class="{
-          [$style['right-column']]: $vuetify.breakpoint.lgAndUp,
-          lg7: isFromAlbum,
-          lg9: !isFromAlbum
-        }"
-      >
-        <template v-if="collectionDescription">
-          <p
-            :class="$style['collection-description']"
-            :style="editorialNoteStyles"
-            v-html="collectionDescription"
-          ></p>
-          <p
-            v-if="collectionDescription.length > 260"
-            :class="$style['collection-description-toggle']"
-            @click="editorialNoteCollapse = !editorialNoteCollapse"
-          >
-            {{ editorialNoteCollapse ? 'MORE' : 'LESS' }}
-          </p>
-        </template>
+      <v-spacer v-if="isFromAlbum && $vuetify.breakpoint.mdAndUp"></v-spacer>
 
-        <v-layout row justify-end v-if="$vuetify.breakpoint.lgAndUp">
-          <CollectionControls
-            v-if="songs.length > 0"
-            :collection="collection"
-            :songs="songs"
-          />
-        </v-layout>
+      <v-flex
+        :class="[
+          $style['song-list'],
+          $vuetify.breakpoint.smAndDown ? 'xs12' : isFromAlbum ? 'md7' : 'md9',
+          { 'elevation-4': isFromAlbum }
+        ]"
+        :style="isFromAlbum ? songListBackgroundStyle : {}"
+      >
         <SongListLarge
-          class="mt-2"
           :songs="songs"
           :fromAlbum="isFromAlbum"
           :onSongClicked="handleSongClicked"
@@ -162,7 +83,11 @@
       </template>
 
       <template #section-content>
-        <SongCollectionList :collections="otherAlbumsFromArtists" />
+        <CollectionCarousel
+          v-if="$vuetify.breakpoint.smAndDown"
+          :collections="otherAlbumsFromArtists"
+        />
+        <SongCollectionList v-else :collections="otherAlbumsFromArtists" />
       </template>
     </content-section>
 
@@ -172,14 +97,18 @@
       </template>
 
       <template #section-content>
-        <SongCollectionList :collections="relatedAlbums" />
+        <CollectionCarousel
+          v-if="$vuetify.breakpoint.smAndDown"
+          :collections="relatedAlbums"
+        />
+        <SongCollectionList v-else :collections="relatedAlbums" />
       </template>
     </content-section>
   </v-container>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch, Mixins } from 'vue-property-decorator';
+import { Component, Prop, Watch, Mixins } from 'vue-property-decorator';
 import { Action, Mutation, State } from 'vuex-class';
 import { Route } from 'vue-router';
 import parse from 'date-fns/parse';
@@ -187,11 +116,11 @@ import format from 'date-fns/format';
 import isToday from 'date-fns/is_today';
 import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
 
-import ResourceLinkList from '@/components/ResourceLinkList.vue';
 import SongListLarge from '@/components/Song/SongListLarge.vue';
 import CollectionControls from '@/components/Collection/CollectionControls.vue';
 import CollectionDetailArtwork from '@/components/Collection/CollectionDetailArtwork.vue';
 import DataLoadingMixin from '@/mixins/DataLoadingMixin';
+import CollectionInfo from '@/components/Collection/CollectionInfo.vue';
 import {
   Nullable,
   Collection,
@@ -230,8 +159,9 @@ import { isLight } from '@/themes';
     SongListLarge,
     SongCollectionList: () =>
       import('@/components/Song/SongCollectionList.vue'),
+    CollectionCarousel: () =>
+      import('@/components/Collection/CollectionCarousel.vue'),
     CollectionControls,
-    ResourceLinkList,
     CollectionDetailArtwork
   }
 })
@@ -242,6 +172,7 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
   private editorialNoteCollapse = true;
   private backgroundGradients: string[] = [];
   private songs: Song[] = [];
+  private isCollectionDescriptionOverflow = false;
 
   @Prop() id!: string;
 
@@ -258,17 +189,6 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
   @Action [PLAY_COLLECTION]: PlayCollectionAction;
 
   @Mutation [SET_FOOTER_VISIBILITY]: (visibility: boolean) => void;
-
-  get editorialNoteStyles() {
-    if (this.editorialNoteCollapse) {
-      return {
-        height: '6.5rem',
-        overflow: 'hidden'
-      };
-    }
-
-    return {};
-  }
 
   get isFromAlbum(): boolean {
     if (!this.collection) {
@@ -351,62 +271,11 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
     );
   }
 
-  get leftColumnBackgroundStyle() {
+  get songListBackgroundStyle() {
     return {
-      background: `linear-gradient(45deg, ${this.backgroundGradients.join(
+      'background-image': `linear-gradient(to right bottom, ${this.backgroundGradients.join(
         ','
       )})`
-    };
-  }
-
-  get artists(): Nullable<Artist[]> {
-    if (
-      this.collection &&
-      this.collection.type === 'albums' &&
-      this.collection.relationships &&
-      this.collection.relationships.artists
-    ) {
-      return this.collection.relationships.artists.data;
-    }
-
-    return null;
-  }
-
-  get collectionName() {
-    if (!this.collection || !this.collection.attributes) {
-      return '';
-    }
-
-    return this.collection.attributes.name;
-  }
-
-  get collectionNameStyle() {
-    if (this.collectionName.length < 30) {
-      return {
-        'font-size': '2.2rem'
-      };
-    }
-    return {
-      'font-size': '1.8rem'
-    };
-  }
-
-  get artworkStyle() {
-    // Only add box-shadow for playlist artwork
-    if (this.isFromAlbum) {
-      return {};
-    }
-    if (
-      !this.collection ||
-      !this.collection.attributes ||
-      !this.collection.attributes.artwork
-    ) {
-      return {};
-    }
-    const shadowColor =
-      this.collection.attributes.artwork.textColor1 || 'ffffff';
-    return {
-      'box-shadow': `0.2rem 0.2rem 1rem #${shadowColor}`
     };
   }
 
@@ -479,14 +348,12 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
     return this.id;
   }
 
-  get coverSmStyle() {
-    return {
-      'margin-right': this.isFromAlbum ? '10rem' : '0'
-    };
-  }
-
   @Watch('$route')
   onRouteChange(to: Route, from: Route) {
+    this.$emit('show-extended-header', {
+      component: null,
+      props: null
+    });
     this.relatedAlbums = [];
     this.otherAlbumsFromArtists = [];
     this.songs = [];
@@ -495,11 +362,18 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
 
   created() {
     this.setFooterVisibility(false);
+  }
+
+  mounted() {
     this.fetchCollection();
   }
 
   beforeDestroy() {
     this.setFooterVisibility(true);
+    this.$emit('show-extended-header', {
+      component: null,
+      props: null
+    });
   }
 
   fetchCollection() {
@@ -510,9 +384,11 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
         this.fetchOneAlbumCatalog(this.id)
           .then(collection => {
             this.collection = collection;
+            this.$_showCollectionInfoInHeader();
             this.$_fetchAlbumExtraInfo(collection);
             this.$_getSongsFromCollection(collection);
             this.$_getBackgroundGradients();
+            this.$_checkCollectionDescriptionOverflow();
           })
           .finally(() => this.dataLoadingDone());
 
@@ -522,8 +398,10 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
         this.fetchOnePlaylistCatalog(this.id)
           .then(collection => {
             this.collection = collection;
+            this.$_showCollectionInfoInHeader();
             this.$_getSongsFromCollection(collection);
             this.$_getBackgroundGradients();
+            this.$_checkCollectionDescriptionOverflow();
           })
           .finally(() => this.dataLoadingDone());
         break;
@@ -534,6 +412,7 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
             this.collection = collection;
             this.$_getSongsFromCollection(collection);
             this.$_getBackgroundGradients();
+            this.$_checkCollectionDescriptionOverflow();
           })
           .finally(() => this.dataLoadingDone());
         break;
@@ -542,6 +421,7 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
         this.fetchOnePlaylistLibrary(this.id).then(collection => {
           this.collection = collection;
           this.$_getBackgroundGradients();
+          this.$_checkCollectionDescriptionOverflow();
         });
 
         this.fetchLibraryPlaylistTracks(this.id)
@@ -588,6 +468,16 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
     }
   }
 
+  $_showCollectionInfoInHeader() {
+    this.$emit('show-extended-header', {
+      component: CollectionInfo,
+      props: {
+        collection: this.collection,
+        collectionArtistName: this.collectionArtistName
+      }
+    });
+  }
+
   async $_fetchAlbumExtraInfo(album: MusicKit.Album) {
     if (!album.attributes) {
       return;
@@ -606,60 +496,47 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
       });
     }
   }
+
+  $_checkCollectionDescriptionOverflow() {
+    this.$nextTick(() => {
+      const collectionDescriptionRef = this.$refs.collectionDescriptionRef;
+
+      if (collectionDescriptionRef) {
+        this.isCollectionDescriptionOverflow =
+          (collectionDescriptionRef as HTMLElement).offsetWidth <
+          (collectionDescriptionRef as HTMLElement).scrollWidth;
+      }
+    });
+  }
 }
 </script>
 
 <style lang="scss" module>
-.left-column {
-  display: flex;
-  border-radius: 20px;
-  height: calc(100vh - 64px - 8px - 8px);
-  max-height: 120rem;
-  position: sticky;
-  top: 72px;
-  flex-wrap: nowrap;
-  flex-direction: column;
-}
-
-.left-column__top {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-left: 4rem;
-}
-
-.left-column__bottom {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding-left: 4rem;
-}
-
-.cover-wrapper {
-  position: relative;
-  width: 100%;
-  max-width: 50vh;
-  margin-right: -4rem;
-  margin-left: 4rem;
-}
-
-.cover-wrapper:before {
-  content: '';
-  display: block;
-  padding-top: 100%; /* initial ratio of 1:1*/
+.wrapper {
+  min-height: calc(100vh - 160px);
 }
 
 .cover {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
+  border-radius: 2rem;
+  width: 90%;
+}
+
+.left-col {
+  position: sticky;
+  top: 152px;
+}
+
+.song-list {
+  background-color: var(--v-primary-base);
   border-radius: 2rem;
 }
 
-.right-column {
-  padding-left: 6.6rem;
+.song-info {
+  font-weight: bold;
+}
+
+.collection-date {
+  color: var(--v-secondaryText-base);
 }
 
 .collection-description {
@@ -667,71 +544,38 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
   font-size: 1.4rem;
 }
 
-.collection-description-toggle {
-  font-weight: bold;
-  cursor: pointer;
+.collection-description--max-height {
+  max-height: 1.8rem;
 }
 
-.song-info {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: white;
+.more-button {
+  background-color: var(--v-primary-base);
+  box-shadow: 0px 0px 5px 5px var(--v-primary-base);
+  color: var(--v-accent-base);
+  font-size: 1.4rem;
+  position: absolute;
+  right: 0;
+  top: 0.2rem;
 }
 
-.collection-name {
-  font-weight: bold;
-  color: white;
-  overflow: hidden;
+.more-button.expanded {
+  bottom: 1rem;
+  top: auto;
 }
 
-@supports (-webkit-line-clamp: 2) {
-  .collection-name,
-  .artist-name {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    /* autoprefixer: ignore next */
-    -webkit-box-orient: vertical;
-    margin-bottom: 0.8rem;
+@media (max-width: $md-breakpoint - 1) {
+  .cover {
+    margin-left: -9rem;
+    width: 20rem;
   }
-}
 
-@supports not (-webkit-line-clamp: 2) {
-  .collection-name,
-  .artist-name {
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  .left-col {
+    position: initial;
+    top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.6rem;
   }
-}
-
-.artist-name {
-  color: white;
-  overflow: hidden;
-}
-
-.artist-name a {
-  color: white;
-}
-
-.artist-name a:hover {
-  font-weight: bold;
-  text-decoration: underline;
-}
-
-.cover-sm {
-  width: 20rem;
-  height: 20rem;
-  flex-shrink: 0;
-  position: relative;
-  max-width: 20rem;
-}
-
-.cover-sm:before {
-  content: '';
-  display: block;
-  padding-top: 100%;
-}
-
-.collection-date {
-  color: #bdbdbd;
 }
 </style>

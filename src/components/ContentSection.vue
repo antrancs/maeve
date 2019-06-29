@@ -13,12 +13,18 @@
 
 <style lang="scss" module>
 .title {
-  font-size: 3rem;
+  font-size: 2.5rem;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+@media (max-width: $md-breakpoint - 1) {
+  .title {
+    font-size: 2.2rem;
+  }
 }
 </style>

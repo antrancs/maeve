@@ -35,6 +35,10 @@
       >
         <CollectionDetailArtwork
           :class="[$style['cover']]"
+          :style="{
+            'margin-left':
+              isFromAlbum && $vuetify.breakpoint.smAndDown ? '-9rem' : '0'
+          }"
           :artworks="artworks"
           :isAlbum="isFromAlbum"
           :backgroundGradients="backgroundGradients"
@@ -516,6 +520,10 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
   min-height: calc(100vh - 160px);
 }
 
+.wrapper > :last-child {
+  margin-bottom: 0 !important;
+}
+
 .cover {
   border-radius: 2rem;
   width: 90%;
@@ -565,7 +573,6 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
 
 @media (max-width: $md-breakpoint - 1) {
   .cover {
-    margin-left: -9rem;
     width: 20rem;
   }
 

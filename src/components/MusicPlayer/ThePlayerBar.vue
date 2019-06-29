@@ -56,25 +56,25 @@
         >
           <v-layout row wrap>
             <v-flex md12 :class="[$style['song-name'], 'long-text-truncated']">
-              <span
+              <small
                 :class="$style['link-item']"
                 :title="songName"
                 @click.stop="() => goToAlbumPage(musicPlayer.currentPlaying)"
               >
                 {{ songName }}
-              </span>
+              </small>
             </v-flex>
 
             <v-flex
               md12
               :class="['long-text-truncated', $style['artist-name']]"
             >
-              <span
+              <small
                 :class="$style['link-item']"
                 :title="artistName"
                 @click.stop="() => goToArtistPage(musicPlayer.currentPlaying)"
               >
-                {{ artistName }}</span
+                {{ artistName }}</small
               >
             </v-flex>
           </v-layout>
@@ -369,7 +369,7 @@ It can be an album/playlist or the original song lists where this song is from
   }
 
   get playerBarHeight() {
-    return this.$vuetify.breakpoint.mdAndUp ? 86 : 66;
+    return this.$vuetify.breakpoint.mdAndUp ? 80 : 60;
   }
 
   get minimizedPlayerStyle() {

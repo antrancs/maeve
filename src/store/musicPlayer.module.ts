@@ -291,7 +291,10 @@ const actions: ActionTree<MusicPlayerState, any> = {
     commit(SET_MINIMIZED_STATE, !state.minimized);
   },
 
-  [CHECK_IF_SONG_PLAY_SUCCESSFUL]({ dispatch }) {
+  [CHECK_IF_SONG_PLAY_SUCCESSFUL]({ dispatch, rootGetters }) {
+    if (!rootGetters.isAuthenticated) {
+      return;
+    }
     // a temporary workaround for the issue of failing to load resource
     setTimeout(async () => {
       const musicKitPlayer = MusicKit.getInstance().player;

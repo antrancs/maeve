@@ -52,4 +52,9 @@ export default class ResourceLinkList extends Vue {
 .resource-link-list span a {
   display: inline-block;
 }
+
+.resource-link-list a:hover {
+  font-weight: 500;
+  text-decoration: underline;
+}
 </style>

@@ -16,6 +16,12 @@ yarn install
 yarn serve
 ```
 
+4. Before commit, run:
+
+```
+yarn lint
+```
+
 ## API
 
 - [MusicKit JS API](https://developer.apple.com/documentation/musickitjs/musickit)

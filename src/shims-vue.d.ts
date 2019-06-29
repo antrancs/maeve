@@ -1,4 +1,6 @@
-interface Navigator { mediaSession: any; }
+interface Navigator {
+  mediaSession: any;
+}
 
 declare module '*.vue' {
   import Vue from 'vue';

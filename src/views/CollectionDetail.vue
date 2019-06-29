@@ -1,6 +1,6 @@
 <template>
-  <v-container v-if="collection" class="page-content mt-2 pt-0">
-    <v-layout row wrap class="mb-4" align-start>
+  <v-container class="mt-2 pt-0" :class="$style['wrapper']">
+    <v-layout v-if="collection" row wrap class="mb-4" align-start>
       <v-flex xs12 style="position: relative" v-if="collectionDescription">
         <p
           ref="collectionDescriptionRef"
@@ -512,6 +512,10 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
 </script>
 
 <style lang="scss" module>
+.wrapper {
+  min-height: calc(100vh - 160px);
+}
+
 .cover {
   border-radius: 2rem;
   width: 90%;
@@ -561,6 +565,7 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
 
 @media (max-width: $md-breakpoint - 1) {
   .cover {
+    margin-left: -9rem;
     width: 20rem;
   }
 

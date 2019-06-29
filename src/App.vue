@@ -326,7 +326,7 @@ export default class App extends Vue {
 }
 
 .page-content {
-  min-height: 100vh;
+  min-height: calc(100vh - 88px);
 }
 
 .page-content > :last-child {

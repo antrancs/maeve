@@ -91,9 +91,8 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import Component from 'vue-class-component';
 import { Action } from 'vuex-class';
-import { Prop } from 'vue-property-decorator';
+import { Prop, Component } from 'vue-property-decorator';
 
 import {
   FETCH_ONE_ALBUM_CATALOG,

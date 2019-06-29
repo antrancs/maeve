@@ -42,7 +42,7 @@ const defaultThemes: ThemeOption[] = [
 ];
 
 const isLight = (c: string) => {
-  return color(c).getBrightness() > 165;
+  return color(c).isLight();
 };
 
 const lighten = (c: string, by: number) => {

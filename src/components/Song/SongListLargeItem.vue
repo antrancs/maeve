@@ -8,7 +8,7 @@
       $style['wrapper'],
       {
         'py-1': $vuetify.breakpoint.xsOnly,
-        'dark-mode': darkMode,
+        [$style['album']]: fromAlbum,
         [$style['unavailable']]: !isAvailable,
         [$style['active']]: isActive
       }

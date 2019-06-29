@@ -1,5 +1,20 @@
 <template>
-  <v-toolbar app fixed color="primary" flat id="app-toolbar">
+  <v-toolbar
+    app
+    fixed
+    color="primary"
+    flat
+    id="app-toolbar"
+    :extended="extendedComponent !== null"
+    extension-height="80"
+  >
+    <template #extension v-if="extendedComponent">
+      <v-container class="py-0">
+        <v-layout>
+          <component :is="extendedComponent" v-bind="extendedComponentProps" />
+        </v-layout>
+      </v-container>
+    </template>
     <v-container class="py-0">
       <v-layout row wrap align-center>
         <v-toolbar-side-icon
@@ -97,6 +112,9 @@ import { isLight, TEXT_PRIMARY_LIGHT, TEXT_PRIMARY_DARK } from '@/themes';
 })
 export default class AppHeader extends Vue {
   private showSearchTextFullWidth = false;
+
+  @Prop() extendedComponent!: any;
+  @Prop() extendedComponentProps!: any;
 
   @Getter
   isAuthenticated!: boolean;

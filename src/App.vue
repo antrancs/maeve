@@ -5,12 +5,17 @@
       @sidebar-visibility-change="updateSidebarVisibility"
     />
     <AppHeader
+      :extendedComponent="headerExtendedComponent"
+      :extendedComponentProps="headerExtendedComponentProps"
       @toggle-sidebar="showSidebar = !showSidebar"
       @open-settings="themeSetting = !themeSetting"
     />
     <v-content class="app-body">
       <transition name="fade" mode="out-in">
-        <router-view @ready="pageLoadReady"></router-view>
+        <router-view
+          @ready="pageLoadReady"
+          @show-extended-header="onShowExtendedHeader"
+        ></router-view>
       </transition>
 
       <PlayerBar
@@ -91,6 +96,8 @@ export default class App extends Vue {
   private refreshing = false;
   private registration: any = null;
   private showPlayerFullScreen = false;
+  private headerExtendedComponent: any = null;
+  private headerExtendedComponentProps: any = null;
 
   @State(state => state.settings.selectedTheme) selectedTheme!: ThemeOption;
   @State(state => state.musicPlayer.currentPlaying) currentPlaying!: Nullable<
@@ -253,6 +260,11 @@ export default class App extends Vue {
       type: 'SKIP_WAITING'
     });
   }
+
+  onShowExtendedHeader(payload: { component: any; props: any }) {
+    this.headerExtendedComponent = payload.component;
+    this.headerExtendedComponentProps = payload.props;
+  }
 }
 </script>
 
@@ -319,5 +331,10 @@ export default class App extends Vue {
 
 .page-content > :last-child {
   margin-bottom: 0 !important;
+}
+
+#app-toolbar .v-toolbar__extension {
+  padding: 0;
+  justify-content: center;
 }
 </style>

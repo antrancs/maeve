@@ -204,7 +204,6 @@
 import { Vue, Component, Watch, Mixins } from 'vue-property-decorator';
 import { Action, Getter } from 'vuex-class';
 
-// import CollectionCarousel from '@/components/Collection/CollectionCarousel.vue';
 import FeaturedPlaylist from '@/components/Collection/FeaturedPlaylist.vue';
 import ActivityItem from '@/components/ActivityItem.vue';
 import GenreList from '@/components/GenreList.vue';

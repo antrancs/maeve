@@ -1,5 +1,5 @@
 <template>
-  <v-container class="page-content">
+  <v-container>
     <content-section v-if="categoryData">
       <template #section-header>
         {{ categoryData.name }}

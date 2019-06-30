@@ -15,6 +15,7 @@
       <transition name="fade" mode="out-in">
         <router-view
           @ready="pageLoadReady"
+          class="page-content"
           @show-extended-header="onShowExtendedHeader"
         ></router-view>
       </transition>
@@ -326,7 +327,7 @@ export default class App extends Vue {
 }
 
 .page-content {
-  min-height: calc(100vh - 88px);
+  min-height: 100vh;
 }
 
 .page-content > :last-child {

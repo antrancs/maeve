@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-4 page-content">
+  <div class="mx-4">
     <h1>Page Not Found</h1>
   </div>
 </template>

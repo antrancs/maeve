@@ -1,5 +1,5 @@
 <template>
-  <v-container class="page-content">
+  <v-container>
     <content-section v-if="heavyRotation.length > 0">
       <template #section-header>
         Heavy Rotation

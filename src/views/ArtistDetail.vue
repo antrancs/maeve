@@ -1,7 +1,5 @@
 <template>
-  <v-container
-    :class="['py-0', 'page-content', { 'px-0': $vuetify.breakpoint.smAndDown }]"
-  >
+  <v-container :class="['py-0', { 'px-0': $vuetify.breakpoint.smAndDown }]">
     <v-layout v-if="artist" row wrap style="height: 100%">
       <v-flex xs12 lg5>
         <div

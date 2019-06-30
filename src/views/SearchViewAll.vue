@@ -1,5 +1,5 @@
 <template>
-  <v-container class="page-content">
+  <v-container>
     <v-layout row wrap>
       <v-flex xs12 class="px-2">
         <h2>All {{ this.$route.params.type }} results for '{{ query }}'</h2>

@@ -1,5 +1,5 @@
 <template>
-  <v-container class="page-content">
+  <v-container>
     <content-section>
       <template #section-header>
         {{ genreDetailName }}

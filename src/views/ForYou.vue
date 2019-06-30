@@ -1,5 +1,5 @@
 <template>
-  <v-container class="page-content">
+  <v-container>
     <template v-if="recommendations.length > 0">
       <v-layout
         row

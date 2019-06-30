@@ -1,5 +1,5 @@
 <template>
-  <v-container class="mt-2 pt-0" :class="$style['wrapper']">
+  <v-container class="mt-2 pt-0">
     <v-layout v-if="collection" row wrap class="mb-4" align-start>
       <v-flex xs12 style="position: relative" v-if="collectionDescription">
         <p
@@ -366,6 +366,7 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
 
   created() {
     this.setFooterVisibility(false);
+    console.log('Detail created');
   }
 
   mounted() {
@@ -516,14 +517,6 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
 </script>
 
 <style lang="scss" module>
-.wrapper {
-  min-height: calc(100vh - 160px);
-}
-
-.wrapper > :last-child {
-  margin-bottom: 0 !important;
-}
-
 .cover {
   border-radius: 2rem;
   width: 90%;

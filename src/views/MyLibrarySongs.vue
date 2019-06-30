@@ -1,5 +1,5 @@
 <template>
-  <v-container class="page-content">
+  <v-container>
     <v-layout row wrap>
       <v-flex xs8>
         <h1 class="page-title">My songs</h1>

@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pt-3 pb-2 page-content">
+  <v-container class="pt-3 pb-2">
     <v-layout row justify-center>
       <div
         class="button-tab"

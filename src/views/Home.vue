@@ -1,5 +1,5 @@
 <template>
-  <v-container class="page-content">
+  <v-container>
     <content-section v-if="featuredAlbums.length > 0">
       <template #section-header>
         Featured Releases

@@ -4,15 +4,18 @@ import VueLazyload from 'vue-lazyload';
 import 'vuetify/src/stylus/app.styl';
 
 import { PLACEHOLDER_IMAGE } from '@/utils/constants';
+import { defaultThemes } from '@/themes';
+
+const defaultTheme = defaultThemes[0]; // first theme is the default one
 
 Vue.use(Vuetify, {
   theme: {
-    primary: '#041f35',
-    secondary: '#113a5d',
-    accent: '#da0f47',
+    primary: defaultTheme.primary,
+    secondary: defaultTheme.secondary,
+    accent: defaultTheme.accent,
     error: '#FF9800',
-    primaryText: '#ffffff',
-    secondaryText: '#BDBDBD'
+    primaryText: defaultTheme.primaryText,
+    secondaryText: defaultTheme.secondaryText
   },
   options: {
     customProperties: true

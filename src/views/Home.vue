@@ -49,21 +49,6 @@
       </template>
     </content-section>
 
-    <content-section v-if="isAuthenticated && recentPlayed.length > 0">
-      <template #section-header>
-        Recently played
-      </template>
-
-      <template #section-content>
-        <CollectionCarousel
-          v-if="$vuetify.breakpoint.smAndDown"
-          :collections="recentPlayed"
-        />
-
-        <SongCollectionList v-else :collections="recentPlayed" />
-      </template>
-    </content-section>
-
     <content-section v-if="browseCategories.length > 0">
       <template #section-header>
         Browse
@@ -212,13 +197,9 @@ import { activityIds } from '@/utils/constants';
 import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 import {
   FETCH_MULTIPLE_PLAYLISTS_CATALOG,
-  FETCH_RECENT_PLAYED,
   FETCH_ONE_RECOMMENDATION
 } from '@/store/actions.type';
-import {
-  FetchMultiplePlaylistsCatalogAction,
-  FetchRecentPlayedAction
-} from '@/store/types';
+import { FetchMultiplePlaylistsCatalogAction } from '@/store/types';
 import { Nullable, GenreItem } from '@/@types/model/model';
 import {
   getAllBrowseCategories,
@@ -244,9 +225,7 @@ import { getActivities, getCharts } from '../services/musicApi.service';
 export default class Home extends Mixins(DataLoadingMixin) {
   private featuredPlaylists: ReadonlyArray<MusicKit.Playlist> = [];
   private activities: ReadonlyArray<MusicKit.Activity> = [];
-  private recentPlayed: ReadonlyArray<
-    MusicKit.Playlist | MusicKit.Album | MusicKit.Station
-  > = [];
+
   private chart: Nullable<MusicKit.ChartResponse> = null;
   private genres: string[] = [];
   private selectedNewReleasesGenre: Nullable<string> = null;
@@ -259,18 +238,12 @@ export default class Home extends Mixins(DataLoadingMixin) {
 
   @Action
   [FETCH_MULTIPLE_PLAYLISTS_CATALOG]: FetchMultiplePlaylistsCatalogAction;
-  @Action
-  [FETCH_RECENT_PLAYED]: FetchRecentPlayedAction;
   @Action [FETCH_ONE_RECOMMENDATION]: (
     id: string
   ) => Promise<MusicKit.Recommendation>;
 
   @Watch('isAuthenticated')
   onAuthenticationChanged(newValue: boolean) {
-    if (newValue) {
-      this.$_fetchRecentlyPlayed();
-    }
-
     this.$_fetchCharts().then(() => {
       this.$_fetchFeaturedPlaylists();
       this.$_getFeaturedReleases();
@@ -314,13 +287,8 @@ export default class Home extends Mixins(DataLoadingMixin) {
 
   created() {
     this.$_getFeaturedReleases();
-
     this.$_fetchFeaturedPlaylists();
-    if (this.isAuthenticated) {
-      this.$_fetchRecentlyPlayed();
-    }
     this.$_fetchActivities();
-
     this.$_fetchCharts();
 
     this.$_getNewReleasesGenre();
@@ -376,15 +344,6 @@ export default class Home extends Mixins(DataLoadingMixin) {
         this.activities = Object.freeze(activities);
       })
       .catch(err => err);
-  }
-
-  $_fetchRecentlyPlayed() {
-    this.fetchRecentPlayed().then(result => {
-      // just exclude stations for now
-      this.recentPlayed = Object.freeze(
-        result.filter(result => result.type !== 'stations')
-      );
-    });
   }
 
   $_fetchCharts() {

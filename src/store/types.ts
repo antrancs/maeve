@@ -179,6 +179,13 @@ export type FetchRecommendationsAction = () => Promise<
 export type FetchRecentPlayedAction = () => Promise<
   (MusicKit.Album | MusicKit.Playlist | MusicKit.Station)[]
 >;
+export type FetchHeavyRotationAction = () => Promise<
+  (
+    | MusicKit.Album
+    | MusicKit.Playlist
+    | MusicKit.LibraryAlbum
+    | MusicKit.LibraryPlaylist)[]
+>;
 
 export type FetchCuratorPlaylistsPayload = SearchParams & {
   id: string;

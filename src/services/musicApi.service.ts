@@ -247,13 +247,19 @@ async function getLibraryPlaylistTracksHelper(
   return result.data;
 }
 
-function getHeavyRotation() {
-  return axiosInstance.get('/me/history/heavy-rotation', {
+async function getHeavyRotation() {
+  const result = await axiosInstance.get('/me/history/heavy-rotation', {
     headers: getApiHeadersWithUserToken(),
     params: {
-      limit: 1
+      limit: 10
     }
   });
+
+  if (!result.data) {
+    return [];
+  }
+
+  return result.data.data;
 }
 
 async function getRecentlyAdded() {
@@ -265,7 +271,7 @@ async function getRecentlyAdded() {
   });
 
   if (!result.data) {
-    throw new Error('Error while fetching recently added resources');
+    return [];
   }
 
   return result.data.data;

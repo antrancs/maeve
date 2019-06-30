@@ -176,6 +176,15 @@ const router = new Router({
       }
     },
     {
+      path: '/me/history',
+      name: 'history',
+      component: () =>
+        import(/* webpackChunkName: "history" */ './views/History.vue'),
+      meta: {
+        auth: true
+      }
+    },
+    {
       path: '/me/library/artists',
       name: 'myLibraryArtists',
       component: () =>

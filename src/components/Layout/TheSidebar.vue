@@ -158,6 +158,11 @@ export default class AppSidebar extends Vue {
       pathName: 'forYou'
     },
     {
+      name: 'History',
+      icon: 'history',
+      pathName: 'history'
+    },
+    {
       name: 'My Library',
       icon: 'library_music',
       pathName: 'myLibrary',

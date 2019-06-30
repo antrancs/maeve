@@ -4,7 +4,7 @@
     fixed
     :clipped="false"
     :width="210"
-    class="primary lighten-1 elevation-10"
+    class="primary elevation-10"
     v-model="sidebar"
   >
     <v-layout column fill-height justify-space-between class="sidebar-dark">

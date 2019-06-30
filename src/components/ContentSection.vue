@@ -13,7 +13,7 @@
 
 <style lang="scss" module>
 .title {
-  font-size: 2.5rem;
+  font-size: 2.7rem;
 }
 
 .header {

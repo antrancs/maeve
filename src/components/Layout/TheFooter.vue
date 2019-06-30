@@ -2,7 +2,7 @@
   <v-footer
     v-if="showFooter"
     height="auto"
-    class="justify-center primary lighten-1 py-2 px-3"
+    class="justify-center primary darken-1 py-2 px-3"
   >
     <p class="text-xs-center ma-0 footer--content">
       Copyright © {{ new Date().getFullYear() }} —

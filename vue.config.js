@@ -35,7 +35,7 @@ module.exports = {
     workboxPluginMode: 'GenerateSW',
     workboxOptions: {
       skipWaiting: false,
-      clientsClaim: true,
+      clientsClaim: false,
       importScripts: ['/sw-skip-waiting.js'],
       runtimeCaching: [
         {

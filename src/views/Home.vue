@@ -74,7 +74,11 @@
               }"
             >
               <div style="width: 100%">
-                <img style="width: 100%" :src="category.imageUrl" />
+                <img
+                  style="width: 100%"
+                  v-lazy="category.imageUrl"
+                  :alt="category.name"
+                />
 
                 <div class="main-info-text text-xs-center">
                   {{ category.name }}

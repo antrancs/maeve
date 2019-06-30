@@ -97,9 +97,15 @@
   flex-shrink: 0;
 }
 
-.album .right-items,
-.album .track-number {
-  color: rgba(255, 255, 255, 0.8);
+.album {
+  .right-items,
+  .track-number {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .song-name {
+    color: white;
+  }
 }
 
 .middle-items {

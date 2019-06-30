@@ -9,7 +9,6 @@
       </h1>
       <v-icon
         v-if="collection.attributes.contentRating === 'explicit'"
-        dark
         size="22"
         class="ml-2"
         >explicit</v-icon
@@ -70,19 +69,21 @@ export default class CollectionDetail extends Vue {
 
 .collection-title {
   font-weight: bold;
-  color: white;
   font-size: 3rem;
   margin: 0;
 }
 
 .artist-name {
-  color: white;
   font-size: 2rem;
   overflow: hidden;
 }
 
 .artist-name a {
-  color: white;
+  color: var(--v-secondaryText-base);
+}
+
+.artist-name a:hover {
+  color: var(--v-primaryText-base);
 }
 
 @media (max-width: $md-breakpoint - 1) {

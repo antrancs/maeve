@@ -60,6 +60,7 @@
                 <v-icon
                   class="ml-1"
                   small
+                  :dark="fromAlbum"
                   v-if="song.attributes.contentRating === 'explicit'"
                   >explicit</v-icon
                 >

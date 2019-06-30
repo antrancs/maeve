@@ -7,6 +7,7 @@
     <AppHeader
       :extendedComponent="headerExtendedComponent"
       :extendedComponentProps="headerExtendedComponentProps"
+      :storefront="storefront"
       @toggle-sidebar="showSidebar = !showSidebar"
       @open-settings="themeSetting = !themeSetting"
     />
@@ -69,10 +70,6 @@ import {
   SET_QUEUE_VISIBILITY,
   SET_USER_TOKEN
 } from './store/mutations.type';
-import {
-  updateUserStorefront,
-  setUserStorefront
-} from './services/musicApi.service';
 import { ShowSnackbarAction } from './store/types';
 
 @Component({
@@ -98,6 +95,7 @@ export default class App extends Vue {
   private showPlayerFullScreen = false;
   private headerExtendedComponent: any = null;
   private headerExtendedComponentProps: any = null;
+  private storefront = 'us';
 
   @State(state => state.settings.selectedTheme) selectedTheme!: ThemeOption;
   @State(state => state.musicPlayer.currentPlaying) currentPlaying!: Nullable<
@@ -182,6 +180,8 @@ export default class App extends Vue {
       NProgress.start();
       next();
     });
+
+    this.storefront = MusicKit.getInstance().storefrontId;
   }
 
   beforeDestroy() {
@@ -227,11 +227,11 @@ export default class App extends Vue {
 
   onMediaItemDidChange({ item }: { item: MusicKit.MediaItem }) {
     this.setCurrentlyPlayingSong(item);
-    //   setUserStorefront('us');
   }
 
   onStorefrontChanged(event: any) {
     const musicKitInstance = MusicKit.getInstance();
+    this.storefront = event.storefrontCountryCode || 'us';
 
     this.setUserToken(musicKitInstance.musicUserToken);
     this.changeRoute('home');

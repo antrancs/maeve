@@ -115,6 +115,7 @@ export default class AppHeader extends Vue {
 
   @Prop() extendedComponent!: any;
   @Prop() extendedComponentProps!: any;
+  @Prop({ default: 'us' }) storefront!: string;
 
   @Getter
   isAuthenticated!: boolean;
@@ -149,10 +150,10 @@ export default class AppHeader extends Vue {
   }
 
   get flagStyle() {
-    const storefront = MusicKit.getInstance().storefrontId;
-
     return {
-      background: `url('https://lipis.github.io/flag-icon-css/flags/1x1/${storefront}.svg')`
+      background: `url('https://lipis.github.io/flag-icon-css/flags/1x1/${
+        this.storefront
+      }.svg')`
     };
   }
 

@@ -5,10 +5,10 @@ import { isLight, TEXT_PRIMARY_DARK, TEXT_PRIMARY_LIGHT } from '@/themes';
 import { PLACEHOLDER_IMAGE } from './constants';
 
 const bgColors = [
-  ['#556270', '#4ECDC4'],
-  ['#114357', '#F29492'],
-  ['#525252', '#3d72b4'],
-  ['#514A9D', '#24C6DC']
+  ['#4c5ea6', '#000000'],
+  ['#0f0b14', '#581016'],
+  ['#07171c', '#0b2126'],
+  ['#131a22', '#000000']
 ]; // used when the artwork doesn't have bgColor properties
 
 const getArtworkUrl = (
@@ -91,12 +91,18 @@ const getTextColorForBackground = (bgColor: string) => {
 };
 
 // return 2 colors for gradient background color based on the given artwork
-const getGradientBackgroundColorsFromArtwork = (artwork: MusicKit.Artwork) => {
+const getGradientBackgroundColorsFromArtwork = (
+  artwork: MusicKit.Artwork | undefined
+) => {
+  const bgColorIndex = random(0, bgColors.length - 1);
+
+  if (!artwork) {
+    return bgColors[bgColorIndex];
+  }
+
   const { bgColor, textColor1, textColor2, textColor3, textColor4 } = artwork;
 
   if (!bgColor) {
-    const bgColorIndex = random(0, bgColors.length - 1);
-
     return bgColors[bgColorIndex];
   }
 
@@ -123,6 +129,25 @@ const getGradientBackgroundColorsFromArtwork = (artwork: MusicKit.Artwork) => {
   return gradientColors;
 };
 
+const getLightColorFromArtwork = (artwork: MusicKit.Artwork | undefined) => {
+  if (!artwork) {
+    return '#fff';
+  }
+  const { bgColor, textColor1, textColor2, textColor3, textColor4 } = artwork;
+  const colors = [bgColor, textColor1, textColor2, textColor3, textColor4];
+
+  for (const color of colors) {
+    if (!color) {
+      continue;
+    }
+
+    if (isLight(color)) {
+      return `#${color}`;
+    }
+  }
+  return '#fff';
+};
+
 export {
   getArtworkUrl,
   formatArtworkUrl,
@@ -130,5 +155,6 @@ export {
   getArtworkSize,
   hexToRgb,
   getTextColorForBackground,
-  getGradientBackgroundColorsFromArtwork
+  getGradientBackgroundColorsFromArtwork,
+  getLightColorFromArtwork
 };

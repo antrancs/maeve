@@ -35,7 +35,7 @@ import { Collection, Nullable, Artist } from '../../@types/model/model';
     ResourceLinkList
   }
 })
-export default class CollectionDetail extends Vue {
+export default class CollectionInfo extends Vue {
   @Prop() collection!: Collection;
   @Prop() collectionArtistName!: string;
 

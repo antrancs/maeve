@@ -35,13 +35,18 @@
       >
         <CollectionDetailArtwork
           :class="[$style['cover']]"
-          :style="{
-            'margin-left':
-              isFromAlbum && $vuetify.breakpoint.smAndDown ? '-9rem' : '0'
-          }"
+          :style="[
+            {
+              'margin-left':
+                isFromAlbum && $vuetify.breakpoint.smAndDown ? '-9rem' : '0',
+              'border-radius': isFromAlbum ? '0' : '2rem'
+            },
+            boxShadowStyle
+          ]"
           :artworks="artworks"
           :isAlbum="isFromAlbum"
           :backgroundGradients="backgroundGradients"
+          :lightColor="lightColorFromArtwork"
         />
 
         <div :class="[$style['song-info'], 'mt-2']">
@@ -68,10 +73,9 @@
       <v-flex
         :class="[
           $style['song-list'],
-          $vuetify.breakpoint.smAndDown ? 'xs12' : isFromAlbum ? 'md7' : 'md9',
-          { 'elevation-4': isFromAlbum }
+          $vuetify.breakpoint.smAndDown ? 'xs12' : isFromAlbum ? 'md7' : 'md9'
         ]"
-        :style="isFromAlbum ? songListBackgroundStyle : {}"
+        :style="isFromAlbum ? [songListBackgroundStyle, boxShadowStyle] : {}"
       >
         <SongListLarge
           :songs="songs"
@@ -154,7 +158,10 @@ import {
   PlayCollectionAction
 } from '@/store/types';
 import { SET_FOOTER_VISIBILITY } from '@/store/mutations.type';
-import { getGradientBackgroundColorsFromArtwork } from '@/utils/utils';
+import {
+  getGradientBackgroundColorsFromArtwork,
+  getLightColorFromArtwork
+} from '@/utils/utils';
 import { PLACEHOLDER_IMAGE } from '@/utils/constants';
 import { isLight } from '@/themes';
 
@@ -175,6 +182,7 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
   private otherAlbumsFromArtists: MusicKit.Album[] = [];
   private editorialNoteCollapse = true;
   private backgroundGradients: string[] = [];
+  private lightColorFromArtwork: string = '';
   private songs: Song[] = [];
   private isCollectionDescriptionOverflow = false;
 
@@ -216,12 +224,19 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
           : null;
 
       case 'playlists':
+      case 'library-playlists':
         return this.collection.attributes.description
           ? this.collection.attributes.description.standard
           : null;
     }
 
     return null;
+  }
+
+  get boxShadowStyle() {
+    return {
+      'box-shadow': `0px 0px 1rem ${this.lightColorFromArtwork}`
+    };
   }
 
   get artworks(): (MusicKit.Artwork | undefined)[] {
@@ -366,7 +381,6 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
 
   created() {
     this.setFooterVisibility(false);
-    console.log('Detail created');
   }
 
   mounted() {
@@ -415,6 +429,7 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
         this.fetchOneAlbumLibrary(this.id)
           .then(collection => {
             this.collection = collection;
+            this.$_showCollectionInfoInHeader();
             this.$_getSongsFromCollection(collection);
             this.$_getBackgroundGradients();
             this.$_checkCollectionDescriptionOverflow();
@@ -425,6 +440,7 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
       case CollectionType.libraryPlaylist:
         this.fetchOnePlaylistLibrary(this.id).then(collection => {
           this.collection = collection;
+          this.$_showCollectionInfoInHeader();
           this.$_getBackgroundGradients();
           this.$_checkCollectionDescriptionOverflow();
         });
@@ -438,15 +454,15 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
   }
 
   $_getBackgroundGradients() {
-    if (
-      !this.collection ||
-      !this.collection.attributes ||
-      !this.collection.attributes.artwork
-    ) {
+    if (!this.collection || !this.collection.attributes) {
       return {};
     }
 
     this.backgroundGradients = getGradientBackgroundColorsFromArtwork(
+      this.collection.attributes.artwork
+    );
+
+    this.lightColorFromArtwork = getLightColorFromArtwork(
       this.collection.attributes.artwork
     );
   }
@@ -518,7 +534,6 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
 
 <style lang="scss" module>
 .cover {
-  border-radius: 2rem;
   width: 90%;
 }
 

@@ -886,7 +886,7 @@ declare namespace MusicKit {
     /**
      * A description of the playlist.
      */
-    description?: string;
+    description?: MusicKit.EditorialNotes;
 
     /**
      * (Required) The localized name of the album.

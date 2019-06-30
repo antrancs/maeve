@@ -45,7 +45,7 @@
       />
     </template>
 
-    <div v-if="isAlbum" :class="[$style['round-cd'], 'elevation-8']">
+    <div v-if="isAlbum" :class="[$style['round-cd']]">
       <img alt="Artwork" v-lazy="artwork1" />
     </div>
   </div>
@@ -63,6 +63,7 @@ export default class CollectionDetailArtwork extends Vue {
   @Prop() artworks!: MusicKit.Artwork[];
   @Prop({ default: false }) isAlbum!: boolean;
   @Prop() backgroundGradients!: string[];
+  @Prop() lightColor!: string;
 
   get artworkSize() {
     if (this.$vuetify.breakpoint.name === 'xl') {
@@ -128,7 +129,8 @@ export default class CollectionDetailArtwork extends Vue {
 
     return {
       '--gradient-color-1': this.backgroundGradients[0],
-      '--gradient-color-2': this.backgroundGradients[1]
+      '--gradient-color-2': this.backgroundGradients[1],
+      '--light-color': this.lightColor
     };
   }
 }
@@ -136,7 +138,6 @@ export default class CollectionDetailArtwork extends Vue {
 
 <style lang="scss" module>
 .wrapper {
-  width: 100%;
   display: flex;
   flex-wrap: wrap;
   position: relative;
@@ -181,6 +182,7 @@ export default class CollectionDetailArtwork extends Vue {
   // background: red;
   width: 95%;
   z-index: 0;
+  box-shadow: 0px 0px 1rem var(--light-color, white);
 }
 
 .round-cd img {

@@ -5,8 +5,9 @@
       'elevation-10',
       { [$style['expand']]: showExpandView }
     ]"
-    :style="[wrapperStyle, cssProps]"
+    :style="cssProps"
     @click="showExpandView = !showExpandView"
+    v-lazy:background-image="backgroundUrl"
   >
     <div :class="$style['bottom-sheet']"></div>
 
@@ -35,7 +36,7 @@
         {{ release.ownerName }}
       </router-link>
     </div>
-    <img :src="albumArtworkUrl" alt="" :class="$style['album-artwork']" />
+    <img v-lazy="albumArtworkUrl" alt="" :class="$style['album-artwork']" />
 
     <div :class="[$style['album-name'], 'long-text-truncated']">
       <router-link
@@ -121,12 +122,10 @@ export default class NewReleaseHome extends Vue {
   @Action [FETCH_ONE_ALBUM_CATALOG]: FetchOneAlbumCatalogAction;
   @Action [PLAY_COLLECTION]: PlayCollectionAction;
 
-  get wrapperStyle() {
-    return {
-      background: `url(${this.release.cover
-        .replace('{w}', this.cardWidth)
-        .replace('{h}', this.cardHeight)})`
-    };
+  get backgroundUrl() {
+    return this.release.cover
+      .replace('{w}', this.cardWidth)
+      .replace('{h}', this.cardHeight);
   }
 
   get cardWidth() {

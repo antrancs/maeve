@@ -5,7 +5,6 @@
   >
     <img
       v-if="artworks.length <= 2"
-      :src="artwork1"
       :class="$style['artwork-one']"
       alt="Artwork"
       v-lazy="artwork1"
@@ -47,7 +46,7 @@
     </template>
 
     <div v-if="isAlbum" :class="[$style['round-cd'], 'elevation-8']">
-      <img :src="artwork1" alt="Artwork" v-lazy="artwork1" />
+      <img alt="Artwork" v-lazy="artwork1" />
     </div>
   </div>
 </template>

@@ -27,10 +27,11 @@
       <v-btn
         title="Maximize"
         icon
+        dark
         @click.stop="toggleMinimized"
         :class="['mb-0 mr-0', $style['maximize-button']]"
       >
-        <v-icon medium :style="primaryStyle">compare_arrows</v-icon>
+        <v-icon medium>compare_arrows</v-icon>
       </v-btn>
     </div>
 

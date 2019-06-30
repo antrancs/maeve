@@ -32,9 +32,9 @@ const defaultThemes: ThemeOption[] = [
   {
     id: 'light-theme',
     name: 'Light theme',
-    primary: '#fafafa',
+    primary: '#ffffff',
     secondary: '#e3e3e3',
-    accent: '#da0f47',
+    accent: '#E42C64',
     primaryText: TEXT_PRIMARY_LIGHT,
     secondaryText: TEXT_SECONDARY_LIGHT,
     editable: false

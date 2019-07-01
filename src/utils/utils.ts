@@ -40,15 +40,15 @@ const getArtworkUrl = (
 const getArtworkSize = (screenSize: string) => {
   switch (screenSize) {
     case 'xl':
-      return 300;
+      return 240;
     case 'lg':
-      return 210;
-    case 'md':
-      return 230;
-    case 'sm':
-      return 210;
-    default:
       return 190;
+    case 'md':
+      return 170;
+    case 'sm':
+      return 180;
+    default:
+      return 160;
   }
 };
 

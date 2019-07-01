@@ -44,34 +44,27 @@ export default class FeaturedPlaylist extends Vue {
     }
 
     let width: number;
-    let height: number;
 
     switch (this.$vuetify.breakpoint.name) {
       case 'xs':
-        width = 250;
-        height = 290;
+        width = 290;
         break;
       case 'sm':
-        width = 280;
-        height = 320;
+        width = 310;
         break;
       case 'md':
-        width = 260;
-        height = 300;
+        width = 280;
         break;
       case 'lg':
         width = 300;
-        height = 350;
         break;
-
       default:
-        width = 350;
-        height = 400;
+        width = 340;
     }
 
     return this.playlist.attributes.artwork.url
       .replace('{w}', width.toString())
-      .replace('{h}', height.toString());
+      .replace('{h}', width.toString());
   }
 
   get featuredPlaylistHeight() {
@@ -142,6 +135,7 @@ $featured-playlist-border: 1.5rem;
   display: flex;
   flex-direction: column;
   position: relative;
+  background-position: 50%;
 }
 
 .wrapper:hover {

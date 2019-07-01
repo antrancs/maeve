@@ -4,8 +4,8 @@
       <div :class="$style['wrapper']" :style="wrapperStyle">
         <MediaArtwork
           :artwork="this.activity.attributes.artwork"
-          :width="300"
-          :height="300"
+          :width="artworkSize"
+          :height="artworkSize"
           class="elevation-8"
         />
         <div :class="$style['activity-name']">
@@ -40,6 +40,21 @@ export default class ActivityItem extends Vue {
     return {
       '--artwork-bg-color': `#${lighten(this.artworkBackgroundColor, 20)}`
     };
+  }
+
+  get artworkSize() {
+    switch (this.$vuetify.breakpoint.name) {
+      case 'xl':
+        return 290;
+      case 'lg':
+        return 190;
+      case 'md':
+        return 170;
+      case 'sm':
+        return 230;
+      default:
+        return 300;
+    }
   }
 }
 </script>

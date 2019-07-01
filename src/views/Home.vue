@@ -58,7 +58,7 @@
         <v-layout row wrap class="section-offset">
           <v-flex
             xs6
-            sm4
+            sm3
             md3
             lg2
             class="px-2 pb-2"
@@ -76,7 +76,11 @@
               <div style="width: 100%">
                 <img
                   style="width: 100%"
-                  v-lazy="category.imageUrl"
+                  v-lazy="
+                    `https:${
+                      category.imageUrl
+                    }?w=${browseCategorySize}&h=${browseCategorySize}`
+                  "
                   :alt="category.name"
                 />
 
@@ -287,6 +291,21 @@ export default class Home extends Mixins(DataLoadingMixin) {
         break;
     }
     return fetchLimit;
+  }
+
+  get browseCategorySize() {
+    switch (this.$vuetify.breakpoint.name) {
+      case 'lg':
+        return 180;
+      case 'xl':
+        return 280;
+      case 'md':
+        return 200;
+      case 'xs':
+        return 220;
+      default:
+        return 200;
+    }
   }
 
   created() {

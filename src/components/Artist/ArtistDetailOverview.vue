@@ -7,7 +7,7 @@
 
       <template #section-content>
         <div class="section-offset">
-          <v-flex xs6 sm3 md3 lg4 class="px-2">
+          <v-flex :class="['px-2', ...itemSizes]">
             <LinkComponent
               :routeName="featuredRelease.type"
               :routeParams="{ id: featuredRelease.id }"
@@ -46,10 +46,7 @@
       </template>
 
       <template #section-content>
-        <SongCollectionList
-          :itemSizes="['xl3', 'lg3', 'md3', 'sm3', 'xs6']"
-          :collections="albums"
-        />
+        <SongCollectionList :itemSizes="itemSizes" :collections="albums" />
       </template>
     </content-section>
 
@@ -59,10 +56,7 @@
       </template>
 
       <template #section-content>
-        <SongCollectionList
-          :itemSizes="['xl3', 'lg3', 'md3', 'sm3', 'xs6']"
-          :collections="singles"
-        />
+        <SongCollectionList :itemSizes="itemSizes" :collections="singles" />
       </template>
     </content-section>
 
@@ -73,7 +67,7 @@
 
       <template #section-content>
         <SongCollectionList
-          :itemSizes="['xl3', 'lg3', 'md3', 'sm3', 'xs6']"
+          :itemSizes="itemSizes"
           :collections="artistPlaylists"
         />
       </template>
@@ -85,10 +79,7 @@
       </template>
 
       <template #section-content>
-        <ArtistList
-          :artists="relatedArtists"
-          :itemSizes="['lg3', 'md3', 'sm3', 'xs6']"
-        />
+        <ArtistList :artists="relatedArtists" :itemSizes="itemSizes" />
       </template>
     </content-section>
   </div>
@@ -123,5 +114,13 @@ export default class ArtistDetailOverview extends Vue {
   @Prop() relatedArtists!: MusicKit.Artist[];
   @Prop() singles!: MusicKit.Album[];
   @Prop() albums!: MusicKit.Album[];
+  @Prop() hasBanner!: boolean;
+
+  get itemSizes() {
+    if (this.hasBanner) {
+      return ['xl3', 'lg3', 'md-5-col', 'sm3', 'xs6'];
+    }
+    return ['xl2', 'lg2', 'md-5-col', 'sm3', 'xs6'];
+  }
 }
 </script>

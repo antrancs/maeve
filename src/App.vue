@@ -7,6 +7,7 @@
     <AppHeader
       :extendedComponent="headerExtendedComponent"
       :extendedComponentProps="headerExtendedComponentProps"
+      :extendedHeaderHeight="extendedHeaderHeight"
       :storefront="storefront"
       @toggle-sidebar="showSidebar = !showSidebar"
       @open-settings="themeSetting = !themeSetting"
@@ -96,6 +97,7 @@ export default class App extends Vue {
   private showPlayerFullScreen = false;
   private headerExtendedComponent: any = null;
   private headerExtendedComponentProps: any = null;
+  private extendedHeaderHeight = 80;
   private storefront = 'us';
 
   @State(state => state.settings.selectedTheme) selectedTheme!: ThemeOption;
@@ -262,9 +264,14 @@ export default class App extends Vue {
     });
   }
 
-  onShowExtendedHeader(payload: { component: any; props: any }) {
+  onShowExtendedHeader(payload: {
+    component: any;
+    props: any;
+    height?: number;
+  }) {
     this.headerExtendedComponent = payload.component;
     this.headerExtendedComponentProps = payload.props;
+    this.extendedHeaderHeight = payload.height || 80;
   }
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <v-container :class="['py-0', { 'px-0': $vuetify.breakpoint.smAndDown }]">
     <v-layout v-if="artist" row wrap style="height: 100%">
-      <v-flex xs12 lg5>
+      <v-flex xs12 lg5 v-if="hasBanner">
         <div
           :class="{
             [$style['left-column-sticky']]: $vuetify.breakpoint.lgAndUp,
@@ -11,17 +11,6 @@
           }"
         >
           <div :class="$style['banner-header']" :style="bannerHeaderStyle">
-            <h1
-              :class="[
-                $style['artist-name'],
-                'pa-2',
-                'long-text-truncated',
-                { 'px-3': $vuetify.breakpoint.smAndDown }
-              ]"
-            >
-              {{ artist.attributes.name }}
-            </h1>
-
             <nav
               v-if="$vuetify.breakpoint.lgAndUp"
               v-show="loadingDone"
@@ -49,11 +38,11 @@
       </v-flex>
       <v-flex
         xs12
-        lg7
         :class="[
           { 'pt-4': $vuetify.breakpoint.mdAndDown },
-          { 'pl-2 pt-2': $vuetify.breakpoint.lgAndUp },
-          { 'px-3': $vuetify.breakpoint.smAndDown }
+          { 'pl-2 pt-2': $vuetify.breakpoint.lgAndUp && hasBanner },
+          { 'px-3': $vuetify.breakpoint.smAndDown },
+          hasBanner ? 'lg7' : 'lg12'
         ]"
       >
         <keep-alive>
@@ -73,6 +62,7 @@ import { Action, Mutation, State } from 'vuex-class';
 import { Route } from 'vue-router';
 
 import ArtistDetailOverview from '@/components/Artist/ArtistDetailOverview.vue';
+import ArtistInfo from '@/components/Artist/ArtistInfo.vue';
 import DataLoadingMixin from '@/mixins/DataLoadingMixin';
 import { formatArtworkUrl } from '@/utils/utils';
 import {
@@ -104,6 +94,7 @@ import { getArtist } from '../services/musicApi.service';
 
 @Component({
   components: {
+    ArtistInfo,
     ArtistDetailOverview,
     ArtistDetailAbout: () => import('@/components/Artist/ArtistDetailAbout.vue')
   }
@@ -172,6 +163,7 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
   get currentTabProps() {
     if (this.currentTab === 'overview') {
       return {
+        hasBanner: this.hasBanner,
         featuredRelease: this.featuredRelease,
         featuredReleaseTitle: this.featuredReleaseTitle,
         artistName: this.artist!.attributes!.name,
@@ -213,8 +205,16 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
     return style;
   }
 
+  get hasBanner() {
+    return this.bannerUrl && this.bannerUrl !== PLACEHOLDER_IMAGE;
+  }
+
   @Watch('$route')
   onRouteChange(to: Route, from: Route) {
+    this.$emit('show-extended-header', {
+      component: null,
+      props: null
+    });
     this.artist = null;
     this.featuredRelease = null;
     this.bannerUrl = null;
@@ -237,6 +237,10 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
   }
 
   beforeDestroy() {
+    this.$emit('show-extended-header', {
+      component: null,
+      props: null
+    });
     this.setFooterVisibility(true);
   }
 
@@ -247,6 +251,7 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
     getArtist(artistId)
       .then(artist => {
         this.artist = artist;
+        this.$_showArtistInfoHeader();
         this.$_getArtistDetails();
       })
       .catch(err => {
@@ -341,19 +346,33 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
       })
       .finally(() => this.dataLoadingDone());
   }
+
+  private $_showArtistInfoHeader() {
+    if (!this.artist) {
+      return;
+    }
+
+    this.$emit('show-extended-header', {
+      component: ArtistInfo,
+      props: {
+        name: this.artist.attributes ? this.artist.attributes.name : ''
+      },
+      height: 50
+    });
+  }
 }
 </script>
 
 <style lang="scss" module>
 .left-column-sticky {
-  height: calc(100vh - 64px - 16px);
+  height: calc(100vh - 64px - 50px);
   position: sticky;
-  top: 64px;
+  top: 114px;
   transition: height 0.25s ease-out;
 }
 
 .left-column-sticky.playing {
-  height: calc(100vh - 64px - 16px - 86px);
+  height: calc(100vh - 64px - 50px - 86px);
 }
 
 .left-column-sticky.playing.minimized {
@@ -399,12 +418,6 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
   bottom: 0;
   left: 0;
   right: 0;
-}
-
-.artist-name {
-  font-size: 3.5rem;
-  margin: 0;
-  z-index: 1;
 }
 
 .nav {

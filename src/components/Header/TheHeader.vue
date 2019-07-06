@@ -6,7 +6,7 @@
     flat
     id="app-toolbar"
     :extended="extendedComponent !== null"
-    extension-height="80"
+    :extension-height="extendedHeaderHeight"
   >
     <template #extension v-if="extendedComponent">
       <v-container class="py-0">
@@ -115,6 +115,7 @@ export default class AppHeader extends Vue {
 
   @Prop() extendedComponent!: any;
   @Prop() extendedComponentProps!: any;
+  @Prop({ default: 80 }) extendedHeaderHeight!: number;
   @Prop({ default: 'us' }) storefront!: string;
 
   @Getter
@@ -196,6 +197,12 @@ export default class AppHeader extends Vue {
 }
 
 #app-forward-btn {
+  margin: 0;
+}
+
+.header-title {
+  font-weight: bold;
+  font-size: 3rem;
   margin: 0;
 }
 </style>

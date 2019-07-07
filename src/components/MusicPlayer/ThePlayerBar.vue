@@ -37,10 +37,7 @@
 
     <div :class="['secondary', $style['player-bar']]">
       <div :class="[$style['song-artwork']]" :style="songArtworkStyle"></div>
-      <PlayerProgressBar
-        :class="$style['progress-bar']"
-        v-if="!musicPlayer.minimized"
-      />
+      <PlayerProgressBar :class="$style['progress-bar']" />
       <v-layout
         :class="$style['player-bar-content']"
         row

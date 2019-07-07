@@ -67,10 +67,16 @@ export type GenreItem = {
 };
 
 export type SongSourceInfo = {
-  name: String;
+  name: string;
   path: {
-    name: String;
+    name: string;
     params?: Object;
     query?: Object;
   };
+};
+
+export type NavigationTabItem = {
+  name: string;
+  component: string;
+  value: string;
 };

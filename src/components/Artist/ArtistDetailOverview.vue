@@ -46,7 +46,15 @@
       </template>
 
       <template #section-content>
-        <SongCollectionList :itemSizes="itemSizes" :collections="albums" />
+        <CollectionCarousel
+          v-if="$vuetify.breakpoint.smAndDown"
+          :collections="albums"
+        />
+        <SongCollectionList
+          v-else
+          :itemSizes="itemSizes"
+          :collections="albums"
+        />
       </template>
     </content-section>
 
@@ -56,7 +64,15 @@
       </template>
 
       <template #section-content>
-        <SongCollectionList :itemSizes="itemSizes" :collections="singles" />
+        <CollectionCarousel
+          v-if="$vuetify.breakpoint.smAndDown"
+          :collections="singles"
+        />
+        <SongCollectionList
+          v-else
+          :itemSizes="itemSizes"
+          :collections="singles"
+        />
       </template>
     </content-section>
 
@@ -66,7 +82,12 @@
       </template>
 
       <template #section-content>
+        <CollectionCarousel
+          v-if="$vuetify.breakpoint.smAndDown"
+          :collections="artistPlaylists"
+        />
         <SongCollectionList
+          v-else
           :itemSizes="itemSizes"
           :collections="artistPlaylists"
         />
@@ -92,16 +113,18 @@ import { Prop, Component } from 'vue-property-decorator';
 import SongListSmall from '@/components/Song/SongListSmall.vue';
 import LinkComponent from '@/components/LinkComponent.vue';
 import ArtistList from '@/components/ArtistList.vue';
-import SongCollectionList from '@/components/Song/SongCollectionList.vue';
 import CollectionItemCard from '@/components/Collection/CollectionItemCard.vue';
 
 @Component({
   components: {
     CollectionItemCard,
-    SongCollectionList,
+    SongCollectionList: () =>
+      import('@/components/Song/SongCollectionList.vue'),
     SongListSmall,
     LinkComponent,
-    ArtistList
+    ArtistList,
+    CollectionCarousel: () =>
+      import('@/components/Collection/CollectionCarousel.vue')
   }
 })
 export default class ArtistDetailOverview extends Vue {

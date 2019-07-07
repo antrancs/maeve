@@ -18,9 +18,8 @@
           <v-list-tile
             v-if="!link.subItems"
             :key="link.name"
-            :to="{ name: link.pathName }"
+            :to="{ name: link.pathName, params: link.params }"
             active-class="accent--text"
-            exact
             ripple
           >
             <v-list-tile-action>

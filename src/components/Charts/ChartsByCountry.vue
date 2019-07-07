@@ -143,6 +143,7 @@ export default class ChartsByCountry extends Vue {
         }
       );
     }
+    this.$emit('ready');
   }
 
   handleMapZoomIn(country: { name: string; a2: string }) {

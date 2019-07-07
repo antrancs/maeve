@@ -15,18 +15,26 @@ const router = new Router({
   routes: [
     {
       path: '/',
+      name: 'root',
+      redirect: { name: 'home', params: { tab: 'explore' } }
+    },
+    {
+      path: '/home/:tab?',
       name: 'home',
-      component: () => import(/* webpackChunkName: "home" */ './views/Home.vue')
+      component: () =>
+        import(/* webpackChunkName: "home" */ './views/Home.vue'),
+      props: true
     },
     {
       path: '/index.html',
-      redirect: { name: 'home' }
+      redirect: { name: 'home', params: { tab: 'explore' } }
     },
     {
-      path: '/charts',
+      path: '/charts/:tab?',
       name: 'charts',
       component: () =>
-        import(/* webpackChunkName: "charts" */ './views/Charts.vue')
+        import(/* webpackChunkName: "charts" */ './views/Charts.vue'),
+      props: true
     },
     {
       path: '/auth/lastfm/success',
@@ -239,7 +247,7 @@ router.beforeEach((to, from, next) => {
     to.matched.some(record => record.meta.auth) &&
     !store.getters.isAuthenticated
   ) {
-    next({ name: 'home' });
+    next({ name: 'home', params: { tab: 'explore' } });
   } else {
     next();
   }

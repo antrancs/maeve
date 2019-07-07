@@ -1,54 +1,49 @@
 <template>
-  <v-container class="pt-3 pb-2">
-    <v-layout row justify-center>
-      <div
-        class="button-tab"
-        v-for="(tab, key) in tabs"
-        :key="tab.id"
-        :class="{ active: currentTab === key }"
-      >
-        <button color="accent" outline @click="currentTab = key">
-          {{ tab.name }}
-        </button>
-        <div class="line"></div>
+  <v-container class="pt-1 pb-2">
+    <NavigationBar :tabs="tabs" v-model="currentTab">
+      <div class="mt-2" :class="{ 'charts-country': currentTab === 'country' }">
+        <keep-alive>
+          <component
+            @ready="componentLoadReady"
+            v-bind:is="currentTabComponent"
+          ></component>
+        </keep-alive>
       </div>
-    </v-layout>
-
-    <div class="mt-3" :class="{ 'charts-country': currentTab === 'country' }">
-      <transition name="fade" mode="out-in">
-        <component
-          @ready="componentLoadReady"
-          v-bind:is="currentTabComponent"
-          class="tab"
-        ></component>
-      </transition>
-    </div>
+    </NavigationBar>
   </v-container>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator';
 import { Action, Mutation } from 'vuex-class';
 
+import NavigationBar from '@/components/Layout/NavigationBar.vue';
 import ChartsByCountry from '@/components/Charts/ChartsByCountry.vue';
 import ChartsByGenre from '@/components/Charts/ChartsByGenre.vue';
 import { SET_FOOTER_VISIBILITY } from '@/store/mutations.type';
+import { NavigationTabItem } from '../@types/model/model';
+import { Route } from 'vue-router';
 
 @Component({
   components: {
+    NavigationBar,
     ChartsByCountry,
     ChartsByGenre
   }
 })
 export default class Charts extends Vue {
-  private tabs: { [id: string]: { name: string; component: string } } = {
+  @Prop() tab!: string;
+
+  private tabs: { [id: string]: NavigationTabItem } = {
     genre: {
       name: 'By genre',
-      component: 'ChartsByGenre'
+      component: 'ChartsByGenre',
+      value: 'genre'
     },
     country: {
       name: 'By country',
-      component: 'ChartsByCountry'
+      component: 'ChartsByCountry',
+      value: 'country'
     }
   };
   private currentTab = 'genre';
@@ -59,7 +54,29 @@ export default class Charts extends Vue {
     return this.tabs[this.currentTab].component;
   }
 
+  @Watch('currentTab')
+  onCurrentTabChanged(newValue: string) {
+    this.$router.push({ name: 'charts', params: { tab: newValue } });
+  }
+
+  @Watch('$route')
+  onRouteChange(to: Route, from: Route) {
+    if (to.path === '/charts') {
+      this.$router.replace({ name: 'charts', params: { tab: 'genre' } });
+      this.currentTab = 'genre';
+    }
+  }
+
   created() {
+    if (!this.tab) {
+      this.$router.replace({ name: 'charts', params: { tab: 'genre' } });
+      return;
+    }
+    if (!this.tabs[this.tab]) {
+      this.$router.push({ name: 'NotFound' });
+      return;
+    }
+    this.currentTab = this.tab;
     this.setFooterVisibility(false);
   }
 
@@ -74,39 +91,7 @@ export default class Charts extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.world-playlist-wrapper {
-  position: absolute;
-  right: 0;
-  width: 40%;
-  background-color: var(--v-primary-lighten1);
-  transition: top 1s, height 1s;
-  overflow-y: scroll;
-}
-
 .charts-country {
-  height: calc(100vh - 230px);
-}
-
-.button-tab button {
-  color: var(--v-secondaryText-base);
-  font-weight: bold;
-  padding: 0.4rem 0.8rem;
-  text-transform: uppercase;
-  transition: color 0.2s ease;
-}
-
-.button-tab .line {
-  background-color: var(--v-accent-base);
-  height: 2px;
-  // transition: width 0.25s ease;
-  width: 0px;
-}
-
-.button-tab.active .line {
-  width: 100%;
-}
-
-.button-tab.active button {
-  color: var(--v-primaryText-base);
+  height: calc(100vh - 220px);
 }
 </style>

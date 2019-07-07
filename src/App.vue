@@ -177,9 +177,18 @@ export default class App extends Vue {
       speed: 200,
       showSpinner: false
     });
+
     NProgress.start();
 
     this.$router.beforeEach((to, from, next) => {
+      if (
+        (to.name === 'home' && from.name === 'home') ||
+        (to.name === 'charts' && from.name === 'charts')
+      ) {
+        next();
+        return;
+      }
+
       NProgress.start();
       next();
     });

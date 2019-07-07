@@ -22,7 +22,12 @@
             {{ artist.attributes.name }}
           </div>
 
-          <div class="sub-info-text text-xs-center">{{ artistGenre }}</div>
+          <div
+            class="sub-info-text text-xs-center long-text-truncated"
+            style="width: 100%"
+          >
+            {{ artistGenre }}
+          </div>
         </v-layout>
       </v-card-title>
     </v-card>

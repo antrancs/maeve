@@ -120,7 +120,7 @@ export default class ArtistDetailOverview extends Vue {
     if (this.hasBanner) {
       return ['xl3', 'lg3', 'md-5-col', 'sm3', 'xs6'];
     }
-    return ['xl2', 'lg2', 'md-5-col', 'sm3', 'xs6'];
+    return ['xl-7-col', 'lg2', 'md-5-col', 'sm3', 'xs6'];
   }
 }
 </script>

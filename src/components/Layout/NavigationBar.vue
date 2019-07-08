@@ -40,6 +40,8 @@ export default class NavigationBar extends Vue {
 .browse-button-wrapper {
   overflow-x: scroll;
   white-space: nowrap;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .browse-button {

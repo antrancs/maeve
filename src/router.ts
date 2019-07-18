@@ -178,6 +178,15 @@ const router = new Router({
       props: true
     },
     {
+      path: '/artists/:id/:s/:resource',
+      name: 'artistsViewAll',
+      component: () =>
+        import(
+          /* webpackChunkName: "artistDetailViewAll" */ './views/ArtistDetailViewAll.vue'
+        ),
+      props: true
+    },
+    {
       path: '/me/for-you',
       name: 'forYou',
       component: () =>

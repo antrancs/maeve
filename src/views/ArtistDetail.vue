@@ -64,7 +64,6 @@ import { Route } from 'vue-router';
 import ArtistDetailOverview from '@/components/Artist/ArtistDetailOverview.vue';
 import ArtistInfo from '@/components/Artist/ArtistInfo.vue';
 import DataLoadingMixin from '@/mixins/DataLoadingMixin';
-import { formatArtworkUrl } from '@/utils/utils';
 import {
   Nullable,
   Album,
@@ -72,23 +71,8 @@ import {
   Playlist,
   Collection
 } from '@/@types/model/model';
-import { TEXT_PRIMARY_DARK } from '@/themes';
 import { PLACEHOLDER_IMAGE } from '@/utils/constants';
-import { getArtistDetails } from '../services/catalog.service';
-import {
-  FETCH_MULTILE_ALBUMS_CATALOG,
-  FETCH_ONE_ALBUM_CATALOG,
-  FETCH_MULTIPLE_PLAYLISTS_CATALOG,
-  FETCH_MULTIPLE_SONGS_CATALOG,
-  FETCH_MULTIPLE_ARTISTS_CATALOG
-} from '../store/actions.type';
-import {
-  FetchMultipleAlbumsCatalogAction,
-  FetchOneAlbumCatalogAction,
-  FetchMultiplePlaylistsCatalogAction,
-  FetchMultipleSongsCatalogAction,
-  FetchMultipleArtitsCatalogAction
-} from '../store/types';
+import { getArtistResources } from '../services/catalog.service';
 import { SET_FOOTER_VISIBILITY } from '../store/mutations.type';
 import { getArtist } from '../services/musicApi.service';
 
@@ -101,18 +85,9 @@ import { getArtist } from '../services/musicApi.service';
 })
 export default class ArtistDetail extends Mixins(DataLoadingMixin) {
   private artist: Nullable<Artist> = null;
-  private albums: MusicKit.Album[] = [];
-  private singles: MusicKit.Album[] = [];
-  private relatedArtists: MusicKit.Artist[] = [];
-  private artistPlaylists: MusicKit.Playlist[] = [];
-  private featuredRelease: Nullable<MusicKit.Album> = null;
-  private featuredReleaseTitle = '';
-  private bannerUrl: Nullable<string> = null;
-  private artworkUrl: Nullable<string> = PLACEHOLDER_IMAGE;
-  private topSongs: MusicKit.Song[] = [];
-  private bio: Nullable<string> = null;
-  private origin: Nullable<string> = null;
-  private birthday: Nullable<string> = null;
+  private artistInfo: any = null;
+  private resources: any = [];
+
   private loadingDone = false;
   private currentTab = 'overview';
   private navigationItems: {
@@ -144,12 +119,6 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
   currentPlaying!: MusicKit.MediaItem | null;
   @State(state => state.musicPlayer.minimized) playerBarMinimized!: boolean;
 
-  @Action [FETCH_MULTILE_ALBUMS_CATALOG]: FetchMultipleAlbumsCatalogAction;
-  @Action [FETCH_ONE_ALBUM_CATALOG]: FetchOneAlbumCatalogAction;
-  @Action
-  [FETCH_MULTIPLE_PLAYLISTS_CATALOG]: FetchMultiplePlaylistsCatalogAction;
-  @Action [FETCH_MULTIPLE_SONGS_CATALOG]: FetchMultipleSongsCatalogAction;
-  @Action [FETCH_MULTIPLE_ARTISTS_CATALOG]: FetchMultipleArtitsCatalogAction;
   @Mutation [SET_FOOTER_VISIBILITY]: (visibility: boolean) => void;
 
   get visibleNavigationItems() {
@@ -164,26 +133,30 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
     if (this.currentTab === 'overview') {
       return {
         hasBanner: this.hasBanner,
-        featuredRelease: this.featuredRelease,
-        featuredReleaseTitle: this.featuredReleaseTitle,
-        artistName: this.artist!.attributes!.name,
-        artistId: this.artist!.id,
-        artistPlaylists: this.artistPlaylists,
-        relatedArtists: this.relatedArtists,
-        singles: this.singles,
-        albums: this.albums,
-        topSongs: this.topSongs
+        resources: this.resources,
+        artist: {
+          name: this.artistName,
+          id: this.id,
+          ...this.artistInfo
+        }
       };
     }
     return {
-      bio: this.bio,
-      birthday: this.birthday,
-      origin: this.origin
+      bio: this.artistInfo.bio,
+      birthday: this.artistInfo.birthday,
+      origin: this.artistInfo.origin
     };
   }
 
+  get artistName() {
+    if (!this.artist) {
+      return '';
+    }
+    return this.artist.attributes ? this.artist.attributes.name : '';
+  }
+
   get bannerHeaderStyle() {
-    if (!this.bannerUrl) {
+    if (!this.artistInfo || !this.artistInfo.bannerUrl) {
       return {};
     }
 
@@ -200,13 +173,19 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
         style.height = '80vw';
     }
 
-    style['background-image'] = `url('${this.bannerUrl}')`;
+    style['background-image'] = `url('${this.artistInfo.bannerUrl}')`;
 
     return style;
   }
 
-  get hasBanner() {
-    return this.bannerUrl && this.bannerUrl !== PLACEHOLDER_IMAGE;
+  get hasBanner(): boolean {
+    if (!this.artistInfo) {
+      return false;
+    }
+    return (
+      this.artistInfo.bannerUrl &&
+      this.artistInfo.bannerUrl !== PLACEHOLDER_IMAGE
+    );
   }
 
   @Watch('$route')
@@ -216,16 +195,7 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
       props: null
     });
     this.artist = null;
-    this.featuredRelease = null;
-    this.bannerUrl = null;
-    this.artistPlaylists = [];
-    this.topSongs = [];
-    this.bio = null;
-    this.birthday = null;
-    this.origin = null;
-    this.albums = [];
-    this.singles = [];
-    this.relatedArtists = [];
+    this.resources = [];
     this.loadingDone = false;
     window.scrollTo(0, 0);
     this.$_getArtistInfo();
@@ -248,15 +218,11 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
   private $_getArtistInfo() {
     const artistId = this.id;
 
-    getArtist(artistId)
-      .then(artist => {
-        this.artist = artist;
-        this.$_showArtistInfoHeader();
-        this.$_getArtistDetails();
-      })
-      .catch(err => {
-        // this.dataLoadingDone();
-      });
+    getArtist(artistId).then(artist => {
+      this.artist = artist;
+      this.$_showArtistInfoHeader();
+      this.$_getArtistDetails();
+    });
   }
 
   private $_getArtistDetails() {
@@ -268,94 +234,37 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
       return;
     }
 
-    getArtistDetails(
+    getArtistResources(
       this.artist.attributes.url,
       this.artist.id,
       this.$vuetify.breakpoint.name
     )
       .then((artistDetail: any) => {
-        const {
-          bannerUrl,
-          artworkUrl,
-          bio,
-          birthday,
-          relatedArtists,
-          origin,
-          topSongIds,
-          artistPlaylists,
-          feature,
-          albums,
-          singles
-        } = artistDetail;
+        const { artist, resources } = artistDetail;
 
-        this.bannerUrl = bannerUrl;
+        this.artistInfo = artist;
+        this.resources = resources;
 
-        this.artworkUrl = artworkUrl;
-
-        this.bio = bio;
-        this.birthday = birthday;
-        this.origin = origin;
-
-        if (!this.bio && !this.birthday && !this.origin) {
+        if (
+          !this.artistInfo.bio &&
+          !this.artistInfo.birthday &&
+          !this.artistInfo.origin
+        ) {
           this.navigationItems['about'].shouldShow = false;
         } else {
           this.navigationItems['about'].shouldShow = true;
         }
 
         this.loadingDone = true;
-
-        if (relatedArtists && relatedArtists.length > 0) {
-          this.fetchMultipleArtistsCatalog(relatedArtists).then(artists => {
-            this.relatedArtists = artists;
-          });
-        }
-
-        if (topSongIds) {
-          this.fetchMultipleSongsCatalog(topSongIds).then(songs => {
-            // just get the first 5 songs
-            this.topSongs = songs.slice(0, 5);
-          });
-        }
-
-        if (artistPlaylists && artistPlaylists.length > 0) {
-          this.fetchMultiplePlaylistsCatalog(artistPlaylists.slice(0, 8)).then(
-            playlists => {
-              this.artistPlaylists = playlists;
-            }
-          );
-        }
-
-        if (feature && feature.id) {
-          this.fetchOneAlbumCatalog(feature.id).then(album => {
-            this.featuredRelease = album;
-            this.featuredReleaseTitle = feature.title;
-          });
-        }
-
-        if (albums && albums.length > 0) {
-          this.fetchMultipleAlbumsCatalog(albums.slice(0, 8)).then(albums => {
-            this.albums = albums;
-          });
-        }
-
-        if (singles && singles.length > 0) {
-          this.fetchMultipleAlbumsCatalog(singles.slice(0, 8)).then(singles => {
-            this.singles = singles;
-          });
-        }
       })
       .finally(() => this.dataLoadingDone());
   }
 
   private $_showArtistInfoHeader() {
-    if (!this.artist) {
-      return;
-    }
-
     this.$emit('show-extended-header', {
       component: ArtistInfo,
       props: {
-        name: this.artist.attributes ? this.artist.attributes.name : ''
+        name: this.artistName
       },
       height: 50
     });

@@ -40,9 +40,7 @@ function getFeaturedPlaylists() {
         country: MusicKit.getInstance().storefrontId
       }
     })
-    .then(res => {
-      return res.data;
-    });
+    .then(res => res.data);
 }
 
 function getMainFeaturedPlaylists(limit: number) {
@@ -53,9 +51,7 @@ function getMainFeaturedPlaylists(limit: number) {
         limit
       }
     })
-    .then(res => {
-      return res.data;
-    });
+    .then(res => res.data);
 }
 
 function getFeaturedAlbums() {
@@ -65,9 +61,7 @@ function getFeaturedAlbums() {
         country: MusicKit.getInstance().storefrontId
       }
     })
-    .then(res => {
-      return res.data;
-    });
+    .then(res => res.data);
 }
 
 function getGenreOneResource(id: string, resource: string) {
@@ -77,9 +71,7 @@ function getGenreOneResource(id: string, resource: string) {
         country: MusicKit.getInstance().storefrontId
       }
     })
-    .then(res => {
-      return res.data;
-    });
+    .then(res => res.data);
 }
 
 function getNewReleases(genre: string, limit: number) {
@@ -91,9 +83,7 @@ function getNewReleases(genre: string, limit: number) {
         limit
       }
     })
-    .then(res => {
-      return res.data;
-    });
+    .then(res => res.data);
 }
 
 function getNewReleasesGenres() {
@@ -103,9 +93,7 @@ function getNewReleasesGenres() {
         country: MusicKit.getInstance().storefrontId
       }
     })
-    .then(res => {
-      return res.data;
-    });
+    .then(res => res.data);
 }
 
 function getArtistArtwork(
@@ -121,23 +109,31 @@ function getArtistArtwork(
         size
       }
     })
-    .then(res => {
-      return res.data;
-    });
+    .then(res => res.data);
 }
 
-function getArtistDetails(url: string, artistId: string, size: string) {
+function getArtistResources(url: string, artistId: string, size: string) {
   return axiosInstance
-    .get('/artists/details', {
+    .get('/artists/resources', {
       params: {
         url,
         artistId,
         size
       }
     })
-    .then(res => {
-      return res.data;
-    });
+    .then(res => res.data);
+}
+
+function getArtistOneResource(artistId: String, s: number) {
+  return axiosInstance
+    .get('/artists/resource', {
+      params: {
+        id: artistId,
+        cc: MusicKit.getInstance().storefrontId,
+        s
+      }
+    })
+    .then(res => res.data);
 }
 
 function getAlbumExtraInfo(iTunesUrl: string) {
@@ -161,15 +157,11 @@ function getCuratorBanner(url: string, curatorId: string, size: string) {
         size
       }
     })
-    .then(res => {
-      return res.data;
-    });
+    .then(res => res.data);
 }
 
 function getCuratorsByGenre(genreId: string) {
-  return axiosInstance.get(`/curators/genre/${genreId}`).then(res => {
-    return res.data;
-  });
+  return axiosInstance.get(`/curators/genre/${genreId}`).then(res => res.data);
 }
 
 export {
@@ -182,10 +174,11 @@ export {
   getMainFeaturedPlaylists,
   getArtistArtwork,
   getFeaturedAlbums,
-  getArtistDetails,
+  getArtistResources,
   getAlbumExtraInfo,
   getCuratorBanner,
   getCuratorsByGenre,
   getNewReleases,
-  getNewReleasesGenres
+  getNewReleasesGenres,
+  getArtistOneResource
 };

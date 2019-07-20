@@ -184,7 +184,13 @@ const actions: ActionTree<MusicPlayerState, any> = {
 
   async [PLAY_SONGS](
     { commit, dispatch, state },
-    { shuffle = false, songs, sourceInfo, startPosition }: PlaySongsPayload
+    {
+      shuffle = false,
+      songs,
+      sourceInfo,
+      startPosition,
+      startId
+    }: PlaySongsPayload
   ) {
     if (!state.currentPlaying) {
       const audioPlayer = document.getElementById('apple-music-player');
@@ -222,6 +228,10 @@ const actions: ActionTree<MusicPlayerState, any> = {
       await dispatch(SKIP_TO_SONG_AT_INDEX, {
         index: startPosition
       });
+    }
+
+    if (startId) {
+      await musicKitInstance.player.changeToMediaItem(startId);
     }
 
     commit(SET_QUEUE, musicKitInstance.player.queue, { root: true });

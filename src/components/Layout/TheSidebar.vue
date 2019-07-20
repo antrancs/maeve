@@ -185,7 +185,7 @@ export default class AppSidebar extends Vue {
         {
           name: 'Songs',
           icon: 'music_note',
-          pathName: 'myLibrarySongs',
+          pathName: 'myLibrary',
           params: {
             resource: 'songs'
           }

@@ -35,8 +35,9 @@ export type PlaySongsPayload = {
   shuffle?: boolean;
   songs: Song[];
   sourceInfo: SongSourceInfo;
-  // id of the starting song
   startPosition?: number;
+  // id of the start song
+  startId?: string;
 };
 
 export type FetchCollectionPayload = {

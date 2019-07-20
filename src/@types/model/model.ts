@@ -80,3 +80,8 @@ export type NavigationTabItem = {
   component: string;
   value: string;
 };
+
+export type LibrarySortOption = {
+  name: string;
+  value: string;
+};

@@ -730,6 +730,8 @@ declare namespace MusicKit {
      * (Required) The number of tracks.
      */
     trackCount: number;
+
+    [key: string]: any;
   }
 
   /**
@@ -902,6 +904,8 @@ declare namespace MusicKit {
      * (Required) Indicates whether the playlist can be edited.
      */
     canEdit: boolean;
+
+    [key: string]: any;
   }
   /**
    * The attributes for a library song object.
@@ -953,6 +957,8 @@ declare namespace MusicKit {
      * (Required) The number of the song in the album’s track list.
      */
     trackNumber: number;
+
+    [key: string]: any;
   }
 
   /**

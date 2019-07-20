@@ -217,18 +217,6 @@ const router = new Router({
       }
     },
     {
-      path: '/me/library/songs',
-      name: 'myLibrarySongs',
-      component: () =>
-        import(
-          /* webpackChunkName: "myLibrarySongs" */ './views/MyLibrarySongs.vue'
-        ),
-      props: true,
-      meta: {
-        auth: true
-      }
-    },
-    {
       path: '/me/library/:resource',
       name: 'myLibrary',
       component: () =>

@@ -1,38 +1,48 @@
 <template>
-  <div class="pb-2">
-    <div :class="$style['collection-name']">
-      <h1
-        :class="[$style['collection-title'], 'long-text-truncated']"
-        :title="collectionName"
-      >
-        {{ collectionName }}
-      </h1>
-      <v-icon
-        v-if="collection.attributes.contentRating === 'explicit'"
-        size="22"
-        class="ml-2"
-        >explicit</v-icon
-      >
-    </div>
+  <v-layout row align-center align-content-space-between class="pb-2">
+    <v-flex class="pr-2">
+      <div :class="$style['collection-name']">
+        <h1
+          :class="[$style['collection-title'], 'long-text-truncated']"
+          :title="collectionName"
+        >
+          {{ collectionName }}
+        </h1>
+        <v-icon
+          v-if="collection.attributes.contentRating === 'explicit'"
+          size="22"
+          class="ml-2"
+          >explicit</v-icon
+        >
+      </div>
 
-    <ResourceLinkList
-      :resources="artists"
-      :class="[$style['artist-name'], 'long-text-truncated']"
-      :name="collectionArtistName"
+      <ResourceLinkList
+        :resources="artists"
+        :class="[$style['artist-name'], 'long-text-truncated']"
+        :name="collectionArtistName"
+      />
+    </v-flex>
+
+    <ShareMenu
+      v-if="collection.type === 'albums' || collection.type === 'playlists'"
+      :appleMusicLink="collectionUrl"
+      class="share-icon"
     />
-  </div>
+  </v-layout>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import { Prop, Component } from 'vue-property-decorator';
 
+import ShareMenu from '@/components/ShareMenu.vue';
 import ResourceLinkList from '@/components/ResourceLinkList.vue';
 import { Collection, Nullable, Artist } from '../../@types/model/model';
 
 @Component({
   components: {
-    ResourceLinkList
+    ResourceLinkList,
+    ShareMenu
   }
 })
 export default class CollectionInfo extends Vue {
@@ -58,6 +68,14 @@ export default class CollectionInfo extends Vue {
     }
 
     return null;
+  }
+
+  get collectionUrl() {
+    if (!this.collection || !this.collection.attributes) {
+      return null;
+    }
+
+    return this.collection.attributes.url;
   }
 }
 </script>
@@ -94,5 +112,9 @@ export default class CollectionInfo extends Vue {
   .artist-name {
     font-size: 1.6rem;
   }
+}
+
+.share-icon {
+  flex-shrink: 0;
 }
 </style>

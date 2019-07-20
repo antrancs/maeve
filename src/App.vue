@@ -354,4 +354,9 @@ export default class App extends Vue {
   padding: 0;
   justify-content: center;
 }
+
+.menu-content .v-list__tile {
+  font-size: 14px;
+  height: 30px;
+}
 </style>

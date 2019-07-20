@@ -148,6 +148,44 @@ const getLightColorFromArtwork = (artwork: MusicKit.Artwork | undefined) => {
   return '#fff';
 };
 
+const copyToClipboard = (text: string) => {
+  const textArea = document.createElement('textarea');
+  textArea.value = text;
+  textArea.style.background = 'transparent';
+  textArea.style.position = 'fixed';
+  textArea.style.top = '0';
+  textArea.style.left = '0';
+
+  document.body.appendChild(textArea);
+  textArea.focus();
+
+  // Select text
+  if (isiOS()) {
+    const range = document.createRange();
+    range.selectNodeContents(textArea);
+    const selection = window.getSelection();
+    if (selection) {
+      selection.removeAllRanges();
+      selection.addRange(range);
+      textArea.setSelectionRange(0, 1000);
+    }
+  } else {
+    textArea.select();
+  }
+
+  try {
+    return document.execCommand('copy');
+  } catch (err) {
+    return false;
+  } finally {
+    document.body.removeChild(textArea);
+  }
+};
+
+const isiOS = () => {
+  return navigator.userAgent.match(/ipad|iphone/i);
+};
+
 export {
   getArtworkUrl,
   formatArtworkUrl,
@@ -156,5 +194,6 @@ export {
   hexToRgb,
   getTextColorForBackground,
   getGradientBackgroundColorsFromArtwork,
-  getLightColorFromArtwork
+  getLightColorFromArtwork,
+  copyToClipboard
 };

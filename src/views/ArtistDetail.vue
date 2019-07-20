@@ -261,10 +261,14 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
   }
 
   private $_showArtistInfoHeader() {
+    if (!this.artist || !this.artist.attributes) {
+      return;
+    }
     this.$emit('show-extended-header', {
       component: ArtistInfo,
       props: {
-        name: this.artistName
+        name: this.artistName,
+        url: (this.artist.attributes as MusicKit.ArtistAttributes).url
       },
       height: 50
     });

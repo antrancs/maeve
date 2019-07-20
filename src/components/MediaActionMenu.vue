@@ -9,7 +9,7 @@
     :position-y="mediaActionMenu.posY"
   >
     <slot slot="activator"></slot>
-    <v-list class="secondary media-menu-content">
+    <v-list class="secondary menu-content">
       <template v-if="isAuthenticated">
         <v-list-tile v-if="!isLibraryItem" @click="onAddToLibrary">
           <v-list-tile-title>Add to Library</v-list-tile-title>
@@ -23,7 +23,7 @@
             </v-list-tile-action>
           </v-list-tile>
 
-          <v-list class="secondary media-menu-content">
+          <v-list class="secondary menu-content">
             <v-list-tile @click="onAddToNewPlaylist">
               <v-list-tile-content>
                 <v-list-tile-title>New playlist</v-list-tile-title>
@@ -298,10 +298,3 @@ export default class MediaActionMenu extends Vue {
   }
 }
 </script>
-
-<style lang="scss">
-.media-menu-content .v-list__tile {
-  font-size: 14px;
-  height: 30px;
-}
-</style>

@@ -27,7 +27,7 @@
         target="_blank"
         class="link link--external"
         rel="noopener"
-        href="mailto:an.tran.cs@gmail.com"
+        href="mailto:support@maevemusic.app"
         >email</a
       >. Like this site?
       <a

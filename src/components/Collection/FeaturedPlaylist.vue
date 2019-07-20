@@ -159,6 +159,7 @@ $featured-playlist-border: 1.5rem;
   flex-grow: 1;
   opacity: 0;
   transition: opacity 0.25s ease-in-out;
+  overflow: hidden;
 }
 
 .bottom-sheet {
@@ -168,6 +169,7 @@ $featured-playlist-border: 1.5rem;
   border-bottom-right-radius: $featured-playlist-border;
   color: white;
   display: flex;
+  flex-shrink: 0;
   font-size: 2rem;
   font-weight: 600;
   height: 7rem;

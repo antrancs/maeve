@@ -195,6 +195,7 @@ export default class ArtistDetail extends Mixins(DataLoadingMixin) {
       props: null
     });
     this.artist = null;
+    this.artistInfo = null;
     this.resources = [];
     this.loadingDone = false;
     window.scrollTo(0, 0);

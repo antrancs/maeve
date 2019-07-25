@@ -79,14 +79,14 @@ const actions: ActionTree<MusicPlayerState, any> = {
     const musicKitPlayer = MusicKit.getInstance().player;
 
     musicKitPlayer.skipToNextItem().catch(() => {});
-    dispatch(CHECK_IF_SONG_PLAY_SUCCESSFUL);
+    // dispatch(CHECK_IF_SONG_PLAY_SUCCESSFUL);
   },
 
   async [PLAY_PREVIOUS]({ dispatch }) {
     const musicKitPlayer = MusicKit.getInstance().player;
 
     musicKitPlayer.skipToPreviousItem().catch(() => {});
-    dispatch(CHECK_IF_SONG_PLAY_SUCCESSFUL);
+    // dispatch(CHECK_IF_SONG_PLAY_SUCCESSFUL);
   },
 
   [TOGGLE_CURRENT_TRACK]({ state, dispatch }) {
@@ -179,7 +179,7 @@ const actions: ActionTree<MusicPlayerState, any> = {
 
     musicKitInstance.player.play();
 
-    dispatch(CHECK_IF_SONG_PLAY_SUCCESSFUL);
+    // dispatch(CHECK_IF_SONG_PLAY_SUCCESSFUL);
   },
 
   async [PLAY_SONGS](

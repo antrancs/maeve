@@ -45,8 +45,12 @@ export default class SongListMixin extends Mixins(
 
     const currentPlayingId = this.musicPlayer.currentPlaying.id;
 
-    if (song.type === 'library-songs' && song.attributes) {
-      return song.attributes.playParams!.catalogId === currentPlayingId;
+    if (
+      song.type === 'library-songs' &&
+      song.attributes &&
+      song.attributes.playParams
+    ) {
+      return song.attributes.playParams.catalogId === currentPlayingId;
     }
 
     return song.id === currentPlayingId;

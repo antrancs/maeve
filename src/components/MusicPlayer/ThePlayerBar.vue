@@ -531,7 +531,7 @@ It can be an album/playlist or the original song lists where this song is from
 
       case MusicKit.PlaybackStates.ended:
         this.setIsPlaying(false);
-        this.checkIfSongPlaySuccessful();
+      //  this.checkIfSongPlaySuccessful();
     }
   }
 

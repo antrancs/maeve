@@ -4,7 +4,7 @@
     fixed
     :clipped="false"
     :width="210"
-    class="primary elevation-10"
+    class="primary elevation-10 scrollbar-show-on-hover"
     v-model="sidebar"
   >
     <v-layout column fill-height justify-space-between class="sidebar-dark">
@@ -304,5 +304,13 @@ export default class AppSidebar extends Vue {
 <style lang="scss">
 .small-tile .v-list__tile {
   height: 30px;
+}
+
+.scrollbar-show-on-hover.v-navigation-drawer {
+  overflow-y: hidden;
+}
+
+.scrollbar-show-on-hover.v-navigation-drawer:hover {
+  overflow-y: auto;
 }
 </style>

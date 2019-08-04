@@ -220,7 +220,8 @@ export default class CollectionDetail extends Mixins(DataLoadingMixin) {
     switch (this.collection.type) {
       case 'albums':
         return this.collection.attributes.editorialNotes
-          ? this.collection.attributes.editorialNotes.standard
+          ? this.collection.attributes.editorialNotes.standard ||
+              this.collection.attributes.editorialNotes.short
           : null;
 
       case 'playlists':
